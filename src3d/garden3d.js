@@ -162,7 +162,7 @@ function displace(geo, amp, seed, freq = 1.5) {
 // ---------- шейдер неба ----------
 const SKY_VERT = `varying vec3 vDir; void main(){ vDir = (modelMatrix * vec4(position,1.)).xyz - cameraPosition; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }`;
 const SKY_FRAG = `
-uniform vec3 uZenith, uHorizon, uGround, uSunDir, uSunColor; uniform float uGlow, uNight, uHaze;
+uniform vec3 uZenith, uHorizon, uGround, uSunDir, uSunColor; uniform float uGlow, uNight, uHaze, uGain;
 varying vec3 vDir;
 float hash(vec3 p){ p = fract(p*0.3183099+.1); p *= 17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
 void main(){
@@ -174,7 +174,7 @@ void main(){
   vec3 c = mix(uGround, sky + sun, smoothstep(-0.03, 0.01, h));
   float st = step(0.9992, hash(floor(d*420.0))) * smoothstep(0.03, 0.25, h) * uNight;
   c += vec3(st) * (0.6 + 0.4*hash(floor(d*97.0)));
-  gl_FragColor = vec4(c, 1.0);
+  gl_FragColor = vec4(c * uGain, 1.0);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`;
@@ -208,7 +208,7 @@ export class GardenScene {
     // небо
     this.sky = new Mesh(new SphereGeometry(400, 32, 16), new ShaderMaterial({ side: BackSide, depthWrite: false, uniforms: {
       uZenith: { value: col('#8fb4d6') }, uHorizon: { value: col('#d7e4ec') }, uGround: { value: col('#50603a') }, uSunDir: { value: new Vector3(0, 1, 0) },
-      uSunColor: { value: col('#fff2d8') }, uGlow: { value: 1 }, uNight: { value: 0 }, uHaze: { value: 0.3 } }, vertexShader: SKY_VERT, fragmentShader: SKY_FRAG }));
+      uSunColor: { value: col('#fff2d8') }, uGlow: { value: 1 }, uNight: { value: 0 }, uHaze: { value: 0.3 }, uGain: { value: 1.4 } }, vertexShader: SKY_VERT, fragmentShader: SKY_FRAG }));
     S.add(this.sky);
     S.fog = new FogExp2(0xd7e4ec, 0.006);
 
@@ -443,7 +443,7 @@ export class GardenScene {
     for (let i = 0; i < (this.q.mobile ? 5 : 9); i++) { const m = new Mesh(new PlaneGeometry(26 + R() * 14, 7 + R() * 4), mm); m.rotation.x = -Math.PI / 2 + 0.08; m.position.set((R() - 0.5) * 30, 0.35 + R() * 0.9, -4 - R() * (far - 6)); m.userData.ph = R() * 6.3; S.add(m); this.mist.push(m); }
     this.mistMat = mm;
     this.clouds = []; const cm = new SpriteMaterial({ map: T.cloud, transparent: true, opacity: 0.7, depthWrite: false, color: 0xffffff, fog: false });
-    for (let i = 0; i < 7; i++) { const s = new Sprite(cm); const sc = 90 + R() * 120; s.scale.set(sc, sc * 0.45, 1); s.position.set((R() - 0.5) * 420, 70 + R() * 40, -170 - R() * 160); S.add(s); this.clouds.push(s); }
+    for (let i = 0; i < 5; i++) { const s = new Sprite(cm); const sc = 50 + R() * 70; s.scale.set(sc, sc * 0.4, 1); s.position.set((R() - 0.5) * 420, 120 + R() * 50, -200 - R() * 140); S.add(s); this.clouds.push(s); }
     this.cloudMat = cm;
   }
 
@@ -452,7 +452,7 @@ export class GardenScene {
     this.p = p = clamp(p, 0, 1);
     const night = smooth(p, 0.76, 0.93), mistF = 1 - smooth(p, 0.06, 0.36), golden = smooth(p, 0.5, 0.74) * (1 - smooth(p, 0.78, 0.9));
     const key = (ks) => { for (let i = 1; i < ks.length; i++) if (p <= ks[i][0]) { const [a, va] = ks[i - 1], [b, vb] = ks[i]; const t = (p - a) / (b - a); return lerp(va, vb, t * t * (3 - 2 * t)); } return ks[ks.length - 1][1]; };
-    const elev = key([[0, 2.5], [0.2, 16], [0.45, 40], [0.72, 9], [0.85, -2], [1, -9]]), az = key([[0, 64], [0.45, 4], [0.72, -56], [1, -78]]);
+    const elev = key([[0, 2.5], [0.2, 16], [0.45, 40], [0.72, 9], [0.85, -2], [1, -9]]), az = key([[0, 64], [0.45, 4], [0.72, -30], [1, -60]]);
     const e = elev * DEG, a = az * DEG;
     const dir = new Vector3(Math.sin(a) * Math.cos(e), Math.sin(e), -Math.cos(a) * Math.cos(e)).normalize();
     const up = smooth(elev, -1, 10); // солнце над горизонтом
@@ -462,17 +462,17 @@ export class GardenScene {
     this.sun.position.copy(dir).multiplyScalar(90).add(this.sunTarget.position);
     // небо
     const U = this.sky.material.uniforms;
-    const zen = mixc(mixc(col('#aeb9c2'), col('#5f93c9'), smooth(p, 0.05, 0.4) * (1 - smooth(p, 0.6, 0.86))), col('#0d1626'), night);
-    const hor = mixc(mixc(mixc(col('#efe3d2'), col('#c8dbe9'), smooth(p, 0.1, 0.4)), col('#f3cf98'), golden), col('#23324a'), night);
+    const zen = mixc(mixc(col('#a9b7c4'), col('#3f7fc0'), smooth(p, 0.05, 0.4) * (1 - smooth(p, 0.6, 0.86))), col('#0d1626'), night);
+    const hor = mixc(mixc(mixc(col('#efe3d2'), col('#9dbfdc'), smooth(p, 0.1, 0.4)), col('#f3cf98'), golden), col('#23324a'), night);
     U.uZenith.value.copy(zen); U.uHorizon.value.copy(hor); U.uSunDir.value.copy(dir);
     U.uSunColor.value.copy(mixc(col('#fff5e4'), col('#ffa355'), warm)).multiplyScalar(1 - night * 0.9);
     U.uGlow.value = 1.3 - night; U.uNight.value = night; U.uHaze.value = 0.15 + mistF * 0.55 + golden * 0.2;
-    U.uGround.value.copy(mixc(col('#50603a'), col('#121a14'), night));
+    U.uGround.value.copy(mixc(col('#50603a'), col('#121a14'), night)); U.uGain.value = lerp(1.15 + mistF * 0.25, 0.9, night);
     // туман
-    this.scene.fog.color.copy(hor.clone().lerp(col('#1a2433'), night));
+    this.scene.fog.color.copy(hor.clone().multiplyScalar(1.25).lerp(col('#1a2433'), night));
     this.scene.fog.density = 0.003 + mistF * 0.016 + night * 0.004;
     // полусфера и ночной свет
-    this.hemi.color.copy(zen.clone().lerp(col('#ffffff'), 0.35 * (1 - night))); this.hemi.groundColor.copy(mixc(col('#4e6136'), col('#0b100b'), night)); this.hemi.intensity = lerp(1.3, 1.25, up) * (1 - night * 0.75) + 0.08;
+    this.hemi.color.copy(zen.clone().lerp(col('#ffffff'), 0.35 * (1 - night))); this.hemi.groundColor.copy(mixc(col('#4e6136'), col('#0b100b'), night)); this.hemi.intensity = lerp(1.8, 1.25, up) * (1 - night * 0.75) + 0.08;
     this.amb.intensity = night * 0.35;
     // фонари, подсветка, окно
     const lampI = smooth(p, 0.78, 0.9);
@@ -481,10 +481,10 @@ export class GardenScene {
     const winI = smooth(p, 0.84, 0.97);
     this.glass.material.emissiveIntensity = winI * 1.6; this.winLight.intensity = winI * 14;
     // туман-полосы и облака
-    this.mistMat.opacity = mistF * 0.5; this.mistMat.color.copy(hor);
-    this.cloudMat.opacity = 0.18 + up * 0.42 - night * 0.5; this.cloudMat.color.copy(mixc(mixc(col('#ffffff'), col('#ffd9a8'), golden), col('#2a3447'), night));
+    this.mistMat.opacity = mistF * 0.32; this.mistMat.color.copy(hor);
+    this.cloudMat.opacity = 0.12 + up * 0.3 - night * 0.4; this.cloudMat.color.copy(mixc(mixc(col('#ffffff'), col('#ffd9a8'), golden), col('#2a3447'), night));
     // экспозиция и bloom
-    this.renderer.toneMappingExposure = lerp(1.05, 0.82, night) * lerp(1.0, 1.1, up);
+    this.renderer.toneMappingExposure = lerp(1.3, 0.95, night) * lerp(1.12, 1.08, up);
     if (this.bloom) { this.bloom.strength = night * 0.9 + golden * 0.15; this.bloom.threshold = lerp(0.9, 0.75, night); }
     this.uSway.value = 0.02 + 0.02 * up;
     // окружение для отражений (стекло, бассейн)
@@ -548,11 +548,13 @@ export function mount(root, opts = {}) {
     // адаптивное качество: если кадры тяжёлые — снижаем dpr и bloom
     const dt = now - (loop.last || now); loop.last = now;
     if (dt > 40) { if (++slow > 40 && !loop.degraded) { loop.degraded = true; G.q.dpr = 1; G.q.bloom = false; G.composer = null; W = 0; size(); } } else slow = Math.max(0, slow - 1);
+    visible = inView();
     if (visible && !document.hidden) raf = requestAnimationFrame(loop);
   }
-  function wake() { if (!raf && !dead && visible && !document.hidden) raf = requestAnimationFrame(loop); }
+  function inView() { const r = root.getBoundingClientRect(); return r.bottom > 0 && r.top < (innerHeight || 1); }
+  function wake() { visible = inView(); if (!raf && !dead && visible && !document.hidden) raf = requestAnimationFrame(loop); }
   size(); wake();
-  const io = 'IntersectionObserver' in window ? new IntersectionObserver((en) => { visible = en[0].isIntersecting; if (visible) wake(); }, { threshold: 0 }) : null; if (io) io.observe(root);
+  const io = null;
   const onScroll = () => wake();
   addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', () => { size(); wake(); }, { passive: true }); document.addEventListener('visibilitychange', wake);
   let ro = null; if ('ResizeObserver' in window) { ro = new ResizeObserver(() => { if (size()) wake(); }); ro.observe(stage); }

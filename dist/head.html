@@ -1,4 +1,4 @@
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 04d90352 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 9914032f -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="https://lilkutabare-hue.github.io/verdantestate/site/fonts/cormorant-garamond-cyrillic-500-normal.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="https://lilkutabare-hue.github.io/verdantestate/site/fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin>
@@ -23,12 +23,12 @@
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;box-sizing:border-box}
 .ve *,.ve *::before,.ve *::after{box-sizing:inherit}
 @media(min-width:900px){.ve{font-size:17px}}
-.ve p{margin:0}
-.ve a{color:inherit;text-decoration:none}
-.ve img{display:block;max-width:100%;height:auto}
-.ve button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.ve :focus{outline:none}
-.ve :focus-visible{outline:2px solid var(--ve-moss);outline-offset:3px;border-radius:4px}
+:where(.ve) p{margin:0}
+:where(.ve) a{color:inherit;text-decoration:none}
+:where(.ve) img{display:block;max-width:100%;height:auto}
+:where(.ve) button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:where(.ve) :focus{outline:none}
+:where(.ve) :focus-visible{outline:2px solid var(--ve-moss);outline-offset:3px;border-radius:4px}
 
 .ve-wrap{max-width:1240px;margin:0 auto;padding-left:var(--ve-pad);padding-right:var(--ve-pad)}
 .ve-sec{padding-top:var(--ve-gap);padding-bottom:0}
@@ -76,7 +76,7 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'https://lilkutabare-hue.github.io/verdantestate/site/';
-  var VE={v:'04d90352',base:base,
+  var VE={v:'9914032f',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},

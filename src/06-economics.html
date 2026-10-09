@@ -52,7 +52,7 @@
 @media(max-width:899px){
   .ve-eco__chart{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
   .ve-eco__months{grid-column:1/-1;display:none}
-  .ve-eco__svg{height:560px}
+  .ve-eco__svg{height:720px}
   .ve-eco__row--one{padding-right:0}
 }
 @media(min-width:900px){
@@ -78,7 +78,7 @@
   var NS='http://www.w3.org/2000/svg';
   var MONTHS=['апр','май','июн','июл','авг','сен','окт','ноя'];
   // точки лежат неровно, как в жизни; одно и то же — отдельный заказ каждый раз
-  var ONE=[['обрезка',.05],['уборка',.11],['покос',.2],['полив',.3],['покос',.4],['арборист',.5],['покос',.6],['покос',.72],['уборка',.86],['подготовка к зиме',.95]];
+  var ONE=[['обрезка',.04],['уборка',.13],['покос',.22],['полив',.31],['покос',.41],['арборист',.5],['покос',.6],['покос',.72],['уборка',.84],['подготовка к зиме',.95]];
   var svg1=root.querySelector('.ve-eco__svg--one'),svg2=root.querySelector('.ve-eco__svg--ve'),months=root.querySelector('.ve-eco__months');
   months.innerHTML=MONTHS.map(function(m){return '<span>'+m+'</span>'}).join('');
   function el(n,a,t){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;return e}
@@ -106,11 +106,10 @@
         g.appendChild(el('text',{'class':'t1',x:x0+18,y:yy+4},o[0]));
         g.appendChild(el('text',{'class':'t2',x:x0+18,y:yy+18},'поиск · расчёт · выезд'));
         svg1.appendChild(g);items.push(g)});
-      MONTHS.forEach(function(m,i){svg1.appendChild(el('text',{'class':'t2',x:W1-4,y:18+(i/8)*(H1-40),'text-anchor':'end',opacity:.7},m))});
       var lx=14;line=el('path',{'class':'line',d:'M'+lx+' 14 L'+lx+' '+(H2-26)});svg2.appendChild(line);
       for(var q=0;q<=16;q++){var ty2=14+(q/16)*(H2-40),tt=el('line',{'class':'tick ev',x1:lx-7,y1:ty2,x2:lx+7,y2:ty2});svg2.appendChild(tt);ticks.push(tt)}
-      var lab2=el('text',{'class':'t2 ev',x:lx+18,y:18},'визиты по графику');svg2.appendChild(lab2);ticks.push(lab2);
-      var lab3=el('text',{'class':'t2 ev',x:lx+18,y:32},'один ответственный');svg2.appendChild(lab3);ticks.push(lab3);
+      MONTHS.forEach(function(m,i){svg2.appendChild(el('text',{'class':'t2',x:lx+18,y:18+(i/8)*(H2-40)},m))});
+      var lab2=el('text',{'class':'t2 ev',x:lx-7,y:H2-4},'визиты по графику · один ответственный');svg2.appendChild(lab2);ticks.push(lab2);
     }
     len=line.getTotalLength();line.style.strokeDasharray=len;line.style.strokeDashoffset=len;lastP=-1;
   }
