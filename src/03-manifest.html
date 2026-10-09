@@ -1,0 +1,35 @@
+<section class="ve ve-sec ve-man" id="ve-manifest">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Сад, за которым не нужно следить</p>
+    <h2 class="ve-h2 ve-r ve-man__h">Verdant Estate берёт на себя постоянное управление вашим садом.</h2>
+    <div class="ve-man__cols ve-rg">
+      <div class="ve-man__col">
+        <h3 class="ve-h3">Планируем</h3>
+        <p>Мы планируем работы и формируем график на весь сезон.</p>
+      </div>
+      <div class="ve-man__col">
+        <h3 class="ve-h3">Организуем</h3>
+        <p>Привлекаем необходимых специалистов. Вам не нужно искать отдельного садовника, арбориста, специалиста по газону или поливу.</p>
+      </div>
+      <div class="ve-man__col">
+        <h3 class="ve-h3">Контролируем</h3>
+        <p>Контролируем подрядчиков и следим за состоянием участка в течение всего сезона.</p>
+      </div>
+    </div>
+    <p class="ve-lead ve-man__end ve-r">Вы ставите задачу — мы организуем всё остальное.</p>
+  </div>
+</section>
+<style>
+.ve-man__h{max-width:22ch;margin-top:14px}
+.ve-man__cols{margin-top:40px;display:grid;gap:0}
+.ve-man__col{padding:22px 0;border-top:1px solid var(--ve-line)}
+.ve-man__col:last-child{border-bottom:1px solid var(--ve-line)}
+.ve-man__col p{margin-top:8px;max-width:48ch;color:var(--ve-moss)}
+.ve-man__end{margin-top:36px;font-family:var(--ve-serif);font-size:24px;line-height:1.25}
+@media(min-width:900px){
+  .ve-man__cols{grid-template-columns:repeat(3,1fr);gap:40px;margin-top:56px}
+  .ve-man__col{padding:28px 0 0;border-bottom:0!important}
+  .ve-man__end{margin-top:56px;font-size:30px}
+}
+</style>
+<script>(function(){if(window.VE)VE.reveal(document.getElementById('ve-manifest'))})();</script>

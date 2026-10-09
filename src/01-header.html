@@ -1,0 +1,41 @@
+<header class="ve ve-hd" id="ve-hd">
+  <div class="ve-hd__in">
+    <a class="ve-hd__mark" href="#ve-hero" aria-label="Verdant Estate">__MARK__</a>
+    <div class="ve-hd__right">
+      <a class="ve-hd__tel ve-num" href="tel:+70000000000" data-ve-tel>+7 000 000-00-00</a>
+      <button class="ve-btn ve-btn--sm ve-hd__cta" type="button" data-ve-go-form>Рассчитать</button>
+    </div>
+  </div>
+</header>
+<style>
+.ve-hd{position:fixed;top:0;left:0;right:0;z-index:60;background:transparent;color:var(--ve-paper);
+  transform:translateY(0);transition:transform .32s var(--ve-ease-2),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),box-shadow .3s;
+  padding-top:env(safe-area-inset-top)}
+.ve-hd__in{max-width:1240px;margin:0 auto;padding:0 var(--ve-pad);height:60px;display:flex;align-items:center;justify-content:space-between}
+@media(min-width:900px){.ve-hd__in{height:72px}}
+.ve-hd__mark{display:block;width:30px;height:28px;color:inherit}
+.ve-hd__mark svg{width:100%;height:100%;display:block}
+.ve-hd__right{display:flex;align-items:center;gap:22px}
+.ve-hd__tel{display:none;font-size:15px;letter-spacing:.01em;opacity:.9}
+@media(min-width:900px){.ve-hd__tel{display:inline}}
+.ve-hd .ve-hd__cta{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
+.ve-hd.is-solid{background:rgba(247,244,236,.94);color:var(--ve-ink);box-shadow:0 1px 0 var(--ve-line)}
+.ve-hd.is-solid .ve-hd__cta{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+.ve-hd.is-hidden{transform:translateY(-110%)}
+@media(prefers-reduced-motion:reduce){.ve-hd{transition:none}}
+</style>
+<script>
+(function(){
+  var hd=document.getElementById('ve-hd');if(!hd)return;
+  var y0=window.scrollY||0,up=0,solidAt=function(){return Math.max(240,(window.innerHeight||600)*.9)};
+  function tick(){
+    var y=window.scrollY||0,d=y-y0;
+    hd.classList.toggle('is-solid',y>solidAt());
+    if(d>0){up=0;if(y>80)hd.classList.add('is-hidden')}
+    else if(d<0){up+=-d;if(up>10)hd.classList.remove('is-hidden')}
+    y0=y;
+  }
+  window.addEventListener('scroll',tick,{passive:true});tick();
+  hd.querySelector('[data-ve-go-form]').addEventListener('click',function(){if(window.VE)VE.goForm()});
+})();
+</script>

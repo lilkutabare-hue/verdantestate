@@ -1,0 +1,1032 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>стенд Тильды · Verdant Estate</title>
+<script>window.VE_BASE=new URL("/site/",location.href).href</script>
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 04d90352 -->
+<link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/site/fonts/cormorant-garamond-cyrillic-500-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/site/fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin>
+<style>
+@font-face{font-family:"VE Serif";font-style:normal;font-weight:500;font-display:swap;src:url(/site/fonts/cormorant-garamond-cyrillic-500-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"VE Serif";font-style:normal;font-weight:500;font-display:swap;src:url(/site/fonts/cormorant-garamond-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"VE Serif";font-style:normal;font-weight:600;font-display:swap;src:url(/site/fonts/cormorant-garamond-cyrillic-600-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"VE Serif";font-style:normal;font-weight:600;font-display:swap;src:url(/site/fonts/cormorant-garamond-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --ve-paper:#F7F4EC;--ve-paper-2:#EFEBE0;--ve-ink:#2F3B24;--ve-moss:#5E6E45;--ve-line:rgba(47,59,36,.14);--ve-lamp:#E2B46C;
+  --ve-serif:"VE Serif",Cormorant Garamond,Garamond,Georgia,"Times New Roman",serif;
+  --ve-sans:-apple-system,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
+  --ve-ease:cubic-bezier(.2,.9,.2,1);--ve-ease-2:cubic-bezier(.2,.8,.2,1);
+  --ve-r:8px;--ve-gap:72px;--ve-pad:20px;
+  color-scheme:light only;
+}
+@media(min-width:900px){:root{--ve-r:12px;--ve-gap:120px;--ve-pad:40px}}
+
+/* база блока: всё наше живёт под .ve, стили Тильды .t-* не трогаем */
+.ve{font-family:var(--ve-sans);font-size:16px;line-height:1.5;color:var(--ve-ink);background:var(--ve-paper);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;box-sizing:border-box}
+.ve *,.ve *::before,.ve *::after{box-sizing:inherit}
+@media(min-width:900px){.ve{font-size:17px}}
+.ve p{margin:0}
+.ve a{color:inherit;text-decoration:none}
+.ve img{display:block;max-width:100%;height:auto}
+.ve button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ve :focus{outline:none}
+.ve :focus-visible{outline:2px solid var(--ve-moss);outline-offset:3px;border-radius:4px}
+
+.ve-wrap{max-width:1240px;margin:0 auto;padding-left:var(--ve-pad);padding-right:var(--ve-pad)}
+.ve-sec{padding-top:var(--ve-gap);padding-bottom:0}
+.ve-sec--last{padding-bottom:var(--ve-gap)}
+.ve-copy{max-width:56ch}
+.ve-muted{color:var(--ve-moss)}
+
+.ve-h1,.ve-h2,.ve-h3{font-family:var(--ve-serif);font-weight:500;margin:0;letter-spacing:-.005em;text-wrap:balance}
+.ve-h1{font-size:40px;line-height:1.05}
+.ve-h2{font-size:30px;line-height:1.12}
+.ve-h3{font-size:24px;line-height:1.18}
+@media(min-width:900px){.ve-h1{font-size:72px;line-height:1}.ve-h2{font-size:44px;line-height:1.08}.ve-h3{font-size:28px}}
+.ve-caps{font-family:var(--ve-sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ve-moss)}
+.ve-caps--serif{font-family:var(--ve-serif);font-weight:600;font-size:13px;letter-spacing:.14em}
+.ve-price,.ve-num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.ve-lead{font-size:18px;line-height:1.5;max-width:56ch}
+@media(min-width:900px){.ve-lead{font-size:20px}}
+.ve-sub{margin-top:14px;max-width:56ch;color:var(--ve-moss)}
+
+.ve .ve-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;
+  background:var(--ve-ink);color:var(--ve-paper);font-size:16px;font-weight:500;letter-spacing:.01em;white-space:nowrap;border:1px solid var(--ve-ink);
+  transition:transform .3s var(--ve-ease-2),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2)}
+.ve .ve-btn--ghost{background:transparent;color:var(--ve-ink);border-color:rgba(47,59,36,.35)}
+.ve .ve-btn--light{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
+.ve .ve-btn--sm{height:44px;padding:0 20px;font-size:15px}
+@media(hover:hover){.ve .ve-btn:hover{transform:translateY(-2px)}.ve .ve-btn--ghost:hover{border-color:var(--ve-ink)}}
+.ve .ve-btn:active{transform:scale(.97)}
+@media(min-width:900px){.ve .ve-btn{height:54px;padding:0 30px}}
+
+/* появление: один раз, по IntersectionObserver, лесенка по детям .ve-rg */
+.ve-r,.ve-rg>*{opacity:0;transform:translateY(12px);transition:opacity .5s var(--ve-ease),transform .5s var(--ve-ease)}
+.ve-r.is-in,.ve-rg.is-in>*{opacity:1;transform:none}
+.ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
+
+/* горизонтальные ленты со snap */
+.ve-strip{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+  padding-left:var(--ve-pad);padding-right:var(--ve-pad);scroll-padding-left:var(--ve-pad);margin:0 calc(-1 * var(--ve-pad))}
+.ve-strip::-webkit-scrollbar{display:none}
+.ve-strip>*{scroll-snap-align:start;flex:0 0 auto}
+
+@media(prefers-reduced-motion:reduce){.ve-r,.ve-rg>*{opacity:1;transform:none;transition:none}.ve-btn{transition:none}}
+</style>
+<script>
+/* реестр VE: адреса с версией, появление, общий префилл формы */
+(function(){
+  if(window.VE&&window.VE.v)return;
+  var base=window.VE_BASE||'/site/';
+  var VE={v:'04d90352',base:base,
+    url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
+    fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
+    _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
+    state:{},
+    set:function(k,v){VE.state[k]=v;try{sessionStorage.setItem('ve-calc',JSON.stringify(VE.state))}catch(e){}VE.emit('state',VE.state)},
+    goForm:function(patch){if(patch)for(var k in patch)VE.set(k,patch[k]);var f=document.getElementById('ve-form');if(f){f.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.emit('form:focus')}},
+    rm:false,
+    reveal:function(root){
+      root=root||document;
+      var els=root.querySelectorAll('.ve-r:not(.is-in),.ve-rg:not(.is-in)');
+      if(!('IntersectionObserver' in window)||VE.rm){for(var i=0;i<els.length;i++)els[i].classList.add('is-in');return}
+      VE._io=VE._io||new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){var el=x.target;
+        if(el.classList.contains('ve-rg')){var ch=el.children;for(var j=0;j<ch.length;j++)ch[j].style.transitionDelay=Math.min(j,12)*60+'ms'}
+        el.classList.add('is-in');VE._io.unobserve(el)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+      for(var i=0;i<els.length;i++)VE._io.observe(els[i]);
+    }};
+  try{VE.rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+  try{var s=sessionStorage.getItem('ve-calc');if(s)VE.state=JSON.parse(s)||{}}catch(e){}
+  window.VE=VE;
+  var boot=function(){VE.reveal();document.documentElement.classList.add('ve-ready')};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+  // рамка фокуса только с клавиатуры (focus-visible есть везде, это страховка для старых WebView)
+  document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
+})();
+</script>
+
+<style>body{margin:0}.t-rec{position:relative}</style></head>
+<body class="t-body" style="margin:0"><div id="allrecords" class="t-records">
+<div id="rec-01" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 01-header.html · сборка 04d90352 -->
+<header class="ve ve-hd" id="ve-hd">
+  <div class="ve-hd__in">
+    <a class="ve-hd__mark" href="#ve-hero" aria-label="Verdant Estate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 590"><path d="M 167 26 C 167 26.6, 161.5 32.8, 154.7 39.8 C 130.8 64.6, 125.9 82.3, 135.5 110.5 C 141.4 128.1, 140.8 136.2, 130.9 169.3 C 123.9 192.7, 120.1 208.3, 119.3 216.3 C 119 220, 118.3 223, 117.9 223 C 117.4 223, 117 222.3, 117 221.4 C 117 220.5, 115.4 215, 113.4 209.1 C 109.9 198.6, 109.8 198.4, 110.5 186.5 C 112 156.9, 101.5 141.1, 70.5 126.4 C 60 121.4, 59.4 121.3, 61.1 125.6 C 61.7 127.2, 62.6 134.1, 63.1 141 C 65.2 168.8, 72.6 181.2, 93.8 192.4 C 100.9 196.2, 103.8 198.4, 106.4 201.9 C 112.6 210.3, 116.6 228.8, 117.3 251.9 L 117.8 267.3 115 262.1 C 113.4 259.3, 110.6 254.9, 108.7 252.2 C 106.6 249.4, 104.5 244.8, 103.5 241 C 99.8 226.5, 91.4 218.3, 75.7 214 C 66.6 211.5, 66.5 211.5, 68.9 214.8 C 70 216.4, 72.5 221.1, 74.4 225.3 C 79 235.4, 82.7 239, 93 243.6 C 97.7 245.6, 102.5 247.9, 103.7 248.7 C 106.4 250.5, 119.4 276.2, 120.4 281.6 C 122.6 293.7, 138 336.6, 146.6 354.4 C 147.4 356, 148 357.4, 148 357.5 C 148 357.7, 142.2 352.1, 135.1 345.1 C 120.5 330.9, 118.5 327.6, 112.9 309 C 101 269.3, 73.7 248.7, 25.8 243.6 C 20.3 243, 20.2 243.1, 23.4 247.3 C 27.7 253.1, 30.6 260.2, 36.4 278.8 C 45.3 307.7, 61.4 323.3, 88.3 329.1 C 93.4 330.2, 100.7 331.8, 104.7 332.6 C 117.1 335.3, 124.4 339.5, 133.8 349.6 C 142.8 359.1, 148.9 367.2, 153.8 376 C 156.3 380.4, 172 418.5, 172 420.1 C 172 420.3, 168.6 417.2, 164.4 413.3 C 160.2 409.3, 153.9 403.9, 150.4 401.3 C 146.8 398.7, 142.6 394.5, 140.9 391.9 C 133.6 380.5, 121.6 372.6, 108.7 370.7 C 102.1 369.8, 100.3 369.9, 88.9 372.6 L 76.2 375.4 79.9 379.8 C 95.1 398.3, 104 402.4, 123.2 400 C 144.9 397.3, 150.5 400.8, 176.4 433 C 210.5 475.6, 235 496.7, 270.8 514.8 C 304.9 532, 336.7 539.3, 378.2 539.4 L 402 539.5 395.2 541.2 C 371.9 547.2, 327.4 549.6, 305.5 546.2 C 289.4 543.7, 272.5 539.7, 258 535 C 221.8 523.3, 187.4 501.7, 157.5 471.7 C 139.4 453.5, 138.9 453.2, 151.7 468.1 C 201.1 525.5, 273.2 557.1, 350 554.7 C 436.9 552, 513.7 507.6, 559.3 433.9 C 611.5 349.3, 609 233.6, 553.2 151.6 C 513.5 93.2, 446.7 52.8, 377.5 45 C 372 44.4, 366.5 43.8, 365.3 43.6 C 364 43.4, 363 43.6, 363 44 C 363 44.4, 366 45.1, 369.8 45.5 C 387.5 47.3, 412.9 54, 433.3 62.1 C 505.2 90.7, 559.1 150.6, 579 224 C 611.3 343.1, 559.6 466.4, 454.9 519.3 C 413.2 540.4, 340.9 537.3, 285 512 C 274.4 507.2, 272.6 506.2, 259.1 498.2 C 243.5 488.9, 238.5 481.9, 233.4 462.3 C 229.4 446.8, 231.4 427.7, 239.2 408 C 243.6 396.8, 244.5 397.1, 240.6 408.5 C 235.2 424.4, 232.3 442.5, 233.6 452.8 L 234.3 458.5 235.8 454.2 C 236.8 451.1, 239.9 447.1, 246.7 440.2 C 257.6 429.1, 263 419.7, 265 408.2 C 266.3 401.2, 265.9 397.4, 261.5 374 C 260.7 369.9, 260.1 364.3, 260 361.7 L 260 356.9 251.3 364.7 C 233.9 380.4, 231.4 383, 226.8 390.7 C 216.2 408.3, 215.8 426.7, 225.5 446.1 C 227.7 450.3, 229.6 456.4, 230.9 463.3 C 232 469.2, 233.8 476, 234.9 478.5 L 236.9 483 231.2 478.6 C 211 463, 197.8 440.8, 196.3 420.1 C 195.5 408.2, 196.9 403, 203.7 392.8 C 213.6 378, 215.8 370.7, 217 348.5 C 217.9 333.9, 218.5 329.8, 220.5 324.8 C 223.7 317, 197.8 337.4, 190.9 348.1 C 181.5 362.8, 180.4 382.8, 188 400.5 C 189.2 403.3, 191.2 411.8, 192.5 419.5 C 193.8 427.2, 195.8 436.2, 196.9 439.4 C 199.6 447, 199.2 447.2, 194.3 440.8 C 183.7 426.7, 176.1 412.1, 168.5 391.5 C 166.7 386.6, 161.7 373.7, 157.5 363 C 148.5 340.1, 146 329.8, 146 314.6 C 146 298.2, 147 295.9, 160.8 282.5 C 173.1 270.5, 177.8 263.3, 180.1 252.3 C 181.4 245.9, 180.8 228.7, 178.9 218.2 L 177.8 211.8 174.6 214.8 C 172.9 216.4, 167.2 221.1, 161.9 225.3 C 141.7 241.3, 135.9 259.3, 142.2 285.7 C 144.2 294.2, 144.3 295.4, 143.1 304.7 C 142.4 310.1, 141.9 317.3, 142.1 320.7 C 142.6 328.2, 142.2 327.9, 137.6 316.8 C 122.7 280.5, 118.9 243, 126.6 207.2 C 130.8 187.5, 135.4 177.7, 144.9 168.6 C 153.5 160.5, 158.3 158.5, 169.5 158.5 C 185.3 158.6, 197.6 164.5, 207.3 176.5 C 211.9 182.2, 224.6 206.7, 233.9 227.8 C 236 232.6, 240.6 242.6, 244 250 C 247.4 257.4, 252.4 268.5, 255 274.5 C 257.7 280.6, 264.2 295.2, 269.5 307 C 274.8 318.8, 280.4 331.4, 282 335 C 283.5 338.6, 291.7 357.3, 300.2 376.5 C 308.8 395.8, 316.7 413.6, 317.8 416.3 C 319 418.9, 320.3 421, 320.7 421 C 321.1 421, 323 417.1, 324.9 412.2 C 366.4 305.6, 405.3 210.2, 415.1 191 C 426.4 168.9, 437.8 160.2, 457.4 158.3 C 463.2 157.8, 464.1 157.5, 463.8 155.8 C 463.6 154.8, 463.2 153.9, 462.8 154 C 462.3 154, 440.9 154, 415 154 C 368.7 154, 368 154, 368 156 C 368 157.7, 368.7 158, 372.8 158 C 382.6 158, 392.9 162.1, 396 167.3 C 402 177.1, 398.9 192.4, 381.7 237 C 378.2 246.1, 368.5 271.3, 360.1 293 C 341.5 341.4, 331 368.4, 330.4 368.9 C 330 369.4, 330.3 370.2, 308.5 320.5 C 299.2 299.6, 289.1 276.7, 286 269.5 C 282.8 262.4, 274 242.3, 266.3 225 C 250.4 189.2, 243.2 172.4, 239.9 163 C 238.7 159.4, 237.2 155.9, 236.7 155.3 C 236 154.3, 227.4 154, 199.9 154 C 159.9 154, 158.9 154.1, 148 161.5 C 145.2 163.4, 143 164.7, 143 164.5 C 143 163.2, 152.9 150.3, 157.5 145.6 C 164.6 138.4, 169.2 136.1, 179.3 134.9 C 206.7 131.5, 217.9 125.8, 229.4 109.6 C 233.5 103.8, 239.5 93, 238.8 92.6 C 238.6 92.5, 231.5 92.7, 223 93.1 C 194.2 94.3, 180.9 102, 169.4 124.3 C 166.1 130.8, 162.5 135.9, 157.2 141.5 C 148.4 150.8, 140.1 161.7, 137 167.8 C 133.9 174.2, 133.9 172.9, 137.2 160 C 138.9 153.1, 140.5 143.5, 141.1 136 C 142.9 112.1, 146.6 91.7, 151.9 75.5 C 154.2 68.5, 154.7 69.8, 152.5 77.3 C 149.1 89.2, 143.4 126, 145 126 C 145.3 126, 146.3 124.2, 147.2 122.2 C 148.2 120.1, 151.7 115.2, 155 111.4 C 165.5 99.4, 172.1 84, 173.5 68.5 C 174.4 58.2, 170.1 25, 167.9 25 C 167.4 25, 167 25.5, 167 26 M 187.4 118.6 C 181.9 121.9, 171 129.9, 171 130.6 C 171 130.8, 192.7 116.4, 193.9 115.4 C 195.3 114.1, 192.6 115.5, 187.4 118.6 M 89.7 164.1 C 91.7 167.3, 104.3 192.4, 106.8 198 C 107.4 199.4, 107.9 199.8, 107.9 199 C 108.1 195.3, 91.7 163.2, 88.7 161.3 C 88.1 161, 88.6 162.2, 89.7 164.1 M 157.4 255.1 C 155.1 259.6, 149.5 275.6, 148 281.8 C 145.9 290.6, 147.5 288.6, 150 279.3 C 151.3 274.5, 154 266.4, 156.1 261.3 C 159.9 252, 160.5 249.3, 157.4 255.1 M 396.5 257 C 395.8 258.4, 392.4 266.3, 389.1 274.5 L 383 289.4 383 355.4 C 382.9 425.9, 382.4 439.2, 379 446.7 C 375.3 455.2, 371.9 457.5, 359.6 459.9 C 355.2 460.8, 351.5 462.1, 351.2 462.8 C 350.7 464.4, 502 464.6, 505.1 463 C 509.1 460.8, 517.9 442.3, 522.9 425.4 C 526.8 412.3, 525.3 410.4, 519.4 420.8 C 510.5 436.2, 494.1 448.7, 475.5 454.1 C 463.6 457.6, 428.9 457.7, 422 454.3 C 411.8 449.2, 411 445.2, 411 397.3 L 411 359.8 436.3 360.2 C 459.8 360.5, 461.9 360.7, 467.3 362.9 C 477.9 367.1, 482.2 372.9, 484.4 386.3 C 485.3 391.3, 486.1 393.5, 487.1 393.5 C 488.3 393.5, 488.5 388, 488.5 356.5 C 488.5 324.9, 488.3 319.5, 487.1 319.5 C 486.1 319.5, 485.3 321.4, 484.5 325.5 C 480.9 345.7, 472.9 350.1, 438.3 350.8 C 426.1 351, 414.9 350.9, 413.5 350.6 L 411 350 411.1 311.2 C 411.2 271.1, 411.5 267.6, 415.1 264.4 C 418.3 261.6, 459.7 261.5, 471 264.4 C 490.1 269.2, 501.4 280.3, 505.1 297.8 C 505.8 301.4, 506.6 303, 507.7 303 C 509.1 303, 509.2 300.5, 508.6 279.3 C 508.2 266.3, 507.6 255.2, 507.4 254.8 C 507.1 254.3, 482.3 254, 452.4 254.1 L 397.9 254.3 396.5 257 M 74.7 290.5 C 86.7 303.6, 101.1 317.7, 113.5 328.5 L 122.5 336.4 113.9 327.4 C 106.1 319.3, 100 313.3, 73.6 288 L 64.6 279.5 74.7 290.5 M 193.6 385.6 C 193.3 388.2, 193.1 393.3, 193.1 396.9 C 193.3 402.4, 193.4 401.7, 194.1 392.6 C 195 381.2, 194.7 377.6, 193.6 385.6 M 112.5 384.9 C 116.5 386.5, 133.5 391.8, 133.8 391.5 C 134.4 390.9, 118.5 385.2, 114.5 384.6 C 112 384.3, 111.2 384.3, 112.5 384.9" fill="currentColor" fill-rule="evenodd"/></svg></a>
+    <div class="ve-hd__right">
+      <a class="ve-hd__tel ve-num" href="tel:+70000000000" data-ve-tel>+7 000 000-00-00</a>
+      <button class="ve-btn ve-btn--sm ve-hd__cta" type="button" data-ve-go-form>Рассчитать</button>
+    </div>
+  </div>
+</header>
+<style>
+.ve-hd{position:fixed;top:0;left:0;right:0;z-index:60;background:transparent;color:var(--ve-paper);
+  transform:translateY(0);transition:transform .32s var(--ve-ease-2),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),box-shadow .3s;
+  padding-top:env(safe-area-inset-top)}
+.ve-hd__in{max-width:1240px;margin:0 auto;padding:0 var(--ve-pad);height:60px;display:flex;align-items:center;justify-content:space-between}
+@media(min-width:900px){.ve-hd__in{height:72px}}
+.ve-hd__mark{display:block;width:30px;height:28px;color:inherit}
+.ve-hd__mark svg{width:100%;height:100%;display:block}
+.ve-hd__right{display:flex;align-items:center;gap:22px}
+.ve-hd__tel{display:none;font-size:15px;letter-spacing:.01em;opacity:.9}
+@media(min-width:900px){.ve-hd__tel{display:inline}}
+.ve-hd .ve-hd__cta{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
+.ve-hd.is-solid{background:rgba(247,244,236,.94);color:var(--ve-ink);box-shadow:0 1px 0 var(--ve-line)}
+.ve-hd.is-solid .ve-hd__cta{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+.ve-hd.is-hidden{transform:translateY(-110%)}
+@media(prefers-reduced-motion:reduce){.ve-hd{transition:none}}
+</style>
+<script>
+(function(){
+  var hd=document.getElementById('ve-hd');if(!hd)return;
+  var y0=window.scrollY||0,up=0,solidAt=function(){return Math.max(240,(window.innerHeight||600)*.9)};
+  function tick(){
+    var y=window.scrollY||0,d=y-y0;
+    hd.classList.toggle('is-solid',y>solidAt());
+    if(d>0){up=0;if(y>80)hd.classList.add('is-hidden')}
+    else if(d<0){up+=-d;if(up>10)hd.classList.remove('is-hidden')}
+    y0=y;
+  }
+  window.addEventListener('scroll',tick,{passive:true});tick();
+  hd.querySelector('[data-ve-go-form]').addEventListener('click',function(){if(window.VE)VE.goForm()});
+})();
+</script>
+</div></div></div></div>
+<div id="rec-02" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 02-hero.html · сборка 04d90352 -->
+<section class="ve ve-hero" id="ve-hero" data-ch="0">
+  <div class="ve-hero__stage">
+    <picture class="ve-hero__poster">
+      <source media="(orientation: portrait)" srcset="/site/media/scene/poster-tall.webp?v=04d90352">
+      <img src="/site/media/scene/poster-wide.webp?v=04d90352" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+    </picture>
+    <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
+    <div class="ve-hero__shade" aria-hidden="true"></div>
+    <div class="ve-hero__text">
+      <p class="ve-hero__brand"><span>Verdant Estate</span><span class="ve-hero__brand-2">Private Garden Service</span></p>
+      <h1 class="ve-h1 ve-hero__h1">Сад, за которым не&nbsp;нужно следить</h1>
+      <div class="ve-hero__lines">
+        <p class="ve-hero__line" data-at="1">Один договор.</p>
+        <p class="ve-hero__line" data-at="2">Один ответственный.</p>
+        <p class="ve-hero__line" data-at="3">Весь сад под контролем.</p>
+      </div>
+      <p class="ve-hero__cta" data-at="3"><button class="ve-btn ve-btn--light" type="button" data-ve-go-form>Рассчитать стоимость</button></p>
+    </div>
+    <div class="ve-hero__clock ve-num" aria-hidden="true"><i></i><span>06:40</span></div>
+    <div class="ve-hero__hint" aria-hidden="true"><span></span></div>
+  </div>
+</section>
+<style>
+.ve-hero{position:relative;height:320svh;height:calc(var(--ve-vh,1vh) * 320);background:#A9B3A4;color:var(--ve-paper);margin:0}
+@supports(height:100svh){.ve-hero{height:320svh}}
+@media(min-width:900px){.ve-hero{height:300vh}@supports(height:100svh){.ve-hero{height:300svh}}}
+.ve-hero__stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#A9B3A4}
+.ve-hero__poster,.ve-hero__canvas,.ve-hero__shade{position:absolute;inset:0}
+.ve-hero__poster img{width:100%;height:100%;object-fit:cover;object-position:56% 55%}
+.ve-hero__canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .6s var(--ve-ease)}
+.ve-hero.is-live .ve-hero__canvas{opacity:1}
+.ve-hero__shade{background:linear-gradient(to top,rgba(47,59,36,.55) 0%,rgba(47,59,36,.28) 32%,rgba(47,59,36,0) 62%),linear-gradient(to bottom,rgba(47,59,36,.32) 0%,rgba(47,59,36,0) 24%)}
+.ve-hero__text{position:absolute;left:0;right:0;bottom:0;padding:0 var(--ve-pad) calc(28px + env(safe-area-inset-bottom));max-width:1240px;margin:0 auto}
+@media(min-width:900px){.ve-hero__text{bottom:0;padding-bottom:64px;padding-left:40px;padding-right:40px;left:50%;transform:translateX(-50%);width:100%}}
+.ve-hero__brand{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 16px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;opacity:.92}
+.ve-hero__brand-2{opacity:.7}
+.ve-hero__h1{max-width:12ch;color:inherit}
+@media(min-width:900px){.ve-hero__h1{max-width:14ch}}
+.ve-hero__lines{margin-top:18px;min-height:3.2em;font-family:var(--ve-serif);font-size:22px;line-height:1.25}
+@media(min-width:900px){.ve-hero__lines{font-size:30px;margin-top:22px}}
+.ve-hero__line,.ve-hero__cta{opacity:0;transform:translateY(12px);transition:opacity .5s var(--ve-ease),transform .5s var(--ve-ease)}
+.ve-hero__cta{margin-top:22px}
+.ve-hero[data-ch="1"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="1"],.ve-hero[data-ch="3"] [data-at="1"],
+.ve-hero[data-ch="2"] [data-at="2"],.ve-hero[data-ch="3"] [data-at="2"],
+.ve-hero[data-ch="3"] [data-at="3"]{opacity:1;transform:none}
+.ve-hero__clock{position:absolute;right:var(--ve-pad);top:calc(72px + env(safe-area-inset-top));display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.06em;opacity:.85}
+@media(min-width:900px){.ve-hero__clock{top:auto;bottom:64px;right:40px}}
+.ve-hero__clock i{width:6px;height:6px;border-radius:50%;background:currentColor;transition:background .6s}
+.ve-hero.is-night .ve-hero__clock i{background:var(--ve-lamp);box-shadow:0 0 8px rgba(226,180,108,.8)}
+.ve-hero__hint{position:absolute;right:calc(var(--ve-pad) + 2px);bottom:calc(30px + env(safe-area-inset-bottom));width:1px;height:36px;overflow:hidden;opacity:.5}
+@media(min-width:900px){.ve-hero__hint{display:none}}
+.ve-hero__hint span{display:block;width:1px;height:100%;background:currentColor;animation:ve-hint 2.4s var(--ve-ease) infinite}
+@keyframes ve-hint{0%{transform:translateY(-100%)}60%,100%{transform:translateY(100%)}}
+.ve-hero[data-ch="3"] .ve-hero__hint{opacity:0}
+@media(prefers-reduced-motion:reduce){.ve-hero__line,.ve-hero__cta{transition:none}.ve-hero__hint{display:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-hero');if(!root)return;
+  var clock=root.querySelector('.ve-hero__clock span');
+  var T0=6*60+40,T1=21*60+30,lastCh=-1,lastT='';
+  function onP(p){
+    var ch=p<.22?0:p<.46?1:p<.7?2:3;
+    if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
+    var m=Math.round(T0+(T1-T0)*p),s=('0'+Math.floor(m/60)).slice(-2)+':'+('0'+(m%60)).slice(-2);
+    if(s!==lastT){lastT=s;clock.textContent=s}
+    root.classList.toggle('is-night',p>.8);
+  }
+  root.querySelector('[data-ve-go-form]').addEventListener('click',function(){if(window.VE)VE.goForm()});
+  function start(){
+    var VE=window.VE;if(!VE)return setTimeout(start,50);
+    var gl=false;try{var c=document.createElement('canvas');gl=!!(window.WebGL2RenderingContext&&c.getContext('webgl2'))}catch(e){}
+    var save=navigator.connection&&navigator.connection.saveData;
+    var mode=(gl&&!VE.rm&&!save&&!/\bve3d=0\b/.test(location.search))?'garden3d':'scene';
+    if(/\bve3d=1\b/.test(location.search))mode='garden3d';
+    var opts={base:VE.base,v:VE.v,onProgress:onP,reducedMotion:VE.rm};
+    var frames=function(){return import(VE.url('js/scene.js')).then(function(m){VE.hero=m.mount(root,opts)})};
+    if(mode==='garden3d'){import(VE.url('js/garden3d.js')).then(function(m){VE.hero=m.mount(root,opts)}).catch(function(e){console.warn('[VE] 3D недоступно, кадры:',e&&e.message);frames()})}
+    else frames();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+</div></div></div></div>
+<div id="rec-03" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 03-manifest.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-man" id="ve-manifest">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Сад, за которым не нужно следить</p>
+    <h2 class="ve-h2 ve-r ve-man__h">Verdant Estate берёт на себя постоянное управление вашим садом.</h2>
+    <div class="ve-man__cols ve-rg">
+      <div class="ve-man__col">
+        <h3 class="ve-h3">Планируем</h3>
+        <p>Мы планируем работы и формируем график на весь сезон.</p>
+      </div>
+      <div class="ve-man__col">
+        <h3 class="ve-h3">Организуем</h3>
+        <p>Привлекаем необходимых специалистов. Вам не нужно искать отдельного садовника, арбориста, специалиста по газону или поливу.</p>
+      </div>
+      <div class="ve-man__col">
+        <h3 class="ve-h3">Контролируем</h3>
+        <p>Контролируем подрядчиков и следим за состоянием участка в течение всего сезона.</p>
+      </div>
+    </div>
+    <p class="ve-lead ve-man__end ve-r">Вы ставите задачу — мы организуем всё остальное.</p>
+  </div>
+</section>
+<style>
+.ve-man__h{max-width:22ch;margin-top:14px}
+.ve-man__cols{margin-top:40px;display:grid;gap:0}
+.ve-man__col{padding:22px 0;border-top:1px solid var(--ve-line)}
+.ve-man__col:last-child{border-bottom:1px solid var(--ve-line)}
+.ve-man__col p{margin-top:8px;max-width:48ch;color:var(--ve-moss)}
+.ve-man__end{margin-top:36px;font-family:var(--ve-serif);font-size:24px;line-height:1.25}
+@media(min-width:900px){
+  .ve-man__cols{grid-template-columns:repeat(3,1fr);gap:40px;margin-top:56px}
+  .ve-man__col{padding:28px 0 0;border-bottom:0!important}
+  .ve-man__end{margin-top:56px;font-size:30px}
+}
+</style>
+<script>(function(){if(window.VE)VE.reveal(document.getElementById('ve-manifest'))})();</script>
+</div></div></div></div>
+<div id="rec-04" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 04-tariffs.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-tar" id="ve-tariffs">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Постоянный уход</p>
+    <h2 class="ve-h2 ve-r ve-tar__h">Три уровня обслуживания</h2>
+    <p class="ve-sub ve-r">Стоимость рассчитывается индивидуально. Цифра ниже — порог, от которого начинается уровень.</p>
+  </div>
+  <div class="ve-wrap ve-tar__wrap">
+    <div class="ve-strip ve-tar__strip ve-rg">
+      <article class="ve-tar__card" data-tariff="BASIC">
+        <div class="ve-tar__img"><img src="/site/media/stills/tariff-basic-l.webp?v=04d90352" srcset="/site/media/stills/tariff-basic-s.webp?v=04d90352 560w, /site/media/stills/tariff-basic-l.webp?v=04d90352 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <p class="ve-caps ve-caps--serif ve-tar__name">Basic</p>
+        <p class="ve-tar__price ve-price">от 60&#8239;000&nbsp;₽ <span>/ месяц</span></p>
+        <p class="ve-tar__for">Для небольших и относительно простых участков.</p>
+        <ul class="ve-tar__list">
+          <li>регулярные визиты</li><li>уход за газоном</li><li>уход за растениями</li><li>сезонная уборка</li><li>базовая обрезка</li><li>контроль состояния участка</li>
+        </ul>
+        <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
+      </article>
+      <article class="ve-tar__card" data-tariff="PREMIUM">
+        <div class="ve-tar__img"><img src="/site/media/stills/tariff-premium-l.webp?v=04d90352" srcset="/site/media/stills/tariff-premium-s.webp?v=04d90352 560w, /site/media/stills/tariff-premium-l.webp?v=04d90352 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <p class="ve-caps ve-caps--serif ve-tar__name">Premium</p>
+        <p class="ve-tar__price ve-price">от 110&#8239;000&nbsp;₽ <span>/ месяц</span></p>
+        <p class="ve-tar__for">Для полноценных частных садов.</p>
+        <ul class="ve-tar__list">
+          <li>всё из BASIC</li><li>более частые визиты</li><li>расширенный уход за растениями</li><li>формировка кустарников и изгородей</li><li>обработки и подкормки</li><li>сезонные работы</li><li>контроль системы полива</li><li>организация специализированных работ</li>
+        </ul>
+        <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
+      </article>
+      <article class="ve-tar__card" data-tariff="ESTATE">
+        <div class="ve-tar__img"><img src="/site/media/stills/tariff-estate-l.webp?v=04d90352" srcset="/site/media/stills/tariff-estate-s.webp?v=04d90352 560w, /site/media/stills/tariff-estate-l.webp?v=04d90352 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <p class="ve-caps ve-caps--serif ve-tar__name">Estate</p>
+        <p class="ve-tar__price ve-price">от 190&#8239;000&nbsp;₽ <span>/ месяц</span></p>
+        <p class="ve-tar__for">Для больших и сложных территорий.</p>
+        <ul class="ve-tar__list">
+          <li>индивидуальный график обслуживания</li><li>повышенная частота присутствия</li><li>полный контроль состояния сада</li><li>координация нескольких специалистов</li><li>приоритетное обслуживание</li><li>сезонное планирование</li><li>организация арбористики, полива и других специализированных работ</li><li>персональное управление участком</li>
+        </ul>
+        <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
+      </article>
+    </div>
+  </div>
+</section>
+<style>
+.ve-tar__h{margin-top:14px}
+.ve-tar__wrap{margin-top:36px}
+.ve-tar__card{width:84vw;max-width:420px;display:flex;flex-direction:column}
+.ve-tar__img{aspect-ratio:4/5;overflow:hidden;border-radius:var(--ve-r);background:var(--ve-paper-2)}
+.ve-tar__img img{width:100%;height:100%;object-fit:cover;transform:scale(1);transform-origin:50% 60%}
+.ve-tar__card.is-in-view .ve-tar__img img{animation:ve-breath 12s ease-in-out infinite alternate}
+@keyframes ve-breath{from{transform:scale(1)}to{transform:scale(1.03)}}
+.ve-tar__name{margin-top:22px;color:var(--ve-ink)}
+.ve-tar__price{margin-top:6px;font-family:var(--ve-serif);font-size:28px;line-height:1.1}
+.ve-tar__price span{font-family:var(--ve-sans);font-size:14px;color:var(--ve-moss);letter-spacing:.01em}
+.ve-tar__for{margin-top:8px;color:var(--ve-moss)}
+.ve-tar__list{list-style:none;margin:18px 0 0;padding:0;font-size:15px;line-height:1.45}
+.ve-tar__list li{padding:7px 0;border-top:1px solid var(--ve-line)}
+.ve-tar__list li::first-letter{text-transform:uppercase}
+.ve-tar__btn{margin-top:22px;align-self:flex-start}
+@media(min-width:900px){
+  .ve-tar__wrap{margin-top:56px}
+  .ve-tar__strip{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;overflow:visible;margin:0;padding:0;scroll-snap-type:none}
+  .ve-tar__card{width:auto;max-width:none}
+  .ve-tar__price{font-size:32px}
+}
+@media(prefers-reduced-motion:reduce){.ve-tar__card.is-in-view .ve-tar__img img{animation:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-tariffs');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var cards=root.querySelectorAll('.ve-tar__card');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){en.forEach(function(x){x.target.classList.toggle('is-in-view',x.isIntersecting)})},{threshold:.2});for(var i=0;i<cards.length;i++)io.observe(cards[i])}
+  for(var j=0;j<cards.length;j++)(function(c){c.querySelector('.ve-tar__btn').addEventListener('click',function(){VE.goForm({tariff:c.getAttribute('data-tariff')})})})(cards[j]);
+})();
+</script>
+</div></div></div></div>
+<div id="rec-05" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 05-builder.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-bld" id="ve-builder">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Почему цена индивидуальная</p>
+    <h2 class="ve-h2 ve-r ve-bld__h">Соберите свой сад</h2>
+    <p class="ve-sub ve-r">Два участка одинаковой площади могут требовать совершенно разного объёма работы. Отметьте, что есть на вашем участке, и мы покажем ориентир.</p>
+    <div class="ve-bld__box ve-r">
+      <div class="ve-bld__area">
+        <label class="ve-bld__lab" for="ve-bld-area">Площадь участка</label>
+        <output class="ve-bld__val ve-num" for="ve-bld-area"><b>12</b> соток</output>
+        <input class="ve-bld__range" id="ve-bld-area" type="range" min="4" max="60" step="1" value="12" aria-label="Площадь участка, соток">
+        <div class="ve-bld__scale ve-num"><span>4</span><span>60</span></div>
+      </div>
+      <div class="ve-bld__chips" role="group" aria-label="Что есть на участке">
+        <button type="button" class="ve-bld__chip" data-f="газон">Газон</button>
+        <button type="button" class="ve-bld__chip" data-f="деревья">Деревья</button>
+        <button type="button" class="ve-bld__chip" data-f="кустарники">Кустарники</button>
+        <button type="button" class="ve-bld__chip" data-f="цветники">Цветники</button>
+        <button type="button" class="ve-bld__chip" data-f="живые изгороди">Живые изгороди</button>
+        <button type="button" class="ve-bld__chip" data-f="автополив">Автополив</button>
+        <button type="button" class="ve-bld__chip" data-f="рельеф">Сложный рельеф</button>
+        <button type="button" class="ve-bld__chip" data-f="запущенный сад">Запущенный сад</button>
+      </div>
+      <div class="ve-bld__out">
+        <p class="ve-bld__res"><span class="ve-bld__tier">Похоже на <b class="ve-caps ve-caps--serif">Premium</b></span><span class="ve-bld__dot">·</span><span class="ve-price ve-bld__price">от 110&#8239;000&nbsp;₽ / месяц</span><span class="ve-bld__dot">·</span><span class="ve-muted">точную цифру скажем после осмотра</span></p>
+        <button class="ve-btn ve-bld__go" type="button">Рассчитать по моему саду</button>
+      </div>
+    </div>
+    <p class="ve-bld__note ve-r">Поэтому мы не продаём универсальный пакет. Мы рассчитываем обслуживание именно вашего сада.</p>
+  </div>
+</section>
+<style>
+.ve-bld__h{margin-top:14px}
+.ve-bld__box{margin-top:36px;background:var(--ve-paper-2);border-radius:var(--ve-r);padding:26px 20px}
+.ve-bld__area{display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:16px}
+.ve-bld__lab{font-size:14px;color:var(--ve-moss)}
+.ve-bld__val{font-family:var(--ve-serif);font-size:26px;line-height:1;white-space:nowrap}
+.ve-bld__val b{font-weight:500;font-size:34px}
+.ve-bld__range{grid-column:1/-1;width:100%;margin:18px 0 0;-webkit-appearance:none;appearance:none;height:32px;background:transparent;cursor:pointer}
+.ve-bld__range::-webkit-slider-runnable-track{height:2px;background:rgba(47,59,36,.25);border-radius:2px}
+.ve-bld__range::-moz-range-track{height:2px;background:rgba(47,59,36,.25);border-radius:2px}
+.ve-bld__range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ve-ink);margin-top:-12px;border:4px solid var(--ve-paper-2);box-shadow:0 0 0 1px rgba(47,59,36,.25)}
+.ve-bld__range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ve-ink);border:4px solid var(--ve-paper-2);box-shadow:0 0 0 1px rgba(47,59,36,.25)}
+.ve-bld__scale{grid-column:1/-1;display:flex;justify-content:space-between;font-size:12px;color:var(--ve-moss);margin-top:2px}
+.ve-bld__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.ve-bld__chip{height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(47,59,36,.3);font-size:15px;color:var(--ve-ink);background:transparent;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease-2)}
+.ve-bld__chip.is-on{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+.ve-bld__chip:active{transform:scale(.97)}
+.ve-bld__out{margin-top:28px;padding-top:22px;border-top:1px solid var(--ve-line);display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.ve-bld__res{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:16px;line-height:1.4}
+.ve-bld__tier b{font-size:13px;color:var(--ve-ink);margin-left:4px}
+.ve-bld__dot{color:var(--ve-moss)}
+.ve-bld__note{margin-top:22px;max-width:56ch;color:var(--ve-moss)}
+@media(min-width:900px){
+  .ve-bld__box{margin-top:56px;padding:40px;display:grid;grid-template-columns:1fr 1fr;column-gap:56px}
+  .ve-bld__chips{margin-top:0;align-content:start}
+  .ve-bld__out{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center;margin-top:34px;padding-top:28px}
+  .ve-bld__res{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){.ve-bld__chip{transition:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-builder');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var range=root.querySelector('#ve-bld-area'),val=root.querySelector('.ve-bld__val b'),chips=root.querySelectorAll('.ve-bld__chip'),
+      tier=root.querySelector('.ve-bld__tier b'),price=root.querySelector('.ve-bld__price'),go=root.querySelector('.ve-bld__go');
+  var PRICE={BASIC:60000,PREMIUM:110000,ESTATE:190000},NAME={BASIC:'Basic',PREMIUM:'Premium',ESTATE:'Estate'};
+  function factors(){var a=[];for(var i=0;i<chips.length;i++)if(chips[i].classList.contains('is-on'))a.push(chips[i].getAttribute('data-f'));return a}
+  function estimate(area,n){if(area<=10&&n<=2)return 'BASIC';if(area<=25&&n<=5)return 'PREMIUM';return 'ESTATE'}
+  function update(save){
+    var area=+range.value,f=factors(),t=estimate(area,f.length);
+    val.textContent=area;tier.textContent=NAME[t];price.innerHTML='от '+VE.fmt(PRICE[t])+'&nbsp;₽ / месяц';
+    if(save){VE.set('area',area);VE.set('factors',f);VE.set('estimate',t)}
+  }
+  if(VE.state.area){range.value=VE.state.area}
+  if(VE.state.factors)for(var i=0;i<chips.length;i++)if(VE.state.factors.indexOf(chips[i].getAttribute('data-f'))>=0)chips[i].classList.add('is-on');
+  range.addEventListener('input',function(){update(false)});
+  range.addEventListener('change',function(){update(true)});
+  for(var j=0;j<chips.length;j++)chips[j].addEventListener('click',function(){this.classList.toggle('is-on');update(true)});
+  go.addEventListener('click',function(){update(true);VE.goForm({tariff:VE.state.estimate})});
+  update(false);
+})();
+</script>
+</div></div></div></div>
+<div id="rec-06" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 06-economics.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-eco" id="ve-economics">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Почему постоянное обслуживание выгоднее</p>
+    <h2 class="ve-h2 ve-r ve-eco__h">Один договор — весь сад</h2>
+    <p class="ve-sub ve-r">Один сезон, апрель — ноябрь. Сверху — как это выглядит с разовыми вызовами, снизу — с нами.</p>
+    <div class="ve-eco__chart ve-r" aria-hidden="true">
+      <div class="ve-eco__row ve-eco__row--one">
+        <p class="ve-eco__lab">Разовые вызовы</p>
+        <svg class="ve-eco__svg ve-eco__svg--one" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="ve-eco__row ve-eco__row--ve">
+        <p class="ve-eco__lab">Verdant Estate</p>
+        <svg class="ve-eco__svg ve-eco__svg--ve" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="ve-eco__months ve-num"></div>
+    </div>
+    <div class="ve-eco__cols">
+      <div class="ve-eco__col ve-r">
+        <h3 class="ve-h3">Разовые вызовы</h3>
+        <p>Покос — отдельный заказ. Обрезка — отдельный заказ. Уборка — отдельный заказ. Подготовка к зиме — отдельный заказ. Полив — отдельный специалист. Арборист — отдельный подрядчик.</p>
+        <p class="ve-muted">Каждый раз новый поиск, новый расчёт и новый выезд.</p>
+      </div>
+      <div class="ve-eco__col ve-r">
+        <h3 class="ve-h3">Verdant Estate</h3>
+        <p>Мы заранее планируем работы, объединяем выезды специалистов, контролируем подрядчиков и не позволяем небольшим проблемам превращаться в дорогие.</p>
+        <ul class="ve-eco__list ve-rg">
+          <li>меньше разовых расходов</li><li>меньше простоев</li><li>меньше организационной работы</li><li>выгоднее комплексное обслуживание</li><li>сад постоянно находится под контролем</li>
+        </ul>
+      </div>
+    </div>
+    <p class="ve-lead ve-eco__end ve-r">Чем больше задач мы берём на себя, тем выгоднее становится комплексное обслуживание.</p>
+    <p class="ve-r ve-eco__cta"><a class="ve-btn ve-btn--ghost" href="#ve-pricelist">Сравнить с разовыми работами</a></p>
+  </div>
+</section>
+<style>
+.ve-eco__h{margin-top:14px}
+.ve-eco__chart{margin-top:40px;position:relative}
+.ve-eco__row{position:relative}
+.ve-eco__lab{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ve-moss);margin-bottom:6px}
+.ve-eco__svg{display:block;width:100%;overflow:visible}
+.ve-eco__svg text{font-family:var(--ve-sans);fill:var(--ve-ink)}
+.ve-eco__svg .t1{font-size:13px;font-weight:500}
+.ve-eco__svg .t2{font-size:11px;fill:var(--ve-moss);letter-spacing:.02em}
+.ve-eco__svg .dot{fill:var(--ve-ink)}
+.ve-eco__svg .ring{fill:none;stroke:var(--ve-ink);stroke-opacity:.25}
+.ve-eco__svg .line{fill:none;stroke:var(--ve-moss);stroke-width:2;stroke-linecap:round}
+.ve-eco__svg .tick{stroke:var(--ve-moss);stroke-width:2;stroke-linecap:round}
+.ve-eco__svg .ev{opacity:0;transition:opacity .35s var(--ve-ease)}
+.ve-eco__svg .ev.on{opacity:1}
+.ve-eco__months{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ve-moss);margin-top:10px;padding-top:10px;border-top:1px solid var(--ve-line)}
+/* телефон: шкала вертикальная, два ряда рядом */
+@media(max-width:899px){
+  .ve-eco__chart{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
+  .ve-eco__months{grid-column:1/-1;display:none}
+  .ve-eco__svg{height:560px}
+  .ve-eco__row--one{padding-right:0}
+}
+@media(min-width:900px){
+  .ve-eco__chart{margin-top:56px}
+  .ve-eco__svg--one{height:120px}
+  .ve-eco__svg--ve{height:70px}
+  .ve-eco__row--ve{margin-top:28px}
+}
+.ve-eco__cols{margin-top:48px;display:grid;gap:36px}
+.ve-eco__col p{margin-top:10px;max-width:52ch}
+.ve-eco__col p+p{margin-top:8px}
+.ve-eco__list{list-style:none;margin:16px 0 0;padding:0}
+.ve-eco__list li{padding:8px 0;border-top:1px solid var(--ve-line)}
+.ve-eco__list li::first-letter{text-transform:uppercase}
+.ve-eco__end{margin-top:40px;font-family:var(--ve-serif);font-size:24px;line-height:1.25;max-width:30ch}
+.ve-eco__cta{margin-top:24px}
+@media(min-width:900px){.ve-eco__cols{grid-template-columns:1fr 1fr;gap:56px;margin-top:72px}.ve-eco__end{font-size:30px;margin-top:56px}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-economics');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var NS='http://www.w3.org/2000/svg';
+  var MONTHS=['апр','май','июн','июл','авг','сен','окт','ноя'];
+  // точки лежат неровно, как в жизни; одно и то же — отдельный заказ каждый раз
+  var ONE=[['обрезка',.05],['уборка',.11],['покос',.2],['полив',.3],['покос',.4],['арборист',.5],['покос',.6],['покос',.72],['уборка',.86],['подготовка к зиме',.95]];
+  var svg1=root.querySelector('.ve-eco__svg--one'),svg2=root.querySelector('.ve-eco__svg--ve'),months=root.querySelector('.ve-eco__months');
+  months.innerHTML=MONTHS.map(function(m){return '<span>'+m+'</span>'}).join('');
+  function el(n,a,t){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;return e}
+  var items=[],line=null,ticks=[],len=0,built='';
+  function build(){
+    var vert=window.innerWidth<900;if(built===(vert?'v':'h'))return;built=vert?'v':'h';
+    svg1.innerHTML='';svg2.innerHTML='';items=[];ticks=[];
+    var W1=svg1.clientWidth||300,H1=svg1.clientHeight||120,W2=svg2.clientWidth||300,H2=svg2.clientHeight||70;
+    svg1.setAttribute('viewBox','0 0 '+W1+' '+H1);svg2.setAttribute('viewBox','0 0 '+W2+' '+H2);
+    if(!vert){
+      var y=H1-30;
+      ONE.forEach(function(o,i){var x=12+o[1]*(W1-24),g=el('g',{'class':'ev'});
+        g.appendChild(el('circle',{'class':'ring',cx:x,cy:y,r:9}));g.appendChild(el('circle',{'class':'dot',cx:x,cy:y,r:4}));
+        var up=i%2?0:1,ty=up?y-24:y+26;
+        g.appendChild(el('text',{'class':'t1',x:x,y:ty,'text-anchor':'middle'},o[0]));
+        g.appendChild(el('text',{'class':'t2',x:x,y:up?ty-14:ty+13,'text-anchor':'middle'},'поиск · расчёт · выезд'));
+        svg1.appendChild(g);items.push(g)});
+      var ly=H2/2;line=el('path',{'class':'line',d:'M12 '+ly+' L'+(W2-12)+' '+ly});svg2.appendChild(line);
+      for(var k=0;k<=16;k++){var tx=12+(k/16)*(W2-24),t=el('line',{'class':'tick ev',x1:tx,y1:ly-7,x2:tx,y2:ly+7});svg2.appendChild(t);ticks.push(t)}
+      var lab=el('text',{'class':'t2 ev',x:12,y:ly+24},'визиты по графику · один ответственный');svg2.appendChild(lab);ticks.push(lab);
+    }else{
+      var x0=14;
+      ONE.forEach(function(o){var yy=14+o[1]*(H1-40),g=el('g',{'class':'ev'});
+        g.appendChild(el('circle',{'class':'ring',cx:x0,cy:yy,r:9}));g.appendChild(el('circle',{'class':'dot',cx:x0,cy:yy,r:4}));
+        g.appendChild(el('text',{'class':'t1',x:x0+18,y:yy+4},o[0]));
+        g.appendChild(el('text',{'class':'t2',x:x0+18,y:yy+18},'поиск · расчёт · выезд'));
+        svg1.appendChild(g);items.push(g)});
+      MONTHS.forEach(function(m,i){svg1.appendChild(el('text',{'class':'t2',x:W1-4,y:18+(i/8)*(H1-40),'text-anchor':'end',opacity:.7},m))});
+      var lx=14;line=el('path',{'class':'line',d:'M'+lx+' 14 L'+lx+' '+(H2-26)});svg2.appendChild(line);
+      for(var q=0;q<=16;q++){var ty2=14+(q/16)*(H2-40),tt=el('line',{'class':'tick ev',x1:lx-7,y1:ty2,x2:lx+7,y2:ty2});svg2.appendChild(tt);ticks.push(tt)}
+      var lab2=el('text',{'class':'t2 ev',x:lx+18,y:18},'визиты по графику');svg2.appendChild(lab2);ticks.push(lab2);
+      var lab3=el('text',{'class':'t2 ev',x:lx+18,y:32},'один ответственный');svg2.appendChild(lab3);ticks.push(lab3);
+    }
+    len=line.getTotalLength();line.style.strokeDasharray=len;line.style.strokeDashoffset=len;lastP=-1;
+  }
+  var chart=root.querySelector('.ve-eco__chart'),lastP=-1,raf=0;
+  function progress(){var r=chart.getBoundingClientRect(),vh=window.innerHeight||1;return Math.min(1,Math.max(0,(vh*.9-r.top)/(r.height+vh*.2)))}
+  function paint(){raf=0;var p=VE.rm?1:progress();if(p===lastP)return;lastP=p;
+    items.forEach(function(g,i){g.classList.toggle('on',p>(i+.5)/items.length*.8)});
+    line.style.strokeDashoffset=len*(1-Math.min(1,p/.9));
+    ticks.forEach(function(t,i){t.classList.toggle('on',p>.1+(i/ticks.length)*.8)});
+  }
+  function onScroll(){if(!raf)raf=requestAnimationFrame(paint)}
+  build();paint();
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',function(){build();onScroll()});
+  if('ResizeObserver' in window)new ResizeObserver(function(){build();onScroll()}).observe(chart);
+})();
+</script>
+</div></div></div></div>
+<div id="rec-07" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 07-pricelist.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-pr" id="ve-pricelist">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Разовые работы</p>
+    <h2 class="ve-h2 ve-r ve-pr__h">Если вам не нужен постоянный уход, мы можем выполнить отдельную работу.</h2>
+    <div class="ve-pr__grid">
+      <div class="ve-pr__left">
+        <div class="ve-pr__tabs ve-r" role="tablist" aria-label="Категории работ">
+          <button class="ve-pr__tab is-on" role="tab" aria-selected="true" data-cat="lawn" type="button">Газон</button>
+          <button class="ve-pr__tab" role="tab" aria-selected="false" data-cat="plants" type="button">Растения</button>
+          <button class="ve-pr__tab" role="tab" aria-selected="false" data-cat="trees" type="button">Деревья</button>
+        </div>
+        <div class="ve-pr__table" role="tabpanel"></div>
+        <p class="ve-pr__note ve-muted">Сложные работы — по смете.</p>
+      </div>
+      <div class="ve-pr__pic ve-r" aria-hidden="true">
+        <img data-cat="lawn" class="is-on" src="/site/media/stills/price-lawn-l.webp?v=04d90352" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="/site/media/stills/price-plants-l.webp?v=04d90352" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="/site/media/stills/price-trees-l.webp?v=04d90352" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+.ve-pr__h{margin-top:14px;max-width:26ch}
+.ve-pr__grid{margin-top:36px}
+.ve-pr__tabs{display:flex;gap:6px;flex-wrap:wrap}
+.ve-pr__tab{height:40px;padding:0 16px;border-radius:999px;border:1px solid transparent;font-size:15px;color:var(--ve-moss);transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2)}
+.ve-pr__tab.is-on{background:var(--ve-paper-2);color:var(--ve-ink)}
+.ve-pr__table{margin-top:22px}
+.ve-pr__row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-top:1px solid var(--ve-line)}
+.ve-pr__row:last-child{border-bottom:1px solid var(--ve-line)}
+.ve-pr__row span:first-child::first-letter{text-transform:uppercase}
+.ve-pr__row b{font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ve-ink)}
+.ve-pr__row b i{font-style:normal;color:var(--ve-moss);font-size:14px}
+.ve-pr__note{margin-top:14px;font-size:14px}
+.ve-pr__pic{display:none;position:relative;aspect-ratio:4/5;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
+.ve-pr__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s var(--ve-ease)}
+.ve-pr__pic img.is-on{opacity:1}
+@media(min-width:900px){
+  .ve-pr__grid{margin-top:56px;display:grid;grid-template-columns:1fr 420px;gap:64px;align-items:start}
+  .ve-pr__pic{display:block}
+}
+@media(prefers-reduced-motion:reduce){.ve-pr__pic img,.ve-pr__tab{transition:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-pricelist');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var DATA={
+    lawn:[['покос газона','1 500','сотка'],['покос высокой травы','2 000','сотка'],['сбор травы','500','сотка'],['аэрация','2 000','сотка'],['скарификация','2 500','сотка'],['подсев газона','2 000','сотка'],['посевной газон','500','м²'],['рулонный газон','800','м²']],
+    plants:[['посадка кустарника','1 000','шт.'],['посадка дерева','3 000','шт.'],['посадка хвойного','4 000','шт.'],['формовка кустарников','1 000','шт.'],['стрижка живой изгороди','900','пог. м'],['мульчирование','500','м²'],['цветники','2 000','м²']],
+    trees:[['санитарная обрезка','3 000','шт.'],['кронирование','5 000','шт.'],['спил дерева','5 000','шт.'],['сложный спил',null,'по смете'],['корчевание пня','4 000','шт.']]
+  };
+  var table=root.querySelector('.ve-pr__table'),tabs=root.querySelectorAll('.ve-pr__tab'),pics=root.querySelectorAll('.ve-pr__pic img');
+  function show(cat){
+    table.innerHTML=DATA[cat].map(function(r){var price=r[1]?'от '+r[1].replace(' ',' ')+'&nbsp;₽ <i>/ '+r[2]+'</i>':'<i>'+r[2]+'</i>';return '<div class="ve-pr__row ve-r"><span>'+r[0]+'</span><b>'+price+'</b></div>'}).join('');
+    var rows=table.querySelectorAll('.ve-pr__row');for(var i=0;i<rows.length;i++)rows[i].style.transitionDelay=Math.min(i,10)*45+'ms';
+    requestAnimationFrame(function(){requestAnimationFrame(function(){for(var i=0;i<rows.length;i++)rows[i].classList.add('is-in')})});
+    for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-cat')===cat;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
+    for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-cat')===cat);
+  }
+  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-cat'))});
+  show('lawn');
+})();
+</script>
+</div></div></div></div>
+<div id="rec-08" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 08-ways.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-ways" id="ve-ways">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Сад под ключ</p>
+    <h2 class="ve-h2 ve-r ve-ways__h">Десять способов сделать участок красивее, удобнее и дороже</h2>
+  </div>
+  <div class="ve-wrap ve-ways__wrap">
+    <div class="ve-strip ve-ways__strip ve-rg"></div>
+  </div>
+</section>
+<style>
+.ve-ways__h{margin-top:14px;max-width:24ch}
+.ve-ways__wrap{margin-top:36px}
+.ve-ways__strip{cursor:grab;gap:14px}
+.ve-ways__strip.is-drag{cursor:grabbing;scroll-snap-type:none}
+.ve-ways__card{width:72vw;max-width:300px;user-select:none;-webkit-user-select:none}
+.ve-ways__img{aspect-ratio:4/5;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
+.ve-ways__img img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.ve-ways__n{margin-top:16px;font-family:var(--ve-serif);font-size:15px;color:var(--ve-moss);font-variant-numeric:tabular-nums}
+.ve-ways__t{margin-top:4px;font-family:var(--ve-serif);font-size:22px;line-height:1.15}
+.ve-ways__d{margin-top:6px;font-size:14px;color:var(--ve-moss);line-height:1.45}
+@media(min-width:900px){
+  .ve-ways__wrap{margin-top:56px}
+  .ve-ways__strip{gap:24px;padding-left:40px;padding-right:40px;margin:0 -40px}
+  .ve-ways__card{width:272px}
+}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-ways');if(!root||!window.VE)return;
+  var WAYS=[
+    ['Обновление газона','подсев, выравнивание, аэрация, удобрение'],
+    ['Декоративные дорожки','галька, отсев, плитняк, спилы дерева'],
+    ['Декоративные клумбы','многолетники, кустарники, мульча, камень'],
+    ['Подсветка','светильники, подсветка деревьев, кустов и дорожек'],
+    ['Живая изгородь','туи, можжевельники, дерен, пузыреплодник'],
+    ['Каменные композиции','рокарии, валуны, щебень, хвойные'],
+    ['Автополив','автоматическая система полива'],
+    ['Зона отдыха','костровые зоны, настилы, перголы, качели, гамаки'],
+    ['Сезонное обслуживание','стрижка, обрезка, обработка, прополка, удобрение, подготовка к зиме'],
+    ['Премиальное обновление','комплексное преображение: дизайн, растения, дорожки, подсветка, детали']
+  ];
+  var strip=root.querySelector('.ve-ways__strip');
+  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);return '<article class="ve-ways__card"><div class="ve-ways__img"><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><p class="ve-ways__n">'+n+'</p><h3 class="ve-ways__t">'+w[0]+'</h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
+  VE.reveal(root);
+  // на компьютере — тянуть мышью, без перехвата колеса
+  if(window.matchMedia('(pointer:fine)').matches){
+    var down=false,sx=0,sl=0,moved=false;
+    strip.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse')return;down=true;moved=false;sx=e.clientX;sl=strip.scrollLeft;strip.setPointerCapture(e.pointerId)});
+    strip.addEventListener('pointermove',function(e){if(!down)return;var dx=e.clientX-sx;if(Math.abs(dx)>4&&!moved){moved=true;strip.classList.add('is-drag')}if(moved)strip.scrollLeft=sl-dx});
+    var up=function(e){if(!down)return;down=false;strip.classList.remove('is-drag')};
+    strip.addEventListener('pointerup',up);strip.addEventListener('pointercancel',up);
+  }
+})();
+</script>
+</div></div></div></div>
+<div id="rec-09" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 09-before-after.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-ba" id="ve-before-after">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">До и после</p>
+    <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
+    <div class="ve-ba__box ve-r" style="--x:50%">
+      <img class="ve-ba__img ve-ba__img--before" src="/site/media/stills/ba-before-l.webp?v=04d90352" srcset="/site/media/stills/ba-before-s.webp?v=04d90352 720w, /site/media/stills/ba-before-l.webp?v=04d90352 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--after" src="/site/media/stills/ba-after-l.webp?v=04d90352" srcset="/site/media/stills/ba-after-s.webp?v=04d90352 720w, /site/media/stills/ba-after-l.webp?v=04d90352 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <span class="ve-ba__lab ve-ba__lab--b">до</span>
+      <span class="ve-ba__lab ve-ba__lab--a">после</span>
+      <div class="ve-ba__bar" aria-hidden="true"><i></i></div>
+      <input class="ve-ba__range" type="range" min="0" max="100" value="50" step="0.1" aria-label="Шторка до и после">
+    </div>
+  </div>
+</section>
+<style>
+.ve-ba__h{margin-top:14px;max-width:22ch}
+.ve-ba__box{position:relative;margin-top:36px;aspect-ratio:16/10;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
+.ve-ba__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ve-ba__img--after{clip-path:inset(0 0 0 var(--x))}
+.ve-ba__lab{position:absolute;top:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ve-paper);opacity:.9;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.ve-ba__lab--b{left:16px}.ve-ba__lab--a{right:16px}
+.ve-ba__bar{position:absolute;top:0;bottom:0;left:var(--x);width:0;pointer-events:none}
+.ve-ba__bar::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:var(--ve-paper);opacity:.9}
+.ve-ba__bar i{position:absolute;top:50%;left:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:var(--ve-paper);box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.ve-ba__bar i::before,.ve-ba__bar i::after{content:"";position:absolute;top:50%;width:6px;height:6px;border-top:1.5px solid var(--ve-ink);border-left:1.5px solid var(--ve-ink);margin-top:-3px}
+.ve-ba__bar i::before{left:11px;transform:rotate(-45deg)}.ve-ba__bar i::after{right:11px;transform:rotate(135deg)}
+.ve-ba__range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;-webkit-appearance:none;appearance:none;touch-action:pan-y}
+.ve-ba__range::-webkit-slider-thumb{-webkit-appearance:none;width:60px;height:100%}
+.ve-ba__range::-moz-range-thumb{width:60px;height:100%;border:0;background:transparent}
+@media(min-width:900px){.ve-ba__box{margin-top:56px}.ve-ba__lab{top:20px}.ve-ba__lab--b{left:24px}.ve-ba__lab--a{right:24px}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-before-after');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var box=root.querySelector('.ve-ba__box'),r=root.querySelector('.ve-ba__range');
+  r.addEventListener('input',function(){box.style.setProperty('--x',r.value+'%')});
+})();
+</script>
+</div></div></div></div>
+<div id="rec-10" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 10-seasons.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-sea" id="ve-seasons">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Круглый год</p>
+    <h2 class="ve-h2 ve-r ve-sea__h">Один сад — четыре сезона работ</h2>
+    <div class="ve-sea__grid">
+      <div class="ve-sea__pic ve-r" aria-hidden="true">
+        <img data-s="spring" class="is-on" src="/site/media/stills/season-spring-l.webp?v=04d90352" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" src="/site/media/stills/season-summer-l.webp?v=04d90352" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="/site/media/stills/season-autumn-l.webp?v=04d90352" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="/site/media/stills/season-winter-l.webp?v=04d90352" alt="" loading="lazy" decoding="async" width="1440" height="900">
+      </div>
+      <div class="ve-sea__side">
+        <div class="ve-sea__tabs ve-r" role="tablist">
+          <button class="ve-sea__tab is-on" type="button" role="tab" aria-selected="true" data-s="spring">Весна</button>
+          <button class="ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="summer">Лето</button>
+          <button class="ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="autumn">Осень</button>
+          <button class="ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="winter">Зима</button>
+        </div>
+        <ul class="ve-sea__list" role="tabpanel"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+.ve-sea__h{margin-top:14px}
+.ve-sea__grid{margin-top:36px}
+.ve-sea__pic{position:relative;aspect-ratio:16/10;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
+.ve-sea__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s var(--ve-ease)}
+.ve-sea__pic img.is-on{opacity:1}
+.ve-sea__side{margin-top:22px}
+.ve-sea__tabs{display:flex;gap:6px;flex-wrap:wrap}
+.ve-sea__tab{height:40px;padding:0 16px;border-radius:999px;font-size:15px;color:var(--ve-moss);transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2)}
+.ve-sea__tab.is-on{background:var(--ve-paper-2);color:var(--ve-ink)}
+.ve-sea__list{list-style:none;margin:20px 0 0;padding:0}
+.ve-sea__list li{padding:10px 0;border-top:1px solid var(--ve-line)}
+.ve-sea__list li:last-child{border-bottom:1px solid var(--ve-line)}
+.ve-sea__list li::first-letter{text-transform:uppercase}
+@media(min-width:900px){
+  .ve-sea__grid{margin-top:56px;display:grid;grid-template-columns:1fr 360px;gap:64px;align-items:start}
+  .ve-sea__side{margin-top:0}
+}
+@media(prefers-reduced-motion:reduce){.ve-sea__pic img,.ve-sea__tab{transition:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-seasons');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var DATA={
+    spring:['сезонная уборка участка','аэрация и подсев газона','санитарная обрезка','обработки и подкормки','запуск и контроль системы полива'],
+    summer:['регулярный покос газона','стрижка живых изгородей','формировка кустарников','прополка и мульчирование','контроль полива и состояния растений'],
+    autumn:['уборка листвы','обрезка деревьев и кустарников','осенние подкормки','посадки','подготовка сада к зиме'],
+    winter:['контроль состояния участка','сезонное планирование работ','организация специализированных работ','график на новый сезон']
+  };
+  var list=root.querySelector('.ve-sea__list'),tabs=root.querySelectorAll('.ve-sea__tab'),pics=root.querySelectorAll('.ve-sea__pic img');
+  function show(s){
+    list.innerHTML=DATA[s].map(function(t){return '<li class="ve-r">'+t+'</li>'}).join('');
+    var li=list.querySelectorAll('li');for(var i=0;i<li.length;i++)li[i].style.transitionDelay=i*60+'ms';
+    requestAnimationFrame(function(){requestAnimationFrame(function(){for(var i=0;i<li.length;i++)li[i].classList.add('is-in')})});
+    for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-s')===s;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
+    for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-s')===s);
+  }
+  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-s'))});
+  show('spring');
+})();
+</script>
+</div></div></div></div>
+<div id="rec-11" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 11-bonuses.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-bon" id="ve-bonuses">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Специальные условия</p>
+    <h2 class="ve-h2 ve-r ve-bon__h">Не скидки — то, что полезно саду</h2>
+    <div class="ve-bon__grid ve-rg">
+      <div class="ve-bon__item"><h3 class="ve-h3">Первый аудит сада</h3><p>Осмотр участка и план работ на сезон при заключении договора.</p></div>
+      <div class="ve-bon__item"><h3 class="ve-h3">Сезонный комплекс в первый месяц</h3><p>Специальные условия на старт обслуживания.</p></div>
+      <div class="ve-bon__item"><h3 class="ve-h3">Приоритетный выезд</h3><p>Ваш сад — первым в графике, когда это нужно.</p></div>
+      <div class="ve-bon__item"><h3 class="ve-h3">Дополнительные часы специалиста</h3><p>Для задач, которые появляются по ходу сезона.</p></div>
+    </div>
+    <p class="ve-bon__note ve-r ve-muted">Условия обсуждаем при расчёте. Без таймеров и «только сегодня».</p>
+  </div>
+</section>
+<style>
+.ve-bon__h{margin-top:14px;max-width:20ch}
+.ve-bon__grid{margin-top:36px;display:grid;gap:0}
+.ve-bon__item{padding:22px 0;border-top:1px solid var(--ve-line)}
+.ve-bon__item:last-child{border-bottom:1px solid var(--ve-line)}
+.ve-bon__item p{margin-top:8px;color:var(--ve-moss);max-width:40ch}
+.ve-bon__note{margin-top:22px;font-size:14px}
+@media(min-width:900px){
+  .ve-bon__grid{margin-top:56px;grid-template-columns:repeat(2,1fr);column-gap:56px}
+  .ve-bon__item{padding:28px 0}
+  .ve-bon__item:nth-last-child(-n+2){border-bottom:1px solid var(--ve-line)}
+}
+</style>
+<script>(function(){if(window.VE)VE.reveal(document.getElementById('ve-bonuses'))})();</script>
+</div></div></div></div>
+<div id="rec-12" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 12-form.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-sec--last ve-fm" id="ve-form">
+  <div class="ve-wrap">
+    <div class="ve-fm__grid">
+      <div class="ve-fm__intro">
+        <p class="ve-caps ve-r">Рассчитать стоимость</p>
+        <h2 class="ve-h2 ve-r ve-fm__h">Расскажите о саде — ответим в течение дня</h2>
+        <p class="ve-sub ve-r">Точную цифру называем после осмотра участка. Заявка ни к чему не обязывает.</p>
+      </div>
+      <form class="ve-fm__form ve-r" novalidate data-endpoint="">
+        <div class="ve-fm__row">
+          <label class="ve-fm__field"><span>Имя</span><input name="name" type="text" autocomplete="name" required maxlength="80"></label>
+          <label class="ve-fm__field"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+7"></label>
+        </div>
+        <div class="ve-fm__row">
+          <label class="ve-fm__field ve-fm__field--s"><span>Площадь, соток</span><input name="area" type="number" inputmode="numeric" min="1" max="999" placeholder="12"></label>
+          <div class="ve-fm__field">
+            <span>Уровень обслуживания</span>
+            <div class="ve-fm__radios" role="radiogroup">
+              <label><input type="radio" name="tariff" value="BASIC"><i></i>Basic</label>
+              <label><input type="radio" name="tariff" value="PREMIUM"><i></i>Premium</label>
+              <label><input type="radio" name="tariff" value="ESTATE"><i></i>Estate</label>
+              <label><input type="radio" name="tariff" value="" checked><i></i>Не знаю</label>
+            </div>
+          </div>
+        </div>
+        <div class="ve-fm__field">
+          <span>Что есть на участке</span>
+          <div class="ve-fm__chips">
+            <label><input type="checkbox" name="factors" value="газон"><b>Газон</b></label>
+            <label><input type="checkbox" name="factors" value="деревья"><b>Деревья</b></label>
+            <label><input type="checkbox" name="factors" value="кустарники"><b>Кустарники</b></label>
+            <label><input type="checkbox" name="factors" value="цветники"><b>Цветники</b></label>
+            <label><input type="checkbox" name="factors" value="живые изгороди"><b>Живые изгороди</b></label>
+            <label><input type="checkbox" name="factors" value="автополив"><b>Автополив</b></label>
+            <label><input type="checkbox" name="factors" value="рельеф"><b>Сложный рельеф</b></label>
+            <label><input type="checkbox" name="factors" value="запущенный сад"><b>Запущенный сад</b></label>
+          </div>
+        </div>
+        <label class="ve-fm__field"><span>Комментарий</span><textarea name="comment" rows="3" maxlength="1000" placeholder="Где участок, что беспокоит, когда удобно позвонить"></textarea></label>
+        <label class="ve-fm__consent"><input type="checkbox" name="consent" required><i></i><span>Согласен на обработку персональных данных</span></label>
+        <p class="ve-fm__err" role="alert" hidden></p>
+        <div class="ve-fm__actions">
+          <button class="ve-btn" type="submit">Отправить</button>
+        </div>
+        <p class="ve-fm__done" hidden>Спасибо. Перезвоним в течение дня.</p>
+      </form>
+    </div>
+  </div>
+</section>
+<style>
+.ve-fm__h{margin-top:14px;max-width:18ch}
+.ve-fm__form{margin-top:36px}
+.ve-fm__row{display:grid;gap:18px}
+.ve-fm__field{display:block;margin-top:18px}
+.ve-fm__row .ve-fm__field{margin-top:0}
+.ve-fm__row{margin-top:18px}
+.ve-fm__field>span{display:block;font-size:13px;color:var(--ve-moss);margin-bottom:8px;letter-spacing:.01em}
+.ve-fm input[type=text],.ve-fm input[type=tel],.ve-fm input[type=number],.ve-fm textarea{width:100%;font:inherit;font-size:16px;color:var(--ve-ink);background:var(--ve-paper-2);border:1px solid transparent;border-radius:var(--ve-r);padding:14px 16px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .25s,background .25s}
+.ve-fm textarea{resize:vertical;min-height:96px;line-height:1.45}
+.ve-fm input:focus,.ve-fm textarea:focus{border-color:var(--ve-moss);background:var(--ve-paper)}
+.ve-fm input.is-bad{border-color:#B0553F}
+.ve-fm input::placeholder,.ve-fm textarea::placeholder{color:rgba(47,59,36,.4)}
+.ve-fm__radios,.ve-fm__chips{display:flex;flex-wrap:wrap;gap:8px}
+.ve-fm__radios label,.ve-fm__chips label{position:relative;display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(47,59,36,.3);font-size:15px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s}
+.ve-fm__radios input,.ve-fm__chips input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.ve-fm__radios label:has(input:checked),.ve-fm__chips label:has(input:checked){background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+.ve-fm__radios label:has(input:focus-visible),.ve-fm__chips label:has(input:focus-visible){outline:2px solid var(--ve-moss);outline-offset:3px}
+.ve-fm__radios label i{display:none}
+.ve-fm__consent{display:flex;align-items:flex-start;gap:12px;margin-top:22px;font-size:14px;color:var(--ve-moss);cursor:pointer}
+.ve-fm__consent input{position:absolute;opacity:0;width:0;height:0}
+.ve-fm__consent i{flex:0 0 auto;width:20px;height:20px;border-radius:5px;border:1px solid rgba(47,59,36,.4);margin-top:1px;position:relative;transition:background .2s,border-color .2s}
+.ve-fm__consent:has(input:checked) i{background:var(--ve-ink);border-color:var(--ve-ink)}
+.ve-fm__consent i::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border-right:2px solid var(--ve-paper);border-bottom:2px solid var(--ve-paper);transform:rotate(45deg);opacity:0}
+.ve-fm__consent:has(input:checked) i::after{opacity:1}
+.ve-fm__consent.is-bad i{border-color:#B0553F}
+.ve-fm__err{margin-top:14px;font-size:14px;color:#B0553F}
+.ve-fm__actions{margin-top:24px}
+.ve-fm__done{margin-top:24px;font-family:var(--ve-serif);font-size:24px;line-height:1.25}
+.ve-fm__form.is-sent .ve-fm__actions,.ve-fm__form.is-sent .ve-fm__row,.ve-fm__form.is-sent .ve-fm__field,.ve-fm__form.is-sent .ve-fm__consent{display:none}
+@media(min-width:900px){
+  .ve-fm__grid{display:grid;grid-template-columns:1fr 1.3fr;gap:72px;align-items:start}
+  .ve-fm__form{margin-top:0}
+  .ve-fm__row{grid-template-columns:1fr 1fr;gap:20px}
+  .ve-fm__field--s{max-width:200px}
+}
+@media(prefers-reduced-motion:reduce){.ve-fm input,.ve-fm textarea,.ve-fm__radios label,.ve-fm__chips label{transition:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-form');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var form=root.querySelector('form'),name=form.elements.name,phone=form.elements.phone,area=form.elements.area,consent=form.elements.consent,err=form.querySelector('.ve-fm__err');
+  // маска +7
+  function mask(v){var d=v.replace(/\D/g,'');if(d[0]==='8')d='7'+d.slice(1);if(d[0]!=='7')d='7'+d;d=d.slice(0,11);
+    var s='+7';if(d.length>1)s+=' '+d.slice(1,4);if(d.length>4)s+=' '+d.slice(4,7);if(d.length>7)s+='-'+d.slice(7,9);if(d.length>9)s+='-'+d.slice(9,11);return s}
+  phone.addEventListener('input',function(){var v=phone.value;if(v==='+'||v==='')return;phone.value=mask(v)});
+  phone.addEventListener('focus',function(){if(!phone.value)phone.value='+7 '});
+  phone.addEventListener('blur',function(){if(phone.value.replace(/\D/g,'').length<=1)phone.value=''});
+  // префилл из конструктора и тарифов
+  function prefill(s){
+    if(s.area&&!area.value)area.value=s.area;
+    if(s.tariff!=null){var r=form.querySelector('input[name=tariff][value="'+s.tariff+'"]');if(r)r.checked=true}
+    if(s.factors){var cb=form.querySelectorAll('input[name=factors]');for(var i=0;i<cb.length;i++)cb[i].checked=s.factors.indexOf(cb[i].value)>=0}
+  }
+  prefill(VE.state);VE.on('state',prefill);
+  VE.on('form:focus',function(){setTimeout(function(){if(!name.value)name.focus({preventScroll:true})},600)});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();err.hidden=true;var bad=[];
+    name.classList.toggle('is-bad',!name.value.trim());if(!name.value.trim())bad.push('имя');
+    var ok=phone.value.replace(/\D/g,'').length===11;phone.classList.toggle('is-bad',!ok);if(!ok)bad.push('телефон');
+    consent.parentNode.classList.toggle('is-bad',!consent.checked);if(!consent.checked)bad.push('согласие');
+    if(bad.length){err.textContent='Проверьте: '+bad.join(', ')+'.';err.hidden=false;return}
+    var fd=new FormData(form),data={};fd.forEach(function(v,k){if(k==='factors'){(data.factors=data.factors||[]).push(v)}else data[k]=v});
+    data.page=location.href;data.estimate=VE.state.estimate||'';
+    var ep=form.getAttribute('data-endpoint');
+    var done=function(){form.classList.add('is-sent');form.querySelector('.ve-fm__done').hidden=false};
+    if(ep){fetch(ep,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}).then(done,function(){err.textContent='Не отправилось. Позвоните нам или напишите в мессенджер.';err.hidden=false})}
+    else{ // пока бэкенд не выбран (PLAN §9.2) — письмо
+      var body='Имя: '+data.name+'\nТелефон: '+data.phone+'\nПлощадь: '+(data.area||'—')+'\nУровень: '+(data.tariff||'не выбран')+'\nНа участке: '+((data.factors||[]).join(', ')||'—')+'\nКомментарий: '+(data.comment||'—');
+      location.href='mailto:hello@example.com?subject='+encodeURIComponent('Заявка с сайта Verdant Estate')+'&body='+encodeURIComponent(body);done()}
+  });
+})();
+</script>
+</div></div></div></div>
+<div id="rec-13" class="r t-rec" style="padding:0"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100"><!-- VE · 13-footer.html · сборка 04d90352 -->
+<footer class="ve ve-ft" id="ve-footer">
+  <div class="ve-wrap">
+    <div class="ve-ft__logo" aria-label="Verdant Estate — Landscaping &amp; Garden Design">
+      <div class="ve-ft__mark"><svg viewBox="0 0 640 590" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path class="p0" d="M 167 26 C 167 26.6, 161.5 32.8, 154.7 39.8 C 130.8 64.6, 125.9 82.3, 135.5 110.5 C 141.4 128.1, 140.8 136.2, 130.9 169.3 C 123.9 192.7, 120.1 208.3, 119.3 216.3 C 119 220, 118.3 223, 117.9 223 C 117.4 223, 117 222.3, 117 221.4 C 117 220.5, 115.4 215, 113.4 209.1 C 109.9 198.6, 109.8 198.4, 110.5 186.5 C 112 156.9, 101.5 141.1, 70.5 126.4 C 60 121.4, 59.4 121.3, 61.1 125.6 C 61.7 127.2, 62.6 134.1, 63.1 141 C 65.2 168.8, 72.6 181.2, 93.8 192.4 C 100.9 196.2, 103.8 198.4, 106.4 201.9 C 112.6 210.3, 116.6 228.8, 117.3 251.9 L 117.8 267.3 115 262.1 C 113.4 259.3, 110.6 254.9, 108.7 252.2 C 106.6 249.4, 104.5 244.8, 103.5 241 C 99.8 226.5, 91.4 218.3, 75.7 214 C 66.6 211.5, 66.5 211.5, 68.9 214.8 C 70 216.4, 72.5 221.1, 74.4 225.3 C 79 235.4, 82.7 239, 93 243.6 C 97.7 245.6, 102.5 247.9, 103.7 248.7 C 106.4 250.5, 119.4 276.2, 120.4 281.6 C 122.6 293.7, 138 336.6, 146.6 354.4 C 147.4 356, 148 357.4, 148 357.5 C 148 357.7, 142.2 352.1, 135.1 345.1 C 120.5 330.9, 118.5 327.6, 112.9 309 C 101 269.3, 73.7 248.7, 25.8 243.6 C 20.3 243, 20.2 243.1, 23.4 247.3 C 27.7 253.1, 30.6 260.2, 36.4 278.8 C 45.3 307.7, 61.4 323.3, 88.3 329.1 C 93.4 330.2, 100.7 331.8, 104.7 332.6 C 117.1 335.3, 124.4 339.5, 133.8 349.6 C 142.8 359.1, 148.9 367.2, 153.8 376 C 156.3 380.4, 172 418.5, 172 420.1 C 172 420.3, 168.6 417.2, 164.4 413.3 C 160.2 409.3, 153.9 403.9, 150.4 401.3 C 146.8 398.7, 142.6 394.5, 140.9 391.9 C 133.6 380.5, 121.6 372.6, 108.7 370.7 C 102.1 369.8, 100.3 369.9, 88.9 372.6 L 76.2 375.4 79.9 379.8 C 95.1 398.3, 104 402.4, 123.2 400 C 144.9 397.3, 150.5 400.8, 176.4 433 C 210.5 475.6, 235 496.7, 270.8 514.8 C 304.9 532, 336.7 539.3, 378.2 539.4 L 402 539.5 395.2 541.2 C 371.9 547.2, 327.4 549.6, 305.5 546.2 C 289.4 543.7, 272.5 539.7, 258 535 C 221.8 523.3, 187.4 501.7, 157.5 471.7 C 139.4 453.5, 138.9 453.2, 151.7 468.1 C 201.1 525.5, 273.2 557.1, 350 554.7 C 436.9 552, 513.7 507.6, 559.3 433.9 C 611.5 349.3, 609 233.6, 553.2 151.6 C 513.5 93.2, 446.7 52.8, 377.5 45 C 372 44.4, 366.5 43.8, 365.3 43.6 C 364 43.4, 363 43.6, 363 44 C 363 44.4, 366 45.1, 369.8 45.5 C 387.5 47.3, 412.9 54, 433.3 62.1 C 505.2 90.7, 559.1 150.6, 579 224 C 611.3 343.1, 559.6 466.4, 454.9 519.3 C 413.2 540.4, 340.9 537.3, 285 512 C 274.4 507.2, 272.6 506.2, 259.1 498.2 C 243.5 488.9, 238.5 481.9, 233.4 462.3 C 229.4 446.8, 231.4 427.7, 239.2 408 C 243.6 396.8, 244.5 397.1, 240.6 408.5 C 235.2 424.4, 232.3 442.5, 233.6 452.8 L 234.3 458.5 235.8 454.2 C 236.8 451.1, 239.9 447.1, 246.7 440.2 C 257.6 429.1, 263 419.7, 265 408.2 C 266.3 401.2, 265.9 397.4, 261.5 374 C 260.7 369.9, 260.1 364.3, 260 361.7 L 260 356.9 251.3 364.7 C 233.9 380.4, 231.4 383, 226.8 390.7 C 216.2 408.3, 215.8 426.7, 225.5 446.1 C 227.7 450.3, 229.6 456.4, 230.9 463.3 C 232 469.2, 233.8 476, 234.9 478.5 L 236.9 483 231.2 478.6 C 211 463, 197.8 440.8, 196.3 420.1 C 195.5 408.2, 196.9 403, 203.7 392.8 C 213.6 378, 215.8 370.7, 217 348.5 C 217.9 333.9, 218.5 329.8, 220.5 324.8 C 223.7 317, 197.8 337.4, 190.9 348.1 C 181.5 362.8, 180.4 382.8, 188 400.5 C 189.2 403.3, 191.2 411.8, 192.5 419.5 C 193.8 427.2, 195.8 436.2, 196.9 439.4 C 199.6 447, 199.2 447.2, 194.3 440.8 C 183.7 426.7, 176.1 412.1, 168.5 391.5 C 166.7 386.6, 161.7 373.7, 157.5 363 C 148.5 340.1, 146 329.8, 146 314.6 C 146 298.2, 147 295.9, 160.8 282.5 C 173.1 270.5, 177.8 263.3, 180.1 252.3 C 181.4 245.9, 180.8 228.7, 178.9 218.2 L 177.8 211.8 174.6 214.8 C 172.9 216.4, 167.2 221.1, 161.9 225.3 C 141.7 241.3, 135.9 259.3, 142.2 285.7 C 144.2 294.2, 144.3 295.4, 143.1 304.7 C 142.4 310.1, 141.9 317.3, 142.1 320.7 C 142.6 328.2, 142.2 327.9, 137.6 316.8 C 122.7 280.5, 118.9 243, 126.6 207.2 C 130.8 187.5, 135.4 177.7, 144.9 168.6 C 153.5 160.5, 158.3 158.5, 169.5 158.5 C 185.3 158.6, 197.6 164.5, 207.3 176.5 C 211.9 182.2, 224.6 206.7, 233.9 227.8 C 236 232.6, 240.6 242.6, 244 250 C 247.4 257.4, 252.4 268.5, 255 274.5 C 257.7 280.6, 264.2 295.2, 269.5 307 C 274.8 318.8, 280.4 331.4, 282 335 C 283.5 338.6, 291.7 357.3, 300.2 376.5 C 308.8 395.8, 316.7 413.6, 317.8 416.3 C 319 418.9, 320.3 421, 320.7 421 C 321.1 421, 323 417.1, 324.9 412.2 C 366.4 305.6, 405.3 210.2, 415.1 191 C 426.4 168.9, 437.8 160.2, 457.4 158.3 C 463.2 157.8, 464.1 157.5, 463.8 155.8 C 463.6 154.8, 463.2 153.9, 462.8 154 C 462.3 154, 440.9 154, 415 154 C 368.7 154, 368 154, 368 156 C 368 157.7, 368.7 158, 372.8 158 C 382.6 158, 392.9 162.1, 396 167.3 C 402 177.1, 398.9 192.4, 381.7 237 C 378.2 246.1, 368.5 271.3, 360.1 293 C 341.5 341.4, 331 368.4, 330.4 368.9 C 330 369.4, 330.3 370.2, 308.5 320.5 C 299.2 299.6, 289.1 276.7, 286 269.5 C 282.8 262.4, 274 242.3, 266.3 225 C 250.4 189.2, 243.2 172.4, 239.9 163 C 238.7 159.4, 237.2 155.9, 236.7 155.3 C 236 154.3, 227.4 154, 199.9 154 C 159.9 154, 158.9 154.1, 148 161.5 C 145.2 163.4, 143 164.7, 143 164.5 C 143 163.2, 152.9 150.3, 157.5 145.6 C 164.6 138.4, 169.2 136.1, 179.3 134.9 C 206.7 131.5, 217.9 125.8, 229.4 109.6 C 233.5 103.8, 239.5 93, 238.8 92.6 C 238.6 92.5, 231.5 92.7, 223 93.1 C 194.2 94.3, 180.9 102, 169.4 124.3 C 166.1 130.8, 162.5 135.9, 157.2 141.5 C 148.4 150.8, 140.1 161.7, 137 167.8 C 133.9 174.2, 133.9 172.9, 137.2 160 C 138.9 153.1, 140.5 143.5, 141.1 136 C 142.9 112.1, 146.6 91.7, 151.9 75.5 C 154.2 68.5, 154.7 69.8, 152.5 77.3 C 149.1 89.2, 143.4 126, 145 126 C 145.3 126, 146.3 124.2, 147.2 122.2 C 148.2 120.1, 151.7 115.2, 155 111.4 C 165.5 99.4, 172.1 84, 173.5 68.5 C 174.4 58.2, 170.1 25, 167.9 25 C 167.4 25, 167 25.5, 167 26"/><path class="p1" d="M 187.4 118.6 C 181.9 121.9, 171 129.9, 171 130.6 C 171 130.8, 192.7 116.4, 193.9 115.4 C 195.3 114.1, 192.6 115.5, 187.4 118.6"/><path class="p2" d="M 89.7 164.1 C 91.7 167.3, 104.3 192.4, 106.8 198 C 107.4 199.4, 107.9 199.8, 107.9 199 C 108.1 195.3, 91.7 163.2, 88.7 161.3 C 88.1 161, 88.6 162.2, 89.7 164.1"/><path class="p3" d="M 157.4 255.1 C 155.1 259.6, 149.5 275.6, 148 281.8 C 145.9 290.6, 147.5 288.6, 150 279.3 C 151.3 274.5, 154 266.4, 156.1 261.3 C 159.9 252, 160.5 249.3, 157.4 255.1"/><path class="p4" d="M 396.5 257 C 395.8 258.4, 392.4 266.3, 389.1 274.5 L 383 289.4 383 355.4 C 382.9 425.9, 382.4 439.2, 379 446.7 C 375.3 455.2, 371.9 457.5, 359.6 459.9 C 355.2 460.8, 351.5 462.1, 351.2 462.8 C 350.7 464.4, 502 464.6, 505.1 463 C 509.1 460.8, 517.9 442.3, 522.9 425.4 C 526.8 412.3, 525.3 410.4, 519.4 420.8 C 510.5 436.2, 494.1 448.7, 475.5 454.1 C 463.6 457.6, 428.9 457.7, 422 454.3 C 411.8 449.2, 411 445.2, 411 397.3 L 411 359.8 436.3 360.2 C 459.8 360.5, 461.9 360.7, 467.3 362.9 C 477.9 367.1, 482.2 372.9, 484.4 386.3 C 485.3 391.3, 486.1 393.5, 487.1 393.5 C 488.3 393.5, 488.5 388, 488.5 356.5 C 488.5 324.9, 488.3 319.5, 487.1 319.5 C 486.1 319.5, 485.3 321.4, 484.5 325.5 C 480.9 345.7, 472.9 350.1, 438.3 350.8 C 426.1 351, 414.9 350.9, 413.5 350.6 L 411 350 411.1 311.2 C 411.2 271.1, 411.5 267.6, 415.1 264.4 C 418.3 261.6, 459.7 261.5, 471 264.4 C 490.1 269.2, 501.4 280.3, 505.1 297.8 C 505.8 301.4, 506.6 303, 507.7 303 C 509.1 303, 509.2 300.5, 508.6 279.3 C 508.2 266.3, 507.6 255.2, 507.4 254.8 C 507.1 254.3, 482.3 254, 452.4 254.1 L 397.9 254.3 396.5 257"/><path class="p5" d="M 74.7 290.5 C 86.7 303.6, 101.1 317.7, 113.5 328.5 L 122.5 336.4 113.9 327.4 C 106.1 319.3, 100 313.3, 73.6 288 L 64.6 279.5 74.7 290.5"/><path class="p6" d="M 193.6 385.6 C 193.3 388.2, 193.1 393.3, 193.1 396.9 C 193.3 402.4, 193.4 401.7, 194.1 392.6 C 195 381.2, 194.7 377.6, 193.6 385.6"/><path class="p7" d="M 112.5 384.9 C 116.5 386.5, 133.5 391.8, 133.8 391.5 C 134.4 390.9, 118.5 385.2, 114.5 384.6 C 112 384.3, 111.2 384.3, 112.5 384.9"/></svg></div>
+      <p class="ve-ft__name">Verdant Estate</p>
+      <p class="ve-ft__rule"><i></i><svg viewBox="0 0 24 16" aria-hidden="true"><path d="M2 14C6 4 14 2 22 2c-1 8-6 12-14 12-2 0-4-.2-6 0z" fill="currentColor"/></svg><i></i></p>
+      <p class="ve-ft__tag">Landscaping &amp; Garden Design</p>
+    </div>
+    <div class="ve-ft__cols">
+      <p class="ve-ft__geo">Москва и Московская область</p>
+      <div class="ve-ft__links">
+        <a class="ve-num" href="tel:+70000000000" data-ve-tel>+7 000 000-00-00</a>
+        <a href="https://t.me/" target="_blank" rel="noopener" data-ve-tg>Telegram</a>
+        <a href="https://wa.me/" target="_blank" rel="noopener" data-ve-wa>WhatsApp</a>
+        <a href="mailto:hello@example.com" data-ve-mail>hello@example.com</a>
+      </div>
+      <p class="ve-ft__legal"><a href="#" data-ve-policy>Политика конфиденциальности</a><span>© <span class="ve-num" data-ve-year>2026</span> Verdant Estate</span></p>
+    </div>
+  </div>
+</footer>
+<style>
+.ve-ft{padding:var(--ve-gap) 0 calc(40px + env(safe-area-inset-bottom));border-top:1px solid var(--ve-line);background:var(--ve-paper)}
+.ve-ft__logo{display:flex;flex-direction:column;align-items:center;text-align:center;color:var(--ve-ink)}
+.ve-ft__mark{width:150px;height:138px}
+.ve-ft__mark svg{width:100%;height:100%;display:block;overflow:visible}
+.ve-ft__mark path{opacity:0;transition:opacity .5s var(--ve-ease)}
+.ve-ft__mark.is-done path{opacity:1}
+.ve-ft__name{margin-top:22px;font-family:var(--ve-serif);font-weight:600;font-size:24px;letter-spacing:.14em;text-transform:uppercase;line-height:1}
+.ve-ft__rule{display:flex;align-items:center;gap:10px;margin-top:12px;width:220px;color:var(--ve-moss)}
+.ve-ft__rule i{flex:1;height:1px;background:var(--ve-line)}
+.ve-ft__rule svg{width:16px;height:11px}
+.ve-ft__tag{margin-top:10px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ve-moss)}
+.ve-ft__cols{margin-top:48px;display:grid;gap:20px;text-align:center;font-size:15px}
+.ve-ft__geo{color:var(--ve-moss)}
+.ve-ft__links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px}
+.ve-ft__links a{color:var(--ve-ink);border-bottom:1px solid transparent;transition:border-color .25s}
+@media(hover:hover){.ve-ft__links a:hover{border-color:var(--ve-line)}}
+.ve-ft__legal{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-size:13px;color:var(--ve-moss)}
+.ve-ft__legal a{color:inherit}
+@media(min-width:900px){
+  .ve-ft__mark{width:170px;height:156px}
+  .ve-ft__name{font-size:28px}
+  .ve-ft__cols{margin-top:64px;grid-template-columns:1fr auto 1fr;align-items:center;text-align:left}
+  .ve-ft__legal{justify-content:flex-end}
+}
+@media(prefers-reduced-motion:reduce){.ve-ft__mark path{opacity:1;transition:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-footer');if(!root||!window.VE)return;
+  var y=root.querySelector('[data-ve-year]');if(y)y.textContent=new Date().getFullYear();
+  var mark=root.querySelector('.ve-ft__mark'),svg=mark.querySelector('svg'),paths=mark.querySelectorAll('path');if(!svg||!paths.length)return;
+  // классификация под-путей трассировки: самый большой — дуга со стеблем, крупные справа — буквы, остальное — листья
+  var info=[];for(var i=0;i<paths.length;i++){var b=paths[i].getBBox();info.push({el:paths[i],x:b.x,y:b.y,w:b.width,h:b.height,a:b.width*b.height,cx:b.x+b.width/2,cy:b.y+b.height/2})}
+  var vb=svg.viewBox.baseVal,W=vb.width,H=vb.height;
+  info.sort(function(a,b){return b.a-a.a});
+  var arc=info[0],letters=[],leaves=[];
+  for(var j=1;j<info.length;j++){var o=info[j];if(o.w>W*.18&&o.cx>W*.35)letters.push(o);else leaves.push(o)}
+  leaves.sort(function(a,b){return b.cy-a.cy}); // снизу вверх — как растёт
+  var NS='http://www.w3.org/2000/svg',mid=svg.getAttribute('id')||'ve-ftm';
+  var mask=document.createElementNS(NS,'mask');mask.setAttribute('id',mid+'-m');mask.setAttribute('maskUnits','userSpaceOnUse');mask.setAttribute('x',-W);mask.setAttribute('y',-H);mask.setAttribute('width',W*3);mask.setAttribute('height',H*3);
+  var wedge=document.createElementNS(NS,'path');wedge.setAttribute('fill','#fff');mask.appendChild(wedge);
+  var defs=document.createElementNS(NS,'defs');defs.appendChild(mask);svg.insertBefore(defs,svg.firstChild);
+  arc.el.setAttribute('mask','url(#'+mid+'-m)');
+  var cx=W*.5,cy=H*.5,R=Math.max(W,H),a0=Math.PI*.62; // старт внизу слева, по часовой
+  function setWedge(t){var n=Math.max(2,Math.ceil(t*48)),d='M'+cx+' '+cy;for(var k=0;k<=n;k++){var a=a0+(k/n)*t*Math.PI*2;d+=' L'+(cx+R*Math.cos(a))+' '+(cy+R*Math.sin(a))}wedge.setAttribute('d',d+' Z')}
+  setWedge(0);
+  function play(){
+    if(VE.rm){mark.classList.add('is-done');setWedge(1);return}
+    var t0=performance.now(),D=1400;arc.el.style.opacity=1;
+    leaves.forEach(function(l,i){setTimeout(function(){l.el.style.opacity=1},300+i*90)});
+    letters.forEach(function(l){setTimeout(function(){l.el.style.opacity=1},900)});
+    (function f(now){var t=Math.min(1,(now-t0)/D);var e=1-Math.pow(1-t,3);setWedge(e);if(t<1)requestAnimationFrame(f);else{arc.el.removeAttribute('mask');mark.classList.add('is-done')}})(t0);
+  }
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();play()}},{threshold:.4});io.observe(mark)}else play();
+})();
+</script>
+</div></div></div></div>
+</div></body></html>

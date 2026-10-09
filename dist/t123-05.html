@@ -1,0 +1,84 @@
+<!-- VE · 05-builder.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-bld" id="ve-builder">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Почему цена индивидуальная</p>
+    <h2 class="ve-h2 ve-r ve-bld__h">Соберите свой сад</h2>
+    <p class="ve-sub ve-r">Два участка одинаковой площади могут требовать совершенно разного объёма работы. Отметьте, что есть на вашем участке, и мы покажем ориентир.</p>
+    <div class="ve-bld__box ve-r">
+      <div class="ve-bld__area">
+        <label class="ve-bld__lab" for="ve-bld-area">Площадь участка</label>
+        <output class="ve-bld__val ve-num" for="ve-bld-area"><b>12</b> соток</output>
+        <input class="ve-bld__range" id="ve-bld-area" type="range" min="4" max="60" step="1" value="12" aria-label="Площадь участка, соток">
+        <div class="ve-bld__scale ve-num"><span>4</span><span>60</span></div>
+      </div>
+      <div class="ve-bld__chips" role="group" aria-label="Что есть на участке">
+        <button type="button" class="ve-bld__chip" data-f="газон">Газон</button>
+        <button type="button" class="ve-bld__chip" data-f="деревья">Деревья</button>
+        <button type="button" class="ve-bld__chip" data-f="кустарники">Кустарники</button>
+        <button type="button" class="ve-bld__chip" data-f="цветники">Цветники</button>
+        <button type="button" class="ve-bld__chip" data-f="живые изгороди">Живые изгороди</button>
+        <button type="button" class="ve-bld__chip" data-f="автополив">Автополив</button>
+        <button type="button" class="ve-bld__chip" data-f="рельеф">Сложный рельеф</button>
+        <button type="button" class="ve-bld__chip" data-f="запущенный сад">Запущенный сад</button>
+      </div>
+      <div class="ve-bld__out">
+        <p class="ve-bld__res"><span class="ve-bld__tier">Похоже на <b class="ve-caps ve-caps--serif">Premium</b></span><span class="ve-bld__dot">·</span><span class="ve-price ve-bld__price">от 110&#8239;000&nbsp;₽ / месяц</span><span class="ve-bld__dot">·</span><span class="ve-muted">точную цифру скажем после осмотра</span></p>
+        <button class="ve-btn ve-bld__go" type="button">Рассчитать по моему саду</button>
+      </div>
+    </div>
+    <p class="ve-bld__note ve-r">Поэтому мы не продаём универсальный пакет. Мы рассчитываем обслуживание именно вашего сада.</p>
+  </div>
+</section>
+<style>
+.ve-bld__h{margin-top:14px}
+.ve-bld__box{margin-top:36px;background:var(--ve-paper-2);border-radius:var(--ve-r);padding:26px 20px}
+.ve-bld__area{display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:16px}
+.ve-bld__lab{font-size:14px;color:var(--ve-moss)}
+.ve-bld__val{font-family:var(--ve-serif);font-size:26px;line-height:1;white-space:nowrap}
+.ve-bld__val b{font-weight:500;font-size:34px}
+.ve-bld__range{grid-column:1/-1;width:100%;margin:18px 0 0;-webkit-appearance:none;appearance:none;height:32px;background:transparent;cursor:pointer}
+.ve-bld__range::-webkit-slider-runnable-track{height:2px;background:rgba(47,59,36,.25);border-radius:2px}
+.ve-bld__range::-moz-range-track{height:2px;background:rgba(47,59,36,.25);border-radius:2px}
+.ve-bld__range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ve-ink);margin-top:-12px;border:4px solid var(--ve-paper-2);box-shadow:0 0 0 1px rgba(47,59,36,.25)}
+.ve-bld__range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ve-ink);border:4px solid var(--ve-paper-2);box-shadow:0 0 0 1px rgba(47,59,36,.25)}
+.ve-bld__scale{grid-column:1/-1;display:flex;justify-content:space-between;font-size:12px;color:var(--ve-moss);margin-top:2px}
+.ve-bld__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.ve-bld__chip{height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(47,59,36,.3);font-size:15px;color:var(--ve-ink);background:transparent;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease-2)}
+.ve-bld__chip.is-on{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+.ve-bld__chip:active{transform:scale(.97)}
+.ve-bld__out{margin-top:28px;padding-top:22px;border-top:1px solid var(--ve-line);display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.ve-bld__res{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:16px;line-height:1.4}
+.ve-bld__tier b{font-size:13px;color:var(--ve-ink);margin-left:4px}
+.ve-bld__dot{color:var(--ve-moss)}
+.ve-bld__note{margin-top:22px;max-width:56ch;color:var(--ve-moss)}
+@media(min-width:900px){
+  .ve-bld__box{margin-top:56px;padding:40px;display:grid;grid-template-columns:1fr 1fr;column-gap:56px}
+  .ve-bld__chips{margin-top:0;align-content:start}
+  .ve-bld__out{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center;margin-top:34px;padding-top:28px}
+  .ve-bld__res{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){.ve-bld__chip{transition:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-builder');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var range=root.querySelector('#ve-bld-area'),val=root.querySelector('.ve-bld__val b'),chips=root.querySelectorAll('.ve-bld__chip'),
+      tier=root.querySelector('.ve-bld__tier b'),price=root.querySelector('.ve-bld__price'),go=root.querySelector('.ve-bld__go');
+  var PRICE={BASIC:60000,PREMIUM:110000,ESTATE:190000},NAME={BASIC:'Basic',PREMIUM:'Premium',ESTATE:'Estate'};
+  function factors(){var a=[];for(var i=0;i<chips.length;i++)if(chips[i].classList.contains('is-on'))a.push(chips[i].getAttribute('data-f'));return a}
+  function estimate(area,n){if(area<=10&&n<=2)return 'BASIC';if(area<=25&&n<=5)return 'PREMIUM';return 'ESTATE'}
+  function update(save){
+    var area=+range.value,f=factors(),t=estimate(area,f.length);
+    val.textContent=area;tier.textContent=NAME[t];price.innerHTML='от '+VE.fmt(PRICE[t])+'&nbsp;₽ / месяц';
+    if(save){VE.set('area',area);VE.set('factors',f);VE.set('estimate',t)}
+  }
+  if(VE.state.area){range.value=VE.state.area}
+  if(VE.state.factors)for(var i=0;i<chips.length;i++)if(VE.state.factors.indexOf(chips[i].getAttribute('data-f'))>=0)chips[i].classList.add('is-on');
+  range.addEventListener('input',function(){update(false)});
+  range.addEventListener('change',function(){update(true)});
+  for(var j=0;j<chips.length;j++)chips[j].addEventListener('click',function(){this.classList.toggle('is-on');update(true)});
+  go.addEventListener('click',function(){update(true);VE.goForm({tariff:VE.state.estimate})});
+  update(false);
+})();
+</script>

@@ -1,0 +1,123 @@
+<section class="ve ve-sec ve-sec--last ve-fm" id="ve-form">
+  <div class="ve-wrap">
+    <div class="ve-fm__grid">
+      <div class="ve-fm__intro">
+        <p class="ve-caps ve-r">Рассчитать стоимость</p>
+        <h2 class="ve-h2 ve-r ve-fm__h">Расскажите о саде — ответим в течение дня</h2>
+        <p class="ve-sub ve-r">Точную цифру называем после осмотра участка. Заявка ни к чему не обязывает.</p>
+      </div>
+      <form class="ve-fm__form ve-r" novalidate data-endpoint="">
+        <div class="ve-fm__row">
+          <label class="ve-fm__field"><span>Имя</span><input name="name" type="text" autocomplete="name" required maxlength="80"></label>
+          <label class="ve-fm__field"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+7"></label>
+        </div>
+        <div class="ve-fm__row">
+          <label class="ve-fm__field ve-fm__field--s"><span>Площадь, соток</span><input name="area" type="number" inputmode="numeric" min="1" max="999" placeholder="12"></label>
+          <div class="ve-fm__field">
+            <span>Уровень обслуживания</span>
+            <div class="ve-fm__radios" role="radiogroup">
+              <label><input type="radio" name="tariff" value="BASIC"><i></i>Basic</label>
+              <label><input type="radio" name="tariff" value="PREMIUM"><i></i>Premium</label>
+              <label><input type="radio" name="tariff" value="ESTATE"><i></i>Estate</label>
+              <label><input type="radio" name="tariff" value="" checked><i></i>Не знаю</label>
+            </div>
+          </div>
+        </div>
+        <div class="ve-fm__field">
+          <span>Что есть на участке</span>
+          <div class="ve-fm__chips">
+            <label><input type="checkbox" name="factors" value="газон"><b>Газон</b></label>
+            <label><input type="checkbox" name="factors" value="деревья"><b>Деревья</b></label>
+            <label><input type="checkbox" name="factors" value="кустарники"><b>Кустарники</b></label>
+            <label><input type="checkbox" name="factors" value="цветники"><b>Цветники</b></label>
+            <label><input type="checkbox" name="factors" value="живые изгороди"><b>Живые изгороди</b></label>
+            <label><input type="checkbox" name="factors" value="автополив"><b>Автополив</b></label>
+            <label><input type="checkbox" name="factors" value="рельеф"><b>Сложный рельеф</b></label>
+            <label><input type="checkbox" name="factors" value="запущенный сад"><b>Запущенный сад</b></label>
+          </div>
+        </div>
+        <label class="ve-fm__field"><span>Комментарий</span><textarea name="comment" rows="3" maxlength="1000" placeholder="Где участок, что беспокоит, когда удобно позвонить"></textarea></label>
+        <label class="ve-fm__consent"><input type="checkbox" name="consent" required><i></i><span>Согласен на обработку персональных данных</span></label>
+        <p class="ve-fm__err" role="alert" hidden></p>
+        <div class="ve-fm__actions">
+          <button class="ve-btn" type="submit">Отправить</button>
+        </div>
+        <p class="ve-fm__done" hidden>Спасибо. Перезвоним в течение дня.</p>
+      </form>
+    </div>
+  </div>
+</section>
+<style>
+.ve-fm__h{margin-top:14px;max-width:18ch}
+.ve-fm__form{margin-top:36px}
+.ve-fm__row{display:grid;gap:18px}
+.ve-fm__field{display:block;margin-top:18px}
+.ve-fm__row .ve-fm__field{margin-top:0}
+.ve-fm__row{margin-top:18px}
+.ve-fm__field>span{display:block;font-size:13px;color:var(--ve-moss);margin-bottom:8px;letter-spacing:.01em}
+.ve-fm input[type=text],.ve-fm input[type=tel],.ve-fm input[type=number],.ve-fm textarea{width:100%;font:inherit;font-size:16px;color:var(--ve-ink);background:var(--ve-paper-2);border:1px solid transparent;border-radius:var(--ve-r);padding:14px 16px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .25s,background .25s}
+.ve-fm textarea{resize:vertical;min-height:96px;line-height:1.45}
+.ve-fm input:focus,.ve-fm textarea:focus{border-color:var(--ve-moss);background:var(--ve-paper)}
+.ve-fm input.is-bad{border-color:#B0553F}
+.ve-fm input::placeholder,.ve-fm textarea::placeholder{color:rgba(47,59,36,.4)}
+.ve-fm__radios,.ve-fm__chips{display:flex;flex-wrap:wrap;gap:8px}
+.ve-fm__radios label,.ve-fm__chips label{position:relative;display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(47,59,36,.3);font-size:15px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s}
+.ve-fm__radios input,.ve-fm__chips input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.ve-fm__radios label:has(input:checked),.ve-fm__chips label:has(input:checked){background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+.ve-fm__radios label:has(input:focus-visible),.ve-fm__chips label:has(input:focus-visible){outline:2px solid var(--ve-moss);outline-offset:3px}
+.ve-fm__radios label i{display:none}
+.ve-fm__consent{display:flex;align-items:flex-start;gap:12px;margin-top:22px;font-size:14px;color:var(--ve-moss);cursor:pointer}
+.ve-fm__consent input{position:absolute;opacity:0;width:0;height:0}
+.ve-fm__consent i{flex:0 0 auto;width:20px;height:20px;border-radius:5px;border:1px solid rgba(47,59,36,.4);margin-top:1px;position:relative;transition:background .2s,border-color .2s}
+.ve-fm__consent:has(input:checked) i{background:var(--ve-ink);border-color:var(--ve-ink)}
+.ve-fm__consent i::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border-right:2px solid var(--ve-paper);border-bottom:2px solid var(--ve-paper);transform:rotate(45deg);opacity:0}
+.ve-fm__consent:has(input:checked) i::after{opacity:1}
+.ve-fm__consent.is-bad i{border-color:#B0553F}
+.ve-fm__err{margin-top:14px;font-size:14px;color:#B0553F}
+.ve-fm__actions{margin-top:24px}
+.ve-fm__done{margin-top:24px;font-family:var(--ve-serif);font-size:24px;line-height:1.25}
+.ve-fm__form.is-sent .ve-fm__actions,.ve-fm__form.is-sent .ve-fm__row,.ve-fm__form.is-sent .ve-fm__field,.ve-fm__form.is-sent .ve-fm__consent{display:none}
+@media(min-width:900px){
+  .ve-fm__grid{display:grid;grid-template-columns:1fr 1.3fr;gap:72px;align-items:start}
+  .ve-fm__form{margin-top:0}
+  .ve-fm__row{grid-template-columns:1fr 1fr;gap:20px}
+  .ve-fm__field--s{max-width:200px}
+}
+@media(prefers-reduced-motion:reduce){.ve-fm input,.ve-fm textarea,.ve-fm__radios label,.ve-fm__chips label{transition:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-form');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var form=root.querySelector('form'),name=form.elements.name,phone=form.elements.phone,area=form.elements.area,consent=form.elements.consent,err=form.querySelector('.ve-fm__err');
+  // маска +7
+  function mask(v){var d=v.replace(/\D/g,'');if(d[0]==='8')d='7'+d.slice(1);if(d[0]!=='7')d='7'+d;d=d.slice(0,11);
+    var s='+7';if(d.length>1)s+=' '+d.slice(1,4);if(d.length>4)s+=' '+d.slice(4,7);if(d.length>7)s+='-'+d.slice(7,9);if(d.length>9)s+='-'+d.slice(9,11);return s}
+  phone.addEventListener('input',function(){var v=phone.value;if(v==='+'||v==='')return;phone.value=mask(v)});
+  phone.addEventListener('focus',function(){if(!phone.value)phone.value='+7 '});
+  phone.addEventListener('blur',function(){if(phone.value.replace(/\D/g,'').length<=1)phone.value=''});
+  // префилл из конструктора и тарифов
+  function prefill(s){
+    if(s.area&&!area.value)area.value=s.area;
+    if(s.tariff!=null){var r=form.querySelector('input[name=tariff][value="'+s.tariff+'"]');if(r)r.checked=true}
+    if(s.factors){var cb=form.querySelectorAll('input[name=factors]');for(var i=0;i<cb.length;i++)cb[i].checked=s.factors.indexOf(cb[i].value)>=0}
+  }
+  prefill(VE.state);VE.on('state',prefill);
+  VE.on('form:focus',function(){setTimeout(function(){if(!name.value)name.focus({preventScroll:true})},600)});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();err.hidden=true;var bad=[];
+    name.classList.toggle('is-bad',!name.value.trim());if(!name.value.trim())bad.push('имя');
+    var ok=phone.value.replace(/\D/g,'').length===11;phone.classList.toggle('is-bad',!ok);if(!ok)bad.push('телефон');
+    consent.parentNode.classList.toggle('is-bad',!consent.checked);if(!consent.checked)bad.push('согласие');
+    if(bad.length){err.textContent='Проверьте: '+bad.join(', ')+'.';err.hidden=false;return}
+    var fd=new FormData(form),data={};fd.forEach(function(v,k){if(k==='factors'){(data.factors=data.factors||[]).push(v)}else data[k]=v});
+    data.page=location.href;data.estimate=VE.state.estimate||'';
+    var ep=form.getAttribute('data-endpoint');
+    var done=function(){form.classList.add('is-sent');form.querySelector('.ve-fm__done').hidden=false};
+    if(ep){fetch(ep,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}).then(done,function(){err.textContent='Не отправилось. Позвоните нам или напишите в мессенджер.';err.hidden=false})}
+    else{ // пока бэкенд не выбран (PLAN §9.2) — письмо
+      var body='Имя: '+data.name+'\nТелефон: '+data.phone+'\nПлощадь: '+(data.area||'—')+'\nУровень: '+(data.tariff||'не выбран')+'\nНа участке: '+((data.factors||[]).join(', ')||'—')+'\nКомментарий: '+(data.comment||'—');
+      location.href='mailto:hello@example.com?subject='+encodeURIComponent('Заявка с сайта Verdant Estate')+'&body='+encodeURIComponent(body);done()}
+  });
+})();
+</script>

@@ -1,0 +1,39 @@
+<section class="ve ve-sec ve-ba" id="ve-before-after">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">До и после</p>
+    <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
+    <div class="ve-ba__box ve-r" style="--x:50%">
+      <img class="ve-ba__img ve-ba__img--before" src="__BASE__media/stills/ba-before-l.webp?v=__V__" srcset="__BASE__media/stills/ba-before-s.webp?v=__V__ 720w, __BASE__media/stills/ba-before-l.webp?v=__V__ 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--after" src="__BASE__media/stills/ba-after-l.webp?v=__V__" srcset="__BASE__media/stills/ba-after-s.webp?v=__V__ 720w, __BASE__media/stills/ba-after-l.webp?v=__V__ 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <span class="ve-ba__lab ve-ba__lab--b">до</span>
+      <span class="ve-ba__lab ve-ba__lab--a">после</span>
+      <div class="ve-ba__bar" aria-hidden="true"><i></i></div>
+      <input class="ve-ba__range" type="range" min="0" max="100" value="50" step="0.1" aria-label="Шторка до и после">
+    </div>
+  </div>
+</section>
+<style>
+.ve-ba__h{margin-top:14px;max-width:22ch}
+.ve-ba__box{position:relative;margin-top:36px;aspect-ratio:16/10;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
+.ve-ba__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ve-ba__img--after{clip-path:inset(0 0 0 var(--x))}
+.ve-ba__lab{position:absolute;top:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ve-paper);opacity:.9;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.ve-ba__lab--b{left:16px}.ve-ba__lab--a{right:16px}
+.ve-ba__bar{position:absolute;top:0;bottom:0;left:var(--x);width:0;pointer-events:none}
+.ve-ba__bar::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:var(--ve-paper);opacity:.9}
+.ve-ba__bar i{position:absolute;top:50%;left:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:var(--ve-paper);box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.ve-ba__bar i::before,.ve-ba__bar i::after{content:"";position:absolute;top:50%;width:6px;height:6px;border-top:1.5px solid var(--ve-ink);border-left:1.5px solid var(--ve-ink);margin-top:-3px}
+.ve-ba__bar i::before{left:11px;transform:rotate(-45deg)}.ve-ba__bar i::after{right:11px;transform:rotate(135deg)}
+.ve-ba__range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;-webkit-appearance:none;appearance:none;touch-action:pan-y}
+.ve-ba__range::-webkit-slider-thumb{-webkit-appearance:none;width:60px;height:100%}
+.ve-ba__range::-moz-range-thumb{width:60px;height:100%;border:0;background:transparent}
+@media(min-width:900px){.ve-ba__box{margin-top:56px}.ve-ba__lab{top:20px}.ve-ba__lab--b{left:24px}.ve-ba__lab--a{right:24px}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-before-after');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var box=root.querySelector('.ve-ba__box'),r=root.querySelector('.ve-ba__range');
+  r.addEventListener('input',function(){box.style.setProperty('--x',r.value+'%')});
+})();
+</script>

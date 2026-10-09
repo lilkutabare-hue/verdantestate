@@ -1,0 +1,83 @@
+<section class="ve ve-hero" id="ve-hero" data-ch="0">
+  <div class="ve-hero__stage">
+    <picture class="ve-hero__poster">
+      <source media="(orientation: portrait)" srcset="__BASE__media/scene/poster-tall.webp?v=__V__">
+      <img src="__BASE__media/scene/poster-wide.webp?v=__V__" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+    </picture>
+    <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
+    <div class="ve-hero__shade" aria-hidden="true"></div>
+    <div class="ve-hero__text">
+      <p class="ve-hero__brand"><span>Verdant Estate</span><span class="ve-hero__brand-2">Private Garden Service</span></p>
+      <h1 class="ve-h1 ve-hero__h1">Сад, за которым не&nbsp;нужно следить</h1>
+      <div class="ve-hero__lines">
+        <p class="ve-hero__line" data-at="1">Один договор.</p>
+        <p class="ve-hero__line" data-at="2">Один ответственный.</p>
+        <p class="ve-hero__line" data-at="3">Весь сад под контролем.</p>
+      </div>
+      <p class="ve-hero__cta" data-at="3"><button class="ve-btn ve-btn--light" type="button" data-ve-go-form>Рассчитать стоимость</button></p>
+    </div>
+    <div class="ve-hero__clock ve-num" aria-hidden="true"><i></i><span>06:40</span></div>
+    <div class="ve-hero__hint" aria-hidden="true"><span></span></div>
+  </div>
+</section>
+<style>
+.ve-hero{position:relative;height:320svh;height:calc(var(--ve-vh,1vh) * 320);background:#A9B3A4;color:var(--ve-paper);margin:0}
+@supports(height:100svh){.ve-hero{height:320svh}}
+@media(min-width:900px){.ve-hero{height:300vh}@supports(height:100svh){.ve-hero{height:300svh}}}
+.ve-hero__stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#A9B3A4}
+.ve-hero__poster,.ve-hero__canvas,.ve-hero__shade{position:absolute;inset:0}
+.ve-hero__poster img{width:100%;height:100%;object-fit:cover;object-position:56% 55%}
+.ve-hero__canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .6s var(--ve-ease)}
+.ve-hero.is-live .ve-hero__canvas{opacity:1}
+.ve-hero__shade{background:linear-gradient(to top,rgba(47,59,36,.55) 0%,rgba(47,59,36,.28) 32%,rgba(47,59,36,0) 62%),linear-gradient(to bottom,rgba(47,59,36,.32) 0%,rgba(47,59,36,0) 24%)}
+.ve-hero__text{position:absolute;left:0;right:0;bottom:0;padding:0 var(--ve-pad) calc(28px + env(safe-area-inset-bottom));max-width:1240px;margin:0 auto}
+@media(min-width:900px){.ve-hero__text{bottom:0;padding-bottom:64px;padding-left:40px;padding-right:40px;left:50%;transform:translateX(-50%);width:100%}}
+.ve-hero__brand{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 16px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;opacity:.92}
+.ve-hero__brand-2{opacity:.7}
+.ve-hero__h1{max-width:12ch;color:inherit}
+@media(min-width:900px){.ve-hero__h1{max-width:14ch}}
+.ve-hero__lines{margin-top:18px;min-height:3.2em;font-family:var(--ve-serif);font-size:22px;line-height:1.25}
+@media(min-width:900px){.ve-hero__lines{font-size:30px;margin-top:22px}}
+.ve-hero__line,.ve-hero__cta{opacity:0;transform:translateY(12px);transition:opacity .5s var(--ve-ease),transform .5s var(--ve-ease)}
+.ve-hero__cta{margin-top:22px}
+.ve-hero[data-ch="1"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="1"],.ve-hero[data-ch="3"] [data-at="1"],
+.ve-hero[data-ch="2"] [data-at="2"],.ve-hero[data-ch="3"] [data-at="2"],
+.ve-hero[data-ch="3"] [data-at="3"]{opacity:1;transform:none}
+.ve-hero__clock{position:absolute;right:var(--ve-pad);top:calc(72px + env(safe-area-inset-top));display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.06em;opacity:.85}
+@media(min-width:900px){.ve-hero__clock{top:auto;bottom:64px;right:40px}}
+.ve-hero__clock i{width:6px;height:6px;border-radius:50%;background:currentColor;transition:background .6s}
+.ve-hero.is-night .ve-hero__clock i{background:var(--ve-lamp);box-shadow:0 0 8px rgba(226,180,108,.8)}
+.ve-hero__hint{position:absolute;right:calc(var(--ve-pad) + 2px);bottom:calc(30px + env(safe-area-inset-bottom));width:1px;height:36px;overflow:hidden;opacity:.5}
+@media(min-width:900px){.ve-hero__hint{display:none}}
+.ve-hero__hint span{display:block;width:1px;height:100%;background:currentColor;animation:ve-hint 2.4s var(--ve-ease) infinite}
+@keyframes ve-hint{0%{transform:translateY(-100%)}60%,100%{transform:translateY(100%)}}
+.ve-hero[data-ch="3"] .ve-hero__hint{opacity:0}
+@media(prefers-reduced-motion:reduce){.ve-hero__line,.ve-hero__cta{transition:none}.ve-hero__hint{display:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-hero');if(!root)return;
+  var clock=root.querySelector('.ve-hero__clock span');
+  var T0=6*60+40,T1=21*60+30,lastCh=-1,lastT='';
+  function onP(p){
+    var ch=p<.22?0:p<.46?1:p<.7?2:3;
+    if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
+    var m=Math.round(T0+(T1-T0)*p),s=('0'+Math.floor(m/60)).slice(-2)+':'+('0'+(m%60)).slice(-2);
+    if(s!==lastT){lastT=s;clock.textContent=s}
+    root.classList.toggle('is-night',p>.8);
+  }
+  root.querySelector('[data-ve-go-form]').addEventListener('click',function(){if(window.VE)VE.goForm()});
+  function start(){
+    var VE=window.VE;if(!VE)return setTimeout(start,50);
+    var gl=false;try{var c=document.createElement('canvas');gl=!!(window.WebGL2RenderingContext&&c.getContext('webgl2'))}catch(e){}
+    var save=navigator.connection&&navigator.connection.saveData;
+    var mode=(gl&&!VE.rm&&!save&&!/\bve3d=0\b/.test(location.search))?'garden3d':'scene';
+    if(/\bve3d=1\b/.test(location.search))mode='garden3d';
+    var opts={base:VE.base,v:VE.v,onProgress:onP,reducedMotion:VE.rm};
+    var frames=function(){return import(VE.url('js/scene.js')).then(function(m){VE.hero=m.mount(root,opts)})};
+    if(mode==='garden3d'){import(VE.url('js/garden3d.js')).then(function(m){VE.hero=m.mount(root,opts)}).catch(function(e){console.warn('[VE] 3D недоступно, кадры:',e&&e.message);frames()})}
+    else frames();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>

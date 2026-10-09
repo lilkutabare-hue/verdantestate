@@ -1,0 +1,75 @@
+<!-- VE · 04-tariffs.html · сборка 04d90352 -->
+<section class="ve ve-sec ve-tar" id="ve-tariffs">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Постоянный уход</p>
+    <h2 class="ve-h2 ve-r ve-tar__h">Три уровня обслуживания</h2>
+    <p class="ve-sub ve-r">Стоимость рассчитывается индивидуально. Цифра ниже — порог, от которого начинается уровень.</p>
+  </div>
+  <div class="ve-wrap ve-tar__wrap">
+    <div class="ve-strip ve-tar__strip ve-rg">
+      <article class="ve-tar__card" data-tariff="BASIC">
+        <div class="ve-tar__img"><img src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/tariff-basic-l.webp?v=04d90352" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/tariff-basic-s.webp?v=04d90352 560w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/tariff-basic-l.webp?v=04d90352 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <p class="ve-caps ve-caps--serif ve-tar__name">Basic</p>
+        <p class="ve-tar__price ve-price">от 60&#8239;000&nbsp;₽ <span>/ месяц</span></p>
+        <p class="ve-tar__for">Для небольших и относительно простых участков.</p>
+        <ul class="ve-tar__list">
+          <li>регулярные визиты</li><li>уход за газоном</li><li>уход за растениями</li><li>сезонная уборка</li><li>базовая обрезка</li><li>контроль состояния участка</li>
+        </ul>
+        <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
+      </article>
+      <article class="ve-tar__card" data-tariff="PREMIUM">
+        <div class="ve-tar__img"><img src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/tariff-premium-l.webp?v=04d90352" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/tariff-premium-s.webp?v=04d90352 560w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/tariff-premium-l.webp?v=04d90352 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <p class="ve-caps ve-caps--serif ve-tar__name">Premium</p>
+        <p class="ve-tar__price ve-price">от 110&#8239;000&nbsp;₽ <span>/ месяц</span></p>
+        <p class="ve-tar__for">Для полноценных частных садов.</p>
+        <ul class="ve-tar__list">
+          <li>всё из BASIC</li><li>более частые визиты</li><li>расширенный уход за растениями</li><li>формировка кустарников и изгородей</li><li>обработки и подкормки</li><li>сезонные работы</li><li>контроль системы полива</li><li>организация специализированных работ</li>
+        </ul>
+        <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
+      </article>
+      <article class="ve-tar__card" data-tariff="ESTATE">
+        <div class="ve-tar__img"><img src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/tariff-estate-l.webp?v=04d90352" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/tariff-estate-s.webp?v=04d90352 560w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/tariff-estate-l.webp?v=04d90352 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <p class="ve-caps ve-caps--serif ve-tar__name">Estate</p>
+        <p class="ve-tar__price ve-price">от 190&#8239;000&nbsp;₽ <span>/ месяц</span></p>
+        <p class="ve-tar__for">Для больших и сложных территорий.</p>
+        <ul class="ve-tar__list">
+          <li>индивидуальный график обслуживания</li><li>повышенная частота присутствия</li><li>полный контроль состояния сада</li><li>координация нескольких специалистов</li><li>приоритетное обслуживание</li><li>сезонное планирование</li><li>организация арбористики, полива и других специализированных работ</li><li>персональное управление участком</li>
+        </ul>
+        <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
+      </article>
+    </div>
+  </div>
+</section>
+<style>
+.ve-tar__h{margin-top:14px}
+.ve-tar__wrap{margin-top:36px}
+.ve-tar__card{width:84vw;max-width:420px;display:flex;flex-direction:column}
+.ve-tar__img{aspect-ratio:4/5;overflow:hidden;border-radius:var(--ve-r);background:var(--ve-paper-2)}
+.ve-tar__img img{width:100%;height:100%;object-fit:cover;transform:scale(1);transform-origin:50% 60%}
+.ve-tar__card.is-in-view .ve-tar__img img{animation:ve-breath 12s ease-in-out infinite alternate}
+@keyframes ve-breath{from{transform:scale(1)}to{transform:scale(1.03)}}
+.ve-tar__name{margin-top:22px;color:var(--ve-ink)}
+.ve-tar__price{margin-top:6px;font-family:var(--ve-serif);font-size:28px;line-height:1.1}
+.ve-tar__price span{font-family:var(--ve-sans);font-size:14px;color:var(--ve-moss);letter-spacing:.01em}
+.ve-tar__for{margin-top:8px;color:var(--ve-moss)}
+.ve-tar__list{list-style:none;margin:18px 0 0;padding:0;font-size:15px;line-height:1.45}
+.ve-tar__list li{padding:7px 0;border-top:1px solid var(--ve-line)}
+.ve-tar__list li::first-letter{text-transform:uppercase}
+.ve-tar__btn{margin-top:22px;align-self:flex-start}
+@media(min-width:900px){
+  .ve-tar__wrap{margin-top:56px}
+  .ve-tar__strip{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;overflow:visible;margin:0;padding:0;scroll-snap-type:none}
+  .ve-tar__card{width:auto;max-width:none}
+  .ve-tar__price{font-size:32px}
+}
+@media(prefers-reduced-motion:reduce){.ve-tar__card.is-in-view .ve-tar__img img{animation:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-tariffs');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var cards=root.querySelectorAll('.ve-tar__card');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){en.forEach(function(x){x.target.classList.toggle('is-in-view',x.isIntersecting)})},{threshold:.2});for(var i=0;i<cards.length;i++)io.observe(cards[i])}
+  for(var j=0;j<cards.length;j++)(function(c){c.querySelector('.ve-tar__btn').addEventListener('click',function(){VE.goForm({tariff:c.getAttribute('data-tariff')})})})(cards[j]);
+})();
+</script>

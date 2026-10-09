@@ -1,0 +1,27 @@
+<section class="ve ve-sec ve-bon" id="ve-bonuses">
+  <div class="ve-wrap">
+    <p class="ve-caps ve-r">Специальные условия</p>
+    <h2 class="ve-h2 ve-r ve-bon__h">Не скидки — то, что полезно саду</h2>
+    <div class="ve-bon__grid ve-rg">
+      <div class="ve-bon__item"><h3 class="ve-h3">Первый аудит сада</h3><p>Осмотр участка и план работ на сезон при заключении договора.</p></div>
+      <div class="ve-bon__item"><h3 class="ve-h3">Сезонный комплекс в первый месяц</h3><p>Специальные условия на старт обслуживания.</p></div>
+      <div class="ve-bon__item"><h3 class="ve-h3">Приоритетный выезд</h3><p>Ваш сад — первым в графике, когда это нужно.</p></div>
+      <div class="ve-bon__item"><h3 class="ve-h3">Дополнительные часы специалиста</h3><p>Для задач, которые появляются по ходу сезона.</p></div>
+    </div>
+    <p class="ve-bon__note ve-r ve-muted">Условия обсуждаем при расчёте. Без таймеров и «только сегодня».</p>
+  </div>
+</section>
+<style>
+.ve-bon__h{margin-top:14px;max-width:20ch}
+.ve-bon__grid{margin-top:36px;display:grid;gap:0}
+.ve-bon__item{padding:22px 0;border-top:1px solid var(--ve-line)}
+.ve-bon__item:last-child{border-bottom:1px solid var(--ve-line)}
+.ve-bon__item p{margin-top:8px;color:var(--ve-moss);max-width:40ch}
+.ve-bon__note{margin-top:22px;font-size:14px}
+@media(min-width:900px){
+  .ve-bon__grid{margin-top:56px;grid-template-columns:repeat(2,1fr);column-gap:56px}
+  .ve-bon__item{padding:28px 0}
+  .ve-bon__item:nth-last-child(-n+2){border-bottom:1px solid var(--ve-line)}
+}
+</style>
+<script>(function(){if(window.VE)VE.reveal(document.getElementById('ve-bonuses'))})();</script>

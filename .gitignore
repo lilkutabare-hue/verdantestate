@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+media-src/
+tools/.cache/
+*.docx
+photo_*.jpg
+HANDOFF.md
