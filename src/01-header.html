@@ -1,4 +1,5 @@
 <header class="ve ve-hd" id="ve-hd">
+  __LOGO_SPRITE__
   <div class="ve-hd__in">
     <a class="ve-hd__mark" href="#ve-hero" aria-label="Verdant Estate">__MARK__</a>
     <div class="ve-hd__right">
@@ -13,7 +14,10 @@
   padding-top:env(safe-area-inset-top)}
 .ve-hd__in{max-width:1240px;margin:0 auto;padding:0 var(--ve-pad);height:60px;display:flex;align-items:center;justify-content:space-between}
 @media(min-width:900px){.ve-hd__in{height:72px}}
-.ve-hd__mark{display:block;width:30px;height:28px;color:inherit}
+.ve-hd__mark{display:block;width:36px;height:33px;color:inherit;transition:opacity .25s var(--ve-ease-2)}
+@media(min-width:900px){.ve-hd__mark{width:44px;height:40px}}
+/* на странице с хиро знак шапки появляется, когда в него «садится» логотип первого экрана */
+html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 .ve-hd__mark svg{width:100%;height:100%;display:block}
 .ve-hd__right{display:flex;align-items:center;gap:22px}
 .ve-hd__tel{display:none;font-size:15px;letter-spacing:.01em;opacity:.9}
@@ -30,8 +34,11 @@
   var y0=window.scrollY||0,up=0,solidAt=function(){return Math.max(240,(window.innerHeight||600)*.9)};
   function tick(){
     var y=window.scrollY||0,d=y-y0;
-    hd.classList.toggle('is-solid',y>solidAt());
-    if(d>0){up=0;if(y>80)hd.classList.add('is-hidden')}
+    // над хиро шапка прозрачная и не прячется: в ней знак, в который садится логотип первого экрана
+    var hero=document.getElementById('ve-hero'),inHero=hero&&hero.getBoundingClientRect().bottom>60;
+    hd.classList.toggle('is-solid',!inHero&&y>solidAt());
+    if(inHero){hd.classList.remove('is-hidden');up=0}
+    else if(d>0){up=0;if(y>80)hd.classList.add('is-hidden')}
     else if(d<0){up+=-d;if(up>10)hd.classList.remove('is-hidden')}
     y0=y;
   }

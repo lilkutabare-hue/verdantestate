@@ -25,26 +25,18 @@ async function walk(dir, out = []) {
   return out;
 }
 const h = createHash('sha1');
-for (const f of [...(await walk(SRC)), ...(await walk(SITE))].sort()) { h.update(f); h.update(await readFile(f)); }
+for (const f of [...(await walk(SRC)), ...(await walk(SITE)), ...(await walk(join(ROOT, 'brand/vector')))].sort()) { h.update(f); h.update(await readFile(f)); }
 const V = h.digest('hex').slice(0, 8);
 
-// ---------- логотип: минификация трассировки ----------
-function minSvg(svg, { fill = 'currentColor' } = {}) {
-  return svg.replace(/<\?xml[^>]*>/, '').replace(/\s(width|height|version)="[^"]*"/g, '')
-    .replace(/(\d+\.\d{2,})/g, (m) => (Math.round(parseFloat(m) * 10) / 10).toString())
-    .replace(/stroke="none"/g, '').replace(/fill="#[0-9a-fA-F]{6}"/g, `fill="${fill}"`)
-    .replace(/\n|\t/g, '').replace(/\s{2,}/g, ' ').replace(/> </g, '><');
-}
-const MARK = minSvg(await readFile(join(ROOT, 'brand/vector/mark.svg'), 'utf8'));
-// подвал: ветвь/дуга и буквы — отдельные под-пути, чтобы дорисовывать
-function splitMark(svg) {
-  const d = svg.match(/ d="([^"]+)"/)[1];
-  const subs = d.split(/(?=M)/).map((s) => s.trim()).filter(Boolean);
-  const vb = svg.match(/viewBox="([^"]+)"/)[1];
-  const paths = subs.map((s, i) => `<path class="p${i}" d="${s}"/>`).join('');
-  return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" fill="currentColor">${paths}</svg>`;
-}
-const MARK_SPLIT = splitMark(MARK);
+// ---------- логотип ----------
+// логотип v2 (tools/logo.mjs): части — символами спрайта; спрайт кладётся один раз в блок шапки,
+// шапка, хиро и подвал берут части через <use href="#ve-l-…">
+const LP = JSON.parse(await readFile(join(ROOT, 'brand/vector/logo-v2-parts.json'), 'utf8'));
+const sym = (id, d) => `<symbol id="ve-l-${id}" overflow="visible"><path d="${d}"/></symbol>`;
+const LOGO_SPRITE = `<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">`
+  + ['ring', 'branch', 'letters', 'word', 'rules', 'leaf', 'tag', 'tag2'].map((k) => sym(k, LP[k])).join('')
+  + `<symbol id="ve-l-mark" overflow="visible"><use href="#ve-l-ring"/><use href="#ve-l-branch"/><use href="#ve-l-letters"/></symbol></svg>`;
+const MARK = `<svg viewBox="${LP.vbMark}" fill="currentColor" aria-hidden="true" focusable="false"><use href="#ve-l-mark"/></svg>`;
 
 // ---------- проверки ----------
 async function checkScripts(html, name) {
@@ -72,7 +64,7 @@ const kb = (n) => (n / 1024).toFixed(1) + ' КБ';
 // ---------- сборка ----------
 const files = (await readdir(SRC)).filter((f) => /^\d\d-.*\.html$/.test(f)).sort();
 const headSrc = await readFile(join(SRC, 'head.html'), 'utf8');
-const fill = (s, base) => s.replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__MARK_SPLIT__/g, MARK_SPLIT).replace(/__MARK__/g, MARK);
+const fill = (s, base) => s.replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK);
 
 const headDist = fill(headSrc, PAGES_BASE);
 await checkScripts(headDist, 'head'); checkCss(headDist, 'head');

@@ -1,10 +1,20 @@
 <footer class="ve ve-ft" id="ve-footer">
   <div class="ve-wrap">
-    <div class="ve-ft__logo" aria-label="Verdant Estate — Landscaping &amp; Garden Design">
-      <div class="ve-ft__mark">__MARK_SPLIT__</div>
-      <p class="ve-ft__name">Verdant Estate</p>
-      <p class="ve-ft__rule"><i></i><svg viewBox="0 0 24 16" aria-hidden="true"><path d="M2 14C6 4 14 2 22 2c-1 8-6 12-14 12-2 0-4-.2-6 0z" fill="currentColor"/></svg><i></i></p>
-      <p class="ve-ft__tag">Landscaping &amp; Garden Design</p>
+    <div class="ve-ft__logo">
+      <svg viewBox="__VB_FULL__" fill="currentColor" role="img" aria-label="Verdant Estate — Landscaping &amp; Garden Design">
+        <defs>
+          <mask id="ve-ftm-ring" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><path class="ve-ft__wedge" fill="#fff" d="M0 0Z"/></mask>
+          <linearGradient id="ve-ftg-br" gradientUnits="userSpaceOnUse" x1="0" y1="800" x2="0" y2="210"><stop class="ve-ft__s1" offset="0" stop-color="#fff"/><stop class="ve-ft__s2" offset="0" stop-color="#000"/></linearGradient>
+          <mask id="ve-ftm-br" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><rect width="1254" height="1254" fill="url(#ve-ftg-br)"/></mask>
+        </defs>
+        <use href="#ve-l-ring" mask="url(#ve-ftm-ring)"/>
+        <use href="#ve-l-branch" mask="url(#ve-ftm-br)"/>
+        <use class="ve-ft__p" href="#ve-l-letters" style="--d:900ms"/>
+        <use class="ve-ft__p" href="#ve-l-word" style="--d:1150ms"/>
+        <use class="ve-ft__p" href="#ve-l-rules" style="--d:1350ms"/>
+        <use class="ve-ft__p" href="#ve-l-leaf" style="--d:1450ms"/>
+        <use class="ve-ft__p" href="#ve-l-tag" style="--d:1550ms"/>
+      </svg>
     </div>
     <div class="ve-ft__cols">
       <p class="ve-ft__geo">Москва и Московская область</p>
@@ -20,16 +30,10 @@
 </footer>
 <style>
 .ve-ft{padding:var(--ve-gap) 0 calc(40px + env(safe-area-inset-bottom));border-top:1px solid var(--ve-line);background:var(--ve-paper)}
-.ve-ft__logo{display:flex;flex-direction:column;align-items:center;text-align:center;color:var(--ve-ink)}
-.ve-ft__mark{width:150px;height:138px}
-.ve-ft__mark svg{width:100%;height:100%;display:block;overflow:visible}
-.ve-ft__mark path{opacity:0;transition:opacity .5s var(--ve-ease)}
-.ve-ft__mark.is-done path{opacity:1}
-.ve-ft__name{margin-top:22px;font-weight:600;letter-spacing:-.015em;font-weight:600;font-size:24px;letter-spacing:.14em;text-transform:uppercase;line-height:1}
-.ve-ft__rule{display:flex;align-items:center;gap:10px;margin-top:12px;width:220px;color:var(--ve-moss)}
-.ve-ft__rule i{flex:1;height:1px;background:var(--ve-line)}
-.ve-ft__rule svg{width:16px;height:11px}
-.ve-ft__tag{margin-top:10px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ve-moss)}
+.ve-ft__logo{display:flex;justify-content:center;color:var(--ve-ink)}
+.ve-ft__logo svg{display:block;width:260px;height:auto;overflow:visible}
+.ve-ft__p{opacity:0;transform:translateY(10px);transition:opacity .7s var(--ve-ease),transform .7s var(--ve-ease);transition-delay:var(--d,0ms)}
+.ve-ft__logo.is-in .ve-ft__p{opacity:1;transform:none}
 .ve-ft__cols{margin-top:48px;display:grid;gap:20px;text-align:center;font-size:15px}
 .ve-ft__geo{color:var(--ve-moss)}
 .ve-ft__links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px}
@@ -38,40 +42,29 @@
 .ve-ft__legal{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-size:13px;color:var(--ve-moss)}
 .ve-ft__legal a{color:inherit}
 @media(min-width:900px){
-  .ve-ft__mark{width:170px;height:156px}
-  .ve-ft__name{font-size:28px}
+  .ve-ft__logo svg{width:320px}
   .ve-ft__cols{margin-top:64px;grid-template-columns:1fr auto 1fr;align-items:center;text-align:left}
   .ve-ft__legal{justify-content:flex-end}
 }
-@media(prefers-reduced-motion:reduce){.ve-ft__mark path{opacity:1;transition:none}}
+@media(prefers-reduced-motion:reduce){.ve-ft__p{opacity:1;transform:none;transition:none}}
 </style>
 <script>
 (function(){
   var root=document.getElementById('ve-footer');if(!root||!window.VE)return;
   var y=root.querySelector('[data-ve-year]');if(y)y.textContent=new Date().getFullYear();
-  var mark=root.querySelector('.ve-ft__mark'),svg=mark.querySelector('svg'),paths=mark.querySelectorAll('path');if(!svg||!paths.length)return;
-  // классификация под-путей трассировки: самый большой — дуга со стеблем, крупные справа — буквы, остальное — листья
-  var info=[];for(var i=0;i<paths.length;i++){var b=paths[i].getBBox();info.push({el:paths[i],x:b.x,y:b.y,w:b.width,h:b.height,a:b.width*b.height,cx:b.x+b.width/2,cy:b.y+b.height/2})}
-  var vb=svg.viewBox.baseVal,W=vb.width,H=vb.height;
-  info.sort(function(a,b){return b.a-a.a});
-  var arc=info[0],letters=[],leaves=[];
-  for(var j=1;j<info.length;j++){var o=info[j];if(o.w>W*.18&&o.cx>W*.35)letters.push(o);else leaves.push(o)}
-  leaves.sort(function(a,b){return b.cy-a.cy}); // снизу вверх — как растёт
-  var NS='http://www.w3.org/2000/svg',mid=svg.getAttribute('id')||'ve-ftm';
-  var mask=document.createElementNS(NS,'mask');mask.setAttribute('id',mid+'-m');mask.setAttribute('maskUnits','userSpaceOnUse');mask.setAttribute('x',-W);mask.setAttribute('y',-H);mask.setAttribute('width',W*3);mask.setAttribute('height',H*3);
-  var wedge=document.createElementNS(NS,'path');wedge.setAttribute('fill','#fff');mask.appendChild(wedge);
-  var defs=document.createElementNS(NS,'defs');defs.appendChild(mask);svg.insertBefore(defs,svg.firstChild);
-  arc.el.setAttribute('mask','url(#'+mid+'-m)');
-  var cx=W*.5,cy=H*.5,R=Math.max(W,H),a0=Math.PI*.62; // старт внизу слева, по часовой
-  function setWedge(t){var n=Math.max(2,Math.ceil(t*48)),d='M'+cx+' '+cy;for(var k=0;k<=n;k++){var a=a0+(k/n)*t*Math.PI*2;d+=' L'+(cx+R*Math.cos(a))+' '+(cy+R*Math.sin(a))}wedge.setAttribute('d',d+' Z')}
-  setWedge(0);
+  // логотип: дуга рисуется по часовой от верха, ветвь растёт снизу вверх, буквы и подписи проявляются
+  var logo=root.querySelector('.ve-ft__logo'),wedge=root.querySelector('.ve-ft__wedge'),s1=root.querySelector('.ve-ft__s1'),s2=root.querySelector('.ve-ft__s2');
+  var CX=638.8,CY=506.2,R=420,A0=-96,A1=142;
+  function ring(t){var a1=A0+(A1-A0)*t,n=Math.max(2,Math.ceil(t*60)),d='M'+CX+' '+CY;for(var k=0;k<=n;k++){var a=(A0+(a1-A0)*k/n)*Math.PI/180;d+='L'+(CX+R*Math.cos(a)).toFixed(1)+' '+(CY+R*Math.sin(a)).toFixed(1)}wedge.setAttribute('d',d+'Z')}
+  function branch(t){var o=Math.min(1,t*1.08);s1.setAttribute('offset',Math.max(0,o-.08).toFixed(3));s2.setAttribute('offset',o.toFixed(3))}
+  function end(){ring(1);branch(1);s2.setAttribute('offset','1.1');logo.classList.add('is-in')}
+  ring(0);branch(0);
   function play(){
-    if(VE.rm){mark.classList.add('is-done');setWedge(1);return}
-    var t0=performance.now(),D=1400;arc.el.style.opacity=1;
-    leaves.forEach(function(l,i){setTimeout(function(){l.el.style.opacity=1},300+i*90)});
-    letters.forEach(function(l){setTimeout(function(){l.el.style.opacity=1},900)});
-    (function f(now){var t=Math.min(1,(now-t0)/D);var e=1-Math.pow(1-t,3);setWedge(e);if(t<1)requestAnimationFrame(f);else{arc.el.removeAttribute('mask');mark.classList.add('is-done')}})(t0);
+    if(VE.rm)return end();
+    logo.classList.add('is-in');var t0=performance.now();
+    (function f(now){var t=(now-t0)/1000,a=Math.min(1,t/1.3),b=Math.min(1,Math.max(0,(t-.45)/1.5));
+      ring(1-Math.pow(1-a,3));branch(1-Math.pow(1-b,2));if(a<1||b<1)requestAnimationFrame(f);else end()})(t0);
   }
-  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();play()}},{threshold:.4});io.observe(mark)}else play();
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();play()}},{threshold:.35});io.observe(logo)}else end();
 })();
 </script>

@@ -7,9 +7,9 @@
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <div class="ve-hero__shade" aria-hidden="true"></div>
     <nav class="ve-hero__orbit" aria-label="Разделы сайта"></nav>
+    <div class="ve-hero__logo"><svg viewBox="__VB_FULL__" fill="currentColor" role="img" aria-label="Verdant Estate — Private Garden Service"><g class="ve-hero__lm"><use href="#ve-l-mark"/></g><g class="ve-hero__lt"><use href="#ve-l-word"/><use href="#ve-l-rules"/><use href="#ve-l-leaf"/><use href="#ve-l-tag2"/></g></svg></div>
     <div class="ve-hero__text">
       <div class="ve-hero__ch" data-at="0">
-        <p class="ve-hero__brand"><span>Verdant Estate</span><span class="ve-hero__brand-2">Private Garden Service</span></p>
         <h1 class="ve-h1 ve-hero__h1">Сад, за которым не&nbsp;нужно следить</h1>
       </div>
       <p class="ve-hero__ch ve-hero__big" data-at="1">Один договор.</p>
@@ -37,8 +37,13 @@
 /* главы лежат в одной ячейке и сменяют друг друга */
 .ve-hero__ch{grid-area:1/1;align-self:end;opacity:0;transform:translateY(14px);transition:opacity .5s var(--ve-ease),transform .5s var(--ve-ease);pointer-events:none}
 .ve-hero[data-ch="0"] [data-at="0"],.ve-hero[data-ch="1"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="2"],.ve-hero[data-ch="3"] [data-at="3"]{opacity:1;transform:none;pointer-events:auto}
-.ve-hero__brand{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 16px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;opacity:.92}
-.ve-hero__brand-2{opacity:.7}
+/* логотип первого экрана: по центру, на первых шагах скролла улетает в знак шапки */
+.ve-hero__logo{position:absolute;left:50%;top:calc(17% + env(safe-area-inset-top));width:264px;margin-left:-132px;transform-origin:0 0;will-change:transform;filter:drop-shadow(0 2px 18px rgba(10,24,14,.38))}
+.ve-hero__logo svg{display:block;width:100%;height:auto;overflow:visible}
+.ve-hero__lt{transition:none}
+.ve-hero.is-docked .ve-hero__logo{visibility:hidden}
+@media(min-width:900px){.ve-hero__logo{width:330px;margin-left:-165px;top:14%}}
+@media(max-height:700px) and (max-width:899px){.ve-hero__logo{width:190px;margin-left:-95px;top:13%}}
 .ve-hero__h1{color:inherit}
 @media(min-width:900px){.ve-hero__h1{max-width:14ch}}
 .ve-hero__big{margin:0;font-weight:600;letter-spacing:-.025em;font-size:40px;line-height:1.02;max-width:12ch}
@@ -82,7 +87,31 @@
   var CK=[[0,430],[.22,460],[.44,780],[.66,1240],[.8,1255],[.88,1290]];
   var lastCh=-1,lastT='',menu=false;
   function minutes(p){for(var i=1;i<CK.length;i++)if(p<=CK[i][0]){var a=CK[i-1],b=CK[i];return a[1]+(b[1]-a[1])*(p-a[0])/(b[0]-a[0])}return CK[CK.length-1][1]}
+  // ---- логотип первого экрана → знак шапки ----
+  var logo=root.querySelector('.ve-hero__logo'),lm=root.querySelector('.ve-hero__lm'),lt=root.querySelector('.ve-hero__lt'),geo=null,lastK=-1;
+  document.documentElement.classList.add('ve-has-hero');
+  function measureLogo(){
+    var hm=document.querySelector('.ve-hd__mark');if(!hm)return null;
+    var keep=logo.style.transform;logo.style.transform='none';
+    var c=logo.getBoundingClientRect(),m=lm.getBoundingClientRect(),h=hm.getBoundingClientRect();logo.style.transform=keep;
+    if(!m.width||!h.width)return null;
+    var sc=h.width/m.width;
+    return {sc:sc,tx:h.left-c.left-(m.left-c.left)*sc,ty:h.top-c.top-(m.top-c.top)*sc};
+  }
+  function dock(p){
+    var k=Math.min(1,Math.max(0,p/.045));
+    if(Math.abs(k-lastK)<.001)return;lastK=k;
+    if(!geo)geo=measureLogo();if(!geo)return;
+    var e=VE_RM?(k>.5?1:0):1-Math.pow(1-k,3),s=1+(geo.sc-1)*e;
+    logo.style.transform=e>0?'translate3d('+(geo.tx*e).toFixed(1)+'px,'+(geo.ty*e).toFixed(1)+'px,0) scale('+s.toFixed(4)+')':'';
+    lt.style.opacity=Math.max(0,1-k*2.4).toFixed(3);
+    var on=k>=1;root.classList.toggle('is-docked',on);document.documentElement.classList.toggle('ve-logo-docked',on);
+  }
+  var VE_RM=false;try{VE_RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+  window.addEventListener('resize',function(){geo=null;lastK=-1;dock(Math.max(0,lastP))});
+  var lastP=0;
   function onP(p){
+    lastP=p;dock(p);
     var ch=p<.22?0:p<.44?1:p<.7?2:3;
     if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
     var m=Math.round(minutes(p)),s=('0'+Math.floor(m/60)).slice(-2)+':'+('0'+(m%60)).slice(-2);
