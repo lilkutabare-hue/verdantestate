@@ -75,6 +75,12 @@
 .ve-swap{display:inline-block;transition:opacity .18s var(--ve-ease-2),transform .18s var(--ve-ease-2)}
 .ve-swap.is-out{opacity:0;transform:translateY(5px)}
 .ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
+/* точка, в которую садится сфера меню хиро (ставит хиро у подписи раздела) */
+.ve-caps{position:relative}
+.ve-dot{position:absolute;left:-16px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:var(--ve-acc);transform:scale(0);transition:transform .4s var(--ve-ease)}
+.ve-dot.is-on{transform:scale(1)}
+.ve-tar .ve-dot{background:var(--ve-paper)}
+.ve h2[tabindex="-1"]:focus{outline:none}
 
 /* горизонтальные ленты со snap */
 .ve-strip{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
