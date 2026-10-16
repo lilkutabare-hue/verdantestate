@@ -7,24 +7,16 @@
 <meta name="description" content="Постоянное управление садом: один договор, один ответственный, весь сад под контролем. Москва и Московская область.">
 <meta property="og:title" content="Verdant Estate — Private Garden Service">
 <meta property="og:description" content="Сад, за которым не нужно следить. Постоянный уход за частными садами в Москве и Московской области.">
-<meta property="og:image" content="site/media/scene/poster-wide.webp?v=cef5cbe1">
+<meta property="og:image" content="site/media/scene/poster-wide.webp?v=2390984c">
 <meta name="robots" content="noindex">
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
 <script>window.VE_BASE=new URL('site/',location.href).href</script>
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка cef5cbe1 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 2390984c -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="site/fonts/cormorant-garamond-cyrillic-500-normal.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="site/fonts/cormorant-garamond-latin-500-normal.woff2" crossorigin>
 <style>
-@font-face{font-family:"VE Serif";font-style:normal;font-weight:500;font-display:swap;src:url(site/fonts/cormorant-garamond-cyrillic-500-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
-@font-face{font-family:"VE Serif";font-style:normal;font-weight:500;font-display:swap;src:url(site/fonts/cormorant-garamond-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-@font-face{font-family:"VE Serif";font-style:normal;font-weight:600;font-display:swap;src:url(site/fonts/cormorant-garamond-cyrillic-600-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
-@font-face{font-family:"VE Serif";font-style:normal;font-weight:600;font-display:swap;src:url(site/fonts/cormorant-garamond-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-
 :root{
   --ve-paper:#F7F4EC;--ve-paper-2:#EFEBE0;--ve-ink:#2F3B24;--ve-moss:#5E6E45;--ve-line:rgba(47,59,36,.14);--ve-lamp:#E2B46C;
-  --ve-serif:"VE Serif",Cormorant Garamond,Garamond,Georgia,"Times New Roman",serif;
-  --ve-sans:-apple-system,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
+  --ve-sans:-apple-system,"SF Pro Text","SF Pro Display","Inter","Segoe UI",Roboto,system-ui,sans-serif;
   --ve-ease:cubic-bezier(.2,.9,.2,1);--ve-ease-2:cubic-bezier(.2,.8,.2,1);
   --ve-r:8px;--ve-gap:72px;--ve-pad:20px;
   color-scheme:light only;
@@ -49,31 +41,52 @@
 .ve-copy{max-width:56ch}
 .ve-muted{color:var(--ve-moss)}
 
-.ve-h1,.ve-h2,.ve-h3{font-family:var(--ve-serif);font-weight:500;margin:0;letter-spacing:-.005em;text-wrap:balance}
-.ve-h1{font-size:40px;line-height:1.05}
-.ve-h2{font-size:30px;line-height:1.12}
-.ve-h3{font-size:24px;line-height:1.18}
-@media(min-width:900px){.ve-h1{font-size:72px;line-height:1}.ve-h2{font-size:44px;line-height:1.08}.ve-h3{font-size:28px}}
-.ve-caps{font-family:var(--ve-sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ve-moss)}
-.ve-caps--serif{font-family:var(--ve-serif);font-weight:600;font-size:13px;letter-spacing:.14em}
-.ve-price,.ve-num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
-.ve-lead{font-size:18px;line-height:1.5;max-width:56ch}
-@media(min-width:900px){.ve-lead{font-size:20px}}
+/* типографика: один гротеск, заголовки плотные, без курсива и росчерков */
+.ve-h1,.ve-h2,.ve-h3{font-family:var(--ve-sans);font-weight:600;margin:0;letter-spacing:-.022em;text-wrap:balance}
+.ve-h1{font-size:40px;line-height:1.02}
+.ve-h2{font-size:30px;line-height:1.08;letter-spacing:-.02em}
+.ve-h3{font-size:20px;line-height:1.2;letter-spacing:-.012em}
+@media(min-width:900px){.ve-h1{font-size:64px;line-height:1}.ve-h2{font-size:42px;line-height:1.04}.ve-h3{font-size:22px}}
+.ve-caps{font-family:var(--ve-sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ve-moss)}
+.ve-price,.ve-num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
+.ve-lead{font-size:18px;line-height:1.45;max-width:56ch;font-weight:500;letter-spacing:-.01em}
+@media(min-width:900px){.ve-lead{font-size:22px}}
 .ve-sub{margin-top:14px;max-width:56ch;color:var(--ve-moss)}
+.ve-big{font-weight:600;letter-spacing:-.02em;font-size:26px;line-height:1.1}
+@media(min-width:900px){.ve-big{font-size:30px}}
 
 .ve .ve-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;
-  background:var(--ve-ink);color:var(--ve-paper);font-size:16px;font-weight:500;letter-spacing:.01em;white-space:nowrap;border:1px solid var(--ve-ink);
-  transition:transform .3s var(--ve-ease-2),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2)}
+  background:var(--ve-ink);color:var(--ve-paper);font-size:16px;font-weight:500;letter-spacing:-.005em;white-space:nowrap;border:1px solid var(--ve-ink);
+  transition:transform .3s var(--ve-ease-2),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s var(--ve-ease-2)}
 .ve .ve-btn--ghost{background:transparent;color:var(--ve-ink);border-color:rgba(47,59,36,.35)}
 .ve .ve-btn--light{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
 .ve .ve-btn--sm{height:44px;padding:0 20px;font-size:15px}
-@media(hover:hover){.ve .ve-btn:hover{transform:translateY(-2px)}.ve .ve-btn--ghost:hover{border-color:var(--ve-ink)}}
+@media(hover:hover){.ve .ve-btn:hover{transform:translateY(-2px)}.ve .ve-btn--ghost:hover{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}}
 .ve .ve-btn:active{transform:scale(.97)}
 @media(min-width:900px){.ve .ve-btn{height:54px;padding:0 30px}}
 
-/* появление: один раз, по IntersectionObserver, лесенка по детям .ve-rg */
-.ve-r,.ve-rg>*{opacity:0;transform:translateY(12px);transition:opacity .5s var(--ve-ease),transform .5s var(--ve-ease)}
+/* ---- система движения ----
+   .ve-r      появление: прозрачность + подъём 12px, один раз, по IntersectionObserver
+   .ve-rg     группа: дети появляются лесенкой по 60 мс (--d на каждом)
+   .ve-img    картинка открывается снизу вверх и «садится» из лёгкого увеличения
+   .ve-line   верхний хэйрлайн рисуется слева направо
+   .ve-pill   бегущая подложка активной вкладки (VE.pills)
+   VE.swap    смена текста через короткое затухание                                   */
+.ve-r,.ve-rg>*{opacity:0;transform:translateY(12px);transition:opacity .55s var(--ve-ease),transform .55s var(--ve-ease);transition-delay:var(--d,0ms)}
 .ve-r.is-in,.ve-rg.is-in>*{opacity:1;transform:none}
+.ve-img{position:relative;overflow:hidden;border-radius:var(--ve-r);background:var(--ve-paper-2);clip-path:inset(0 0 100% 0 round var(--ve-r));transition:clip-path .9s var(--ve-ease);transition-delay:var(--d,0ms)}
+.ve-img>img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 1.3s var(--ve-ease);transition-delay:var(--d,0ms)}
+.ve-img.is-in{clip-path:inset(0 round var(--ve-r))}
+.ve-img.is-in>img{transform:scale(1)}
+.ve-line{position:relative}
+.ve-line::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ve-line);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ve-ease);transition-delay:var(--d,0ms)}
+.ve-line.is-in::before{transform:scaleX(1)}
+.ve-tabs{position:relative;display:inline-flex;gap:4px;padding:3px;border-radius:999px;background:var(--ve-paper-2)}
+.ve-tabs>button{position:relative;z-index:1;height:36px;padding:0 15px;border-radius:999px;font-size:14px;font-weight:500;color:var(--ve-moss);transition:color .3s var(--ve-ease-2)}
+.ve-tabs>button.is-on{color:var(--ve-paper)}
+.ve-pill{position:absolute;top:3px;left:0;height:36px;width:0;border-radius:999px;background:var(--ve-ink);transition:transform .4s var(--ve-ease),width .4s var(--ve-ease);transform:translateX(0)}
+.ve-swap{display:inline-block;transition:opacity .18s var(--ve-ease-2),transform .18s var(--ve-ease-2)}
+.ve-swap.is-out{opacity:0;transform:translateY(5px)}
 .ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
 
 /* горизонтальные ленты со snap */
@@ -82,14 +95,17 @@
 .ve-strip::-webkit-scrollbar{display:none}
 .ve-strip>*{scroll-snap-align:start;flex:0 0 auto}
 
-@media(prefers-reduced-motion:reduce){.ve-r,.ve-rg>*{opacity:1;transform:none;transition:none}.ve-btn{transition:none}}
+@media(prefers-reduced-motion:reduce){
+  .ve-r,.ve-rg>*,.ve-img,.ve-img>img,.ve-line::before{opacity:1;transform:none;clip-path:none;transition:none}
+  .ve .ve-btn,.ve-pill,.ve-swap{transition:none}
+}
 </style>
 <script>
-/* реестр VE: адреса с версией, появление, общий префилл формы */
+/* реестр VE: адреса с версией, появление, вкладки, смена текста, общий префилл формы */
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'site/';
-  var VE={v:'cef5cbe1',base:base,
+  var VE={v:'2390984c',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
@@ -99,19 +115,28 @@
     rm:false,
     reveal:function(root){
       root=root||document;
-      var els=root.querySelectorAll('.ve-r:not(.is-in),.ve-rg:not(.is-in)');
+      var els=root.querySelectorAll('.ve-r:not(.is-in),.ve-rg:not(.is-in),.ve-img:not(.is-in),.ve-line:not(.is-in)');
       if(!('IntersectionObserver' in window)||VE.rm){for(var i=0;i<els.length;i++)els[i].classList.add('is-in');return}
       VE._io=VE._io||new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){var el=x.target;
-        if(el.classList.contains('ve-rg')){var ch=el.children;for(var j=0;j<ch.length;j++)ch[j].style.transitionDelay=Math.min(j,12)*60+'ms'}
+        if(el.classList.contains('ve-rg')){var ch=el.children;for(var j=0;j<ch.length;j++){ch[j].style.setProperty('--d',Math.min(j,12)*60+'ms');var sub=ch[j].querySelectorAll('.ve-img,.ve-line');for(var k=0;k<sub.length;k++)sub[k].style.setProperty('--d',Math.min(j,12)*60+'ms')}}
         el.classList.add('is-in');VE._io.unobserve(el)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
       for(var i=0;i<els.length;i++)VE._io.observe(els[i]);
-    }};
+    },
+    /* бегущая подложка вкладок: контейнер .ve-tabs, кнопки внутри с .is-on */
+    pills:function(tabs){
+      var pill=tabs.querySelector('.ve-pill');if(!pill){pill=document.createElement('i');pill.className='ve-pill';tabs.insertBefore(pill,tabs.firstChild)}
+      var move=function(){var on=tabs.querySelector('button.is-on');if(!on)return;pill.style.width=on.offsetWidth+'px';pill.style.transform='translateX('+on.offsetLeft+'px)'};
+      move();if('ResizeObserver' in window)new ResizeObserver(move).observe(tabs);window.addEventListener('resize',move);
+      return move;
+    },
+    /* смена текста с коротким затуханием */
+    swap:function(el,html){if(el.innerHTML===html)return;if(VE.rm){el.innerHTML=html;return}el.classList.add('ve-swap');el.classList.add('is-out');setTimeout(function(){el.innerHTML=html;el.classList.remove('is-out')},180)}
+  };
   try{VE.rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
   try{var s=sessionStorage.getItem('ve-calc');if(s)VE.state=JSON.parse(s)||{}}catch(e){}
   window.VE=VE;
   var boot=function(){VE.reveal();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-  // рамка фокуса только с клавиатуры (focus-visible есть везде, это страховка для старых WebView)
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
 })();
 </script>
@@ -167,8 +192,8 @@
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=cef5cbe1">
-      <img src="site/media/scene/poster-wide.webp?v=cef5cbe1" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=2390984c">
+      <img src="site/media/scene/poster-wide.webp?v=2390984c" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <div class="ve-hero__shade" aria-hidden="true"></div>
@@ -202,7 +227,7 @@
 .ve-hero__brand-2{opacity:.7}
 .ve-hero__h1{max-width:none;color:inherit}
 @media(min-width:900px){.ve-hero__h1{max-width:14ch}}
-.ve-hero__lines{margin-top:18px;min-height:3.2em;font-family:var(--ve-serif);font-size:22px;line-height:1.25}
+.ve-hero__lines{margin-top:18px;min-height:3.2em;font-weight:600;letter-spacing:-.015em;font-size:22px;line-height:1.25}
 @media(min-width:900px){.ve-hero__lines{font-size:30px;margin-top:22px}}
 .ve-hero__line,.ve-hero__cta{opacity:0;transform:translateY(12px);transition:opacity .5s var(--ve-ease),transform .5s var(--ve-ease)}
 .ve-hero__cta{margin-top:22px}
@@ -277,7 +302,7 @@
 .ve-man__col{padding:22px 0;border-top:1px solid var(--ve-line)}
 .ve-man__col:last-child{border-bottom:1px solid var(--ve-line)}
 .ve-man__col p{margin-top:8px;max-width:48ch;color:var(--ve-moss)}
-.ve-man__end{margin-top:36px;font-family:var(--ve-serif);font-size:24px;line-height:1.25}
+.ve-man__end{margin-top:36px;font-weight:600;letter-spacing:-.015em;font-size:24px;line-height:1.25}
 @media(min-width:900px){
   .ve-man__cols{grid-template-columns:repeat(3,1fr);gap:40px;margin-top:56px}
   .ve-man__col{padding:28px 0 0;border-bottom:0!important}
@@ -297,8 +322,8 @@
   <div class="ve-wrap ve-tar__wrap">
     <div class="ve-strip ve-tar__strip ve-rg">
       <article class="ve-tar__card" data-tariff="BASIC">
-        <div class="ve-tar__img"><img src="site/media/stills/tariff-basic-l.webp?v=cef5cbe1" srcset="site/media/stills/tariff-basic-s.webp?v=cef5cbe1 560w, site/media/stills/tariff-basic-l.webp?v=cef5cbe1 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
-        <p class="ve-caps ve-caps--serif ve-tar__name">Basic</p>
+        <div class="ve-tar__img"><img src="site/media/stills/tariff-basic-l.webp?v=2390984c" srcset="site/media/stills/tariff-basic-s.webp?v=2390984c 560w, site/media/stills/tariff-basic-l.webp?v=2390984c 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <p class="ve-caps ve-tar__name">Basic</p>
         <p class="ve-tar__price ve-price">от 60&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для небольших и относительно простых участков.</p>
         <ul class="ve-tar__list">
@@ -307,8 +332,8 @@
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="PREMIUM">
-        <div class="ve-tar__img"><img src="site/media/stills/tariff-premium-l.webp?v=cef5cbe1" srcset="site/media/stills/tariff-premium-s.webp?v=cef5cbe1 560w, site/media/stills/tariff-premium-l.webp?v=cef5cbe1 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
-        <p class="ve-caps ve-caps--serif ve-tar__name">Premium</p>
+        <div class="ve-tar__img"><img src="site/media/stills/tariff-premium-l.webp?v=2390984c" srcset="site/media/stills/tariff-premium-s.webp?v=2390984c 560w, site/media/stills/tariff-premium-l.webp?v=2390984c 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <p class="ve-caps ve-tar__name">Premium</p>
         <p class="ve-tar__price ve-price">от 110&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для полноценных частных садов.</p>
         <ul class="ve-tar__list">
@@ -317,8 +342,8 @@
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="ESTATE">
-        <div class="ve-tar__img"><img src="site/media/stills/tariff-estate-l.webp?v=cef5cbe1" srcset="site/media/stills/tariff-estate-s.webp?v=cef5cbe1 560w, site/media/stills/tariff-estate-l.webp?v=cef5cbe1 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
-        <p class="ve-caps ve-caps--serif ve-tar__name">Estate</p>
+        <div class="ve-tar__img"><img src="site/media/stills/tariff-estate-l.webp?v=2390984c" srcset="site/media/stills/tariff-estate-s.webp?v=2390984c 560w, site/media/stills/tariff-estate-l.webp?v=2390984c 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <p class="ve-caps ve-tar__name">Estate</p>
         <p class="ve-tar__price ve-price">от 190&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для больших и сложных территорий.</p>
         <ul class="ve-tar__list">
@@ -338,7 +363,7 @@
 .ve-tar__card.is-in-view .ve-tar__img img{animation:ve-breath 12s ease-in-out infinite alternate}
 @keyframes ve-breath{from{transform:scale(1)}to{transform:scale(1.03)}}
 .ve-tar__name{margin-top:22px;color:var(--ve-ink)}
-.ve-tar__price{margin-top:6px;font-family:var(--ve-serif);font-size:28px;line-height:1.1}
+.ve-tar__price{margin-top:6px;font-weight:600;letter-spacing:-.015em;font-size:28px;line-height:1.1}
 .ve-tar__price span{font-family:var(--ve-sans);font-size:14px;color:var(--ve-moss);letter-spacing:.01em}
 .ve-tar__for{margin-top:8px;color:var(--ve-moss)}
 .ve-tar__list{list-style:none;margin:18px 0 0;padding:0;font-size:15px;line-height:1.45}
@@ -388,7 +413,7 @@
         <button type="button" class="ve-bld__chip" data-f="запущенный сад">Запущенный сад</button>
       </div>
       <div class="ve-bld__out">
-        <p class="ve-bld__res"><span class="ve-bld__tier">Похоже на <b class="ve-caps ve-caps--serif">Premium</b></span><span class="ve-bld__dot">·</span><span class="ve-price ve-bld__price">от 110&#8239;000&nbsp;₽ / месяц</span><span class="ve-bld__dot">·</span><span class="ve-muted">точную цифру скажем после осмотра</span></p>
+        <p class="ve-bld__res"><span class="ve-bld__tier">Похоже на <b class="ve-caps">Premium</b></span><span class="ve-bld__dot">·</span><span class="ve-price ve-bld__price">от 110&#8239;000&nbsp;₽ / месяц</span><span class="ve-bld__dot">·</span><span class="ve-muted">точную цифру скажем после осмотра</span></p>
         <button class="ve-btn ve-bld__go" type="button">Рассчитать по моему саду</button>
       </div>
     </div>
@@ -400,7 +425,7 @@
 .ve-bld__box{margin-top:36px;background:var(--ve-paper-2);border-radius:var(--ve-r);padding:26px 20px}
 .ve-bld__area{display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:16px}
 .ve-bld__lab{font-size:14px;color:var(--ve-moss)}
-.ve-bld__val{font-family:var(--ve-serif);font-size:26px;line-height:1;white-space:nowrap;font-variant-numeric:lining-nums proportional-nums}
+.ve-bld__val{font-weight:600;letter-spacing:-.015em;font-size:26px;line-height:1;white-space:nowrap;font-variant-numeric:lining-nums proportional-nums}
 .ve-bld__val b{font-weight:500;font-size:34px}
 .ve-bld__range{grid-column:1/-1;width:100%;margin:18px 0 0;-webkit-appearance:none;appearance:none;height:32px;background:transparent;cursor:pointer}
 .ve-bld__range::-webkit-slider-runnable-track{height:2px;background:rgba(47,59,36,.25);border-radius:2px}
@@ -520,7 +545,7 @@
 .ve-eco__list{list-style:none;margin:16px 0 0;padding:0}
 .ve-eco__list li{padding:8px 0;border-top:1px solid var(--ve-line)}
 .ve-eco__list li::first-letter{text-transform:uppercase}
-.ve-eco__end{margin-top:40px;font-family:var(--ve-serif);font-size:24px;line-height:1.25;max-width:30ch}
+.ve-eco__end{margin-top:40px;font-weight:600;letter-spacing:-.015em;font-size:24px;line-height:1.25;max-width:30ch}
 .ve-eco__cta{margin-top:24px}
 @media(min-width:900px){.ve-eco__cols{grid-template-columns:1fr 1fr;gap:56px;margin-top:72px}.ve-eco__end{font-size:30px;margin-top:56px}}
 </style>
@@ -598,9 +623,9 @@
         <p class="ve-pr__note ve-muted">Сложные работы — по смете.</p>
       </div>
       <div class="ve-pr__pic ve-r" aria-hidden="true">
-        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=cef5cbe1" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=cef5cbe1" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=cef5cbe1" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=2390984c" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=2390984c" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=2390984c" alt="" loading="lazy" decoding="async" width="1000" height="1250">
       </div>
     </div>
   </div>
@@ -668,8 +693,8 @@
 .ve-ways__card{width:72vw;max-width:300px;user-select:none;-webkit-user-select:none}
 .ve-ways__img{aspect-ratio:4/5;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
 .ve-ways__img img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-.ve-ways__n{margin-top:16px;font-family:var(--ve-serif);font-size:15px;color:var(--ve-moss);font-variant-numeric:tabular-nums}
-.ve-ways__t{margin-top:4px;font-family:var(--ve-serif);font-size:22px;line-height:1.15}
+.ve-ways__n{margin-top:16px;font-weight:600;letter-spacing:-.015em;font-size:15px;color:var(--ve-moss);font-variant-numeric:tabular-nums}
+.ve-ways__t{margin-top:4px;font-weight:600;letter-spacing:-.015em;font-size:22px;line-height:1.15}
 .ve-ways__d{margin-top:6px;font-size:14px;color:var(--ve-moss);line-height:1.45}
 @media(min-width:900px){
   .ve-ways__wrap{margin-top:56px}
@@ -713,8 +738,8 @@
     <p class="ve-caps ve-r">До и после</p>
     <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
     <div class="ve-ba__box ve-r" style="--x:50%">
-      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=cef5cbe1" srcset="site/media/stills/ba-before-s.webp?v=cef5cbe1 720w, site/media/stills/ba-before-l.webp?v=cef5cbe1 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
-      <img class="ve-ba__img ve-ba__img--after" src="site/media/stills/ba-after-l.webp?v=cef5cbe1" srcset="site/media/stills/ba-after-s.webp?v=cef5cbe1 720w, site/media/stills/ba-after-l.webp?v=cef5cbe1 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=2390984c" srcset="site/media/stills/ba-before-s.webp?v=2390984c 720w, site/media/stills/ba-before-l.webp?v=2390984c 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--after" src="site/media/stills/ba-after-l.webp?v=2390984c" srcset="site/media/stills/ba-after-s.webp?v=2390984c 720w, site/media/stills/ba-after-l.webp?v=2390984c 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
       <span class="ve-ba__lab ve-ba__lab--b">до</span>
       <span class="ve-ba__lab ve-ba__lab--a">после</span>
       <div class="ve-ba__bar" aria-hidden="true"><i></i></div>
@@ -756,10 +781,10 @@
     <h2 class="ve-h2 ve-r ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=cef5cbe1" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" src="site/media/stills/season-summer-l.webp?v=cef5cbe1" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=cef5cbe1" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=cef5cbe1" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=2390984c" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" src="site/media/stills/season-summer-l.webp?v=2390984c" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=2390984c" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=2390984c" alt="" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
         <div class="ve-sea__tabs ve-r" role="tablist">
@@ -925,7 +950,7 @@
 .ve-fm__consent.is-bad i{border-color:#B0553F}
 .ve-fm__err{margin-top:14px;font-size:14px;color:#B0553F}
 .ve-fm__actions{margin-top:24px}
-.ve-fm__done{margin-top:24px;font-family:var(--ve-serif);font-size:24px;line-height:1.25}
+.ve-fm__done{margin-top:24px;font-weight:600;letter-spacing:-.015em;font-size:24px;line-height:1.25}
 .ve-fm__form.is-sent .ve-fm__actions,.ve-fm__form.is-sent .ve-fm__row,.ve-fm__form.is-sent .ve-fm__field,.ve-fm__form.is-sent .ve-fm__consent{display:none}
 @media(min-width:900px){
   .ve-fm__grid{display:grid;grid-template-columns:1fr 1.3fr;gap:72px;align-items:start}
@@ -1001,7 +1026,7 @@
 .ve-ft__mark svg{width:100%;height:100%;display:block;overflow:visible}
 .ve-ft__mark path{opacity:0;transition:opacity .5s var(--ve-ease)}
 .ve-ft__mark.is-done path{opacity:1}
-.ve-ft__name{margin-top:22px;font-family:var(--ve-serif);font-weight:600;font-size:24px;letter-spacing:.14em;text-transform:uppercase;line-height:1}
+.ve-ft__name{margin-top:22px;font-weight:600;letter-spacing:-.015em;font-weight:600;font-size:24px;letter-spacing:.14em;text-transform:uppercase;line-height:1}
 .ve-ft__rule{display:flex;align-items:center;gap:10px;margin-top:12px;width:220px;color:var(--ve-moss)}
 .ve-ft__rule i{flex:1;height:1px;background:var(--ve-line)}
 .ve-ft__rule svg{width:16px;height:11px}
@@ -1052,6 +1077,6 @@
 })();
 </script>
 
-<div class="ve-preview-note">превью сборки cef5cbe1 · изображения временные, до генераций · контакты в подвале — заглушки</div>
+<div class="ve-preview-note">превью сборки 2390984c · изображения временные, до генераций · контакты в подвале — заглушки</div>
 </body>
 </html>
