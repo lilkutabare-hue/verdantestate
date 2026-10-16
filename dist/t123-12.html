@@ -1,0 +1,60 @@
+<!-- VE · 12-faq.html · сборка 3452a233 -->
+<section class="ve ve-sec ve-faq" id="ve-faq">
+  <div class="ve-wrap ve-faq__grid">
+    <div class="ve-faq__side">
+      <p class="ve-caps ve-r">Вопросы</p>
+      <h2 class="ve-h2 ve-r ve-faq__h">Что обычно спрашивают</h2>
+      <!-- черновик: ответы составлены по брифу, заказчик проверяет до публикации; плашку ниже убрать после проверки -->
+      <p class="ve-faq__draft ve-r">Ответы — черновик, на проверке у заказчика</p>
+    </div>
+    <div class="ve-faq__list ve-rg"></div>
+  </div>
+</section>
+<style>
+.ve-faq__h{margin-top:14px;max-width:14ch}
+.ve-faq__draft{display:inline-block;margin-top:16px;padding:6px 12px;border-radius:999px;background:var(--ve-paper-2);font-size:12px;color:var(--ve-moss)}
+.ve-faq__list{margin-top:30px;border-bottom:1px solid var(--ve-line)}
+.ve-faq__q{display:flex;width:100%;align-items:flex-start;justify-content:space-between;gap:20px;padding:20px 0;border-top:1px solid var(--ve-line);text-align:left;font-weight:600;letter-spacing:-.012em;font-size:18px;line-height:1.3}
+.ve-faq__q i{position:relative;flex:0 0 auto;width:14px;height:14px;margin-top:4px;color:var(--ve-acc)}
+.ve-faq__q i::before,.ve-faq__q i::after{content:"";position:absolute;left:0;right:0;top:6px;height:2px;border-radius:1px;background:currentColor;transition:transform .3s var(--ve-ease-2)}
+.ve-faq__q i::after{transform:rotate(90deg)}
+.ve-faq__item.is-open .ve-faq__q i::after{transform:rotate(0)}
+.ve-faq__a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .42s var(--ve-ease)}
+.ve-faq__a>div{overflow:hidden}
+.ve-faq__a p{padding:0 34px 22px 0;color:var(--ve-moss);max-width:60ch;opacity:0;transform:translateY(-4px);transition:opacity .3s var(--ve-ease-2),transform .3s var(--ve-ease-2)}
+.ve-faq__item.is-open .ve-faq__a{grid-template-rows:1fr}
+.ve-faq__item.is-open .ve-faq__a p{opacity:1;transform:none;transition-delay:.08s}
+@media(hover:hover){.ve-faq__q:hover{color:var(--ve-acc)}}
+@media(min-width:900px){
+  .ve-faq__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:start}
+  .ve-faq__side{position:sticky;top:110px}
+  .ve-faq__list{margin-top:0}
+  .ve-faq__q{font-size:20px;padding:24px 0}
+}
+@media(prefers-reduced-motion:reduce){.ve-faq__a,.ve-faq__a p,.ve-faq__q i::after{transition:none}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('ve-faq');if(!root||!window.VE)return;
+  var QA=[
+    ['Какой договор и на какой срок?','Договор на сезон обслуживания. К нему прилагаются план работ и график визитов — их мы составляем после осмотра участка.'],
+    ['Что входит в один визит?','Работы по графику этого месяца: покос, стрижка, уход за растениями, уборка. Состав зависит от уровня обслуживания и времени года.'],
+    ['Кто к нам приезжает?','Специалисты под задачу: садовник, арборист, специалист по газону или поливу. Отвечает за сад один человек с нашей стороны — все вопросы к нему.'],
+    ['Как считается цена?','По вашему саду: площадь, газоны, деревья, кустарники, цветники, изгороди, инженерные системы, рельеф, состояние и нужная частота визитов. Цифра в тарифе — порог, от которого начинается уровень.'],
+    ['Что происходит зимой?','Сезон заканчивается подготовкой сада к зиме: обрезка, укрытие растений, уборка. Что делаем зимой и как меняется оплата — обсуждаем при расчёте.'],
+    ['А если идёт дождь?','Работы, которым погода мешает, переносим на ближайший подходящий день и предупреждаем заранее. Остальное — по графику.'],
+    ['Можно вызвать вас срочно?','Да, если что-то случилось между визитами: упало дерево, сломался полив. На уровне Estate такой выезд — приоритетный.'],
+    ['Как оплачивать?','Постоянное обслуживание — ежемесячно, по договору. Разовые работы — по прайсу, сложные — по смете.'],
+    ['Можно заказать одну работу без договора?','Да. Покос, обрезку, посадку и другие отдельные работы делаем по прайсу разовых работ.'],
+    ['С чего начать?','Оставьте заявку. Приедем на осмотр, составим план и назовём точную стоимость. Первый аудит сада — в подарок при заключении договора.']
+  ];
+  var list=root.querySelector('.ve-faq__list');
+  list.innerHTML=QA.map(function(q,i){return '<div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-'+i+'" id="ve-faq-q'+i+'">'+q[0]+'<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-'+i+'" role="region" aria-labelledby="ve-faq-q'+i+'"><div><p>'+q[1]+'</p></div></div></div>'}).join('');
+  list.addEventListener('click',function(e){
+    var b=e.target.closest('.ve-faq__q');if(!b)return;
+    var it=b.parentNode,open=!it.classList.contains('is-open');
+    it.classList.toggle('is-open',open);b.setAttribute('aria-expanded',open);
+  });
+  VE.reveal(root);
+})();
+</script>
