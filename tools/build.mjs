@@ -119,7 +119,7 @@ const page = `<!doctype html>
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
 <script>window.VE_BASE=new URL('site/',location.href).href</script>
 ${fill(headSrc, 'site/')}
-<style>html,body{margin:0;padding:0;background:#F7F4EC}body{overflow-x:hidden}.ve-preview-note{font:11px/1.5 -apple-system,system-ui,sans-serif;color:#5E6E45;text-align:center;padding:18px 20px 28px;background:#F7F4EC}</style>
+<style>html,body{margin:0;padding:0;background:#FFFFFF}body{overflow-x:hidden}.ve-preview-note{font:11px/1.5 -apple-system,system-ui,sans-serif;color:#5E6E45;text-align:center;padding:18px 20px 28px;background:#FFFFFF}</style>
 </head>
 <body>
 ${blocksPreview.map((b) => `<!-- ${b.f} -->\n${b.html}`).join('\n\n')}
