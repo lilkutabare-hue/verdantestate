@@ -1,66 +1,40 @@
-<!-- VE · 10-seasons.html · сборка 40300a5d -->
-<section class="ve ve-sec ve-sea" id="ve-seasons">
+<!-- VE · 10-before-after.html · сборка c3f30a37 -->
+<section class="ve ve-sec ve-ba" id="ve-before-after">
   <div class="ve-wrap">
-    <p class="ve-caps ve-r">Круглый год</p>
-    <h2 class="ve-h2 ve-r ve-sea__h">Один сад — четыре сезона работ</h2>
-    <div class="ve-sea__grid">
-      <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-spring-l.webp?v=40300a5d" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-summer-l.webp?v=40300a5d" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-autumn-l.webp?v=40300a5d" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=40300a5d" alt="" loading="lazy" decoding="async" width="1440" height="900">
-      </div>
-      <div class="ve-sea__side">
-        <div class="ve-sea__tabs ve-r" role="tablist">
-          <button class="ve-sea__tab is-on" type="button" role="tab" aria-selected="true" data-s="spring">Весна</button>
-          <button class="ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="summer">Лето</button>
-          <button class="ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="autumn">Осень</button>
-          <button class="ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="winter">Зима</button>
-        </div>
-        <ul class="ve-sea__list" role="tabpanel"></ul>
-      </div>
+    <p class="ve-caps ve-r">До и после</p>
+    <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
+    <div class="ve-ba__box ve-r" style="--x:50%">
+      <img class="ve-ba__img ve-ba__img--before" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-l.webp?v=c3f30a37" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-s.webp?v=c3f30a37 720w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-l.webp?v=c3f30a37 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--after" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-l.webp?v=c3f30a37" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-s.webp?v=c3f30a37 720w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-l.webp?v=c3f30a37 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <span class="ve-ba__lab ve-ba__lab--b">до</span>
+      <span class="ve-ba__lab ve-ba__lab--a">после</span>
+      <div class="ve-ba__bar" aria-hidden="true"><i></i></div>
+      <input class="ve-ba__range" type="range" min="0" max="100" value="50" step="0.1" aria-label="Шторка до и после">
     </div>
   </div>
 </section>
 <style>
-.ve-sea__h{margin-top:14px}
-.ve-sea__grid{margin-top:36px}
-.ve-sea__pic{position:relative;aspect-ratio:16/10;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
-.ve-sea__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s var(--ve-ease)}
-.ve-sea__pic img.is-on{opacity:1}
-.ve-sea__side{margin-top:22px}
-.ve-sea__tabs{display:flex;gap:6px;flex-wrap:wrap}
-.ve-sea__tab{height:40px;padding:0 16px;border-radius:999px;font-size:15px;color:var(--ve-moss);transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2)}
-.ve-sea__tab.is-on{background:var(--ve-paper-2);color:var(--ve-ink)}
-.ve-sea__list{list-style:none;margin:20px 0 0;padding:0}
-.ve-sea__list li{padding:10px 0;border-top:1px solid var(--ve-line)}
-.ve-sea__list li:last-child{border-bottom:1px solid var(--ve-line)}
-.ve-sea__list li::first-letter{text-transform:uppercase}
-@media(min-width:900px){
-  .ve-sea__grid{margin-top:56px;display:grid;grid-template-columns:1fr 360px;gap:64px;align-items:start}
-  .ve-sea__side{margin-top:0}
-}
-@media(prefers-reduced-motion:reduce){.ve-sea__pic img,.ve-sea__tab{transition:none}}
+.ve-ba__h{margin-top:14px;max-width:22ch}
+.ve-ba__box{position:relative;margin-top:36px;aspect-ratio:16/10;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
+.ve-ba__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ve-ba__img--after{clip-path:inset(0 0 0 var(--x))}
+.ve-ba__lab{position:absolute;top:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ve-paper);opacity:.9;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.ve-ba__lab--b{left:16px}.ve-ba__lab--a{right:16px}
+.ve-ba__bar{position:absolute;top:0;bottom:0;left:var(--x);width:0;pointer-events:none}
+.ve-ba__bar::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:var(--ve-paper);opacity:.9}
+.ve-ba__bar i{position:absolute;top:50%;left:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:var(--ve-paper);box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.ve-ba__bar i::before,.ve-ba__bar i::after{content:"";position:absolute;top:50%;width:6px;height:6px;border-top:1.5px solid var(--ve-ink);border-left:1.5px solid var(--ve-ink);margin-top:-3px}
+.ve-ba__bar i::before{left:11px;transform:rotate(-45deg)}.ve-ba__bar i::after{right:11px;transform:rotate(135deg)}
+.ve-ba__range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;-webkit-appearance:none;appearance:none;touch-action:pan-y}
+.ve-ba__range::-webkit-slider-thumb{-webkit-appearance:none;width:60px;height:100%}
+.ve-ba__range::-moz-range-thumb{width:60px;height:100%;border:0;background:transparent}
+@media(min-width:900px){.ve-ba__box{margin-top:56px}.ve-ba__lab{top:20px}.ve-ba__lab--b{left:24px}.ve-ba__lab--a{right:24px}}
 </style>
 <script>
 (function(){
-  var root=document.getElementById('ve-seasons');if(!root||!window.VE)return;
+  var root=document.getElementById('ve-before-after');if(!root||!window.VE)return;
   VE.reveal(root);
-  var DATA={
-    spring:['сезонная уборка участка','аэрация и подсев газона','санитарная обрезка','обработки и подкормки','запуск и контроль системы полива'],
-    summer:['регулярный покос газона','стрижка живых изгородей','формировка кустарников','прополка и мульчирование','контроль полива и состояния растений'],
-    autumn:['уборка листвы','обрезка деревьев и кустарников','осенние подкормки','посадки','подготовка сада к зиме'],
-    winter:['контроль состояния участка','сезонное планирование работ','организация специализированных работ','график на новый сезон']
-  };
-  var list=root.querySelector('.ve-sea__list'),tabs=root.querySelectorAll('.ve-sea__tab'),pics=root.querySelectorAll('.ve-sea__pic img');
-  function show(s){
-    list.innerHTML=DATA[s].map(function(t){return '<li class="ve-r">'+t+'</li>'}).join('');
-    var li=list.querySelectorAll('li');for(var i=0;i<li.length;i++)li[i].style.transitionDelay=i*60+'ms';
-    requestAnimationFrame(function(){requestAnimationFrame(function(){for(var i=0;i<li.length;i++)li[i].classList.add('is-in')})});
-    for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-s')===s;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
-    for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-s')===s);
-  }
-  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-s'))});
-  show('spring');
+  var box=root.querySelector('.ve-ba__box'),r=root.querySelector('.ve-ba__range');
+  r.addEventListener('input',function(){box.style.setProperty('--x',r.value+'%')});
 })();
 </script>

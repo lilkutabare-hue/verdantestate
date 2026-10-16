@@ -1,40 +1,55 @@
-<!-- VE · 09-before-after.html · сборка 40300a5d -->
-<section class="ve ve-sec ve-ba" id="ve-before-after">
+<!-- VE · 09-ways.html · сборка c3f30a37 -->
+<section class="ve ve-sec ve-ways" id="ve-ways">
   <div class="ve-wrap">
-    <p class="ve-caps ve-r">До и после</p>
-    <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
-    <div class="ve-ba__box ve-r" style="--x:50%">
-      <img class="ve-ba__img ve-ba__img--before" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-l.webp?v=40300a5d" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-s.webp?v=40300a5d 720w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-l.webp?v=40300a5d 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
-      <img class="ve-ba__img ve-ba__img--after" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-l.webp?v=40300a5d" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-s.webp?v=40300a5d 720w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-l.webp?v=40300a5d 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
-      <span class="ve-ba__lab ve-ba__lab--b">до</span>
-      <span class="ve-ba__lab ve-ba__lab--a">после</span>
-      <div class="ve-ba__bar" aria-hidden="true"><i></i></div>
-      <input class="ve-ba__range" type="range" min="0" max="100" value="50" step="0.1" aria-label="Шторка до и после">
-    </div>
+    <p class="ve-caps ve-r">Сад под ключ</p>
+    <h2 class="ve-h2 ve-r ve-ways__h">Десять способов сделать участок красивее, удобнее и дороже</h2>
+  </div>
+  <div class="ve-wrap ve-ways__wrap">
+    <div class="ve-strip ve-ways__strip ve-rg"></div>
   </div>
 </section>
 <style>
-.ve-ba__h{margin-top:14px;max-width:22ch}
-.ve-ba__box{position:relative;margin-top:36px;aspect-ratio:16/10;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
-.ve-ba__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.ve-ba__img--after{clip-path:inset(0 0 0 var(--x))}
-.ve-ba__lab{position:absolute;top:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ve-paper);opacity:.9;text-shadow:0 1px 8px rgba(0,0,0,.35)}
-.ve-ba__lab--b{left:16px}.ve-ba__lab--a{right:16px}
-.ve-ba__bar{position:absolute;top:0;bottom:0;left:var(--x);width:0;pointer-events:none}
-.ve-ba__bar::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:var(--ve-paper);opacity:.9}
-.ve-ba__bar i{position:absolute;top:50%;left:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:var(--ve-paper);box-shadow:0 2px 12px rgba(0,0,0,.25)}
-.ve-ba__bar i::before,.ve-ba__bar i::after{content:"";position:absolute;top:50%;width:6px;height:6px;border-top:1.5px solid var(--ve-ink);border-left:1.5px solid var(--ve-ink);margin-top:-3px}
-.ve-ba__bar i::before{left:11px;transform:rotate(-45deg)}.ve-ba__bar i::after{right:11px;transform:rotate(135deg)}
-.ve-ba__range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;-webkit-appearance:none;appearance:none;touch-action:pan-y}
-.ve-ba__range::-webkit-slider-thumb{-webkit-appearance:none;width:60px;height:100%}
-.ve-ba__range::-moz-range-thumb{width:60px;height:100%;border:0;background:transparent}
-@media(min-width:900px){.ve-ba__box{margin-top:56px}.ve-ba__lab{top:20px}.ve-ba__lab--b{left:24px}.ve-ba__lab--a{right:24px}}
+.ve-ways__h{margin-top:14px;max-width:24ch}
+.ve-ways__wrap{margin-top:36px}
+.ve-ways__strip{cursor:grab;gap:14px}
+.ve-ways__strip.is-drag{cursor:grabbing;scroll-snap-type:none}
+.ve-ways__card{width:72vw;max-width:300px;user-select:none;-webkit-user-select:none}
+.ve-ways__img{aspect-ratio:4/5;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
+.ve-ways__img img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.ve-ways__n{margin-top:16px;font-weight:600;letter-spacing:-.015em;font-size:15px;color:var(--ve-moss);font-variant-numeric:tabular-nums}
+.ve-ways__t{margin-top:4px;font-weight:600;letter-spacing:-.015em;font-size:22px;line-height:1.15}
+.ve-ways__d{margin-top:6px;font-size:14px;color:var(--ve-moss);line-height:1.45}
+@media(min-width:900px){
+  .ve-ways__wrap{margin-top:56px}
+  .ve-ways__strip{gap:24px;padding-left:40px;padding-right:40px;margin:0 -40px}
+  .ve-ways__card{width:272px}
+}
 </style>
 <script>
 (function(){
-  var root=document.getElementById('ve-before-after');if(!root||!window.VE)return;
+  var root=document.getElementById('ve-ways');if(!root||!window.VE)return;
+  var WAYS=[
+    ['Обновление газона','подсев, выравнивание, аэрация, удобрение'],
+    ['Декоративные дорожки','галька, отсев, плитняк, спилы дерева'],
+    ['Декоративные клумбы','многолетники, кустарники, мульча, камень'],
+    ['Подсветка','светильники, подсветка деревьев, кустов и дорожек'],
+    ['Живая изгородь','туи, можжевельники, дерен, пузыреплодник'],
+    ['Каменные композиции','рокарии, валуны, щебень, хвойные'],
+    ['Автополив','автоматическая система полива'],
+    ['Зона отдыха','костровые зоны, настилы, перголы, качели, гамаки'],
+    ['Сезонное обслуживание','стрижка, обрезка, обработка, прополка, удобрение, подготовка к зиме'],
+    ['Премиальное обновление','комплексное преображение: дизайн, растения, дорожки, подсветка, детали']
+  ];
+  var strip=root.querySelector('.ve-ways__strip');
+  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);return '<article class="ve-ways__card"><div class="ve-ways__img"><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><p class="ve-ways__n">'+n+'</p><h3 class="ve-ways__t">'+w[0]+'</h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
   VE.reveal(root);
-  var box=root.querySelector('.ve-ba__box'),r=root.querySelector('.ve-ba__range');
-  r.addEventListener('input',function(){box.style.setProperty('--x',r.value+'%')});
+  // на компьютере — тянуть мышью, без перехвата колеса
+  if(window.matchMedia('(pointer:fine)').matches){
+    var down=false,sx=0,sl=0,moved=false;
+    strip.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse')return;down=true;moved=false;sx=e.clientX;sl=strip.scrollLeft;strip.setPointerCapture(e.pointerId)});
+    strip.addEventListener('pointermove',function(e){if(!down)return;var dx=e.clientX-sx;if(Math.abs(dx)>4&&!moved){moved=true;strip.classList.add('is-drag')}if(moved)strip.scrollLeft=sl-dx});
+    var up=function(e){if(!down)return;down=false;strip.classList.remove('is-drag')};
+    strip.addEventListener('pointerup',up);strip.addEventListener('pointercancel',up);
+  }
 })();
 </script>

@@ -1,55 +1,66 @@
-<!-- VE · 08-ways.html · сборка 40300a5d -->
-<section class="ve ve-sec ve-ways" id="ve-ways">
+<!-- VE · 08-pricelist.html · сборка c3f30a37 -->
+<section class="ve ve-sec ve-pr" id="ve-pricelist">
   <div class="ve-wrap">
-    <p class="ve-caps ve-r">Сад под ключ</p>
-    <h2 class="ve-h2 ve-r ve-ways__h">Десять способов сделать участок красивее, удобнее и дороже</h2>
-  </div>
-  <div class="ve-wrap ve-ways__wrap">
-    <div class="ve-strip ve-ways__strip ve-rg"></div>
+    <p class="ve-caps ve-r">Разовые работы</p>
+    <h2 class="ve-h2 ve-r ve-pr__h">Если вам не нужен постоянный уход, мы можем выполнить отдельную работу.</h2>
+    <div class="ve-pr__grid">
+      <div class="ve-pr__left">
+        <div class="ve-pr__tabs ve-r" role="tablist" aria-label="Категории работ">
+          <button class="ve-pr__tab is-on" role="tab" aria-selected="true" data-cat="lawn" type="button">Газон</button>
+          <button class="ve-pr__tab" role="tab" aria-selected="false" data-cat="plants" type="button">Растения</button>
+          <button class="ve-pr__tab" role="tab" aria-selected="false" data-cat="trees" type="button">Деревья</button>
+        </div>
+        <div class="ve-pr__table" role="tabpanel"></div>
+        <p class="ve-pr__note ve-muted">Сложные работы — по смете.</p>
+      </div>
+      <div class="ve-pr__pic ve-r" aria-hidden="true">
+        <img data-cat="lawn" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/price-lawn-l.webp?v=c3f30a37" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/price-plants-l.webp?v=c3f30a37" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/price-trees-l.webp?v=c3f30a37" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+      </div>
+    </div>
   </div>
 </section>
 <style>
-.ve-ways__h{margin-top:14px;max-width:24ch}
-.ve-ways__wrap{margin-top:36px}
-.ve-ways__strip{cursor:grab;gap:14px}
-.ve-ways__strip.is-drag{cursor:grabbing;scroll-snap-type:none}
-.ve-ways__card{width:72vw;max-width:300px;user-select:none;-webkit-user-select:none}
-.ve-ways__img{aspect-ratio:4/5;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
-.ve-ways__img img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-.ve-ways__n{margin-top:16px;font-weight:600;letter-spacing:-.015em;font-size:15px;color:var(--ve-moss);font-variant-numeric:tabular-nums}
-.ve-ways__t{margin-top:4px;font-weight:600;letter-spacing:-.015em;font-size:22px;line-height:1.15}
-.ve-ways__d{margin-top:6px;font-size:14px;color:var(--ve-moss);line-height:1.45}
+.ve-pr__h{margin-top:14px;max-width:26ch}
+.ve-pr__grid{margin-top:36px}
+.ve-pr__tabs{display:flex;gap:6px;flex-wrap:wrap}
+.ve-pr__tab{height:40px;padding:0 16px;border-radius:999px;border:1px solid transparent;font-size:15px;color:var(--ve-moss);transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2)}
+.ve-pr__tab.is-on{background:var(--ve-paper-2);color:var(--ve-ink)}
+.ve-pr__table{margin-top:22px}
+.ve-pr__row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-top:1px solid var(--ve-line)}
+.ve-pr__row:last-child{border-bottom:1px solid var(--ve-line)}
+.ve-pr__row span:first-child::first-letter{text-transform:uppercase}
+.ve-pr__row b{font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ve-ink)}
+.ve-pr__row b i{font-style:normal;color:var(--ve-moss);font-size:14px}
+.ve-pr__note{margin-top:14px;font-size:14px}
+.ve-pr__pic{display:none;position:relative;aspect-ratio:4/5;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
+.ve-pr__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s var(--ve-ease)}
+.ve-pr__pic img.is-on{opacity:1}
 @media(min-width:900px){
-  .ve-ways__wrap{margin-top:56px}
-  .ve-ways__strip{gap:24px;padding-left:40px;padding-right:40px;margin:0 -40px}
-  .ve-ways__card{width:272px}
+  .ve-pr__grid{margin-top:56px;display:grid;grid-template-columns:1fr 420px;gap:64px;align-items:start}
+  .ve-pr__pic{display:block}
 }
+@media(prefers-reduced-motion:reduce){.ve-pr__pic img,.ve-pr__tab{transition:none}}
 </style>
 <script>
 (function(){
-  var root=document.getElementById('ve-ways');if(!root||!window.VE)return;
-  var WAYS=[
-    ['Обновление газона','подсев, выравнивание, аэрация, удобрение'],
-    ['Декоративные дорожки','галька, отсев, плитняк, спилы дерева'],
-    ['Декоративные клумбы','многолетники, кустарники, мульча, камень'],
-    ['Подсветка','светильники, подсветка деревьев, кустов и дорожек'],
-    ['Живая изгородь','туи, можжевельники, дерен, пузыреплодник'],
-    ['Каменные композиции','рокарии, валуны, щебень, хвойные'],
-    ['Автополив','автоматическая система полива'],
-    ['Зона отдыха','костровые зоны, настилы, перголы, качели, гамаки'],
-    ['Сезонное обслуживание','стрижка, обрезка, обработка, прополка, удобрение, подготовка к зиме'],
-    ['Премиальное обновление','комплексное преображение: дизайн, растения, дорожки, подсветка, детали']
-  ];
-  var strip=root.querySelector('.ve-ways__strip');
-  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);return '<article class="ve-ways__card"><div class="ve-ways__img"><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><p class="ve-ways__n">'+n+'</p><h3 class="ve-ways__t">'+w[0]+'</h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
+  var root=document.getElementById('ve-pricelist');if(!root||!window.VE)return;
   VE.reveal(root);
-  // на компьютере — тянуть мышью, без перехвата колеса
-  if(window.matchMedia('(pointer:fine)').matches){
-    var down=false,sx=0,sl=0,moved=false;
-    strip.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse')return;down=true;moved=false;sx=e.clientX;sl=strip.scrollLeft;strip.setPointerCapture(e.pointerId)});
-    strip.addEventListener('pointermove',function(e){if(!down)return;var dx=e.clientX-sx;if(Math.abs(dx)>4&&!moved){moved=true;strip.classList.add('is-drag')}if(moved)strip.scrollLeft=sl-dx});
-    var up=function(e){if(!down)return;down=false;strip.classList.remove('is-drag')};
-    strip.addEventListener('pointerup',up);strip.addEventListener('pointercancel',up);
+  var DATA={
+    lawn:[['покос газона','1 500','сотка'],['покос высокой травы','2 000','сотка'],['сбор травы','500','сотка'],['аэрация','2 000','сотка'],['скарификация','2 500','сотка'],['подсев газона','2 000','сотка'],['посевной газон','500','м²'],['рулонный газон','800','м²']],
+    plants:[['посадка кустарника','1 000','шт.'],['посадка дерева','3 000','шт.'],['посадка хвойного','4 000','шт.'],['формовка кустарников','1 000','шт.'],['стрижка живой изгороди','900','пог. м'],['мульчирование','500','м²'],['цветники','2 000','м²']],
+    trees:[['санитарная обрезка','3 000','шт.'],['кронирование','5 000','шт.'],['спил дерева','5 000','шт.'],['сложный спил',null,'по смете'],['корчевание пня','4 000','шт.']]
+  };
+  var table=root.querySelector('.ve-pr__table'),tabs=root.querySelectorAll('.ve-pr__tab'),pics=root.querySelectorAll('.ve-pr__pic img');
+  function show(cat){
+    table.innerHTML=DATA[cat].map(function(r){var price=r[1]?'от '+r[1].replace(' ',' ')+'&nbsp;₽ <i>/ '+r[2]+'</i>':'<i>'+r[2]+'</i>';return '<div class="ve-pr__row ve-r"><span>'+r[0]+'</span><b>'+price+'</b></div>'}).join('');
+    var rows=table.querySelectorAll('.ve-pr__row');for(var i=0;i<rows.length;i++)rows[i].style.transitionDelay=Math.min(i,10)*45+'ms';
+    requestAnimationFrame(function(){requestAnimationFrame(function(){for(var i=0;i<rows.length;i++)rows[i].classList.add('is-in')})});
+    for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-cat')===cat;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
+    for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-cat')===cat);
   }
+  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-cat'))});
+  show('lawn');
 })();
 </script>

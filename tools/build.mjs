@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Сборка: src/ → dist/ (блоки T123 для Тильды) + docs/index.html (превью на GitHub Pages).
 // Проверяет: node --check инлайн-скриптов, баланс скобок CSS, размер блока против 84 КБ, HEAD против 64 КБ.
-import { readFile, writeFile, readdir, mkdir, stat } from 'node:fs/promises';
+import { readFile, writeFile, readdir, mkdir, stat, unlink } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -79,6 +79,10 @@ await checkScripts(headDist, 'head'); checkCss(headDist, 'head');
 if (Buffer.byteLength(headDist) > LIMIT_HEAD) throw new Error(`HEAD ${kb(Buffer.byteLength(headDist))} > 64 КБ`);
 await writeFile(join(DIST, 'head.html'), headDist);
 console.log(`head.html  ${kb(Buffer.byteLength(headDist))} / 64 КБ`);
+
+// блоки, которых больше нет в src (после перенумерации), из dist убираем
+const keep = new Set(files.map((f) => `t123-${f.slice(0, 2)}.html`));
+for (const f of await readdir(DIST)) if (/^t123-\d\d\.html$/.test(f) && !keep.has(f)) await unlink(join(DIST, f));
 
 const blocksDist = [], blocksPreview = [];
 for (const f of files) {

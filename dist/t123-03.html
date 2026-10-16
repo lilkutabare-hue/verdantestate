@@ -1,36 +1,27 @@
-<!-- VE · 03-manifest.html · сборка 40300a5d -->
+<!-- VE · 03-manifest.html · сборка c3f30a37 -->
 <section class="ve ve-sec ve-man" id="ve-manifest">
   <div class="ve-wrap">
-    <p class="ve-caps ve-r">Сад, за которым не нужно следить</p>
-    <h2 class="ve-h2 ve-r ve-man__h">Verdant Estate берёт на себя постоянное управление вашим садом.</h2>
-    <div class="ve-man__cols ve-rg">
-      <div class="ve-man__col">
-        <h3 class="ve-h3">Планируем</h3>
-        <p>Мы планируем работы и формируем график на весь сезон.</p>
-      </div>
-      <div class="ve-man__col">
-        <h3 class="ve-h3">Организуем</h3>
-        <p>Привлекаем необходимых специалистов. Вам не нужно искать отдельного садовника, арбориста, специалиста по газону или поливу.</p>
-      </div>
-      <div class="ve-man__col">
-        <h3 class="ve-h3">Контролируем</h3>
-        <p>Контролируем подрядчиков и следим за состоянием участка в течение всего сезона.</p>
-      </div>
+    <p class="ve-caps ve-r">Что мы берём на себя</p>
+    <div class="ve-man__rows ve-rg">
+      <div class="ve-man__row ve-line"><h2 class="ve-man__w">Планируем</h2><p class="ve-man__p">работы и график на весь сезон</p></div>
+      <div class="ve-man__row ve-line"><h2 class="ve-man__w">Организуем</h2><p class="ve-man__p">садовника, арбориста, газон и полив — искать никого не нужно</p></div>
+      <div class="ve-man__row ve-line"><h2 class="ve-man__w">Контролируем</h2><p class="ve-man__p">подрядчиков и состояние участка до конца сезона</p></div>
     </div>
-    <p class="ve-lead ve-man__end ve-r">Вы ставите задачу — мы организуем всё остальное.</p>
+    <p class="ve-man__end ve-r">Вы ставите задачу — мы организуем всё остальное.</p>
   </div>
 </section>
 <style>
-.ve-man__h{max-width:22ch;margin-top:14px}
-.ve-man__cols{margin-top:40px;display:grid;gap:0}
-.ve-man__col{padding:22px 0;border-top:1px solid var(--ve-line)}
-.ve-man__col:last-child{border-bottom:1px solid var(--ve-line)}
-.ve-man__col p{margin-top:8px;max-width:48ch;color:var(--ve-moss)}
-.ve-man__end{margin-top:36px;font-weight:600;letter-spacing:-.015em;font-size:24px;line-height:1.25}
+.ve-man__rows{margin-top:26px}
+.ve-man__row{padding:20px 0 22px}
+.ve-man__w{margin:0;font-weight:600;letter-spacing:-.03em;font-size:44px;line-height:1}
+.ve-man__p{margin-top:10px;color:var(--ve-moss);max-width:34ch}
+.ve-man__end{margin-top:30px;font-weight:600;letter-spacing:-.015em;font-size:20px;line-height:1.3;max-width:28ch}
 @media(min-width:900px){
-  .ve-man__cols{grid-template-columns:repeat(3,1fr);gap:40px;margin-top:56px}
-  .ve-man__col{padding:28px 0 0;border-bottom:0!important}
-  .ve-man__end{margin-top:56px;font-size:30px}
+  .ve-man__rows{margin-top:40px}
+  .ve-man__row{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:baseline;gap:40px;padding:30px 0 32px}
+  .ve-man__w{font-size:88px}
+  .ve-man__p{margin-top:0;font-size:18px}
+  .ve-man__end{margin-top:44px;font-size:24px}
 }
 </style>
 <script>(function(){if(window.VE)VE.reveal(document.getElementById('ve-manifest'))})();</script>
