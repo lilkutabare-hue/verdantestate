@@ -35,8 +35,8 @@
 
 | кадр | откуда | что меняется | часы |
 |---|---|---|---|
-| **M** | генерация | мастер: сад ухожен, утро | — |
-| **S2** | эдит M | сад «до» | 07:40 |
+| **M** ✅ | генерация | мастер: сад ухожен, утро (принят 18.10, левый из пары) | — |
+| **S2** ✅ | эдит M | сад «до» (принят 18.10, правый из пары) | 07:40 |
 | **S1** | эдит S2 | камера в траве | 07:10 |
 | S3c | эдит S2 | камера у террасы, 3–4 м | — |
 | **S3** | эдит S3c | свет: день | 13:00 |
@@ -94,7 +94,7 @@ Using @img1, change only the light: it is now a clear summer midday. The sun is 
 ### S4c — вид сверху, 28 м
 
 ```
-Using @img1, change only the camera position: the camera now looks straight down from about 28 metres above the garden, like a drone shot pointing vertically at the ground. From above, the garden is a clear symmetric pattern in the centre of the frame: the line of pale limestone stepping slabs along the central axis, two long rectangular steel-edged beds on each side with rows of round boxwood balls among the grasses, a columnar thuja at every corner. The far edge of the frame shows the limestone terrace and part of the flat roof of the villa with its sedum green roof and a long skylight; the lawn surrounds the garden, and the crowns of Scots pines and birches enter at the corners. Keep exactly the same: the design of the house, the design and proportions of the garden, the morning light and the overgrown state of the lawn, the shrubs and the edging.
+Using @img1, change only the camera position: the camera now looks straight down from about 28 metres above the garden, like a drone shot pointing vertically at the ground. From above, the garden is a clear symmetric pattern in the centre of the frame: the line of pale limestone stepping slabs along the central axis, two long rectangular steel-edged beds on each side with rows of round boxwood balls among the grasses, a columnar thuja at every corner. Even under the overgrowth, the rectangular outlines of the beds, the rows of boxwood balls and the line of slabs stay clearly readable from above. The far edge of the frame shows the limestone terrace and part of the flat roof of the villa with its sedum green roof and a long skylight; the lawn surrounds the garden, and the crowns of Scots pines and birches enter at the corners. Keep exactly the same: the design of the house, the design and proportions of the garden, the morning light and the overgrown state of the lawn, the shrubs and the edging.
 ```
 
 **Настройки:** Nano Banana 2.1 · edit · thinking high · 16:9 · 2K · `@img1` = S2 · 2 генерации
@@ -111,10 +111,11 @@ Using @img1, change only the light: it is now the last minutes before sunset on 
 ### S5a — тот же кадр, сад «после»
 
 ```
-Using @img1, change only the state of the garden: it has just been fully cared for. The lawn is freshly mown in perfectly even parallel stripes, the boxwood balls and columnar thujas are clipped to crisp clean shapes, the feather reed grass stands upright, the bronze steel edging is clean and sharp, the joints between the limestone slabs are free of grass. Keep exactly the same, pixel for pixel: the camera, the framing, the position and size of every bed, ball and thuja, the house, the trees, and the warm sunset light with its long shadows.
+Using @img1, change only the state of the garden: it has just been fully cared for. The lawn is freshly mown in perfectly even parallel stripes, the boxwood balls and columnar thujas are clipped to crisp clean shapes, the feather reed grass stands upright, the bronze steel edging is clean and sharp, the joints between the limestone slabs are free of grass. Keep exactly the same, pixel for pixel: the camera, the framing, the position and size of every bed, ball and thuja, the house, the trees, and the warm sunset light with its long shadows. @img2 is ONLY the reference for how the groomed garden looks — the bronze steel edging, the clipped balls, the upright grasses and the clean slabs; its camera and light are not copied.
 ```
 
-**Настройки:** Nano Banana 2.1 · edit · thinking high · AR как у @img1 · 2K · `@img1` = S4 · 2 генерации
+**Настройки:** Nano Banana 2.1 · edit · thinking high · AR как у @img1 · 2K · `@img1` = S4 · `@img2` = M · 2 генерации
+**Почему @img2:** S2 вышел заросшим сильнее, чем просили (18.10): бордюры скрыты, плиты в траве. Без M модель придумает «после» по-своему.
 **Проверка:** разница S5a − S4. Меняться имеют право только газон, кромки фигур и бордюры. Сдвиг дома или центров шаров больше 2 px — перегенерировать: на шторке это видно сразу.
 
 ### S5 — синий час и подсветка
