@@ -7,7 +7,7 @@
 1. **Разрешение — 2K в пикере, перед каждым запуском.** Первые M пришли в 1K: на 1K кадр мыльный и сразу читается как ИИ. Слово «2K» в тексте ничего не меняет, меняет только переключатель.
 2. Модель для картинок — **Nano Banana 2.1, thinking high**. Видео — **Kling 3.0** (не Omni: у Omni нет энд-кадра).
 3. Промпт копируется блоком целиком. У картинок поля Negative нет, всё нужное уже внутри текста.
-4. **Сначала только M.** Пока M не утверждён, дальше не идём: от него зависят все остальные 35 кадров.
+4. **Порядок:** сначала все стиллы (хиро, затем секции), потом клипы К1–К3, потом всё одной пачкой мне на сборку.
 5. Каждый эдит меняет одну вещь. Если в эдите уехали камера или дом — словами не чинить, перегенерировать.
 6. Готовые картинки скидываете мне, я сверяю наложением и говорю, что брать.
 
@@ -129,7 +129,7 @@ Using @img1, change only the light: it is now blue hour, half an hour after suns
 
 ## 3. Клипы К1–К3 (Kling 3.0, start + end, 10 s, 1080p, звук выкл)
 
-Только после утверждения S1–S5. **Старт К2 и К3 — последний кадр принятого предыдущего клипа** (я его вырежу и пришлю), а не PNG: так стык идеален. Каждый клип — одно движение камеры, трава живёт весь клип.
+Делаются после всех стиллов, все три сразу. Старт и конец — принятые стиллы, поэтому конец К1 и начало К2 — один и тот же кадр S2, конец К2 и начало К3 — S3. Микросдвиги на стыках я сглаживаю при сборке сайта. Каждый клип — одно движение камеры, трава живёт весь клип.
 
 **Negative (общий для трёх):** `cut, scene change, camera shake, camera rotation, zoom pulsing, speed ramp, motion stopping midway, people, animals, birds, insects, cars, text, letters, watermark, house changing shape, windows changing, roof changing, extra buildings, plants morphing, plants growing, new objects, flicker, fisheye, warping, CGI look`
 
@@ -147,7 +147,7 @@ One continuous, slow and smooth camera move: the camera rises straight up out of
 One continuous, slow and smooth camera move: the camera glides forward across the lawn and along the stepping-slab path toward the villa, gently rising from eye level to about 3.5 metres, keeping the path on the centre line of the frame. The steel-edged beds with their boxwood balls and grasses pass below on both sides, the villa grows larger ahead and the pines slide past in parallax. At the same time the soft morning light slowly turns into clear midday light, the mist disappears and the shadows shorten. The move lasts the ENTIRE clip from the first frame to the last, at an even speed, and settles gently on the final frame. The grass and the reed grass sway softly in a light breeze the whole time, never freezing. The house and every plant keep exactly the same design and position throughout.
 ```
 
-**Настройки:** Kling 3.0 · start = последний кадр принятого К1 · end = S3 · 10 s · 1080p · 2 прогона
+**Настройки:** Kling 3.0 · start = S2 · end = S3 · 10 s · 1080p · 2 прогона
 
 ### К3 — подъём над садом, свет в вечер (S3 → S4)
 
@@ -156,7 +156,7 @@ One continuous, slow and smooth drone move: the camera rises high above the gard
 ```
 
 **Negative:** общий + `camera spinning, horizon tilting, flying over the roof`
-**Настройки:** Kling 3.0 · start = последний кадр принятого К2 · end = S4 · 10 s · 1080p · 2 прогона
+**Настройки:** Kling 3.0 · start = S3 · end = S4 · 10 s · 1080p · 2 прогона
 Риск: Kling может сделать разворот вниз рывком в конце. Тогда третий прогон без слов про отъезд: `rises straight up while tilting down`.
 
 ## 4. Стиллы секций
@@ -165,7 +165,7 @@ One continuous, slow and smooth drone move: the camera rises high above the gard
 
 `@img1 is ONLY the reference for the light, the colour grade, the lens, the materials and the level of grooming — its exact house and layout are not copied. Real photograph for an architecture magazine, Sony A7R V, natural sensor grain, subtle lens vignetting, true-to-life muted colours, real weathering on stone and wood. The scene is empty of people, animals, cars and text.`
 
-Дом в кадре всегда того же языка: графитовый базальт, вертикальные ламели лиственницы, стекло в пол, консоль на тонкой белой плите. Лес — сосны, берёзы, ель. Все — Nano Banana 2.1 · thinking high · **2K в пикере** · 2 генерации.
+Дом в кадре всегда того же языка: графитовый базальт, вертикальные ламели лиственницы, стекло в пол, консоль на тонкой белой плите. Лес — сосны, берёзы, ель. Все — Nano Banana 2.1 · thinking high · **2K в пикере** · 2 генерации, выбрать лучшую.
 
 ### P1–P4 — «Как проходит сезон с нами» (4:5)
 
@@ -222,18 +222,7 @@ One continuous, slow and smooth drone move: the camera rises high above the gard
 
 **Настройки:** edit · 16:10 · 2 генерации на каждый
 
-## 5. Бюджет
-
-| что | шт. | ≈ кредитов |
-|---|---|---|
-| хиро: M (4 прогона), S2, S1, S3c, S3, S4c, S4, S5a, S5 | 9 | ≈ 900 |
-| секции: P×4, T×3, W×3, R×10, B×2, Z×4 | 26 | 1950 |
-| клипы К1–К3, Kling 3.0, 10 s, 1080p | 3 | 2700 |
-| итого | | **≈ 5550** из 5800 |
-
-Цена стилла по брифу ≈ 75 за генерацию. 2 генерации на кадр в таблицу не заложены; запаса ≈ 250 хватит на 3 повтора. Поэтому секции — по 1 генерации, по 2 — только хиро и B1/B2. Если M уйдёт больше чем в 2 круга, экономить на Z (3 вместо 4) и R.
-
-## 6. Куда класть результат
+## 5. Куда класть результат
 
 Проще всего — просто скидывать мне в чат, разложу сам. Если раскладывать вручную:
 
