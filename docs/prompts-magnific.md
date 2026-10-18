@@ -204,24 +204,24 @@ One continuous, slow and smooth drone move: the camera rises high above the gard
 
 Риск: №8 — модель плодит подушки и мебель; держать «one long built-in bench» и не добавлять слов про уют.
 
-### B1, B2 — «До и после», ракурс с террасы (16:10)
+### B1, B2 — «До и после», ракурс с террасы (16:9)
 
 Сначала «после» (B2), потом «до» эдитом — так ракурс совпадёт.
 
 - **B2 · после:** `A real photograph taken from the limestone terrace of a contemporary villa near Moscow at eye level, looking down the garden: three long low floating steps with a plain modern stone edge in the foreground — no balustrade, no balusters, no classical details — below them a striped lawn, a path of pale stepping slabs leading away between two steel-edged beds of boxwood balls and feather reed grass, a line of columnar thujas, and an old forest of Scots pines and birches at the back. Soft low morning sun.` + [хвост]
-  **Настройки:** 16:10 · `@img1` = M · 2 генерации
+  **Настройки:** 16:9 · `@img1` = M · 2 генерации
 - **B1 · до:** `Using @img1, change only the state of the garden: it has been neglected for a whole season. The lawn is overgrown, patchy and uneven with dandelions and bare spots, the boxwood balls and thujas have lost their shapes under loose shoots, the grasses have collapsed, weeds hide the steel edging and grow between the stepping slabs, last year's pine needles and birch leaves lie everywhere. Keep exactly the same, pixel for pixel: the camera, the framing, the terrace steps, the trees, the line of the path, the position and size of every bed and plant, and the morning light.`
   **Настройки:** edit · AR как у @img1 · `@img1` = B2 · 2 генерации
 
-### Z1–Z4 — «Круглый год», эдиты T2 (16:10)
+### Z1–Z4 — «Круглый год», эдиты T2 (16:9)
 
-- **Z1 · лето:** `Using @img1, change only the frame: extend the scene to a wider 16:10 horizontal frame — continue the lawn, the hedges, the pines and the birches naturally to the left and to the right. Keep the original image unchanged in the middle, with the same light.` · `@img1` = T2
+- **Z1 · лето:** `Using @img1, change only the frame: extend the scene to a wider 16:9 horizontal frame — continue the lawn, the hedges, the pines and the birches naturally to the left and to the right. Keep the original image unchanged in the middle, with the same light.` · `@img1` = T2
 - **Z2 · весна, Z3 · осень, Z4 · зима** — `@img1` = Z1, текст: `Using @img1, change only the season: СТРОКА_СЕЗОНА Keep exactly the same: the camera, the framing, and the shape and position of every plant, hedge, path and the house.`
   - весна: `early May — fresh light-green young leaves on the birches, the lawn freshly green, white tulips in the bed, cool clear spring light.`
   - осень: `early October — the birches are golden, a scattering of golden leaves on the lawn and the slabs, the hydrangeas faded to pink-beige, the reed grass straw-coloured, soft low autumn light.`
   - зима: `January — deep fresh snow on the lawn, on the hedge tops and on the boxwood balls, bare birch branches, dark green pines dusted with snow, the stepping slabs cleared, pale overcast winter light, warm light glowing from the windows of the villa.`
 
-**Настройки:** edit · 16:10 · 2 генерации на каждый
+**Настройки:** edit · 16:9 · 2 генерации на каждый
 
 ## 5. Куда класть результат
 
