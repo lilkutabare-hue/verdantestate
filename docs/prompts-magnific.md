@@ -179,6 +179,7 @@ One continuous, slow and smooth drone move: the camera rises high above the gard
 - **T1 · BASIC:** `A compact neat garden of a modern single-storey house of graphite brick and larch near Moscow, seen at eye level from the edge of the lawn: a small lawn mown in stripes, one clipped hedge along a dark slatted fence, a short path of pale stepping slabs to the glass entrance, two young apple trees, a small bed of lavender with a few boxwood balls, birches behind the fence. Soft low morning sun.` + [хвост]
 - **T2 · PREMIUM:** `The full garden of a large contemporary villa near Moscow, seen at eye level from the lawn: a wide striped lawn, tall clipped hornbeam hedges, a path of pale limestone stepping slabs, a long bed edged with bronze-coloured steel with white panicle hydrangeas, feather reed grass and boxwood balls, mature birches and Scots pines, the cantilevered glass volume of the villa at the back. Soft low morning sun.` + [хвост]
 - **T3 · ESTATE:** `The grounds of a large contemporary estate near Moscow, seen from its raised limestone terrace: a long axis of lawn leading to an old forest of Scots pines, a modern formal garden of steel-edged beds with boxwood balls, columnar thujas and grasses, a long still reflecting pool of dark water mirroring the pines, a glass garden pavilion at the far right. Soft low morning sun.` + [хвост]
+  ✅ принят 18.10 левый: плоский каменный борт террасы. 1 из 2 дал классическую балюстраду — «raised terrace» тянет классику, поэтому в B2 и R10 дописано «no balustrade».
 
 ### W1–W3 — разовые работы, крупные планы (4:5)
 
@@ -199,7 +200,7 @@ One continuous, slow and smooth drone move: the camera rises high above the gard
 7. **Автополив:** `Pop-up sprinklers watering a striped lawn, fine arcs of water catching the low sun as bright droplets, clipped boxwood balls and pine trunks behind.` + [хвост]
 8. **Зона отдыха:** `A wooden larch deck under a minimalist flat steel pergola beside a contemporary villa, one long built-in bench with linen cushions, a round dark steel fire bowl and two large concrete planters with grasses, a lawn and pines around. Soft low morning sun.` + [хвост]
 9. **Сезонное обслуживание:** `A contemporary garden in early autumn kept perfectly tidy: a clean striped lawn, a freshly trimmed hedge, a bed with cut-back perennials and fresh mulch, a few golden birch leaves on the pale stepping slabs. Soft low sun.` + [хвост]
-10. **Премиальное обновление:** `A completely transformed garden of a contemporary villa near Moscow, seen from its limestone terrace: a modern formal garden of steel-edged beds with boxwood balls, columnar thujas and grasses, a path of pale stepping slabs with slim lights, a striped lawn and old Scots pines.` + [хвост]
+10. **Премиальное обновление:** `A completely transformed garden of a contemporary villa near Moscow, seen from its limestone terrace with a plain modern stone edge and no balustrade: a modern formal garden of steel-edged beds with boxwood balls, columnar thujas and grasses, a path of pale stepping slabs with slim lights, a striped lawn and old Scots pines.` + [хвост]
 
 Риск: №8 — модель плодит подушки и мебель; держать «one long built-in bench» и не добавлять слов про уют.
 
@@ -207,7 +208,7 @@ One continuous, slow and smooth drone move: the camera rises high above the gard
 
 Сначала «после» (B2), потом «до» эдитом — так ракурс совпадёт.
 
-- **B2 · после:** `A real photograph taken from the limestone terrace of a contemporary villa near Moscow at eye level, looking down the garden: three long low floating steps in the foreground, below them a striped lawn, a path of pale stepping slabs leading away between two steel-edged beds of boxwood balls and feather reed grass, a line of columnar thujas, and an old forest of Scots pines and birches at the back. Soft low morning sun.` + [хвост]
+- **B2 · после:** `A real photograph taken from the limestone terrace of a contemporary villa near Moscow at eye level, looking down the garden: three long low floating steps with a plain modern stone edge in the foreground — no balustrade, no balusters, no classical details — below them a striped lawn, a path of pale stepping slabs leading away between two steel-edged beds of boxwood balls and feather reed grass, a line of columnar thujas, and an old forest of Scots pines and birches at the back. Soft low morning sun.` + [хвост]
   **Настройки:** 16:10 · `@img1` = M · 2 генерации
 - **B1 · до:** `Using @img1, change only the state of the garden: it has been neglected for a whole season. The lawn is overgrown, patchy and uneven with dandelions and bare spots, the boxwood balls and thujas have lost their shapes under loose shoots, the grasses have collapsed, weeds hide the steel edging and grow between the stepping slabs, last year's pine needles and birch leaves lie everywhere. Keep exactly the same, pixel for pixel: the camera, the framing, the terrace steps, the trees, the line of the path, the position and size of every bed and plant, and the morning light.`
   **Настройки:** edit · AR как у @img1 · `@img1` = B2 · 2 генерации
