@@ -47,6 +47,7 @@
 .ve-bld__res{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:16px;line-height:1.4}
 .ve-bld__tier b{font-size:13px;color:var(--ve-ink);margin-left:4px}
 .ve-bld__dot{color:var(--ve-moss)}
+@media(max-width:599px){.ve-bld__res{flex-direction:column;gap:4px}.ve-bld__dot{display:none}} /* на телефоне строки итога стоят столбиком, без висячих точек на концах строк */
 .ve-bld__note{margin-top:22px;max-width:56ch;color:var(--ve-moss)}
 @media(min-width:900px){
   .ve-bld__box{margin-top:56px;padding:40px;display:grid;grid-template-columns:1fr 1fr;column-gap:56px}
