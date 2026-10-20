@@ -57,7 +57,7 @@
   function measure(){
     on=mq.matches&&!VE.rm;root.classList.toggle('is-pin',on);
     if(!on){pin.style.height='';track.style.removeProperty('--x');return}
-    dist=Math.max(0,track.scrollWidth-document.documentElement.clientWidth);
+    var last=track.lastElementChild,tr=track.getBoundingClientRect();dist=Math.max(0,last.getBoundingClientRect().right-tr.left+parseFloat(getComputedStyle(track).paddingRight)-document.documentElement.clientWidth); // до последней карточки плюс правое поле: лента кончается с тем же отступом, с каким началась
     pin.style.height=(window.innerHeight+dist)+'px';update();
   }
   function update(){
