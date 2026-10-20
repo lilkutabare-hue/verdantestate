@@ -1,10 +1,10 @@
-<!-- VE · 06-builder.html · сборка 93ba434b -->
+<!-- VE · 06-builder.html · сборка 415cce9d -->
 <section class="ve ve-sec ve-bld" id="ve-builder">
   <div class="ve-wrap">
     <p class="ve-caps ve-r">Почему цена индивидуальная</p>
     <h2 class="ve-h2 ve-r ve-bld__h">Соберите свой сад</h2>
     <p class="ve-sub ve-r">Отметьте, что есть на участке, — покажем ориентир по уровню.</p>
-    <div class="ve-bld__box ve-r">
+    <div class="ve-bld__box ve-panel ve-r">
       <div class="ve-bld__area">
         <label class="ve-bld__lab" for="ve-bld-area">Площадь участка</label>
         <output class="ve-bld__val" for="ve-bld-area"><b>12</b> соток</output>
@@ -12,14 +12,14 @@
         <div class="ve-bld__scale ve-num"><span>4</span><span>60</span></div>
       </div>
       <div class="ve-bld__chips" role="group" aria-label="Что есть на участке">
-        <button type="button" class="ve-bld__chip" data-f="газон">Газон</button>
-        <button type="button" class="ve-bld__chip" data-f="деревья">Деревья</button>
-        <button type="button" class="ve-bld__chip" data-f="кустарники">Кустарники</button>
-        <button type="button" class="ve-bld__chip" data-f="цветники">Цветники</button>
-        <button type="button" class="ve-bld__chip" data-f="живые изгороди">Живые изгороди</button>
-        <button type="button" class="ve-bld__chip" data-f="автополив">Автополив</button>
-        <button type="button" class="ve-bld__chip" data-f="рельеф">Сложный рельеф</button>
-        <button type="button" class="ve-bld__chip" data-f="запущенный сад">Запущенный сад</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="газон">Газон</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="деревья">Деревья</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="кустарники">Кустарники</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="цветники">Цветники</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="живые изгороди">Живые изгороди</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="автополив">Автополив</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="рельеф">Сложный рельеф</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="запущенный сад">Запущенный сад</button>
       </div>
       <div class="ve-bld__out">
         <p class="ve-bld__res"><span class="ve-bld__tier">Похоже на <b class="ve-caps">Premium</b></span><span class="ve-bld__dot">·</span><span class="ve-price ve-bld__price">от 110&#8239;000&nbsp;₽ / месяц</span><span class="ve-bld__dot">·</span><span class="ve-muted">точную цифру скажем после осмотра</span></p>
@@ -30,25 +30,20 @@
 </section>
 <style>
 .ve-bld__h{margin-top:14px}
-.ve-bld__box{margin-top:36px;background:var(--ve-paper-2);border-radius:var(--ve-r);padding:26px 20px}
+.ve-bld__box{margin-top:36px;padding:26px 20px}
 .ve-bld__area{display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:16px}
 .ve-bld__lab{font-size:14px;color:var(--ve-moss)}
 .ve-bld__val{font-weight:600;letter-spacing:-.015em;font-size:26px;line-height:1;white-space:nowrap;font-variant-numeric:lining-nums proportional-nums}
 .ve-bld__val b{font-weight:500;font-size:34px}
 .ve-bld__range{grid-column:1/-1;width:100%;margin:18px 0 0;-webkit-appearance:none;appearance:none;height:32px;background:transparent;cursor:pointer}
-.ve-bld__range::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,var(--ve-acc) var(--p,14%),rgba(31,77,46,.25) var(--p,14%));border-radius:2px}
+.ve-bld__range::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,var(--ve-ink) var(--p,14%),rgba(31,77,46,.22) var(--p,14%));border-radius:2px}
 .ve-bld__range::-moz-range-track{height:2px;background:rgba(31,77,46,.25);border-radius:2px}
-.ve-bld__range::-moz-range-progress{height:2px;background:var(--ve-acc);border-radius:2px}
-.ve-bld__range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ve-acc);margin-top:-12px;border:4px solid var(--ve-paper-2);box-shadow:0 0 0 1px rgba(31,77,46,.25)}
-.ve-bld__range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ve-acc);border:4px solid var(--ve-paper-2);box-shadow:0 0 0 1px rgba(31,77,46,.25)}
+.ve-bld__range::-moz-range-progress{height:2px;background:var(--ve-ink);border-radius:2px}
+.ve-bld__range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ve-paper);margin-top:-12px;border:1.5px solid var(--ve-ink);box-shadow:inset 0 0 0 7px var(--ve-paper),inset 0 0 0 12px var(--ve-bronze)}
+.ve-bld__range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ve-paper);border:1.5px solid var(--ve-ink)}
 .ve-bld__scale{grid-column:1/-1;display:flex;justify-content:space-between;font-size:12px;color:var(--ve-moss);margin-top:2px}
 .ve-bld__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
-.ve-bld__chip{height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(31,77,46,.3);font-size:15px;color:var(--ve-ink);background:transparent;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease-2)}
-.ve-bld__chip.is-on{background:var(--ve-acc);color:var(--ve-paper);border-color:var(--ve-acc)}
-.ve-bld__chip.is-on{animation:ve-chip .35s var(--ve-ease)}
-@keyframes ve-chip{0%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
 .ve-bld__price{display:inline-block;min-width:11ch}
-.ve-bld__chip:active{transform:scale(.97)}
 .ve-bld__out{margin-top:28px;padding-top:22px;border-top:1px solid var(--ve-line);display:flex;flex-direction:column;gap:18px;align-items:flex-start}
 .ve-bld__res{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:16px;line-height:1.4}
 .ve-bld__tier b{font-size:13px;color:var(--ve-ink);margin-left:4px}
@@ -60,7 +55,6 @@
   .ve-bld__out{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center;margin-top:34px;padding-top:28px}
   .ve-bld__res{font-size:17px}
 }
-@media(prefers-reduced-motion:reduce){.ve-bld__chip{transition:none}}
 </style>
 <script>
 (function(){

@@ -13,7 +13,7 @@
         <p class="ve-tar__for">Для небольших и относительно простых участков.</p>
         <ul class="ve-tar__list"><li>регулярные визиты</li><li>уход за газоном</li><li>уход за растениями</li></ul>
         <div class="ve-tar__more"><div><ul class="ve-tar__list ve-tar__list--more"><li>сезонная уборка</li><li>базовая обрезка</li><li>контроль состояния участка</li></ul></div></div>
-        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="3">Ещё 3</button>
+        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="3">Все условия</button>
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="PREMIUM">
@@ -23,7 +23,7 @@
         <p class="ve-tar__for">Для полноценных частных садов.</p>
         <ul class="ve-tar__list"><li>всё из BASIC</li><li>более частые визиты</li><li>расширенный уход за растениями</li></ul>
         <div class="ve-tar__more"><div><ul class="ve-tar__list ve-tar__list--more"><li>формировка кустарников и изгородей</li><li>обработки и подкормки</li><li>сезонные работы</li><li>контроль системы полива</li><li>организация специализированных работ</li></ul></div></div>
-        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="5">Ещё 5</button>
+        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="5">Все условия</button>
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="ESTATE">
@@ -33,7 +33,7 @@
         <p class="ve-tar__for">Для больших и сложных территорий.</p>
         <ul class="ve-tar__list"><li>индивидуальный график обслуживания</li><li>повышенная частота присутствия</li><li>полный контроль состояния сада</li></ul>
         <div class="ve-tar__more"><div><ul class="ve-tar__list ve-tar__list--more"><li>координация нескольких специалистов</li><li>приоритетное обслуживание</li><li>сезонное планирование</li><li>организация арбористики, полива и других специализированных работ</li><li>персональное управление участком</li></ul></div></div>
-        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="5">Ещё 5</button>
+        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="5">Все условия</button>
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
     </div>
@@ -61,8 +61,8 @@
 .ve-tar__more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ve-ease)}
 .ve-tar__more>div{overflow:hidden}
 .ve-tar__card.is-open .ve-tar__more{grid-template-rows:1fr}
-.ve-tar__toggle{margin-top:10px;padding:6px 0;font-size:14px;color:var(--ve-moss);border-bottom:1px solid transparent;transition:color .25s}
-.ve-tar__toggle::after{content:"";display:inline-block;width:6px;height:6px;margin-left:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-3px) rotate(45deg);transition:transform .3s var(--ve-ease)}
+.ve-tar__toggle{margin-top:12px;padding:6px 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.6);transition:color .25s}
+.ve-tar__toggle::after{content:"";display:inline-block;width:6px;height:6px;margin-left:10px;border-right:1px solid var(--ve-bronze);border-bottom:1px solid var(--ve-bronze);transform:translateY(-3px) rotate(45deg);transition:transform .3s var(--ve-ease)}
 .ve-tar__card.is-open .ve-tar__toggle::after{transform:translateY(1px) rotate(-135deg)}
 @media(hover:hover){.ve-tar__toggle:hover{color:var(--ve-paper)}}
 .ve-tar__btn{margin-top:22px;align-self:flex-start}
@@ -80,7 +80,7 @@
   var cards=root.querySelectorAll('.ve-tar__card');
   for(var j=0;j<cards.length;j++)(function(c){
     c.querySelector('.ve-tar__btn').addEventListener('click',function(){VE.goForm({tariff:c.getAttribute('data-tariff')})});
-    var t=c.querySelector('.ve-tar__toggle');t.addEventListener('click',function(){var on=!c.classList.contains('is-open');c.classList.toggle('is-open',on);t.setAttribute('aria-expanded',on);t.textContent=on?'Свернуть':'Ещё '+t.getAttribute('data-n')});
+    var t=c.querySelector('.ve-tar__toggle');t.addEventListener('click',function(){var on=!c.classList.contains('is-open');c.classList.toggle('is-open',on);t.setAttribute('aria-expanded',on);t.textContent=on?'Свернуть':'Все условия'});
   })(cards[j]);
 })();
 </script>

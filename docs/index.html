@@ -7,11 +7,11 @@
 <meta name="description" content="Постоянное управление садом: один договор, один ответственный, весь сад под контролем. Москва и Московская область.">
 <meta property="og:title" content="Verdant Estate — Private Garden Service">
 <meta property="og:description" content="Сад, за которым не нужно следить. Постоянный уход за частными садами в Москве и Московской области.">
-<meta property="og:image" content="site/media/scene/poster-wide.webp?v=93ba434b">
+<meta property="og:image" content="site/media/scene/poster-wide.webp?v=415cce9d">
 <meta name="robots" content="noindex">
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
 <script>window.VE_BASE=new URL('site/',location.href).href</script>
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 93ba434b -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 415cce9d -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
 :root{
@@ -55,22 +55,44 @@
 .ve-big{font-weight:600;letter-spacing:-.02em;font-size:26px;line-height:1.1}
 @media(min-width:900px){.ve-big{font-size:30px}}
 
-.ve .ve-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;
-  background:var(--ve-acc);color:var(--ve-paper);font-size:16px;font-weight:500;letter-spacing:-.005em;white-space:nowrap;border:1px solid var(--ve-acc);
-  transition:transform .3s var(--ve-ease-2),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s var(--ve-ease-2)}
-.ve .ve-btn--ghost{background:transparent;color:var(--ve-ink);border-color:rgba(31,77,46,.35)}
+/* ---- управление: один характер «ботанического» сайта ----
+   кнопки — тёмная зелень, капс с разрядкой, тонкая бронзовая рамка внутри на наведении
+   чипсы — бирки растений: прямые углы, бронзовая точка у выбранной
+   вкладки — текст с бронзовым подчёркиванием
+   поля — линия снизу, подпись капсом; яркий травяной зелёный остаётся мелким сигналам */
+.ve .ve-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:12px;height:54px;padding:0 30px;border-radius:4px;
+  background:var(--ve-ink);color:var(--ve-paper);font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;border:1px solid var(--ve-ink);
+  transition:background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s var(--ve-ease-2),transform .3s var(--ve-ease-2)}
+.ve .ve-btn::after{content:"";position:absolute;inset:4px;border-radius:2px;border:1px solid rgba(176,141,87,0);transition:border-color .35s}
+.ve .ve-btn--ghost{background:transparent;color:var(--ve-ink);border-color:rgba(31,77,46,.42)}
 .ve .ve-btn--light{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
-.ve .ve-btn--sm{height:44px;padding:0 20px;font-size:15px}
-@media(hover:hover){.ve .ve-btn:hover{transform:translateY(-2px)}.ve .ve-btn--ghost:hover{background:var(--ve-acc);color:var(--ve-paper);border-color:var(--ve-acc)}}
-.ve .ve-btn:active{transform:scale(.97)}
-@media(min-width:900px){.ve .ve-btn{height:54px;padding:0 30px}}
+.ve .ve-btn--sm{height:44px;padding:0 20px;font-size:11.5px}
+@media(hover:hover){
+  .ve .ve-btn:hover{background:#183F27}.ve .ve-btn:hover::after{border-color:rgba(176,141,87,.6)}
+  .ve .ve-btn--ghost:hover{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+  .ve .ve-btn--light:hover{background:var(--ve-paper)}.ve .ve-btn--light:hover::after{border-color:rgba(176,141,87,.7)}
+}
+.ve .ve-btn:active{transform:scale(.985)}
+.ve-chip{position:relative;display:inline-flex;align-items:center;gap:10px;height:42px;padding:0 16px;border-radius:3px;border:1px solid rgba(31,77,46,.26);background:transparent;font-size:15px;color:var(--ve-ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease-2)}
+.ve-chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ve-bronze);opacity:0;transform:scale(.3);margin-right:-4px;transition:opacity .25s,transform .4s var(--ve-ease),margin .3s var(--ve-ease)}
+.ve-chip.is-on,.ve-chip:has(input:checked){background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+.ve-chip.is-on::before,.ve-chip:has(input:checked)::before{opacity:1;transform:none;margin-right:0}
+.ve-chip:active{transform:scale(.97)}
+@media(hover:hover){.ve-chip:not(.is-on):hover{border-color:rgba(31,77,46,.6)}}
+.ve-chip input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.ve-chip:has(input:focus-visible){outline:2px solid var(--ve-moss);outline-offset:3px}
+.ve-tabs{display:flex;gap:0 24px;flex-wrap:wrap;border-bottom:1px solid var(--ve-line)}
+.ve-tab{height:42px;padding:0 2px;margin-bottom:-1px;font-size:15px;color:var(--ve-moss);border-bottom:1.5px solid transparent;transition:color .25s,border-color .3s var(--ve-ease)}
+.ve-tab.is-on{color:var(--ve-ink);border-bottom-color:var(--ve-bronze)}
+@media(hover:hover){.ve-tab:not(.is-on):hover{color:var(--ve-ink)}}
+.ve-panel{border:1px solid var(--ve-line);border-radius:6px}
 
 /* ---- система движения ----
    .ve-r      появление: прозрачность + подъём 12px, один раз, по IntersectionObserver
    .ve-rg     группа: дети появляются лесенкой по 60 мс (--d на каждом)
    .ve-img    картинка открывается снизу вверх и «садится» из лёгкого увеличения
    .ve-line   верхний хэйрлайн рисуется слева направо
-   .ve-pill   бегущая подложка активной вкладки (VE.pills)
    VE.swap    смена текста через короткое затухание                                   */
 .ve-r,.ve-rg>*{opacity:0;transform:translateY(12px);transition:opacity .55s var(--ve-ease),transform .55s var(--ve-ease);transition-delay:var(--d,0ms)}
 .ve-r.is-in,.ve-rg.is-in>*{opacity:1;transform:none}
@@ -81,10 +103,6 @@
 .ve-line{position:relative}
 .ve-line::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ve-line);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ve-ease);transition-delay:var(--d,0ms)}
 .ve-line.is-in::before{transform:scaleX(1)}
-.ve-tabs{position:relative;display:inline-flex;gap:4px;padding:3px;border-radius:999px;background:var(--ve-paper-2)}
-.ve-tabs>button{position:relative;z-index:1;height:36px;padding:0 15px;border-radius:999px;font-size:14px;font-weight:500;color:var(--ve-moss);transition:color .3s var(--ve-ease-2)}
-.ve-tabs>button.is-on{color:var(--ve-paper)}
-.ve-pill{position:absolute;top:3px;left:0;height:36px;width:0;border-radius:999px;background:var(--ve-acc);transition:transform .4s var(--ve-ease),width .4s var(--ve-ease);transform:translateX(0)}
 .ve-swap{display:inline-block;transition:opacity .18s var(--ve-ease-2),transform .18s var(--ve-ease-2)}
 .ve-swap.is-out{opacity:0;transform:translateY(5px)}
 .ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
@@ -106,7 +124,7 @@
 
 @media(prefers-reduced-motion:reduce){
   .ve-r,.ve-rg>*,.ve-img,.ve-img>img,.ve-line::before{opacity:1;transform:none;clip-path:none;transition:none}
-  .ve .ve-btn,.ve-pill,.ve-swap{transition:none}
+  .ve .ve-btn,.ve-chip,.ve-tab,.ve-swap{transition:none}
 }
 </style>
 <script>
@@ -114,7 +132,7 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'site/';
-  var VE={v:'93ba434b',base:base,
+  var VE={v:'415cce9d',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
@@ -194,7 +212,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 @media(min-width:900px){.ve-hd__tel{display:inline}}
 .ve-hd .ve-hd__cta{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
 .ve-hd.is-solid{background:rgba(255,255,255,.94);color:var(--ve-ink);box-shadow:0 1px 0 var(--ve-line)}
-.ve-hd.is-solid .ve-hd__cta{background:var(--ve-acc);color:var(--ve-paper);border-color:var(--ve-acc)}
+.ve-hd.is-solid .ve-hd__cta{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
 .ve-hd.is-hidden{transform:translateY(-110%)}
 @media(prefers-reduced-motion:reduce){.ve-hd{transition:none}}
 </style>
@@ -222,8 +240,8 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=93ba434b">
-      <img src="site/media/scene/poster-wide.webp?v=93ba434b" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=415cce9d">
+      <img src="site/media/scene/poster-wide.webp?v=415cce9d" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <div class="ve-hero__shade" aria-hidden="true"></div>
@@ -457,13 +475,13 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
       </div>
       <div class="ve-ssn__view">
         <ol class="ve-strip ve-ssn__track ve-rg">
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=93ba434b" srcset="site/media/stills/process-1-s.webp?v=93ba434b 560w, site/media/stills/process-1-l.webp?v=93ba434b 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=415cce9d" srcset="site/media/stills/process-1-s.webp?v=415cce9d 560w, site/media/stills/process-1-l.webp?v=415cce9d 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-ssn__n ve-num">01 <span>до сезона</span></p><h3 class="ve-ssn__t">Осмотр и план</h3><p class="ve-ssn__d">Приезжаем, смотрим участок и составляем план работ на сезон.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=93ba434b" srcset="site/media/stills/process-2-s.webp?v=93ba434b 560w, site/media/stills/process-2-l.webp?v=93ba434b 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=415cce9d" srcset="site/media/stills/process-2-s.webp?v=415cce9d 560w, site/media/stills/process-2-l.webp?v=415cce9d 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-ssn__n ve-num">02 <span>в начале</span></p><h3 class="ve-ssn__t">График и команда</h3><p class="ve-ssn__d">Расписываем визиты по месяцам и подбираем специалистов под ваш сад.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=93ba434b" srcset="site/media/stills/process-3-s.webp?v=93ba434b 560w, site/media/stills/process-3-l.webp?v=93ba434b 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=415cce9d" srcset="site/media/stills/process-3-s.webp?v=415cce9d 560w, site/media/stills/process-3-l.webp?v=415cce9d 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-ssn__n ve-num">03 <span>весь сезон</span></p><h3 class="ve-ssn__t">Работы</h3><p class="ve-ssn__d">Покос, стрижка, обрезка, обработки — по графику, без ваших напоминаний.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=93ba434b" srcset="site/media/stills/process-4-s.webp?v=93ba434b 560w, site/media/stills/process-4-l.webp?v=93ba434b 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=415cce9d" srcset="site/media/stills/process-4-s.webp?v=415cce9d 560w, site/media/stills/process-4-l.webp?v=415cce9d 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-ssn__n ve-num">04 <span>после каждого визита</span></p><h3 class="ve-ssn__t">Контроль и отчёт</h3><p class="ve-ssn__d">Проверяем результат и коротко сообщаем, что сделано и что дальше.</p></li>
         </ol>
       </div>
@@ -535,33 +553,33 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
   <div class="ve-wrap ve-tar__wrap">
     <div class="ve-strip ve-tar__strip ve-rg">
       <article class="ve-tar__card" data-tariff="BASIC">
-        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-basic-l.webp?v=93ba434b" srcset="site/media/stills/tariff-basic-s.webp?v=93ba434b 560w, site/media/stills/tariff-basic-l.webp?v=93ba434b 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-basic-l.webp?v=415cce9d" srcset="site/media/stills/tariff-basic-s.webp?v=415cce9d 560w, site/media/stills/tariff-basic-l.webp?v=415cce9d 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-caps ve-tar__name">Basic</p>
         <p class="ve-tar__price ve-price">от 60&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для небольших и относительно простых участков.</p>
         <ul class="ve-tar__list"><li>регулярные визиты</li><li>уход за газоном</li><li>уход за растениями</li></ul>
         <div class="ve-tar__more"><div><ul class="ve-tar__list ve-tar__list--more"><li>сезонная уборка</li><li>базовая обрезка</li><li>контроль состояния участка</li></ul></div></div>
-        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="3">Ещё 3</button>
+        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="3">Все условия</button>
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="PREMIUM">
-        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-premium-l.webp?v=93ba434b" srcset="site/media/stills/tariff-premium-s.webp?v=93ba434b 560w, site/media/stills/tariff-premium-l.webp?v=93ba434b 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-premium-l.webp?v=415cce9d" srcset="site/media/stills/tariff-premium-s.webp?v=415cce9d 560w, site/media/stills/tariff-premium-l.webp?v=415cce9d 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-caps ve-tar__name">Premium</p>
         <p class="ve-tar__price ve-price">от 110&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для полноценных частных садов.</p>
         <ul class="ve-tar__list"><li>всё из BASIC</li><li>более частые визиты</li><li>расширенный уход за растениями</li></ul>
         <div class="ve-tar__more"><div><ul class="ve-tar__list ve-tar__list--more"><li>формировка кустарников и изгородей</li><li>обработки и подкормки</li><li>сезонные работы</li><li>контроль системы полива</li><li>организация специализированных работ</li></ul></div></div>
-        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="5">Ещё 5</button>
+        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="5">Все условия</button>
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="ESTATE">
-        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-estate-l.webp?v=93ba434b" srcset="site/media/stills/tariff-estate-s.webp?v=93ba434b 560w, site/media/stills/tariff-estate-l.webp?v=93ba434b 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-estate-l.webp?v=415cce9d" srcset="site/media/stills/tariff-estate-s.webp?v=415cce9d 560w, site/media/stills/tariff-estate-l.webp?v=415cce9d 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-caps ve-tar__name">Estate</p>
         <p class="ve-tar__price ve-price">от 190&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для больших и сложных территорий.</p>
         <ul class="ve-tar__list"><li>индивидуальный график обслуживания</li><li>повышенная частота присутствия</li><li>полный контроль состояния сада</li></ul>
         <div class="ve-tar__more"><div><ul class="ve-tar__list ve-tar__list--more"><li>координация нескольких специалистов</li><li>приоритетное обслуживание</li><li>сезонное планирование</li><li>организация арбористики, полива и других специализированных работ</li><li>персональное управление участком</li></ul></div></div>
-        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="5">Ещё 5</button>
+        <button class="ve-tar__toggle" type="button" aria-expanded="false" data-n="5">Все условия</button>
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
     </div>
@@ -589,8 +607,8 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 .ve-tar__more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ve-ease)}
 .ve-tar__more>div{overflow:hidden}
 .ve-tar__card.is-open .ve-tar__more{grid-template-rows:1fr}
-.ve-tar__toggle{margin-top:10px;padding:6px 0;font-size:14px;color:var(--ve-moss);border-bottom:1px solid transparent;transition:color .25s}
-.ve-tar__toggle::after{content:"";display:inline-block;width:6px;height:6px;margin-left:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-3px) rotate(45deg);transition:transform .3s var(--ve-ease)}
+.ve-tar__toggle{margin-top:12px;padding:6px 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.6);transition:color .25s}
+.ve-tar__toggle::after{content:"";display:inline-block;width:6px;height:6px;margin-left:10px;border-right:1px solid var(--ve-bronze);border-bottom:1px solid var(--ve-bronze);transform:translateY(-3px) rotate(45deg);transition:transform .3s var(--ve-ease)}
 .ve-tar__card.is-open .ve-tar__toggle::after{transform:translateY(1px) rotate(-135deg)}
 @media(hover:hover){.ve-tar__toggle:hover{color:var(--ve-paper)}}
 .ve-tar__btn{margin-top:22px;align-self:flex-start}
@@ -608,7 +626,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
   var cards=root.querySelectorAll('.ve-tar__card');
   for(var j=0;j<cards.length;j++)(function(c){
     c.querySelector('.ve-tar__btn').addEventListener('click',function(){VE.goForm({tariff:c.getAttribute('data-tariff')})});
-    var t=c.querySelector('.ve-tar__toggle');t.addEventListener('click',function(){var on=!c.classList.contains('is-open');c.classList.toggle('is-open',on);t.setAttribute('aria-expanded',on);t.textContent=on?'Свернуть':'Ещё '+t.getAttribute('data-n')});
+    var t=c.querySelector('.ve-tar__toggle');t.addEventListener('click',function(){var on=!c.classList.contains('is-open');c.classList.toggle('is-open',on);t.setAttribute('aria-expanded',on);t.textContent=on?'Свернуть':'Все условия'});
   })(cards[j]);
 })();
 </script>
@@ -620,7 +638,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
     <p class="ve-caps ve-r">Почему цена индивидуальная</p>
     <h2 class="ve-h2 ve-r ve-bld__h">Соберите свой сад</h2>
     <p class="ve-sub ve-r">Отметьте, что есть на участке, — покажем ориентир по уровню.</p>
-    <div class="ve-bld__box ve-r">
+    <div class="ve-bld__box ve-panel ve-r">
       <div class="ve-bld__area">
         <label class="ve-bld__lab" for="ve-bld-area">Площадь участка</label>
         <output class="ve-bld__val" for="ve-bld-area"><b>12</b> соток</output>
@@ -628,14 +646,14 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
         <div class="ve-bld__scale ve-num"><span>4</span><span>60</span></div>
       </div>
       <div class="ve-bld__chips" role="group" aria-label="Что есть на участке">
-        <button type="button" class="ve-bld__chip" data-f="газон">Газон</button>
-        <button type="button" class="ve-bld__chip" data-f="деревья">Деревья</button>
-        <button type="button" class="ve-bld__chip" data-f="кустарники">Кустарники</button>
-        <button type="button" class="ve-bld__chip" data-f="цветники">Цветники</button>
-        <button type="button" class="ve-bld__chip" data-f="живые изгороди">Живые изгороди</button>
-        <button type="button" class="ve-bld__chip" data-f="автополив">Автополив</button>
-        <button type="button" class="ve-bld__chip" data-f="рельеф">Сложный рельеф</button>
-        <button type="button" class="ve-bld__chip" data-f="запущенный сад">Запущенный сад</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="газон">Газон</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="деревья">Деревья</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="кустарники">Кустарники</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="цветники">Цветники</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="живые изгороди">Живые изгороди</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="автополив">Автополив</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="рельеф">Сложный рельеф</button>
+        <button type="button" class="ve-chip ve-bld__chip" data-f="запущенный сад">Запущенный сад</button>
       </div>
       <div class="ve-bld__out">
         <p class="ve-bld__res"><span class="ve-bld__tier">Похоже на <b class="ve-caps">Premium</b></span><span class="ve-bld__dot">·</span><span class="ve-price ve-bld__price">от 110&#8239;000&nbsp;₽ / месяц</span><span class="ve-bld__dot">·</span><span class="ve-muted">точную цифру скажем после осмотра</span></p>
@@ -646,25 +664,20 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 </section>
 <style>
 .ve-bld__h{margin-top:14px}
-.ve-bld__box{margin-top:36px;background:var(--ve-paper-2);border-radius:var(--ve-r);padding:26px 20px}
+.ve-bld__box{margin-top:36px;padding:26px 20px}
 .ve-bld__area{display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:16px}
 .ve-bld__lab{font-size:14px;color:var(--ve-moss)}
 .ve-bld__val{font-weight:600;letter-spacing:-.015em;font-size:26px;line-height:1;white-space:nowrap;font-variant-numeric:lining-nums proportional-nums}
 .ve-bld__val b{font-weight:500;font-size:34px}
 .ve-bld__range{grid-column:1/-1;width:100%;margin:18px 0 0;-webkit-appearance:none;appearance:none;height:32px;background:transparent;cursor:pointer}
-.ve-bld__range::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,var(--ve-acc) var(--p,14%),rgba(31,77,46,.25) var(--p,14%));border-radius:2px}
+.ve-bld__range::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,var(--ve-ink) var(--p,14%),rgba(31,77,46,.22) var(--p,14%));border-radius:2px}
 .ve-bld__range::-moz-range-track{height:2px;background:rgba(31,77,46,.25);border-radius:2px}
-.ve-bld__range::-moz-range-progress{height:2px;background:var(--ve-acc);border-radius:2px}
-.ve-bld__range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ve-acc);margin-top:-12px;border:4px solid var(--ve-paper-2);box-shadow:0 0 0 1px rgba(31,77,46,.25)}
-.ve-bld__range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ve-acc);border:4px solid var(--ve-paper-2);box-shadow:0 0 0 1px rgba(31,77,46,.25)}
+.ve-bld__range::-moz-range-progress{height:2px;background:var(--ve-ink);border-radius:2px}
+.ve-bld__range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ve-paper);margin-top:-12px;border:1.5px solid var(--ve-ink);box-shadow:inset 0 0 0 7px var(--ve-paper),inset 0 0 0 12px var(--ve-bronze)}
+.ve-bld__range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ve-paper);border:1.5px solid var(--ve-ink)}
 .ve-bld__scale{grid-column:1/-1;display:flex;justify-content:space-between;font-size:12px;color:var(--ve-moss);margin-top:2px}
 .ve-bld__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
-.ve-bld__chip{height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(31,77,46,.3);font-size:15px;color:var(--ve-ink);background:transparent;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease-2)}
-.ve-bld__chip.is-on{background:var(--ve-acc);color:var(--ve-paper);border-color:var(--ve-acc)}
-.ve-bld__chip.is-on{animation:ve-chip .35s var(--ve-ease)}
-@keyframes ve-chip{0%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
 .ve-bld__price{display:inline-block;min-width:11ch}
-.ve-bld__chip:active{transform:scale(.97)}
 .ve-bld__out{margin-top:28px;padding-top:22px;border-top:1px solid var(--ve-line);display:flex;flex-direction:column;gap:18px;align-items:flex-start}
 .ve-bld__res{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:16px;line-height:1.4}
 .ve-bld__tier b{font-size:13px;color:var(--ve-ink);margin-left:4px}
@@ -676,7 +689,6 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
   .ve-bld__out{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center;margin-top:34px;padding-top:28px}
   .ve-bld__res{font-size:17px}
 }
-@media(prefers-reduced-motion:reduce){.ve-bld__chip{transition:none}}
 </style>
 <script>
 (function(){
@@ -712,7 +724,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
     <p class="ve-caps ve-r">Почему постоянное обслуживание выгоднее</p>
     <h2 class="ve-h2 ve-r ve-eco__h">Один договор — весь сад</h2>
     <p class="ve-sub ve-r">Один сезон, апрель — ноябрь. Так он выглядит с разовыми вызовами и с нами.</p>
-    <div class="ve-eco__panel ve-r">
+    <div class="ve-eco__panel ve-panel ve-r">
       <div class="ve-eco__row ve-eco__row--one">
         <div class="ve-eco__head"><p class="ve-eco__lab">Разовые вызовы</p><p class="ve-eco__count ve-num"><b data-to="10">0</b> отдельных заказов</p></div>
         <svg class="ve-eco__svg ve-eco__svg--one" aria-hidden="true"></svg>
@@ -736,20 +748,20 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 </section>
 <style>
 .ve-eco__h{margin-top:14px}
-.ve-eco__panel{margin-top:32px;padding:22px 18px 16px;border-radius:var(--ve-r);background:var(--ve-paper-2)}
+.ve-eco__panel{margin-top:32px;padding:22px 18px 16px}
 .ve-eco__row+.ve-eco__row{margin-top:26px;padding-top:22px;border-top:1px solid var(--ve-line)}
 .ve-eco__head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .ve-eco__lab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ve-moss)}
 .ve-eco__count{font-size:14px;color:var(--ve-moss);white-space:nowrap}
 .ve-eco__count b{font-weight:600;font-size:22px;letter-spacing:-.02em;color:var(--ve-ink);margin-right:2px}
-.ve-eco__row--ve .ve-eco__count b{color:var(--ve-acc)}
+.ve-eco__row--ve .ve-eco__count b{color:var(--ve-ink)}
 .ve-eco__svg{display:block;width:100%;height:84px;margin-top:10px;overflow:visible}
 .ve-eco__svg text{font-family:var(--ve-sans);fill:var(--ve-ink);font-size:11px;font-weight:500}
 .ve-eco__svg .dot{fill:var(--ve-ink)}
 .ve-eco__svg .ring{fill:none;stroke:var(--ve-ink);stroke-opacity:.22}
 .ve-eco__svg .zig{fill:none;stroke:var(--ve-ink);stroke-opacity:.35;stroke-width:1.5;stroke-dasharray:3 5}
-.ve-eco__svg .line{fill:none;stroke:var(--ve-acc);stroke-width:2.5;stroke-linecap:round}
-.ve-eco__svg .tick{stroke:var(--ve-acc);stroke-width:2;stroke-linecap:round}
+.ve-eco__svg .line{fill:none;stroke:var(--ve-ink);stroke-width:2;stroke-linecap:round}
+.ve-eco__svg .tick{stroke:var(--ve-bronze);stroke-width:2;stroke-linecap:round}
 .ve-eco__svg .ev{opacity:0;transform:scale(.6);transform-box:fill-box;transform-origin:center;transition:opacity .3s var(--ve-ease),transform .5s var(--ve-ease)}
 .ve-eco__svg .ev.on{opacity:1;transform:none}
 .ve-eco__note{margin-top:6px;font-size:13px;color:var(--ve-moss)}
@@ -835,18 +847,18 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
     <p class="ve-sub ve-r">Если постоянный уход не нужен — сделаем отдельную работу по прайсу.</p>
     <div class="ve-pr__grid">
       <div class="ve-pr__left">
-        <div class="ve-pr__tabs ve-r" role="tablist" aria-label="Категории работ">
-          <button class="ve-pr__tab is-on" role="tab" aria-selected="true" data-cat="lawn" type="button">Газон</button>
-          <button class="ve-pr__tab" role="tab" aria-selected="false" data-cat="plants" type="button">Растения</button>
-          <button class="ve-pr__tab" role="tab" aria-selected="false" data-cat="trees" type="button">Деревья</button>
+        <div class="ve-tabs ve-pr__tabs ve-r" role="tablist" aria-label="Категории работ">
+          <button class="ve-tab ve-pr__tab is-on" role="tab" aria-selected="true" data-cat="lawn" type="button">Газон</button>
+          <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="plants" type="button">Растения</button>
+          <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="trees" type="button">Деревья</button>
         </div>
         <div class="ve-pr__table" role="tabpanel"></div>
         <p class="ve-pr__note ve-muted">Сложные работы — по смете.</p>
       </div>
       <div class="ve-pr__pic ve-r ve-px" aria-hidden="true">
-        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=93ba434b" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=93ba434b" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=93ba434b" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=415cce9d" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=415cce9d" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=415cce9d" alt="" loading="lazy" decoding="async" width="1000" height="1250">
       </div>
     </div>
   </div>
@@ -854,12 +866,10 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 <style>
 .ve-pr__h{margin-top:14px;max-width:26ch}
 .ve-pr__grid{margin-top:36px}
-.ve-pr__tabs{display:flex;gap:6px;flex-wrap:wrap}
-.ve-pr__tab{height:40px;padding:0 16px;border-radius:999px;border:1px solid transparent;font-size:15px;color:var(--ve-moss);transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2)}
-.ve-pr__tab.is-on{background:var(--ve-paper-2);color:var(--ve-ink)}
 .ve-pr__table{margin-top:22px}
-.ve-pr__row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-top:1px solid var(--ve-line)}
-.ve-pr__row:last-child{border-bottom:1px solid var(--ve-line)}
+/* строки прайса с точечной отбивкой, как в меню */
+.ve-pr__row{display:flex;align-items:baseline;gap:10px;padding:11px 0}
+.ve-pr__row i.ve-pr__lead{flex:1;min-width:24px;border-bottom:1px dotted rgba(31,77,46,.4);transform:translateY(-4px)}
 .ve-pr__row span:first-child::first-letter{text-transform:uppercase}
 .ve-pr__row b{font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ve-ink)}
 .ve-pr__row b i{font-style:normal;color:var(--ve-moss);font-size:14px}
@@ -871,7 +881,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
   .ve-pr__grid{margin-top:56px;display:grid;grid-template-columns:1fr 420px;gap:64px;align-items:start}
   .ve-pr__pic{display:block}
 }
-@media(prefers-reduced-motion:reduce){.ve-pr__pic img,.ve-pr__tab{transition:none}}
+@media(prefers-reduced-motion:reduce){.ve-pr__pic img{transition:none}}
 </style>
 <script>
 (function(){
@@ -884,7 +894,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
   };
   var table=root.querySelector('.ve-pr__table'),tabs=root.querySelectorAll('.ve-pr__tab'),pics=root.querySelectorAll('.ve-pr__pic img');
   function show(cat){
-    table.innerHTML=DATA[cat].map(function(r){var price=r[1]?'от '+r[1].replace(' ',' ')+'&nbsp;₽ <i>/ '+r[2]+'</i>':'<i>'+r[2]+'</i>';return '<div class="ve-pr__row ve-r"><span>'+r[0]+'</span><b>'+price+'</b></div>'}).join('');
+    table.innerHTML=DATA[cat].map(function(r){var price=r[1]?'от '+r[1].replace(' ',' ')+'&nbsp;₽ <i>/ '+r[2]+'</i>':'<i>'+r[2]+'</i>';return '<div class="ve-pr__row ve-r"><span>'+r[0]+'</span><i class="ve-pr__lead"></i><b>'+price+'</b></div>'}).join('');
     var rows=table.querySelectorAll('.ve-pr__row');for(var i=0;i<rows.length;i++)rows[i].style.transitionDelay=Math.min(i,10)*45+'ms';
     requestAnimationFrame(function(){requestAnimationFrame(function(){for(var i=0;i<rows.length;i++)rows[i].classList.add('is-in')})});
     for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-cat')===cat;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
@@ -959,8 +969,8 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
     <p class="ve-caps ve-r">До и после</p>
     <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
     <div class="ve-ba__box ve-r" style="--x:50%">
-      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=93ba434b" srcset="site/media/stills/ba-before-s.webp?v=93ba434b 720w, site/media/stills/ba-before-l.webp?v=93ba434b 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
-      <img class="ve-ba__img ve-ba__img--after" src="site/media/stills/ba-after-l.webp?v=93ba434b" srcset="site/media/stills/ba-after-s.webp?v=93ba434b 720w, site/media/stills/ba-after-l.webp?v=93ba434b 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=415cce9d" srcset="site/media/stills/ba-before-s.webp?v=415cce9d 720w, site/media/stills/ba-before-l.webp?v=415cce9d 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--after" src="site/media/stills/ba-after-l.webp?v=415cce9d" srcset="site/media/stills/ba-after-s.webp?v=415cce9d 720w, site/media/stills/ba-after-l.webp?v=415cce9d 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
       <span class="ve-ba__lab ve-ba__lab--b">до</span>
       <span class="ve-ba__lab ve-ba__lab--a">после</span>
       <div class="ve-ba__bar" aria-hidden="true"><i></i></div>
@@ -1011,17 +1021,17 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
     <h2 class="ve-h2 ve-r ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=93ba434b" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" src="site/media/stills/season-summer-l.webp?v=93ba434b" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=93ba434b" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=93ba434b" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=415cce9d" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" src="site/media/stills/season-summer-l.webp?v=415cce9d" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=415cce9d" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=415cce9d" alt="" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
-        <div class="ve-sea__tabs ve-r" role="tablist">
-          <button class="ve-sea__tab is-on" type="button" role="tab" aria-selected="true" data-s="spring">Весна</button>
-          <button class="ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="summer">Лето</button>
-          <button class="ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="autumn">Осень</button>
-          <button class="ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="winter">Зима</button>
+        <div class="ve-tabs ve-sea__tabs ve-r" role="tablist">
+          <button class="ve-tab ve-sea__tab is-on" type="button" role="tab" aria-selected="true" data-s="spring">Весна</button>
+          <button class="ve-tab ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="summer">Лето</button>
+          <button class="ve-tab ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="autumn">Осень</button>
+          <button class="ve-tab ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="winter">Зима</button>
         </div>
         <ul class="ve-sea__list" role="tabpanel"></ul>
       </div>
@@ -1035,9 +1045,6 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 .ve-sea__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s var(--ve-ease)}
 .ve-sea__pic img.is-on{opacity:1}
 .ve-sea__side{margin-top:22px}
-.ve-sea__tabs{display:flex;gap:6px;flex-wrap:wrap}
-.ve-sea__tab{height:40px;padding:0 16px;border-radius:999px;font-size:15px;color:var(--ve-moss);transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2)}
-.ve-sea__tab.is-on{background:var(--ve-paper-2);color:var(--ve-ink)}
 .ve-sea__list{list-style:none;margin:20px 0 0;padding:0}
 .ve-sea__list li{padding:10px 0;border-top:1px solid var(--ve-line)}
 .ve-sea__list li:last-child{border-bottom:1px solid var(--ve-line)}
@@ -1046,7 +1053,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
   .ve-sea__grid{margin-top:56px;display:grid;grid-template-columns:1fr 360px;gap:64px;align-items:start}
   .ve-sea__side{margin-top:0}
 }
-@media(prefers-reduced-motion:reduce){.ve-sea__pic img,.ve-sea__tab{transition:none}}
+@media(prefers-reduced-motion:reduce){.ve-sea__pic img{transition:none}}
 </style>
 <script>
 (function(){
@@ -1096,7 +1103,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 .ve-faq__draft{display:inline-block;margin-top:16px;padding:6px 12px;border-radius:999px;background:var(--ve-paper-2);font-size:12px;color:var(--ve-moss)}
 .ve-faq__list{margin-top:30px;border-bottom:1px solid var(--ve-line)}
 .ve-faq__q{display:flex;width:100%;align-items:flex-start;justify-content:space-between;gap:20px;padding:20px 0;border-top:1px solid var(--ve-line);text-align:left;font-weight:600;letter-spacing:-.012em;font-size:18px;line-height:1.3}
-.ve-faq__q i{position:relative;flex:0 0 auto;width:14px;height:14px;margin-top:4px;color:var(--ve-acc)}
+.ve-faq__q i{position:relative;flex:0 0 auto;width:14px;height:14px;margin-top:4px;color:var(--ve-bronze)}
 .ve-faq__q i::before,.ve-faq__q i::after{content:"";position:absolute;left:0;right:0;top:6px;height:2px;border-radius:1px;background:currentColor;transition:transform .3s var(--ve-ease-2)}
 .ve-faq__q i::after{transform:rotate(90deg)}
 .ve-faq__item.is-open .ve-faq__q i::after{transform:rotate(0)}
@@ -1105,7 +1112,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 .ve-faq__a p{padding:0 34px 22px 0;color:var(--ve-moss);max-width:60ch;opacity:0;transform:translateY(-4px);transition:opacity .3s var(--ve-ease-2),transform .3s var(--ve-ease-2)}
 .ve-faq__item.is-open .ve-faq__a{grid-template-rows:1fr}
 .ve-faq__item.is-open .ve-faq__a p{opacity:1;transform:none;transition-delay:.08s}
-@media(hover:hover){.ve-faq__q:hover{color:var(--ve-acc)}}
+@media(hover:hover){.ve-faq__q:hover{color:var(--ve-moss)}}
 @media(min-width:900px){
   .ve-faq__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:start}
   .ve-faq__side{position:sticky;top:110px}
@@ -1190,24 +1197,24 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
           <div class="ve-fm__field">
             <span>Уровень обслуживания</span>
             <div class="ve-fm__radios" role="radiogroup">
-              <label><input type="radio" name="tariff" value="BASIC"><i></i>Basic</label>
-              <label><input type="radio" name="tariff" value="PREMIUM"><i></i>Premium</label>
-              <label><input type="radio" name="tariff" value="ESTATE"><i></i>Estate</label>
-              <label><input type="radio" name="tariff" value="" checked><i></i>Не знаю</label>
+              <label class="ve-chip"><input type="radio" name="tariff" value="BASIC">Basic</label>
+              <label class="ve-chip"><input type="radio" name="tariff" value="PREMIUM">Premium</label>
+              <label class="ve-chip"><input type="radio" name="tariff" value="ESTATE">Estate</label>
+              <label class="ve-chip"><input type="radio" name="tariff" value="" checked>Не знаю</label>
             </div>
           </div>
         </div>
         <div class="ve-fm__field">
           <span>Что есть на участке</span>
           <div class="ve-fm__chips">
-            <label><input type="checkbox" name="factors" value="газон"><b>Газон</b></label>
-            <label><input type="checkbox" name="factors" value="деревья"><b>Деревья</b></label>
-            <label><input type="checkbox" name="factors" value="кустарники"><b>Кустарники</b></label>
-            <label><input type="checkbox" name="factors" value="цветники"><b>Цветники</b></label>
-            <label><input type="checkbox" name="factors" value="живые изгороди"><b>Живые изгороди</b></label>
-            <label><input type="checkbox" name="factors" value="автополив"><b>Автополив</b></label>
-            <label><input type="checkbox" name="factors" value="рельеф"><b>Сложный рельеф</b></label>
-            <label><input type="checkbox" name="factors" value="запущенный сад"><b>Запущенный сад</b></label>
+            <label class="ve-chip"><input type="checkbox" name="factors" value="газон">Газон</label>
+            <label class="ve-chip"><input type="checkbox" name="factors" value="деревья">Деревья</label>
+            <label class="ve-chip"><input type="checkbox" name="factors" value="кустарники">Кустарники</label>
+            <label class="ve-chip"><input type="checkbox" name="factors" value="цветники">Цветники</label>
+            <label class="ve-chip"><input type="checkbox" name="factors" value="живые изгороди">Живые изгороди</label>
+            <label class="ve-chip"><input type="checkbox" name="factors" value="автополив">Автополив</label>
+            <label class="ve-chip"><input type="checkbox" name="factors" value="рельеф">Сложный рельеф</label>
+            <label class="ve-chip"><input type="checkbox" name="factors" value="запущенный сад">Запущенный сад</label>
           </div>
         </div>
         <label class="ve-fm__field"><span>Комментарий</span><textarea name="comment" rows="3" maxlength="1000" placeholder="Где участок, что беспокоит, когда удобно позвонить"></textarea></label>
@@ -1228,22 +1235,18 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 .ve-fm__field{display:block;margin-top:18px}
 .ve-fm__row .ve-fm__field{margin-top:0}
 .ve-fm__row{margin-top:18px}
-.ve-fm__field>span{display:block;font-size:13px;color:var(--ve-moss);margin-bottom:8px;letter-spacing:.01em}
-.ve-fm input[type=text],.ve-fm input[type=tel],.ve-fm input[type=number],.ve-fm textarea{width:100%;font:inherit;font-size:16px;color:var(--ve-ink);background:var(--ve-paper-2);border:1px solid transparent;border-radius:var(--ve-r);padding:14px 16px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .25s,background .25s}
-.ve-fm textarea{resize:vertical;min-height:96px;line-height:1.45}
-.ve-fm input:focus,.ve-fm textarea:focus{border-color:var(--ve-moss);background:var(--ve-paper)}
-.ve-fm input.is-bad{border-color:#B0553F}
-.ve-fm input::placeholder,.ve-fm textarea::placeholder{color:rgba(31,77,46,.4)}
-.ve-fm__radios,.ve-fm__chips{display:flex;flex-wrap:wrap;gap:8px}
-.ve-fm__radios label,.ve-fm__chips label{position:relative;display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(31,77,46,.3);font-size:15px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s}
-.ve-fm__radios input,.ve-fm__chips input{position:absolute;opacity:0;width:0;height:0;margin:0}
-.ve-fm__radios label:has(input:checked),.ve-fm__chips label:has(input:checked){background:var(--ve-acc);color:var(--ve-paper);border-color:var(--ve-acc)}
-.ve-fm__radios label:has(input:focus-visible),.ve-fm__chips label:has(input:focus-visible){outline:2px solid var(--ve-moss);outline-offset:3px}
-.ve-fm__radios label i{display:none}
+/* поля — линией, подписи капсом: как бланк, а не как приложение */
+.ve-fm__field>span{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ve-moss);margin-bottom:6px}
+.ve-fm input[type=text],.ve-fm input[type=tel],.ve-fm input[type=number],.ve-fm textarea{width:100%;font:inherit;font-size:17px;color:var(--ve-ink);background:transparent;border:0;border-bottom:1px solid rgba(31,77,46,.3);border-radius:0;padding:10px 0 12px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .3s}
+.ve-fm textarea{resize:vertical;min-height:72px;line-height:1.45}
+.ve-fm input:focus,.ve-fm textarea:focus{border-bottom-color:var(--ve-ink);box-shadow:0 1px 0 var(--ve-ink)}
+.ve-fm input.is-bad{border-bottom-color:#B0553F}
+.ve-fm input::placeholder,.ve-fm textarea::placeholder{color:rgba(31,77,46,.38)}
+.ve-fm__radios,.ve-fm__chips{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px}
 .ve-fm__consent{display:flex;align-items:flex-start;gap:12px;margin-top:22px;font-size:14px;color:var(--ve-moss);cursor:pointer}
 .ve-fm__consent input{position:absolute;opacity:0;width:0;height:0}
-.ve-fm__consent i{flex:0 0 auto;width:20px;height:20px;border-radius:5px;border:1px solid rgba(31,77,46,.4);margin-top:1px;position:relative;transition:background .2s,border-color .2s}
-.ve-fm__consent:has(input:checked) i{background:var(--ve-acc);border-color:var(--ve-acc)}
+.ve-fm__consent i{flex:0 0 auto;width:20px;height:20px;border-radius:3px;border:1px solid rgba(31,77,46,.4);margin-top:1px;position:relative;transition:background .2s,border-color .2s}
+.ve-fm__consent:has(input:checked) i{background:var(--ve-ink);border-color:var(--ve-ink)}
 .ve-fm__consent i::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border-right:2px solid var(--ve-paper);border-bottom:2px solid var(--ve-paper);transform:rotate(45deg);opacity:0}
 .ve-fm__consent:has(input:checked) i::after{opacity:1}
 .ve-fm__consent.is-bad i{border-color:#B0553F}
@@ -1257,7 +1260,7 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
   .ve-fm__row{grid-template-columns:1fr 1fr;gap:20px}
   .ve-fm__field--s{max-width:200px}
 }
-@media(prefers-reduced-motion:reduce){.ve-fm input,.ve-fm textarea,.ve-fm__radios label,.ve-fm__chips label{transition:none}}
+@media(prefers-reduced-motion:reduce){.ve-fm input,.ve-fm textarea{transition:none}}
 </style>
 <script>
 (function(){
@@ -1369,6 +1372,6 @@ html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 })();
 </script>
 
-<div class="ve-preview-note">превью сборки 93ba434b · изображения временные, до генераций · контакты в подвале — заглушки</div>
+<div class="ve-preview-note">превью сборки 415cce9d · изображения временные, до генераций · контакты в подвале — заглушки</div>
 </body>
 </html>
