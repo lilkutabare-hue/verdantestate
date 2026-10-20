@@ -265,3 +265,33 @@ Locked-off static camera. The ONLY things that move are the air and the light: t
 
 **Negative (все):** `camera movement, zoom, pan, people, animals, birds, cars, text, watermark, deformation, morphing plants, plants growing, new objects, flicker, background change, lights turning on`
 **Настройки:** по 2 прогона на кадр; файлы → `media-src/loop-t1.mp4`, `loop-t2.mp4`, `loop-t3.mp4`, `loop-b2.mp4`, `loop-z1.mp4`.
+
+### 6.3 Смена сезонов — два клипа (Kling 3.0, start + end, 5 s, 1080p, 16:9)
+
+**Z1 → Z3 (лето → осень).** start = Z1, end = Z3
+```
+Locked-off static camera on a tripod, the exact same garden view for the whole clip. Over the ENTIRE clip, from the first frame to the last, summer slowly turns into autumn: the birch leaves warm from green to gold, a few golden leaves drift down onto the lawn and the slabs, the hydrangeas fade to pink-beige, the reed grass turns straw-coloured, and the light becomes lower and softer. The change never speeds up and never stops midway. The house, the hedges, the path, the beds and every tree keep exactly the same shapes and positions throughout.
+```
+**Z3 → Z4 (осень → зима).** start = Z3, end = Z4
+```
+Locked-off static camera on a tripod, the exact same garden view for the whole clip. Over the ENTIRE clip, from the first frame to the last, autumn slowly turns into winter: the last golden leaves fall, the sky turns pale and overcast, soft snow begins to fall and gradually settles on the lawn, the hedge tops and the boxwood balls until everything is white, and warm light comes on in the windows of the villa. The change never speeds up and never stops midway. The house, the hedges, the path, the beds and every tree keep exactly the same shapes and positions throughout.
+```
+**Negative (оба):** `camera movement, camera shake, zoom, pan, people, animals, birds, cars, text, letters, watermark, deformation, morphing plants, plants growing or changing shape, new objects, flicker, strobing, sudden cuts, motion stopping midway`
+**Настройки:** 2 прогона на клип; файлы → `media-src/season-summer-autumn.mp4`, `season-autumn-winter.mp4`.
+
+### 6.4 Лупы «10 способов» — три карточки (Kling 3.0, start = end = стилл, 5 s, 1080p, 4:5 если есть в пикере, иначе 16:9 с кропом)
+
+- **R04 · Подсветка** (start = end = R04):
+```
+Locked-off static camera. The ONLY thing that changes is the light: the warm garden lights breathe very gently, thin evening mist drifts slowly between the pines, and the clip ends on exactly the starting look. The house, the beds, the path and every plant keep exactly the same position and shape.
+```
+- **R07 · Автополив** (start = end = R07):
+```
+Locked-off static camera. The ONLY thing that moves is the water: the sprinklers keep spraying fine arcs of water that sparkle in the low sun and drift slightly in the breeze, and the clip ends on exactly the starting look. The lawn, the boxwood balls, the pines and the house keep exactly the same position and shape.
+```
+- **R02 · Дорожки** (start = end = R02): промпт T1–T3 (тень облака).
+
+**Negative:** как в §6.2. Файлы → `media-src/loop-r04.mp4`, `loop-r07.mp4`, `loop-r02.mp4`.
+
+### 6.5 Ночной луп для телефона
+Как К4, но start = end = **S5v** (вертикальный), 5 s, 9:16 → `media-src/k4v.mp4`.
