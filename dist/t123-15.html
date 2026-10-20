@@ -1,4 +1,4 @@
-<!-- VE · 15-footer.html · сборка f12d7efd -->
+<!-- VE · 15-footer.html · сборка f184d789 -->
 <footer class="ve ve-ft" id="ve-footer">
   <div class="ve-wrap">
     <div class="ve-ft__logo">
@@ -29,6 +29,31 @@
     </div>
   </div>
 </footer>
+<!-- cookie-строка: одна линия внизу, появляется после хиро, пока не нажали «Хорошо» (нужна при публикации на домене) -->
+<div class="ve ve-ck" id="ve-cookie" role="region" aria-label="Cookie" hidden>
+  <div class="ve-ck__in"><p>Сайт использует cookie — так он работает лучше. <a href="#" data-ve-policy>Подробнее</a></p><button class="ve-btn ve-btn--sm ve-btn--ghost" type="button" data-ve-ck-ok>Хорошо</button></div>
+</div>
+<style>
+.ve-ck{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(255,255,255,.96);border-top:1px solid var(--ve-line);padding-bottom:env(safe-area-inset-bottom);transform:translateY(100%);transition:transform .5s var(--ve-ease)}
+.ve-ck.is-on{transform:none}
+.ve-ck__in{max-width:1240px;margin:0 auto;padding:12px var(--ve-pad);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.ve-ck__in p{font-size:13px;line-height:1.4;color:var(--ve-moss)}
+.ve-ck__in p a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
+.ve-ck .ve-btn--sm{flex:0 0 auto;min-height:38px;height:38px;padding:0 16px}
+@media(max-width:599px){.ve-ck .ve-btn--sm{min-height:38px;padding:0 16px}}
+@media(prefers-reduced-motion:reduce){.ve-ck{transition:none}}
+</style>
+<script>
+(function(){
+  var ck=document.getElementById('ve-cookie');if(!ck)return;var KEY='ve-cookie-ok',ok=false;
+  try{ok=localStorage.getItem(KEY)==='1'}catch(e){}
+  if(ok)return;ck.hidden=false;
+  // показываем после хиро, чтобы первый экран был чистым
+  var shown=false;function tick(){if(shown)return;var h=document.getElementById('ve-hero');if(h&&h.getBoundingClientRect().bottom>window.innerHeight)return;shown=true;ck.classList.add('is-on');window.removeEventListener('scroll',tick)}
+  window.addEventListener('scroll',tick,{passive:true});tick();
+  ck.querySelector('[data-ve-ck-ok]').addEventListener('click',function(){ck.classList.remove('is-on');try{localStorage.setItem(KEY,'1')}catch(e){}setTimeout(function(){ck.hidden=true},500)});
+})();
+</script>
 <style>
 .ve-ft{padding:var(--ve-gap) 0 calc(40px + env(safe-area-inset-bottom));border-top:1px solid var(--ve-line);background:var(--ve-paper)}
 .ve-ft__logo{display:flex;justify-content:center;color:var(--ve-ink)}
