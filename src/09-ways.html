@@ -15,9 +15,8 @@
 .ve-ways__card{width:72vw;max-width:300px;user-select:none;-webkit-user-select:none}
 .ve-ways__img{aspect-ratio:4/5;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
 .ve-ways__img img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-.ve-ways__n{margin-top:16px;font-weight:600;letter-spacing:-.015em;font-size:15px;color:var(--ve-moss);font-variant-numeric:tabular-nums}
-.ve-ways__t{margin-top:4px;font-weight:600;letter-spacing:-.015em;font-size:22px;line-height:1.15}
-.ve-ways__d{margin-top:6px;font-size:14px;color:var(--ve-moss);line-height:1.45}
+.ve-ways__n{margin:16px 0 0}.ve-ways__n b{color:var(--ve-moss)}.ve-ways__n span{color:var(--ve-ink)}
+.ve-ways__d{margin-top:8px;font-size:14px;color:var(--ve-moss);line-height:1.45}
 @media(min-width:900px){
   .ve-ways__wrap{margin-top:56px}
   .ve-ways__strip{gap:24px;padding-left:40px;padding-right:40px;margin:0 -40px}
@@ -40,7 +39,7 @@
     ['Премиальное обновление','комплексное преображение: дизайн, растения, дорожки, подсветка, детали']
   ];
   var strip=root.querySelector('.ve-ways__strip');
-  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);return '<article class="ve-ways__card"><div class="ve-ways__img ve-px"><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><p class="ve-ways__n">'+n+'</p><h3 class="ve-ways__t">'+w[0]+'</h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
+  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);return '<article class="ve-ways__card"><div class="ve-ways__img ve-px"><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">'+n+'</b><i></i><span>'+w[0]+'</span></h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
   VE.reveal(root);VE.emit('px:refresh');
   // на компьютере — тянуть мышью, без перехвата колеса
   if(window.matchMedia('(pointer:fine)').matches){

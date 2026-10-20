@@ -36,6 +36,10 @@
 @media(min-width:900px){.ve-h1{font-size:64px;line-height:1}.ve-h2{font-size:42px;line-height:1.04}.ve-h3{font-size:22px}}
 .ve-caps{font-family:var(--ve-sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ve-moss)}
 .ve-price,.ve-num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
+/* подпись к фото «что · где»: одна строка капсом, бронзовая точка-разделитель (L.BURO, MOX) */
+.ve-cap{display:flex;align-items:center;flex-wrap:wrap;gap:0 10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ve-moss);line-height:1.5}
+.ve-cap b{font-weight:600;color:var(--ve-ink)}
+.ve-cap i{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--ve-bronze);flex:0 0 auto}
 .ve-lead{font-size:18px;line-height:1.45;max-width:56ch;font-weight:500;letter-spacing:-.01em}
 @media(min-width:900px){.ve-lead{font-size:22px}}
 .ve-sub{margin-top:14px;max-width:56ch;color:var(--ve-moss)}
