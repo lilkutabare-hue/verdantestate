@@ -1,76 +1,67 @@
-<!-- VE · 07-economics.html · сборка 58bc459c -->
+<!-- VE · 07-economics.html · сборка c6e82d93 -->
 <section class="ve ve-sec ve-eco" id="ve-economics">
   <div class="ve-wrap">
     <p class="ve-caps ve-r">Почему постоянное обслуживание выгоднее</p>
     <h2 class="ve-h2 ve-r ve-eco__h">Один договор — весь сад</h2>
-    <p class="ve-sub ve-r">Один сезон, апрель — ноябрь. Сверху — как это выглядит с разовыми вызовами, снизу — с нами.</p>
-    <div class="ve-eco__chart ve-r" aria-hidden="true">
+    <p class="ve-sub ve-r">Один сезон, апрель — ноябрь. Так он выглядит с разовыми вызовами и с нами.</p>
+    <div class="ve-eco__panel ve-r">
       <div class="ve-eco__row ve-eco__row--one">
-        <p class="ve-eco__lab">Разовые вызовы</p>
-        <svg class="ve-eco__svg ve-eco__svg--one" preserveAspectRatio="none"></svg>
+        <div class="ve-eco__head"><p class="ve-eco__lab">Разовые вызовы</p><p class="ve-eco__count ve-num"><b data-to="10">0</b> отдельных заказов</p></div>
+        <svg class="ve-eco__svg ve-eco__svg--one" aria-hidden="true"></svg>
+        <p class="ve-eco__note">каждый — новый поиск, расчёт и выезд</p>
       </div>
       <div class="ve-eco__row ve-eco__row--ve">
-        <p class="ve-eco__lab">Verdant Estate</p>
-        <svg class="ve-eco__svg ve-eco__svg--ve" preserveAspectRatio="none"></svg>
+        <div class="ve-eco__head"><p class="ve-eco__lab">Verdant Estate</p><p class="ve-eco__count ve-num"><b data-to="1">0</b> договор</p></div>
+        <svg class="ve-eco__svg ve-eco__svg--ve" aria-hidden="true"></svg>
+        <p class="ve-eco__note">визиты по графику, один ответственный</p>
       </div>
-      <div class="ve-eco__months ve-num"></div>
+      <div class="ve-eco__months ve-num" aria-hidden="true"></div>
     </div>
-    <div class="ve-eco__cols">
-      <div class="ve-eco__col ve-r">
-        <h3 class="ve-h3">Разовые вызовы</h3>
-        <p>Покос — отдельный заказ. Обрезка — отдельный заказ. Уборка — отдельный заказ. Подготовка к зиме — отдельный заказ. Полив — отдельный специалист. Арборист — отдельный подрядчик.</p>
-        <p class="ve-muted">Каждый раз новый поиск, новый расчёт и новый выезд.</p>
-      </div>
-      <div class="ve-eco__col ve-r">
-        <h3 class="ve-h3">Verdant Estate</h3>
-        <p>Мы заранее планируем работы, объединяем выезды специалистов, контролируем подрядчиков и не позволяем небольшим проблемам превращаться в дорогие.</p>
-        <ul class="ve-eco__list ve-rg">
-          <li>меньше разовых расходов</li><li>меньше простоев</li><li>меньше организационной работы</li><li>выгоднее комплексное обслуживание</li><li>сад постоянно находится под контролем</li>
-        </ul>
-      </div>
+    <div class="ve-eco__facts ve-rg">
+      <p>Меньше разовых расходов</p>
+      <p>Меньше простоев и организации</p>
+      <p>Сад постоянно под контролем</p>
     </div>
-    <p class="ve-lead ve-eco__end ve-r">Чем больше задач мы берём на себя, тем выгоднее становится комплексное обслуживание.</p>
+    <p class="ve-eco__end ve-r">Чем больше задач мы берём на себя, тем выгоднее комплексное обслуживание.</p>
     <p class="ve-r ve-eco__cta"><a class="ve-btn ve-btn--ghost" href="#ve-pricelist">Сравнить с разовыми работами</a></p>
   </div>
 </section>
 <style>
 .ve-eco__h{margin-top:14px}
-.ve-eco__chart{margin-top:40px;position:relative}
-.ve-eco__row{position:relative}
-.ve-eco__lab{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ve-moss);margin-bottom:6px}
-.ve-eco__svg{display:block;width:100%;overflow:visible}
-.ve-eco__svg text{font-family:var(--ve-sans);fill:var(--ve-ink)}
-.ve-eco__svg .t1{font-size:13px;font-weight:500}
-.ve-eco__svg .t2{font-size:11px;fill:var(--ve-moss);letter-spacing:.02em}
+.ve-eco__panel{margin-top:32px;padding:22px 18px 16px;border-radius:var(--ve-r);background:var(--ve-paper-2)}
+.ve-eco__row+.ve-eco__row{margin-top:26px;padding-top:22px;border-top:1px solid var(--ve-line)}
+.ve-eco__head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.ve-eco__lab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ve-moss)}
+.ve-eco__count{font-size:14px;color:var(--ve-moss);white-space:nowrap}
+.ve-eco__count b{font-weight:600;font-size:22px;letter-spacing:-.02em;color:var(--ve-ink);margin-right:2px}
+.ve-eco__row--ve .ve-eco__count b{color:var(--ve-acc)}
+.ve-eco__svg{display:block;width:100%;height:84px;margin-top:10px;overflow:visible}
+.ve-eco__svg text{font-family:var(--ve-sans);fill:var(--ve-ink);font-size:11px;font-weight:500}
 .ve-eco__svg .dot{fill:var(--ve-ink)}
-.ve-eco__svg .ring{fill:none;stroke:var(--ve-ink);stroke-opacity:.25}
-.ve-eco__svg .line{fill:none;stroke:var(--ve-moss);stroke-width:2;stroke-linecap:round}
-.ve-eco__svg .tick{stroke:var(--ve-moss);stroke-width:2;stroke-linecap:round}
-.ve-eco__svg .ev{opacity:0;transition:opacity .35s var(--ve-ease)}
-.ve-eco__svg .ev.on{opacity:1}
-.ve-eco__months{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ve-moss);margin-top:10px;padding-top:10px;border-top:1px solid var(--ve-line)}
-/* телефон: шкала вертикальная, два ряда рядом */
-@media(max-width:899px){
-  .ve-eco__chart{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
-  .ve-eco__months{grid-column:1/-1;display:none}
-  .ve-eco__svg{height:720px}
-  .ve-eco__row--one{padding-right:0}
-}
+.ve-eco__svg .ring{fill:none;stroke:var(--ve-ink);stroke-opacity:.22}
+.ve-eco__svg .zig{fill:none;stroke:var(--ve-ink);stroke-opacity:.35;stroke-width:1.5;stroke-dasharray:3 5}
+.ve-eco__svg .line{fill:none;stroke:var(--ve-acc);stroke-width:2.5;stroke-linecap:round}
+.ve-eco__svg .tick{stroke:var(--ve-acc);stroke-width:2;stroke-linecap:round}
+.ve-eco__svg .ev{opacity:0;transform:scale(.6);transform-box:fill-box;transform-origin:center;transition:opacity .3s var(--ve-ease),transform .5s var(--ve-ease)}
+.ve-eco__svg .ev.on{opacity:1;transform:none}
+.ve-eco__note{margin-top:6px;font-size:13px;color:var(--ve-moss)}
+.ve-eco__months{display:flex;justify-content:space-between;margin-top:18px;padding-top:12px;border-top:1px solid var(--ve-line);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ve-moss)}
+.ve-eco__facts{margin-top:30px;display:grid;gap:0}
+.ve-eco__facts p{padding:14px 0;border-top:1px solid var(--ve-line);font-weight:600;letter-spacing:-.01em;font-size:17px}
+.ve-eco__facts p:last-child{border-bottom:1px solid var(--ve-line)}
+.ve-eco__end{margin-top:30px;font-weight:600;letter-spacing:-.015em;font-size:22px;line-height:1.25;max-width:26ch}
+.ve-eco__cta{margin-top:22px}
+@media(max-width:599px){.ve-eco__svg--one text{font-size:10px}}
 @media(min-width:900px){
-  .ve-eco__chart{margin-top:56px}
-  .ve-eco__svg--one{height:120px}
-  .ve-eco__svg--ve{height:70px}
-  .ve-eco__row--ve{margin-top:28px}
+  .ve-eco__panel{margin-top:56px;padding:34px 36px 28px}
+  .ve-eco__svg{height:96px}
+  .ve-eco__row+.ve-eco__row{margin-top:34px;padding-top:30px}
+  .ve-eco__count{font-size:15px}.ve-eco__count b{font-size:28px}
+  .ve-eco__facts{grid-template-columns:repeat(3,1fr);gap:40px;margin-top:44px}
+  .ve-eco__facts p{border-bottom:0!important;padding:22px 0 0;font-size:19px}
+  .ve-eco__end{font-size:30px;margin-top:48px}
 }
-.ve-eco__cols{margin-top:48px;display:grid;gap:36px}
-.ve-eco__col p{margin-top:10px;max-width:52ch}
-.ve-eco__col p+p{margin-top:8px}
-.ve-eco__list{list-style:none;margin:16px 0 0;padding:0}
-.ve-eco__list li{padding:8px 0;border-top:1px solid var(--ve-line)}
-.ve-eco__list li::first-letter{text-transform:uppercase}
-.ve-eco__end{margin-top:40px;font-weight:600;letter-spacing:-.015em;font-size:24px;line-height:1.25;max-width:30ch}
-.ve-eco__cta{margin-top:24px}
-@media(min-width:900px){.ve-eco__cols{grid-template-columns:1fr 1fr;gap:56px;margin-top:72px}.ve-eco__end{font-size:30px;margin-top:56px}}
+@media(prefers-reduced-motion:reduce){.ve-eco__svg .ev{transition:none}}
 </style>
 <script>
 (function(){
@@ -78,53 +69,51 @@
   VE.reveal(root);
   var NS='http://www.w3.org/2000/svg';
   var MONTHS=['апр','май','июн','июл','авг','сен','окт','ноя'];
-  // точки лежат неровно, как в жизни; одно и то же — отдельный заказ каждый раз
-  var ONE=[['обрезка',.04],['уборка',.13],['покос',.22],['полив',.31],['покос',.41],['арборист',.5],['покос',.6],['покос',.72],['уборка',.84],['подготовка к зиме',.95]];
-  var svg1=root.querySelector('.ve-eco__svg--one'),svg2=root.querySelector('.ve-eco__svg--ve'),months=root.querySelector('.ve-eco__months');
-  months.innerHTML=MONTHS.map(function(m){return '<span>'+m+'</span>'}).join('');
+  // заказы лежат неровно, как в жизни: одно и то же — новый заказ каждый раз
+  var ONE=[['обрезка',.03],['уборка',.13],['покос',.23],['полив',.32],['покос',.42],['арборист',.52],['покос',.61],['покос',.72],['уборка',.84],['зима',.96]];
+  var svg1=root.querySelector('.ve-eco__svg--one'),svg2=root.querySelector('.ve-eco__svg--ve'),panel=root.querySelector('.ve-eco__panel');
+  root.querySelector('.ve-eco__months').innerHTML=MONTHS.map(function(m){return '<span>'+m+'</span>'}).join('');
   function el(n,a,t){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;return e}
-  var items=[],line=null,ticks=[],len=0,built='';
+  var items=[],ticks=[],zig=null,line=null,zlen=0,llen=0,W=0;
   function build(){
-    var vert=window.innerWidth<900;if(built===(vert?'v':'h'))return;built=vert?'v':'h';
+    var w=svg1.clientWidth||300;if(w===W)return;W=w;
     svg1.innerHTML='';svg2.innerHTML='';items=[];ticks=[];
-    var W1=svg1.clientWidth||300,H1=svg1.clientHeight||120,W2=svg2.clientWidth||300,H2=svg2.clientHeight||70;
-    svg1.setAttribute('viewBox','0 0 '+W1+' '+H1);svg2.setAttribute('viewBox','0 0 '+W2+' '+H2);
-    if(!vert){
-      var y=H1-30;
-      ONE.forEach(function(o,i){var x=12+o[1]*(W1-24),g=el('g',{'class':'ev'});
-        g.appendChild(el('circle',{'class':'ring',cx:x,cy:y,r:9}));g.appendChild(el('circle',{'class':'dot',cx:x,cy:y,r:4}));
-        var up=i%2?0:1,ty=up?y-24:y+26;
-        g.appendChild(el('text',{'class':'t1',x:x,y:ty,'text-anchor':'middle'},o[0]));
-        g.appendChild(el('text',{'class':'t2',x:x,y:up?ty-14:ty+13,'text-anchor':'middle'},'поиск · расчёт · выезд'));
-        svg1.appendChild(g);items.push(g)});
-      var ly=H2/2;line=el('path',{'class':'line',d:'M12 '+ly+' L'+(W2-12)+' '+ly});svg2.appendChild(line);
-      for(var k=0;k<=16;k++){var tx=12+(k/16)*(W2-24),t=el('line',{'class':'tick ev',x1:tx,y1:ly-7,x2:tx,y2:ly+7});svg2.appendChild(t);ticks.push(t)}
-      var lab=el('text',{'class':'t2 ev',x:12,y:ly+24},'визиты по графику · один ответственный');svg2.appendChild(lab);ticks.push(lab);
-    }else{
-      var x0=14;
-      ONE.forEach(function(o){var yy=14+o[1]*(H1-40),g=el('g',{'class':'ev'});
-        g.appendChild(el('circle',{'class':'ring',cx:x0,cy:yy,r:9}));g.appendChild(el('circle',{'class':'dot',cx:x0,cy:yy,r:4}));
-        g.appendChild(el('text',{'class':'t1',x:x0+18,y:yy+4},o[0]));
-        g.appendChild(el('text',{'class':'t2',x:x0+18,y:yy+18},'поиск · расчёт · выезд'));
-        svg1.appendChild(g);items.push(g)});
-      var lx=14;line=el('path',{'class':'line',d:'M'+lx+' 14 L'+lx+' '+(H2-26)});svg2.appendChild(line);
-      for(var q=0;q<=16;q++){var ty2=14+(q/16)*(H2-40),tt=el('line',{'class':'tick ev',x1:lx-7,y1:ty2,x2:lx+7,y2:ty2});svg2.appendChild(tt);ticks.push(tt)}
-      MONTHS.forEach(function(m,i){svg2.appendChild(el('text',{'class':'t2',x:lx+18,y:18+(i/8)*(H2-40)},m))});
-      var lab2=el('text',{'class':'t2 ev',x:lx-7,y:H2-4},'визиты по графику · один ответственный');svg2.appendChild(lab2);ticks.push(lab2);
-    }
-    len=line.getTotalLength();line.style.strokeDasharray=len;line.style.strokeDashoffset=len;lastP=-1;
+    var H1=svg1.clientHeight||84,H2=svg2.clientHeight||84;
+    svg1.setAttribute('viewBox','0 0 '+w+' '+H1);svg2.setAttribute('viewBox','0 0 '+w+' '+H2);
+    // ряд 1: точки «пилой», подписи сверху и снизу через одну, между точками пунктир «поиск → выезд»
+    var pts=ONE.map(function(o,i){return [12+o[1]*(w-24),H1/2+(i%2?14:-14)]});
+    var d='';pts.forEach(function(p,i){d+=(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)});
+    zig=el('path',{'class':'zig',d:d});svg1.appendChild(zig);
+    ONE.forEach(function(o,i){var p=pts[i],g=el('g',{'class':'ev'});
+      g.appendChild(el('circle',{'class':'ring',cx:p[0],cy:p[1],r:9}));g.appendChild(el('circle',{'class':'dot',cx:p[0],cy:p[1],r:3.5}));
+      g.appendChild(el('text',{x:p[0],y:i%2?p[1]+24:p[1]-16,'text-anchor':'middle'},o[0]));
+      svg1.appendChild(g);items.push(g)});
+    // ряд 2: одна ровная линия и визиты по графику
+    var ly=H2/2;line=el('path',{'class':'line',d:'M12 '+ly+' L'+(w-12)+' '+ly});svg2.appendChild(line);
+    for(var k=0;k<=16;k++){var tx=12+(k/16)*(w-24),t=el('line',{'class':'tick ev',x1:tx,y1:ly-8,x2:tx,y2:ly+8});svg2.appendChild(t);ticks.push(t)}
+    zlen=zig.getTotalLength();llen=line.getTotalLength();
+    zig.style.strokeDasharray=zlen;zig.style.strokeDashoffset=zlen;line.style.strokeDasharray=llen;line.style.strokeDashoffset=llen;
+    if(played)finish();
   }
-  var chart=root.querySelector('.ve-eco__chart'),lastP=-1,raf=0;
-  function progress(){var r=chart.getBoundingClientRect(),vh=window.innerHeight||1;return Math.min(1,Math.max(0,(vh*.9-r.top)/(r.height+vh*.2)))}
-  function paint(){raf=0;var p=VE.rm?1:progress();if(p===lastP)return;lastP=p;
-    items.forEach(function(g,i){g.classList.toggle('on',p>(i+.5)/items.length*.8)});
-    line.style.strokeDashoffset=len*(1-Math.min(1,p/.9));
-    ticks.forEach(function(t,i){t.classList.toggle('on',p>.1+(i/ticks.length)*.8)});
+  var counts=root.querySelectorAll('.ve-eco__count b'),played=false;
+  function finish(){items.forEach(function(g){g.classList.add('on')});ticks.forEach(function(t){t.classList.add('on')});zig.style.strokeDashoffset=0;line.style.strokeDashoffset=0;
+    for(var i=0;i<counts.length;i++)counts[i].textContent=counts[i].getAttribute('data-to')}
+  // играет один раз, когда панель на экране: заказы падают по одному и считаются, потом рисуется ровная линия договора
+  function play(){
+    played=true;if(VE.rm)return finish();
+    var t0=performance.now(),D1=1500,D2=900;
+    zig.style.transition='stroke-dashoffset '+D1+'ms linear';zig.style.strokeDashoffset=0;
+    items.forEach(function(g,i){setTimeout(function(){g.classList.add('on')},80+i*(D1/items.length))});
+    VE.tween(0,10,D1,function(v){counts[0].textContent=Math.round(v)});
+    setTimeout(function(){
+      line.style.transition='stroke-dashoffset '+D2+'ms var(--ve-ease)';line.style.strokeDashoffset=0;
+      ticks.forEach(function(t,i){setTimeout(function(){t.classList.add('on')},(i/ticks.length)*D2)});
+      setTimeout(function(){counts[1].textContent='1'},D2*.5);
+    },D1+350);
   }
-  function onScroll(){if(!raf)raf=requestAnimationFrame(paint)}
-  build();paint();
-  window.addEventListener('scroll',onScroll,{passive:true});
-  window.addEventListener('resize',function(){build();onScroll()});
-  if('ResizeObserver' in window)new ResizeObserver(function(){build();onScroll()}).observe(chart);
+  build();
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();play()}},{threshold:.35});io.observe(panel)}else play();
+  window.addEventListener('resize',build);
+  if('ResizeObserver' in window)new ResizeObserver(build).observe(panel);
 })();
 </script>
