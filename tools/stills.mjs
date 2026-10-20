@@ -23,8 +23,9 @@ for (const f of files) {
   }
   const meta = await sharp(src).metadata();
   const wide = meta.width > meta.height;
-  const l = await sharp(src).webp({ quality: 80, effort: 5 }).toBuffer();
-  const s = await sharp(src).resize({ width: wide ? 720 : 560 }).webp({ quality: 76, effort: 5 }).toBuffer();
+  // мастера 2K: большой вариант ужимаем до 1440 по длинной стороне, иначе карточка весит мегабайт
+  const l = await sharp(src).resize(wide ? { width: 1440, withoutEnlargement: true } : { height: 1440, withoutEnlargement: true }).webp({ quality: 78, effort: 5 }).toBuffer();
+  const s = await sharp(src).resize({ width: wide ? 720 : 560 }).webp({ quality: 74, effort: 5 }).toBuffer();
   await writeFile(join(STILLS, `${name}-l.webp`), l); await writeFile(join(STILLS, `${name}-s.webp`), s); total += l.length + s.length;
   console.log(name, (l.length / 1024).toFixed(0), '+', (s.length / 1024).toFixed(0), 'KB');
 }
