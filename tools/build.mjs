@@ -36,6 +36,7 @@ const sym = (id, d) => `<symbol id="ve-l-${id}" overflow="visible"><path d="${d}
 const LOGO_SPRITE = `<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">`
   + ['ring', 'branch', 'letters', 'word', 'rules', 'leaf', 'tag', 'tag2'].map((k) => sym(k, LP[k])).join('')
   + `<symbol id="ve-l-mark" overflow="visible"><use href="#ve-l-ring"/><use href="#ve-l-branch"/><use href="#ve-l-letters"/></symbol></svg>`;
+const SIL = JSON.parse(await readFile(join(ROOT, 'brand/vector/silhouettes.json'), 'utf8')); // tools/outline.mjs
 const MARK = `<svg viewBox="${LP.vbMark}" fill="currentColor" aria-hidden="true" focusable="false"><use href="#ve-l-mark"/></svg>`;
 
 // ---------- проверки ----------
@@ -64,7 +65,7 @@ const kb = (n) => (n / 1024).toFixed(1) + ' КБ';
 // ---------- сборка ----------
 const files = (await readdir(SRC)).filter((f) => /^\d\d-.*\.html$/.test(f)).sort();
 const headSrc = await readFile(join(SRC, 'head.html'), 'utf8');
-const fill = (s, base) => s.replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK);
+const fill = (s, base) => s.replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
 
 const headDist = fill(headSrc, PAGES_BASE);
 await checkScripts(headDist, 'head'); checkCss(headDist, 'head');

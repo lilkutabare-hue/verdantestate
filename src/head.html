@@ -96,6 +96,13 @@
 .ve-line{position:relative}
 .ve-line::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ve-line);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ve-ease);transition-delay:var(--d,0ms)}
 .ve-line.is-in::before{transform:scaleX(1)}
+/* «линия Dan Pearson»: верх каждой секции — хэйрлайн, который рисуется при появлении; у ключевых — силуэт из рендера (tools/outline.mjs) */
+.ve-sec__top{padding-top:28px}
+@media(min-width:900px){.ve-sec__top{padding-top:36px}}
+.ve-sil{display:block;width:100%;height:auto;overflow:visible;margin-bottom:22px}
+.ve-sil path{fill:none;stroke:var(--ve-ink);stroke-opacity:.55;stroke-width:1;stroke-dasharray:var(--len,1400);stroke-dashoffset:var(--len,1400);transition:stroke-dashoffset 1.8s var(--ve-ease)}
+.ve-sil.is-in path{stroke-dashoffset:0}
+@media(min-width:900px){.ve-sil{margin-bottom:30px}}
 .ve-swap{display:inline-block;transition:opacity .18s var(--ve-ease-2),transform .18s var(--ve-ease-2)}
 .ve-swap.is-out{opacity:0;transform:translateY(5px)}
 .ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
@@ -117,6 +124,7 @@
 
 @media(prefers-reduced-motion:reduce){
   .ve-r,.ve-rg>*,.ve-img,.ve-img>img,.ve-line::before{opacity:1;transform:none;clip-path:none;transition:none}
+  .ve-sil path{stroke-dashoffset:0;transition:none}
   .ve .ve-btn,.ve-chip,.ve-tab,.ve-swap{transition:none}
 }
 </style>
@@ -135,7 +143,8 @@
     rm:false,
     reveal:function(root){
       root=root||document;
-      var els=root.querySelectorAll('.ve-r:not(.is-in),.ve-rg:not(.is-in),.ve-img:not(.is-in),.ve-line:not(.is-in)');
+      var els=root.querySelectorAll('.ve-r:not(.is-in),.ve-rg:not(.is-in),.ve-img:not(.is-in),.ve-line:not(.is-in),.ve-sil:not(.is-in)');
+      for(var q=0;q<els.length;q++)if(els[q].classList.contains('ve-sil')){var pth=els[q].querySelector('path');if(pth&&pth.getTotalLength){var vb=els[q].viewBox&&els[q].viewBox.baseVal,sc=els[q].getBoundingClientRect().width/(vb&&vb.width||1000);pth.style.setProperty('--len',Math.ceil(pth.getTotalLength()*sc*1.25))}} /* штрих при non-scaling-stroke меряется в px: длина × масштаб, с запасом на рост окна */
       if(!('IntersectionObserver' in window)||VE.rm){for(var i=0;i<els.length;i++)els[i].classList.add('is-in');return}
       VE._io=VE._io||new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){var el=x.target;
         if(el.classList.contains('ve-rg')){var ch=el.children;for(var j=0;j<ch.length;j++){ch[j].style.setProperty('--d',Math.min(j,12)*60+'ms');var sub=ch[j].querySelectorAll('.ve-img,.ve-line');for(var k=0;k<sub.length;k++)sub[k].style.setProperty('--d',Math.min(j,12)*60+'ms')}}
