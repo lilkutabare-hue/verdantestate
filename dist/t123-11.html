@@ -1,14 +1,14 @@
-<!-- VE · 11-seasons.html · сборка 84bb26f8 -->
+<!-- VE · 11-seasons.html · сборка 4e98684f -->
 <section class="ve ve-sec ve-sea" id="ve-seasons">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Круглый год</p>
     <h2 class="ve-h2 ve-r ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-spring-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-summer-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-autumn-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-spring-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" data-loop="z1" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-summer-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-autumn-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
         <div class="ve-tabs ve-sea__tabs ve-r" role="tablist">
@@ -26,8 +26,12 @@
 .ve-sea__h{margin-top:14px}
 .ve-sea__grid{margin-top:36px}
 .ve-sea__pic{position:relative;aspect-ratio:16/10;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
-.ve-sea__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s var(--ve-ease)}
+.ve-sea__pic img,.ve-sea__pic video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s var(--ve-ease)}
 .ve-sea__pic img.is-on{opacity:1}
+.ve-sea__pic video.is-on.is-live{opacity:1} /* луп лета (Z1) виден только на своей вкладке и когда пошли кадры */
+/* смена сезонов по кадрам (клипы Z1→Z3, Z3→Z4 из tools/loops.mjs): холст поверх стиллов на время перехода */
+.ve-sea__cv{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .3s var(--ve-ease);pointer-events:none}
+.ve-sea__cv.is-on{opacity:1;transition:none}
 .ve-sea__side{margin-top:22px}
 .ve-sea__list{list-style:none;margin:20px 0 0;padding:0}
 .ve-sea__list li{padding:10px 0;border-top:1px solid var(--ve-line)}
@@ -37,7 +41,7 @@
   .ve-sea__grid{margin-top:56px;display:grid;grid-template-columns:1fr 360px;gap:64px;align-items:start}
   .ve-sea__side{margin-top:0}
 }
-@media(prefers-reduced-motion:reduce){.ve-sea__pic img{transition:none}}
+@media(prefers-reduced-motion:reduce){.ve-sea__pic img,.ve-sea__pic video,.ve-sea__cv{transition:none}}
 </style>
 <script>
 (function(){
@@ -49,21 +53,50 @@
     autumn:['уборка листвы','обрезка деревьев и кустарников','осенние подкормки','посадки','подготовка сада к зиме'],
     winter:['контроль состояния участка','сезонное планирование работ','организация специализированных работ','график на новый сезон']
   };
-  var list=root.querySelector('.ve-sea__list'),tabs=root.querySelectorAll('.ve-sea__tab'),pics=root.querySelectorAll('.ve-sea__pic img');
+  var list=root.querySelector('.ve-sea__list'),tabs=root.querySelectorAll('.ve-sea__tab'),pic=root.querySelector('.ve-sea__pic');
+  // стиллы и луп лета (video вставляет VE.loops): видно то, что с data-s текущего сезона
+  function setPic(s){
+    var els=pic.querySelectorAll('img,video');
+    for(var k=0;k<els.length;k++){var on=els[k].getAttribute('data-s')===s;els[k].classList.toggle('is-on',on);
+      if(els[k].tagName==='VIDEO'){if(on){var p=els[k].play();if(p&&p.catch)p.catch(function(){})}else els[k].pause()}}
+  }
+  // переход по кадрам: клип summer-autumn и autumn-winter (manifest лупов) тянется в нужную сторону; нет клипа — кроссфейд
+  var man=null,SEQ={},cv=null,ctx=null,anim=null;
+  VE.on('loops:ready',function(m){man=m.seasons||{};if(!Object.keys(man).length||VE.rm)return;
+    cv=document.createElement('canvas');cv.className='ve-sea__cv';cv.setAttribute('aria-hidden','true');pic.appendChild(cv);ctx=cv.getContext('2d');
+    if('IntersectionObserver' in window){var pio=new IntersectionObserver(function(en){if(en[0].isIntersecting){pio.disconnect();for(var k in man)load(k)}},{rootMargin:'40% 0px'});pio.observe(pic)}else for(var k in man)load(k)});
+  function load(name){if(SEQ[name])return SEQ[name];var m=man[name],S={imgs:[],ready:[],w:m.w,h:m.h};
+    m.frames.forEach(function(f,i){var im=new Image();im.decoding='async';im.src=VE.url('media/loops/'+f);S.imgs.push(im);S.ready.push(false);im.decode().then(function(){S.ready[i]=true}).catch(function(){})});
+    return SEQ[name]=S}
+  function clipFor(a,b){if(!man)return null;if(man[a+'-'+b])return{name:a+'-'+b,rev:false};if(man[b+'-'+a])return{name:b+'-'+a,rev:true};return null}
+  function go(a,b){
+    var c=cv&&clipFor(a,b),S=c&&load(c.name);
+    if(!S||!S.ready.every(Boolean)){if(anim){cancelAnimationFrame(anim);anim=null;cv&&cv.classList.remove('is-on')}setPic(b);return}
+    var r=pic.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2),W=Math.round(r.width),H=Math.round(r.height);
+    if(cv.width!==W*dpr||cv.height!==H*dpr){cv.width=W*dpr;cv.height=H*dpr}
+    var sc=Math.max(W/S.w,H/S.h),dw=S.w*sc*dpr,dh=S.h*sc*dpr,dx=(W*dpr-dw)/2,dy=(H*dpr-dh)/2,n=S.imgs.length,last=-1;
+    var draw=function(i){if(i===last)return;last=i;ctx.drawImage(S.imgs[i],dx,dy,dw,dh)};
+    draw(c.rev?n-1:0);cv.classList.add('is-on');setPic(a);
+    if(anim)cancelAnimationFrame(anim);
+    var t0=performance.now(),D=1400;
+    (function f(now){var t=Math.min(1,(now-t0)/D),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,k=c.rev?1-e:e;draw(Math.round(k*(n-1)));
+      if(t<1)anim=requestAnimationFrame(f);else{anim=null;setPic(b);setTimeout(function(){cv.classList.remove('is-on')},80)}})(t0);
+  }
+  var cur='spring';
   function show(s){
     list.innerHTML=DATA[s].map(function(t){return '<li class="ve-r">'+t+'</li>'}).join('');
     var li=list.querySelectorAll('li');for(var i=0;i<li.length;i++)li[i].style.transitionDelay=i*60+'ms';
     requestAnimationFrame(function(){requestAnimationFrame(function(){for(var i=0;i<li.length;i++)li[i].classList.add('is-in')})});
     for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-s')===s;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
-    for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-s')===s);
+    if(s!==cur)go(cur,s);else setPic(s);cur=s;
   }
-  var ORDER=['spring','summer','autumn','winter'],cur='spring',auto=null;
-  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){stop();cur=this.getAttribute('data-s');show(cur)});
+  var ORDER=['spring','summer','autumn','winter'],auto=null;
+  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){stop();show(this.getAttribute('data-s'))});
   show('spring');
   // пока посетитель не трогал вкладки, сезоны листаются сами (в поле зрения); первый клик останавливает
   function stop(){if(auto){clearInterval(auto);auto=null}}
-  function start(){if(auto||VE.rm)return;auto=setInterval(function(){cur=ORDER[(ORDER.indexOf(cur)+1)%ORDER.length];show(cur)},3600)}
-  var pic=root.querySelector('.ve-sea__pic'),stopped=false;
+  function start(){if(auto||VE.rm)return;auto=setInterval(function(){show(ORDER[(ORDER.indexOf(cur)+1)%ORDER.length])},3600)}
+  var stopped=false;
   root.querySelector('.ve-sea__tabs').addEventListener('click',function(){stopped=true;stop()});
   if('IntersectionObserver' in window)new IntersectionObserver(function(en){if(stopped)return;en[0].isIntersecting?start():stop()},{threshold:.4}).observe(pic);
 })();

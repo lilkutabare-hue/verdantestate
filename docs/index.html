@@ -7,11 +7,11 @@
 <meta name="description" content="Постоянное управление садом: один договор, один ответственный, весь сад под контролем. Москва и Московская область.">
 <meta property="og:title" content="Verdant Estate — Private Garden Service">
 <meta property="og:description" content="Сад, за которым не нужно следить. Постоянный уход за частными садами в Москве и Московской области.">
-<meta property="og:image" content="site/media/scene/poster-wide.webp?v=84bb26f8">
+<meta property="og:image" content="site/media/scene/poster-wide.webp?v=4e98684f">
 <meta name="robots" content="noindex">
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
 <script>window.VE_BASE=new URL('site/',location.href).href</script>
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 84bb26f8 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 4e98684f -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
 :root{
@@ -119,9 +119,12 @@
 .ve-swap{display:inline-block;transition:opacity .18s var(--ve-ease-2),transform .18s var(--ve-ease-2)}
 .ve-swap.is-out{opacity:0;transform:translateY(5px)}
 .ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
-.ve-px{overflow:hidden}
-.ve-px>img{width:100%;height:100%;object-fit:cover;transform:translate3d(0,var(--px,0%),0) scale(1.14);will-change:transform}
-@media(prefers-reduced-motion:reduce){.ve-px>img{transform:none}}
+.ve-px{position:relative;overflow:hidden}
+.ve-px>img,.ve-px>video{width:100%;height:100%;object-fit:cover;transform:translate3d(0,var(--px,0%),0) scale(1.14);will-change:transform}
+@media(prefers-reduced-motion:reduce){.ve-px>img,.ve-px>video{transform:none}}
+/* луп поверх стилла: <video> вставляет VE.loops у [data-loop], когда есть media/loops/manifest.json; проявляется, когда пошли кадры */
+.ve-loop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s var(--ve-ease);pointer-events:none;background:transparent}
+.ve-loop.is-live{opacity:1}
 /* точка, в которую садится сфера меню хиро (ставит хиро у подписи раздела) */
 .ve-caps{position:relative}
 .ve-dot{position:absolute;left:-16px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:var(--ve-acc);transform:scale(0);transition:transform .4s var(--ve-ease)}
@@ -146,7 +149,7 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'site/';
-  var VE={v:'84bb26f8',base:base,
+  var VE={v:'4e98684f',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
@@ -185,13 +188,43 @@
       collect();paint();window.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',function(){collect();ask()});
       VE.on('px:refresh',function(){collect();ask()});
     },
+    /* лупы секций (план §5): под рамкой [data-loop] появляется <video muted loop playsinline preload=none>,
+       играет только в поле зрения; data-loop-mode="hover" — на компьютере под курсором, на телефоне в центре экрана;
+       при prefers-reduced-motion и Save-Data остаётся стилл. Манифест пишет tools/loops.mjs */
+    loops:function(){
+      if(VE.rm||VE._lp)return;VE._lp=true;
+      var sd=false;try{sd=!!(navigator.connection&&navigator.connection.saveData)}catch(e){}
+      if(sd||!window.fetch)return;
+      var coarse=false;try{coarse=window.matchMedia('(hover:none)').matches}catch(e){}
+      var play=function(v){if(!v.paused)return;var p=v.play();if(p&&p.catch)p.catch(function(){})},pause=function(v){if(!v.paused)v.pause()};
+      fetch(VE.url('media/loops/manifest.json')).then(function(r){return r.ok?r.json():null}).then(function(m){
+        if(!m||!m.loops)return;VE.loopsMan=m;
+        /* наблюдаем рамку, а не <video>: Chrome считает clip-path (шторка «до/после») в долю видимости, и луп гас на ходу шторки */
+        var io=('IntersectionObserver' in window)?new IntersectionObserver(function(en){en.forEach(function(x){(x.target.__veLoops||[]).forEach(function(v){var hover=v.getAttribute('data-mode')==='hover';
+          if(x.isIntersecting&&x.intersectionRatio>=(hover?.75:.35)){if(!hover||coarse)play(v)}else pause(v)})})},{threshold:[0,.35,.75]}):null;
+        var els=document.querySelectorAll('[data-loop]');
+        for(var i=0;i<els.length;i++)(function(el){
+          var key=el.getAttribute('data-loop'),L=m.loops[key];if(!L||el.getAttribute('data-loop-ready'))return;el.setAttribute('data-loop-ready','1');
+          var v=document.createElement('video');v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('loop','');v.preload='none';v.setAttribute('aria-hidden','true');
+          v.src=VE.url('media/loops/'+L.mp4);v.setAttribute('data-mode',el.getAttribute('data-loop-mode')||'view');v.setAttribute('data-loop-key',key);
+          var host=el;
+          if(el.tagName==='IMG'){v.className=el.className+' ve-loop';if(el.getAttribute('data-s'))v.setAttribute('data-s',el.getAttribute('data-s'));el.parentNode.insertBefore(v,el.nextSibling);host=el.parentNode}
+          else{v.className='ve-loop';el.appendChild(v)}
+          v.addEventListener('playing',function(){v.classList.add('is-live')});
+          if(v.getAttribute('data-mode')==='hover'&&!coarse){var card=el.closest('article')||host;card.addEventListener('pointerenter',function(){play(v)});card.addEventListener('pointerleave',function(){pause(v)})}
+          var obs=el.tagName==='IMG'?host:el;obs.__veLoops=(obs.__veLoops||[]).concat(v);
+          if(io){if(obs.__veLoops.length===1)io.observe(obs)}else play(v);
+        })(els[i]);
+        VE.emit('loops:ready',m);
+      }).catch(function(){});
+    },
     /* смена текста с коротким затуханием */
     swap:function(el,html){if(el.innerHTML===html)return;if(VE.rm){el.innerHTML=html;return}el.classList.add('ve-swap');el.classList.add('is-out');setTimeout(function(){el.innerHTML=html;el.classList.remove('is-out')},180)}
   };
   try{VE.rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
   try{var s=sessionStorage.getItem('ve-calc');if(s)VE.state=JSON.parse(s)||{}}catch(e){}
   window.VE=VE;
-  var boot=function(){VE.reveal();VE.parallax();document.documentElement.classList.add('ve-ready')};
+  var boot=function(){VE.reveal();VE.parallax();VE.loops();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
 })();
@@ -261,8 +294,8 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=84bb26f8">
-      <img src="site/media/scene/poster-wide.webp?v=84bb26f8" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=4e98684f">
+      <img src="site/media/scene/poster-wide.webp?v=4e98684f" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -490,13 +523,13 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
       </div>
       <div class="ve-ssn__view">
         <ol class="ve-strip ve-ssn__track ve-rg">
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=84bb26f8" srcset="site/media/stills/process-1-s.webp?v=84bb26f8 560w, site/media/stills/process-1-l.webp?v=84bb26f8 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=4e98684f" srcset="site/media/stills/process-1-s.webp?v=4e98684f 560w, site/media/stills/process-1-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>01</b><i></i><span>до сезона</span></p><h3 class="ve-ssn__t">Осмотр и план</h3><p class="ve-ssn__d">Осмотр участка и план работ на сезон.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=84bb26f8" srcset="site/media/stills/process-2-s.webp?v=84bb26f8 560w, site/media/stills/process-2-l.webp?v=84bb26f8 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=4e98684f" srcset="site/media/stills/process-2-s.webp?v=4e98684f 560w, site/media/stills/process-2-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>02</b><i></i><span>в начале</span></p><h3 class="ve-ssn__t">График и команда</h3><p class="ve-ssn__d">Визиты по месяцам, специалисты под ваш сад.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=84bb26f8" srcset="site/media/stills/process-3-s.webp?v=84bb26f8 560w, site/media/stills/process-3-l.webp?v=84bb26f8 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=4e98684f" srcset="site/media/stills/process-3-s.webp?v=4e98684f 560w, site/media/stills/process-3-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>03</b><i></i><span>весь сезон</span></p><h3 class="ve-ssn__t">Работы</h3><p class="ve-ssn__d">По графику, без ваших напоминаний.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=84bb26f8" srcset="site/media/stills/process-4-s.webp?v=84bb26f8 560w, site/media/stills/process-4-l.webp?v=84bb26f8 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=4e98684f" srcset="site/media/stills/process-4-s.webp?v=4e98684f 560w, site/media/stills/process-4-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>04</b><i></i><span>после каждого визита</span></p><h3 class="ve-ssn__t">Контроль и отчёт</h3><p class="ve-ssn__d">Проверяем результат, коротко сообщаем.</p></li>
         </ol>
       </div>
@@ -566,7 +599,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
   <div class="ve-wrap ve-tar__wrap">
     <div class="ve-strip ve-tar__strip ve-rg">
       <article class="ve-tar__card" data-tariff="BASIC">
-        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-basic-l.webp?v=84bb26f8" srcset="site/media/stills/tariff-basic-s.webp?v=84bb26f8 560w, site/media/stills/tariff-basic-l.webp?v=84bb26f8 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px" data-loop="t1"><img src="site/media/stills/tariff-basic-l.webp?v=4e98684f" srcset="site/media/stills/tariff-basic-s.webp?v=4e98684f 560w, site/media/stills/tariff-basic-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-cap ve-tar__name"><b>Basic</b><i></i><span>до 10 соток</span></p>
         <p class="ve-tar__price ve-price">от 60&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для небольших и относительно простых участков.</p>
@@ -576,7 +609,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="PREMIUM">
-        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-premium-l.webp?v=84bb26f8" srcset="site/media/stills/tariff-premium-s.webp?v=84bb26f8 560w, site/media/stills/tariff-premium-l.webp?v=84bb26f8 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px" data-loop="t2"><img src="site/media/stills/tariff-premium-l.webp?v=4e98684f" srcset="site/media/stills/tariff-premium-s.webp?v=4e98684f 560w, site/media/stills/tariff-premium-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-cap ve-tar__name"><b>Premium</b><i></i><span>10–25 соток</span></p>
         <p class="ve-tar__price ve-price">от 110&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для полноценных частных садов.</p>
@@ -586,7 +619,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="ESTATE">
-        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-estate-l.webp?v=84bb26f8" srcset="site/media/stills/tariff-estate-s.webp?v=84bb26f8 560w, site/media/stills/tariff-estate-l.webp?v=84bb26f8 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px" data-loop="t3"><img src="site/media/stills/tariff-estate-l.webp?v=4e98684f" srcset="site/media/stills/tariff-estate-s.webp?v=4e98684f 560w, site/media/stills/tariff-estate-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-cap ve-tar__name"><b>Estate</b><i></i><span>от 25 соток</span></p>
         <p class="ve-tar__price ve-price">от 190&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для больших и сложных территорий.</p>
@@ -870,9 +903,9 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
         <p class="ve-pr__note ve-muted">Сложные работы — по смете.</p>
       </div>
       <div class="ve-pr__pic ve-r ve-px" aria-hidden="true">
-        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1000" height="1250">
       </div>
     </div>
   </div>
@@ -963,7 +996,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
     ['Премиальное обновление','комплексное преображение: дизайн, растения, дорожки, подсветка, детали']
   ];
   var strip=root.querySelector('.ve-ways__strip');
-  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);return '<article class="ve-ways__card"><div class="ve-ways__img ve-px"><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">'+n+'</b><i></i><span>'+w[0]+'</span></h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
+  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);var lp=({'02':'r02','04':'r04','07':'r07'})[n];return '<article class="ve-ways__card"><div class="ve-ways__img ve-px"'+(lp?' data-loop="'+lp+'" data-loop-mode="hover"':'')+'><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">'+n+'</b><i></i><span>'+w[0]+'</span></h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
   VE.reveal(root);VE.emit('px:refresh');
   // на телефоне с мышью (узкое окно) — тянуть мышью, без перехвата колеса; на компьютере лента стала сеткой
   if(window.matchMedia('(pointer:fine) and (max-width:899px)').matches){
@@ -984,8 +1017,8 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
     <p class="ve-caps ve-r">До и после</p>
     <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
     <div class="ve-ba__box ve-r" style="--x:50%">
-      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=84bb26f8" srcset="site/media/stills/ba-before-s.webp?v=84bb26f8 720w, site/media/stills/ba-before-l.webp?v=84bb26f8 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
-      <img class="ve-ba__img ve-ba__img--after" src="site/media/stills/ba-after-l.webp?v=84bb26f8" srcset="site/media/stills/ba-after-s.webp?v=84bb26f8 720w, site/media/stills/ba-after-l.webp?v=84bb26f8 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=4e98684f" srcset="site/media/stills/ba-before-s.webp?v=4e98684f 720w, site/media/stills/ba-before-l.webp?v=4e98684f 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--after" data-loop="b2" src="site/media/stills/ba-after-l.webp?v=4e98684f" srcset="site/media/stills/ba-after-s.webp?v=4e98684f 720w, site/media/stills/ba-after-l.webp?v=4e98684f 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
       <span class="ve-ba__lab ve-ba__lab--b">до</span>
       <span class="ve-ba__lab ve-ba__lab--a">после</span>
       <div class="ve-ba__bar" aria-hidden="true"><i></i></div>
@@ -1036,10 +1069,10 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
     <h2 class="ve-h2 ve-r ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" src="site/media/stills/season-summer-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=84bb26f8" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" data-loop="z1" src="site/media/stills/season-summer-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
         <div class="ve-tabs ve-sea__tabs ve-r" role="tablist">
@@ -1057,8 +1090,12 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 .ve-sea__h{margin-top:14px}
 .ve-sea__grid{margin-top:36px}
 .ve-sea__pic{position:relative;aspect-ratio:16/10;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
-.ve-sea__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s var(--ve-ease)}
+.ve-sea__pic img,.ve-sea__pic video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s var(--ve-ease)}
 .ve-sea__pic img.is-on{opacity:1}
+.ve-sea__pic video.is-on.is-live{opacity:1} /* луп лета (Z1) виден только на своей вкладке и когда пошли кадры */
+/* смена сезонов по кадрам (клипы Z1→Z3, Z3→Z4 из tools/loops.mjs): холст поверх стиллов на время перехода */
+.ve-sea__cv{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .3s var(--ve-ease);pointer-events:none}
+.ve-sea__cv.is-on{opacity:1;transition:none}
 .ve-sea__side{margin-top:22px}
 .ve-sea__list{list-style:none;margin:20px 0 0;padding:0}
 .ve-sea__list li{padding:10px 0;border-top:1px solid var(--ve-line)}
@@ -1068,7 +1105,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
   .ve-sea__grid{margin-top:56px;display:grid;grid-template-columns:1fr 360px;gap:64px;align-items:start}
   .ve-sea__side{margin-top:0}
 }
-@media(prefers-reduced-motion:reduce){.ve-sea__pic img{transition:none}}
+@media(prefers-reduced-motion:reduce){.ve-sea__pic img,.ve-sea__pic video,.ve-sea__cv{transition:none}}
 </style>
 <script>
 (function(){
@@ -1080,21 +1117,50 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
     autumn:['уборка листвы','обрезка деревьев и кустарников','осенние подкормки','посадки','подготовка сада к зиме'],
     winter:['контроль состояния участка','сезонное планирование работ','организация специализированных работ','график на новый сезон']
   };
-  var list=root.querySelector('.ve-sea__list'),tabs=root.querySelectorAll('.ve-sea__tab'),pics=root.querySelectorAll('.ve-sea__pic img');
+  var list=root.querySelector('.ve-sea__list'),tabs=root.querySelectorAll('.ve-sea__tab'),pic=root.querySelector('.ve-sea__pic');
+  // стиллы и луп лета (video вставляет VE.loops): видно то, что с data-s текущего сезона
+  function setPic(s){
+    var els=pic.querySelectorAll('img,video');
+    for(var k=0;k<els.length;k++){var on=els[k].getAttribute('data-s')===s;els[k].classList.toggle('is-on',on);
+      if(els[k].tagName==='VIDEO'){if(on){var p=els[k].play();if(p&&p.catch)p.catch(function(){})}else els[k].pause()}}
+  }
+  // переход по кадрам: клип summer-autumn и autumn-winter (manifest лупов) тянется в нужную сторону; нет клипа — кроссфейд
+  var man=null,SEQ={},cv=null,ctx=null,anim=null;
+  VE.on('loops:ready',function(m){man=m.seasons||{};if(!Object.keys(man).length||VE.rm)return;
+    cv=document.createElement('canvas');cv.className='ve-sea__cv';cv.setAttribute('aria-hidden','true');pic.appendChild(cv);ctx=cv.getContext('2d');
+    if('IntersectionObserver' in window){var pio=new IntersectionObserver(function(en){if(en[0].isIntersecting){pio.disconnect();for(var k in man)load(k)}},{rootMargin:'40% 0px'});pio.observe(pic)}else for(var k in man)load(k)});
+  function load(name){if(SEQ[name])return SEQ[name];var m=man[name],S={imgs:[],ready:[],w:m.w,h:m.h};
+    m.frames.forEach(function(f,i){var im=new Image();im.decoding='async';im.src=VE.url('media/loops/'+f);S.imgs.push(im);S.ready.push(false);im.decode().then(function(){S.ready[i]=true}).catch(function(){})});
+    return SEQ[name]=S}
+  function clipFor(a,b){if(!man)return null;if(man[a+'-'+b])return{name:a+'-'+b,rev:false};if(man[b+'-'+a])return{name:b+'-'+a,rev:true};return null}
+  function go(a,b){
+    var c=cv&&clipFor(a,b),S=c&&load(c.name);
+    if(!S||!S.ready.every(Boolean)){if(anim){cancelAnimationFrame(anim);anim=null;cv&&cv.classList.remove('is-on')}setPic(b);return}
+    var r=pic.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2),W=Math.round(r.width),H=Math.round(r.height);
+    if(cv.width!==W*dpr||cv.height!==H*dpr){cv.width=W*dpr;cv.height=H*dpr}
+    var sc=Math.max(W/S.w,H/S.h),dw=S.w*sc*dpr,dh=S.h*sc*dpr,dx=(W*dpr-dw)/2,dy=(H*dpr-dh)/2,n=S.imgs.length,last=-1;
+    var draw=function(i){if(i===last)return;last=i;ctx.drawImage(S.imgs[i],dx,dy,dw,dh)};
+    draw(c.rev?n-1:0);cv.classList.add('is-on');setPic(a);
+    if(anim)cancelAnimationFrame(anim);
+    var t0=performance.now(),D=1400;
+    (function f(now){var t=Math.min(1,(now-t0)/D),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,k=c.rev?1-e:e;draw(Math.round(k*(n-1)));
+      if(t<1)anim=requestAnimationFrame(f);else{anim=null;setPic(b);setTimeout(function(){cv.classList.remove('is-on')},80)}})(t0);
+  }
+  var cur='spring';
   function show(s){
     list.innerHTML=DATA[s].map(function(t){return '<li class="ve-r">'+t+'</li>'}).join('');
     var li=list.querySelectorAll('li');for(var i=0;i<li.length;i++)li[i].style.transitionDelay=i*60+'ms';
     requestAnimationFrame(function(){requestAnimationFrame(function(){for(var i=0;i<li.length;i++)li[i].classList.add('is-in')})});
     for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-s')===s;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
-    for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-s')===s);
+    if(s!==cur)go(cur,s);else setPic(s);cur=s;
   }
-  var ORDER=['spring','summer','autumn','winter'],cur='spring',auto=null;
-  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){stop();cur=this.getAttribute('data-s');show(cur)});
+  var ORDER=['spring','summer','autumn','winter'],auto=null;
+  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){stop();show(this.getAttribute('data-s'))});
   show('spring');
   // пока посетитель не трогал вкладки, сезоны листаются сами (в поле зрения); первый клик останавливает
   function stop(){if(auto){clearInterval(auto);auto=null}}
-  function start(){if(auto||VE.rm)return;auto=setInterval(function(){cur=ORDER[(ORDER.indexOf(cur)+1)%ORDER.length];show(cur)},3600)}
-  var pic=root.querySelector('.ve-sea__pic'),stopped=false;
+  function start(){if(auto||VE.rm)return;auto=setInterval(function(){show(ORDER[(ORDER.indexOf(cur)+1)%ORDER.length])},3600)}
+  var stopped=false;
   root.querySelector('.ve-sea__tabs').addEventListener('click',function(){stopped=true;stop()});
   if('IntersectionObserver' in window)new IntersectionObserver(function(en){if(stopped)return;en[0].isIntersecting?start():stop()},{threshold:.4}).observe(pic);
 })();
@@ -1412,6 +1478,6 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 })();
 </script>
 
-<div class="ve-preview-note">превью сборки 84bb26f8 · изображения временные, до генераций · контакты в подвале — заглушки</div>
+<div class="ve-preview-note">превью сборки 4e98684f · изображения временные, до генераций · контакты в подвале — заглушки</div>
 </body>
 </html>

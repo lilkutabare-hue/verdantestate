@@ -1,4 +1,4 @@
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 84bb26f8 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 4e98684f -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
 :root{
@@ -106,9 +106,12 @@
 .ve-swap{display:inline-block;transition:opacity .18s var(--ve-ease-2),transform .18s var(--ve-ease-2)}
 .ve-swap.is-out{opacity:0;transform:translateY(5px)}
 .ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
-.ve-px{overflow:hidden}
-.ve-px>img{width:100%;height:100%;object-fit:cover;transform:translate3d(0,var(--px,0%),0) scale(1.14);will-change:transform}
-@media(prefers-reduced-motion:reduce){.ve-px>img{transform:none}}
+.ve-px{position:relative;overflow:hidden}
+.ve-px>img,.ve-px>video{width:100%;height:100%;object-fit:cover;transform:translate3d(0,var(--px,0%),0) scale(1.14);will-change:transform}
+@media(prefers-reduced-motion:reduce){.ve-px>img,.ve-px>video{transform:none}}
+/* луп поверх стилла: <video> вставляет VE.loops у [data-loop], когда есть media/loops/manifest.json; проявляется, когда пошли кадры */
+.ve-loop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s var(--ve-ease);pointer-events:none;background:transparent}
+.ve-loop.is-live{opacity:1}
 /* точка, в которую садится сфера меню хиро (ставит хиро у подписи раздела) */
 .ve-caps{position:relative}
 .ve-dot{position:absolute;left:-16px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:var(--ve-acc);transform:scale(0);transition:transform .4s var(--ve-ease)}
@@ -133,7 +136,7 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'https://lilkutabare-hue.github.io/verdantestate/site/';
-  var VE={v:'84bb26f8',base:base,
+  var VE={v:'4e98684f',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
@@ -172,13 +175,43 @@
       collect();paint();window.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',function(){collect();ask()});
       VE.on('px:refresh',function(){collect();ask()});
     },
+    /* лупы секций (план §5): под рамкой [data-loop] появляется <video muted loop playsinline preload=none>,
+       играет только в поле зрения; data-loop-mode="hover" — на компьютере под курсором, на телефоне в центре экрана;
+       при prefers-reduced-motion и Save-Data остаётся стилл. Манифест пишет tools/loops.mjs */
+    loops:function(){
+      if(VE.rm||VE._lp)return;VE._lp=true;
+      var sd=false;try{sd=!!(navigator.connection&&navigator.connection.saveData)}catch(e){}
+      if(sd||!window.fetch)return;
+      var coarse=false;try{coarse=window.matchMedia('(hover:none)').matches}catch(e){}
+      var play=function(v){if(!v.paused)return;var p=v.play();if(p&&p.catch)p.catch(function(){})},pause=function(v){if(!v.paused)v.pause()};
+      fetch(VE.url('media/loops/manifest.json')).then(function(r){return r.ok?r.json():null}).then(function(m){
+        if(!m||!m.loops)return;VE.loopsMan=m;
+        /* наблюдаем рамку, а не <video>: Chrome считает clip-path (шторка «до/после») в долю видимости, и луп гас на ходу шторки */
+        var io=('IntersectionObserver' in window)?new IntersectionObserver(function(en){en.forEach(function(x){(x.target.__veLoops||[]).forEach(function(v){var hover=v.getAttribute('data-mode')==='hover';
+          if(x.isIntersecting&&x.intersectionRatio>=(hover?.75:.35)){if(!hover||coarse)play(v)}else pause(v)})})},{threshold:[0,.35,.75]}):null;
+        var els=document.querySelectorAll('[data-loop]');
+        for(var i=0;i<els.length;i++)(function(el){
+          var key=el.getAttribute('data-loop'),L=m.loops[key];if(!L||el.getAttribute('data-loop-ready'))return;el.setAttribute('data-loop-ready','1');
+          var v=document.createElement('video');v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('loop','');v.preload='none';v.setAttribute('aria-hidden','true');
+          v.src=VE.url('media/loops/'+L.mp4);v.setAttribute('data-mode',el.getAttribute('data-loop-mode')||'view');v.setAttribute('data-loop-key',key);
+          var host=el;
+          if(el.tagName==='IMG'){v.className=el.className+' ve-loop';if(el.getAttribute('data-s'))v.setAttribute('data-s',el.getAttribute('data-s'));el.parentNode.insertBefore(v,el.nextSibling);host=el.parentNode}
+          else{v.className='ve-loop';el.appendChild(v)}
+          v.addEventListener('playing',function(){v.classList.add('is-live')});
+          if(v.getAttribute('data-mode')==='hover'&&!coarse){var card=el.closest('article')||host;card.addEventListener('pointerenter',function(){play(v)});card.addEventListener('pointerleave',function(){pause(v)})}
+          var obs=el.tagName==='IMG'?host:el;obs.__veLoops=(obs.__veLoops||[]).concat(v);
+          if(io){if(obs.__veLoops.length===1)io.observe(obs)}else play(v);
+        })(els[i]);
+        VE.emit('loops:ready',m);
+      }).catch(function(){});
+    },
     /* смена текста с коротким затуханием */
     swap:function(el,html){if(el.innerHTML===html)return;if(VE.rm){el.innerHTML=html;return}el.classList.add('ve-swap');el.classList.add('is-out');setTimeout(function(){el.innerHTML=html;el.classList.remove('is-out')},180)}
   };
   try{VE.rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
   try{var s=sessionStorage.getItem('ve-calc');if(s)VE.state=JSON.parse(s)||{}}catch(e){}
   window.VE=VE;
-  var boot=function(){VE.reveal();VE.parallax();document.documentElement.classList.add('ve-ready')};
+  var boot=function(){VE.reveal();VE.parallax();VE.loops();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
 })();
