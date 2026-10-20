@@ -147,6 +147,15 @@
 .ve-tar .ve-dot{background:var(--ve-paper)}
 .ve h2[tabindex="-1"]:focus{outline:none}
 
+/* фото-пауза во весь экран (Dan Pearson, Tom Stuart-Smith): одно фото, одна подпись, линия рисуется поверх */
+.ve-pause{position:relative;margin-top:var(--ve-gap);overflow:hidden;background:var(--ve-paper-2)}
+.ve-pause__img{height:72svh;min-height:420px;max-height:900px}
+.ve-pause__img>img{width:100%;height:100%;object-fit:cover}
+.ve-pause__cap{position:absolute;left:0;right:0;bottom:0;padding-top:16px;padding-bottom:calc(18px + env(safe-area-inset-bottom));color:#fff;--ve-line:rgba(255,255,255,.55)}
+.ve-pause__cap .ve-cap{color:rgba(255,255,255,.82);text-shadow:0 1px 10px rgba(0,0,0,.45)}.ve-pause__cap .ve-cap b{color:#fff}
+.ve-pause::after{content:"";position:absolute;left:0;right:0;bottom:0;height:38%;background:linear-gradient(to top,rgba(17,38,24,.5),rgba(17,38,24,0));pointer-events:none}
+.ve-pause__cap{z-index:1}
+@media(min-width:900px){.ve-pause__img{height:86svh}.ve-pause__cap{padding-top:22px;padding-bottom:28px}}
 /* горизонтальные ленты со snap */
 .ve-strip{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
   padding-left:var(--ve-pad);padding-right:var(--ve-pad);scroll-padding-left:var(--ve-pad);margin:0 calc(-1 * var(--ve-pad))}

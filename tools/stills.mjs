@@ -11,6 +11,17 @@ const SRC = join(ROOT, 'tools/.cache/stills'), STILLS = join(ROOT, 'docs/site/me
 await mkdir(STILLS, { recursive: true }); await mkdir(SCENE, { recursive: true });
 const files = (await readdir(SRC)).filter((f) => f.endsWith('.png')).sort();
 let total = 0;
+// фото-паузы во весь экран (план доводки, Dan Pearson): берутся прямо из мастеров «все рендеры/» (только чтение)
+const MASTERS = join(ROOT, 'все рендеры');
+const EXTRA = { 'pause-estate': 'M.png', 'pause-aerial': 'S4C.png' };
+for (const [name, file] of Object.entries(EXTRA)) {
+  const src = join(MASTERS, file);
+  try { await (await import('node:fs/promises')).access(src); } catch { console.warn('нет мастера для', name, '—', file); continue; }
+  const l = await sharp(src).resize({ width: 1920, withoutEnlargement: true }).webp({ quality: 76, effort: 5 }).toBuffer();
+  const s = await sharp(src).resize({ width: 960 }).webp({ quality: 74, effort: 5 }).toBuffer();
+  await writeFile(join(STILLS, `${name}-l.webp`), l); await writeFile(join(STILLS, `${name}-s.webp`), s); total += l.length + s.length;
+  console.log(name, (l.length / 1024).toFixed(0), '+', (s.length / 1024).toFixed(0), 'KB (из мастера', file + ')');
+}
 for (const f of files) {
   const name = f.slice(0, -4), src = join(SRC, f);
   if (name.startsWith('scene-')) {

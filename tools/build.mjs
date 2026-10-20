@@ -67,7 +67,7 @@ function checkCss(html, name) {
 const kb = (n) => (n / 1024).toFixed(1) + ' КБ';
 
 // ---------- сборка ----------
-const files = (await readdir(SRC)).filter((f) => /^\d\d-.*\.html$/.test(f)).sort();
+const files = (await readdir(SRC)).filter((f) => /^\d\d[a-z]?-.*\.html$/.test(f)).sort(); // 04a-… — вставка между блоками без перенумерации
 const headSrc = await readFile(join(SRC, 'head.html'), 'utf8');
 const fill = (s, base) => s.replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__ARC_MASK__/g, ARC_MASK).replace(/__ARC_CX__/g, ARC_CX).replace(/__ARC_CY__/g, ARC_CY).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
 
@@ -78,12 +78,12 @@ await writeFile(join(DIST, 'head.html'), headDist);
 console.log(`head.html  ${kb(Buffer.byteLength(headDist))} / 64 КБ`);
 
 // блоки, которых больше нет в src (после перенумерации), из dist убираем
-const keep = new Set(files.map((f) => `t123-${f.slice(0, 2)}.html`));
-for (const f of await readdir(DIST)) if (/^t123-\d\d\.html$/.test(f) && !keep.has(f)) await unlink(join(DIST, f));
+const keep = new Set(files.map((f) => `t123-${f.split('-')[0]}.html`));
+for (const f of await readdir(DIST)) if (/^t123-\d\d[a-z]?\.html$/.test(f) && !keep.has(f)) await unlink(join(DIST, f));
 
 const blocksDist = [], blocksPreview = [];
 for (const f of files) {
-  const n = f.slice(0, 2);
+  const n = f.split('-')[0];
   const src = await readFile(join(SRC, f), 'utf8');
   const dist = `<!-- VE · ${f} · сборка ${V} -->\n` + fill(src, PAGES_BASE);
   await checkScripts(dist, f); checkCss(dist, f);
