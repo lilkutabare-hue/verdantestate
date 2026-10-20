@@ -37,6 +37,10 @@ const LOGO_SPRITE = `<svg width="0" height="0" style="position:absolute;width:0;
   + ['ring', 'branch', 'letters', 'word', 'rules', 'leaf', 'tag', 'tag2'].map((k) => sym(k, LP[k])).join('')
   + `<symbol id="ve-l-mark" overflow="visible"><use href="#ve-l-ring"/><use href="#ve-l-branch"/><use href="#ve-l-letters"/></symbol></svg>`;
 const SIL = JSON.parse(await readFile(join(ROOT, 'brand/vector/silhouettes.json'), 'utf8')); // tools/outline.mjs
+// дуга логотипа как CSS-маска (data-URI) и её центр в долях viewBox — для спектрального свечения по дуге
+const [vx, vy, vw, vh] = LP.vbFull.split(' ').map(Number);
+const ARC_MASK = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='${LP.vbFull}'><path d='${LP.ring}' fill='#000'/></svg>`)}")`;
+const ARC_CX = (((638.8 - vx) / vw) * 100).toFixed(2) + '%', ARC_CY = (((506.2 - vy) / vh) * 100).toFixed(2) + '%';
 const MARK = `<svg viewBox="${LP.vbMark}" fill="currentColor" aria-hidden="true" focusable="false"><use href="#ve-l-mark"/></svg>`;
 
 // ---------- проверки ----------
@@ -65,7 +69,7 @@ const kb = (n) => (n / 1024).toFixed(1) + ' КБ';
 // ---------- сборка ----------
 const files = (await readdir(SRC)).filter((f) => /^\d\d-.*\.html$/.test(f)).sort();
 const headSrc = await readFile(join(SRC, 'head.html'), 'utf8');
-const fill = (s, base) => s.replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
+const fill = (s, base) => s.replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__ARC_MASK__/g, ARC_MASK).replace(/__ARC_CX__/g, ARC_CX).replace(/__ARC_CY__/g, ARC_CY).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
 
 const headDist = fill(headSrc, PAGES_BASE);
 await checkScripts(headDist, 'head'); checkCss(headDist, 'head');

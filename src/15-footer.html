@@ -1,8 +1,12 @@
 <footer class="ve ve-ft" id="ve-footer">
   <div class="ve-wrap">
-    <div class="ve-ft__logo">
+    <div class="ve-ft__logo" data-spectral>
+      <div class="ve-logo__halo"></div>
       <svg viewBox="__VB_FULL__" fill="currentColor" role="img" aria-label="Verdant Estate — Landscaping &amp; Garden Design">
         <defs>
+          <linearGradient id="ve-ftg-gloss" gradientUnits="userSpaceOnUse" x1="0" y1="230" x2="0" y2="760"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".45" stop-color="#fff" stop-opacity=".18"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>
+          <linearGradient id="ve-ftg-shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="260" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+          <mask id="ve-ftm-shine" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><g transform="rotate(-22 627 627)"><rect class="ve-logo__band" x="-300" y="-400" width="260" height="2000" fill="url(#ve-ftg-shine)"/></g></mask>
           <mask id="ve-ftm-ring" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><path class="ve-ft__wedge" fill="#fff" d="M0 0Z"/></mask>
           <linearGradient id="ve-ftg-br" gradientUnits="userSpaceOnUse" x1="0" y1="800" x2="0" y2="210"><stop class="ve-ft__s1" offset="0" stop-color="#fff"/><stop class="ve-ft__s2" offset="0" stop-color="#000"/></linearGradient>
           <mask id="ve-ftm-br" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><rect width="1254" height="1254" fill="url(#ve-ftg-br)"/></mask>
@@ -14,6 +18,8 @@
         <use class="ve-ft__p" href="#ve-l-rules" style="--d:1350ms"/>
         <use class="ve-ft__p" href="#ve-l-leaf" style="--d:1450ms"/>
         <use class="ve-ft__p" href="#ve-l-tag" style="--d:1550ms"/>
+        <g class="ve-logo__gloss ve-ft__p" fill="url(#ve-ftg-gloss)" style="--d:1700ms"><use href="#ve-l-ring" mask="url(#ve-ftm-ring)"/><use href="#ve-l-letters"/></g>
+        <g class="ve-logo__shine" fill="#fff" mask="url(#ve-ftm-shine)"><use href="#ve-l-ring" mask="url(#ve-ftm-ring)"/><use href="#ve-l-branch"/><use href="#ve-l-letters"/></g>
       </svg>
     </div>
     <div class="ve-ft__cols">
@@ -29,15 +35,13 @@
   </div>
 </footer>
 <!-- cookie-строка: одна линия внизу, появляется после хиро, пока не нажали «Хорошо» (нужна при публикации на домене) -->
-<div class="ve ve-ck" id="ve-cookie" role="region" aria-label="Cookie" hidden>
+<div class="ve ve-ck ve-dock--light" id="ve-cookie" role="region" aria-label="Cookie" hidden>
   <div class="ve-ck__in"><p>Сайт использует cookie — так он работает лучше. <a href="#" data-ve-policy>Подробнее</a></p><button class="ve-btn ve-btn--sm ve-btn--ghost" type="button" data-ve-ck-ok>Хорошо</button></div>
 </div>
 <style>
-.ve-ck{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50;border-radius:20px;background:rgba(255,255,255,.74);border:1px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 14px 40px rgba(21,52,32,.18),inset 0 1px 0 #fff;transform:translateY(calc(100% + 24px));transition:transform .55s var(--ve-ease)}
+.ve-ck{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50;border-radius:20px;transform:translateY(calc(100% + 24px));transition:transform .55s var(--ve-ease)}
 .ve-ck.is-on{transform:none}
 @media(min-width:900px){.ve-ck{left:auto;right:24px;bottom:24px;max-width:600px}}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve-ck{background:rgba(255,255,255,.96)}}
-@media(prefers-reduced-transparency:reduce){.ve-ck{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
 .ve-ck__in{padding:12px 14px 12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .ve-ck__in p{font-size:13px;line-height:1.4;color:var(--ve-moss)}
 .ve-ck__in p a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
@@ -58,8 +62,9 @@
 </script>
 <style>
 .ve-ft{padding:var(--ve-gap) 0 calc(40px + env(safe-area-inset-bottom));border-top:1px solid var(--ve-line);background:var(--ve-paper)}
-.ve-ft__logo{display:flex;justify-content:center;color:var(--ve-ink)}
-.ve-ft__logo svg{display:block;width:260px;height:auto;overflow:visible}
+.ve-ft__logo{position:relative;width:260px;margin:0 auto;color:var(--ve-ink)}
+.ve-ft__logo svg{display:block;width:100%;height:auto;overflow:visible}
+.ve-ft__logo .ve-logo__halo{opacity:0}.ve-ft__logo.is-in .ve-logo__halo{opacity:calc(.85*var(--ve-f))}
 .ve-ft__p{opacity:0;transform:translateY(10px);transition:opacity .7s var(--ve-ease),transform .7s var(--ve-ease);transition-delay:var(--d,0ms)}
 .ve-ft__logo.is-in .ve-ft__p{opacity:1;transform:none}
 .ve-ft__cols{margin-top:48px;display:grid;gap:20px;text-align:center;font-size:15px}
@@ -70,11 +75,11 @@
 .ve-ft__legal{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-size:13px;color:var(--ve-moss)}
 .ve-ft__legal a{color:inherit}
 @media(min-width:900px){
-  .ve-ft__logo svg{width:320px}
+  .ve-ft__logo{width:320px}
   .ve-ft__cols{margin-top:64px;grid-template-columns:1fr auto 1fr;align-items:center;text-align:left}
   .ve-ft__legal{justify-content:flex-end}
 }
-@media(prefers-reduced-motion:reduce){.ve-ft__p{opacity:1;transform:none;transition:none}}
+@media(prefers-reduced-motion:reduce){.ve-ft__p{opacity:1;transform:none;transition:none}.ve-ft__logo .ve-logo__band{animation:none}}
 </style>
 <script>
 (function(){
