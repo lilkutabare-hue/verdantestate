@@ -43,8 +43,9 @@
 .ve-tar{background:var(--ve-ink);color:var(--ve-paper);padding-bottom:var(--ve-gap);margin-top:var(--ve-gap);--ve-line:rgba(255,255,255,.16);--ve-moss:rgba(255,255,255,.66)}
 .ve-tar .ve-caps{color:rgba(255,255,255,.66)}
 .ve-tar .ve-sub{color:rgba(255,255,255,.66)}
-.ve-tar .ve-btn--ghost{color:var(--ve-paper);border-color:rgba(255,255,255,.4)}
-@media(hover:hover){.ve-tar .ve-btn--ghost:hover{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}}
+.ve-tar .ve-btn--ghost{color:var(--ve-paper);border-color:rgba(255,255,255,.3);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08));box-shadow:0 8px 24px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(0,0,0,.12)}
+.ve-tar .ve-btn--ghost::before{background:linear-gradient(135deg,rgba(255,255,255,.7),rgba(255,255,255,0) 42%,rgba(255,255,255,0) 60%,rgba(255,255,255,.3))}.ve-tar .ve-btn--ghost::after{background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,0))}
+@media(hover:hover){.ve-tar .ve-btn--ghost:hover{background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.16))}}
 .ve-tar__h{margin-top:14px}
 .ve-tar__wrap{margin-top:36px}
 .ve-tar__card{width:84vw;max-width:420px;display:flex;flex-direction:column}

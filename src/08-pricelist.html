@@ -59,6 +59,6 @@
     for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-cat')===cat);
   }
   for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-cat'))});
-  show('lawn');
+  show('lawn');var movePill=VE.pills(root.querySelector('.ve-pr__tabs'));var show0=show;show=function(c){show0(c);movePill()};
 })();
 </script>

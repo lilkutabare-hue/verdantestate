@@ -1,4 +1,4 @@
-<!-- VE · 15-footer.html · сборка 4e98684f -->
+<!-- VE · 15-footer.html · сборка e75d1f35 -->
 <footer class="ve ve-ft" id="ve-footer">
   <div class="ve-wrap">
     <div class="ve-ft__logo">
@@ -34,13 +34,16 @@
   <div class="ve-ck__in"><p>Сайт использует cookie — так он работает лучше. <a href="#" data-ve-policy>Подробнее</a></p><button class="ve-btn ve-btn--sm ve-btn--ghost" type="button" data-ve-ck-ok>Хорошо</button></div>
 </div>
 <style>
-.ve-ck{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(255,255,255,.96);border-top:1px solid var(--ve-line);padding-bottom:env(safe-area-inset-bottom);transform:translateY(100%);transition:transform .5s var(--ve-ease)}
+.ve-ck{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50;border-radius:20px;background:rgba(255,255,255,.74);border:1px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 14px 40px rgba(21,52,32,.18),inset 0 1px 0 #fff;transform:translateY(calc(100% + 24px));transition:transform .55s var(--ve-ease)}
 .ve-ck.is-on{transform:none}
-.ve-ck__in{max-width:1240px;margin:0 auto;padding:12px var(--ve-pad);display:flex;align-items:center;justify-content:space-between;gap:16px}
+@media(min-width:900px){.ve-ck{left:auto;right:24px;bottom:24px;max-width:600px}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve-ck{background:rgba(255,255,255,.96)}}
+@media(prefers-reduced-transparency:reduce){.ve-ck{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
+.ve-ck__in{padding:12px 14px 12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .ve-ck__in p{font-size:13px;line-height:1.4;color:var(--ve-moss)}
 .ve-ck__in p a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
 .ve-ck .ve-btn--sm{flex:0 0 auto;min-height:38px;height:38px;padding:0 16px}
-@media(max-width:599px){.ve-ck .ve-btn--sm{min-height:38px;padding:0 16px}}
+@media(max-width:599px){.ve-ck .ve-btn--sm{min-height:38px;padding:0 16px;font-size:14px}}
 @media(prefers-reduced-motion:reduce){.ve-ck{transition:none}}
 </style>
 <script>

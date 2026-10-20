@@ -1,8 +1,8 @@
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 4e98684f -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка e75d1f35 -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
 :root{
-  --ve-paper:#FFFFFF;--ve-paper-2:#F1F5F0;--ve-ink:#1F4D2E;--ve-acc:#2E7D46;--ve-moss:#5F7A62;--ve-line:rgba(31,77,46,.14);--ve-bronze:#B08D57;--ve-lamp:#B08D57;
+  --ve-paper:#FFFFFF;--ve-paper-2:#F3F6F2;--ve-ink:#1B462A;--ve-acc:#2E7D46;--ve-moss:#617A66;--ve-line:rgba(31,77,46,.14);--ve-bronze:#B99A66;--ve-lamp:#B99A66;
   --ve-sans:-apple-system,"SF Pro Text","SF Pro Display","Inter","Segoe UI",Roboto,system-ui,sans-serif;
   --ve-ease:cubic-bezier(.2,.9,.2,1);--ve-ease-2:cubic-bezier(.2,.8,.2,1);
   --ve-r:8px;--ve-gap:72px;--ve-pad:20px;
@@ -46,40 +46,53 @@
 .ve-big{font-weight:600;letter-spacing:-.02em;font-size:26px;line-height:1.1}
 @media(min-width:900px){.ve-big{font-size:30px}}
 
-/* ---- управление: один характер «ботанического» сайта ----
-   кнопки — тёмная зелень, капс с разрядкой, тонкая бронзовая рамка внутри на наведении
-   чипсы — бирки растений: прямые углы, бронзовая точка у выбранной
-   вкладки — текст с бронзовым подчёркиванием
-   поля — линия снизу, подпись капсом; яркий травяной зелёный остаётся мелким сигналам */
-.ve .ve-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:12px;height:54px;padding:0 30px;border-radius:4px;
-  background:var(--ve-ink);color:var(--ve-paper);font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;border:1px solid var(--ve-ink);
-  transition:background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s var(--ve-ease-2),transform .3s var(--ve-ease-2)}
-.ve .ve-btn::after{content:"";position:absolute;inset:4px;border-radius:2px;border:1px solid rgba(176,141,87,0);transition:border-color .35s}
-.ve .ve-btn--ghost{background:transparent;color:var(--ve-ink);border-color:rgba(31,77,46,.42)}
-.ve .ve-btn--light{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
-.ve .ve-btn--sm{height:44px;padding:0 20px;font-size:11.5px}
-/* узкие экраны: кнопка может перенестись на две строки, но не вылезти за край */
-@media(max-width:599px){.ve .ve-btn{height:auto;min-height:52px;padding:13px 22px;white-space:normal;text-align:center;line-height:1.25;letter-spacing:.11em}.ve .ve-btn--sm{min-height:44px;padding:11px 18px}}
+/* ---- управление: Liquid Glass (владелец, 22.10: «кнопки и интерфейс — в стиле Apple glass») ----
+   кнопки — стеклянные капсулы: тонированное стекло для главного действия, прозрачное над фото и на тёмном;
+   чипсы — капсулы, выбранная тонируется; вкладки — сегментный контроль с бегущей стеклянной подложкой;
+   поля — стеклянные вставки. Размытие подложки (backdrop-filter) только там, где под стеклом фото или контент:
+   шапка, кнопки над хиро, cookie-плашка, ручка шторки — на белом размывать нечего, а каждое стекло на телефоне стоит кадров */
+:root{--ve-glass-blur:18px;--ve-tint:linear-gradient(180deg,rgba(31,77,46,.96),rgba(26,66,40,.9));--ve-glass-shadow:0 10px 30px rgba(21,52,32,.16)}
+@media(max-width:899px){:root{--ve-glass-blur:12px}}
+.ve .ve-btn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;
+  background:var(--ve-tint);color:var(--ve-paper);font-size:16px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;border:1px solid rgba(255,255,255,.18);
+  box-shadow:var(--ve-glass-shadow),inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(0,0,0,.18);
+  transition:transform .35s var(--ve-ease),box-shadow .35s var(--ve-ease),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s}
+/* кромка света по верхнему краю и блик-«брюшко» — то, что делает капсулу стеклом */
+.ve .ve-btn::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.7),rgba(255,255,255,0) 42%,rgba(255,255,255,0) 60%,rgba(255,255,255,.3));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.ve .ve-btn::after{content:"";position:absolute;left:7%;right:7%;top:1px;height:48%;border-radius:999px;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0))}
+.ve .ve-btn--ghost{background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.45));color:var(--ve-ink);border-color:rgba(31,77,46,.16);box-shadow:0 6px 20px rgba(21,52,32,.09),inset 0 1px 0 #fff,inset 0 -1px 0 rgba(31,77,46,.05)}
+.ve .ve-btn--ghost::before{background:linear-gradient(135deg,#fff,rgba(255,255,255,.3) 42%,rgba(255,255,255,.15) 60%,rgba(255,255,255,.7))}
+.ve .ve-btn--ghost::after{background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0))}
+/* над фото: прозрачное стекло с размытием */
+.ve .ve-btn--light{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.38);-webkit-backdrop-filter:blur(var(--ve-glass-blur)) saturate(160%);backdrop-filter:blur(var(--ve-glass-blur)) saturate(160%);box-shadow:0 10px 30px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(0,0,0,.1);text-shadow:0 1px 2px rgba(0,0,0,.18)}
+.ve .ve-btn--sm{height:42px;padding:0 18px;font-size:14.5px}
+@media(max-width:599px){.ve .ve-btn{height:auto;min-height:50px;padding:12px 22px;font-size:15.5px;white-space:normal;text-align:center;line-height:1.2}.ve .ve-btn--sm{min-height:40px;padding:9px 16px}}
 @media(hover:hover){
-  .ve .ve-btn:hover{background:#183F27}.ve .ve-btn:hover::after{border-color:rgba(176,141,87,.6)}
-  .ve .ve-btn--ghost:hover{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
-  .ve .ve-btn--light:hover{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}.ve .ve-btn--light:hover::after{border-color:rgba(176,141,87,.7)}
+  .ve .ve-btn:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(21,52,32,.22),inset 0 1px 0 rgba(255,255,255,.46),inset 0 -1px 0 rgba(0,0,0,.18)}
+  .ve .ve-btn--ghost:hover{background:linear-gradient(180deg,#fff,rgba(255,255,255,.75));box-shadow:0 12px 28px rgba(21,52,32,.12),inset 0 1px 0 #fff}
+  .ve .ve-btn--light:hover{background:rgba(255,255,255,.26);box-shadow:0 16px 36px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.6)}
 }
-.ve .ve-btn:active{transform:scale(.985)}
-.ve-chip{position:relative;display:inline-flex;align-items:center;gap:10px;height:42px;padding:0 16px;border-radius:3px;border:1px solid rgba(31,77,46,.26);background:transparent;font-size:15px;color:var(--ve-ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease-2)}
-.ve-chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ve-bronze);opacity:0;transform:scale(.3);margin-right:-4px;transition:opacity .25s,transform .4s var(--ve-ease),margin .3s var(--ve-ease)}
-.ve-chip.is-on,.ve-chip:has(input:checked){background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
-.ve-chip.is-on::before,.ve-chip:has(input:checked)::before{opacity:1;transform:none;margin-right:0}
-.ve-chip:active{transform:scale(.97)}
-@media(hover:hover){.ve-chip:not(.is-on):hover{border-color:rgba(31,77,46,.6)}}
+.ve .ve-btn:active{transform:scale(.97)}
+.ve-chip{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(31,77,46,.14);background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.5));font-size:15px;font-weight:500;color:var(--ve-ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  box-shadow:0 4px 14px rgba(21,52,32,.07),inset 0 1px 0 #fff;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease),box-shadow .3s}
+.ve-chip.is-on,.ve-chip:has(input:checked){background:var(--ve-tint);color:#fff;border-color:rgba(255,255,255,.18);box-shadow:0 6px 18px rgba(21,52,32,.22),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(0,0,0,.15)}
+.ve-chip:active{transform:scale(.96)}
+@media(hover:hover){.ve-chip:not(.is-on):hover{border-color:rgba(31,77,46,.3);background:#fff;box-shadow:0 8px 20px rgba(21,52,32,.1),inset 0 1px 0 #fff}}
 .ve-chip input{position:absolute;opacity:0;width:0;height:0;margin:0}
 .ve-chip:has(input:focus-visible){outline:2px solid var(--ve-moss);outline-offset:3px}
-.ve-tabs{display:flex;gap:0 24px;flex-wrap:wrap;border-bottom:1px solid var(--ve-line)}
-.ve-tab{height:42px;padding:0 2px;margin-bottom:-1px;font-size:15px;color:var(--ve-moss);border-bottom:1.5px solid transparent;transition:color .25s,border-color .3s var(--ve-ease)}
-.ve-tab.is-on{color:var(--ve-ink);border-bottom-color:var(--ve-bronze)}
+/* вкладки = сегментный контроль: стеклянный жёлоб и белая капсула, которая едет к выбранной (VE.pills) */
+.ve-tabs{position:relative;display:inline-flex;flex-wrap:nowrap;max-width:100%;gap:2px;padding:3px;border-radius:999px;border:1px solid rgba(31,77,46,.1);background:linear-gradient(180deg,rgba(31,77,46,.075),rgba(31,77,46,.045));box-shadow:inset 0 1px 2px rgba(21,52,32,.08)}
+.ve-tab{position:relative;z-index:1;height:38px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:500;color:var(--ve-moss);white-space:nowrap;transition:color .25s}
+.ve-tab.is-on{color:var(--ve-ink)}
+.ve-pill{position:absolute;left:0;top:3px;height:calc(100% - 6px);border-radius:999px;background:linear-gradient(180deg,#fff,rgba(255,255,255,.88));border:1px solid rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(21,52,32,.16),inset 0 1px 0 #fff;transition:transform .45s var(--ve-ease),width .45s var(--ve-ease);pointer-events:none}
 @media(hover:hover){.ve-tab:not(.is-on):hover{color:var(--ve-ink)}}
-.ve-panel{border:1px solid var(--ve-line);border-radius:6px}
+@media(max-width:599px){.ve-tab{padding:0 13px;font-size:14.5px;height:36px}}
+/* панель — стеклянная карточка на бумаге: чуть тонированная, с кромкой света и мягкой тенью */
+.ve-panel{position:relative;border-radius:24px;border:1px solid rgba(31,77,46,.09);background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(243,246,242,.7));box-shadow:0 14px 44px rgba(21,52,32,.08),inset 0 1px 0 #fff}
+@media(max-width:599px){.ve-panel{border-radius:20px}}
+/* если стекла нет или пользователь просит без прозрачности — плотные подложки */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve .ve-btn--light{background:rgba(255,255,255,.32)}}
+@media(prefers-reduced-transparency:reduce){.ve .ve-btn--light{background:rgba(255,255,255,.94);color:var(--ve-ink);text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}}
 
 /* ---- система движения ----
    .ve-r      появление: прозрачность + подъём 12px, один раз, по IntersectionObserver
@@ -128,7 +141,7 @@
 @media(prefers-reduced-motion:reduce){
   .ve-r,.ve-rg>*,.ve-img,.ve-img>img,.ve-line::before{opacity:1;transform:none;clip-path:none;transition:none}
   .ve-sil path{stroke-dashoffset:0;transition:none}
-  .ve .ve-btn,.ve-chip,.ve-tab,.ve-swap{transition:none}
+  .ve .ve-btn,.ve-chip,.ve-tab,.ve-pill,.ve-swap{transition:none}
 }
 </style>
 <script>
@@ -136,7 +149,7 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'https://lilkutabare-hue.github.io/verdantestate/site/';
-  var VE={v:'4e98684f',base:base,
+  var VE={v:'e75d1f35',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},

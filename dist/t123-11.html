@@ -1,14 +1,14 @@
-<!-- VE · 11-seasons.html · сборка 4e98684f -->
+<!-- VE · 11-seasons.html · сборка e75d1f35 -->
 <section class="ve ve-sec ve-sea" id="ve-seasons">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Круглый год</p>
     <h2 class="ve-h2 ve-r ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-spring-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" data-loop="z1" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-summer-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-autumn-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-spring-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" data-loop="z1" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-summer-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-autumn-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
         <div class="ve-tabs ve-sea__tabs ve-r" role="tablist">
@@ -92,7 +92,7 @@
   }
   var ORDER=['spring','summer','autumn','winter'],auto=null;
   for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){stop();show(this.getAttribute('data-s'))});
-  show('spring');
+  show('spring');var movePill=VE.pills(root.querySelector('.ve-sea__tabs'));var show0=show;show=function(s){show0(s);movePill()};
   // пока посетитель не трогал вкладки, сезоны листаются сами (в поле зрения); первый клик останавливает
   function stop(){if(auto){clearInterval(auto);auto=null}}
   function start(){if(auto||VE.rm)return;auto=setInterval(function(){show(ORDER[(ORDER.indexOf(cur)+1)%ORDER.length])},3600)}

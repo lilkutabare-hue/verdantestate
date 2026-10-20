@@ -28,9 +28,11 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 .ve-hd__right{display:flex;align-items:center;gap:22px}
 .ve-hd__tel{display:none;font-size:15px;letter-spacing:.01em;opacity:.9}
 @media(min-width:900px){.ve-hd__tel{display:inline}}
-.ve-hd.is-solid{background:rgba(255,255,255,.94);color:var(--ve-ink);box-shadow:0 1px 0 var(--ve-line)}
+.ve-hd.is-solid{background:rgba(255,255,255,.72);color:var(--ve-ink);box-shadow:0 1px 0 rgba(31,77,46,.1);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve-hd.is-solid{background:rgba(255,255,255,.94)}}
+@media(prefers-reduced-transparency:reduce){.ve-hd.is-solid{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
 /* после хиро шапка белая — кнопка становится тёмной (вместе с hover) */
-.ve-hd.is-solid .ve-hd__cta,.ve-hd.is-solid .ve-hd__cta:hover{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+.ve-hd.is-solid .ve-hd__cta,.ve-hd.is-solid .ve-hd__cta:hover{background:var(--ve-tint);color:var(--ve-paper);border-color:rgba(255,255,255,.18);text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .ve-hd.is-hidden{transform:translateY(-110%)}
 @media(prefers-reduced-motion:reduce){.ve-hd{transition:none}}
 </style>

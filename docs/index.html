@@ -7,15 +7,15 @@
 <meta name="description" content="Постоянное управление садом: один договор, один ответственный, весь сад под контролем. Москва и Московская область.">
 <meta property="og:title" content="Verdant Estate — Private Garden Service">
 <meta property="og:description" content="Сад, за которым не нужно следить. Постоянный уход за частными садами в Москве и Московской области.">
-<meta property="og:image" content="site/media/scene/poster-wide.webp?v=4e98684f">
+<meta property="og:image" content="site/media/scene/poster-wide.webp?v=e75d1f35">
 <meta name="robots" content="noindex">
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
 <script>window.VE_BASE=new URL('site/',location.href).href</script>
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 4e98684f -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка e75d1f35 -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
 :root{
-  --ve-paper:#FFFFFF;--ve-paper-2:#F1F5F0;--ve-ink:#1F4D2E;--ve-acc:#2E7D46;--ve-moss:#5F7A62;--ve-line:rgba(31,77,46,.14);--ve-bronze:#B08D57;--ve-lamp:#B08D57;
+  --ve-paper:#FFFFFF;--ve-paper-2:#F3F6F2;--ve-ink:#1B462A;--ve-acc:#2E7D46;--ve-moss:#617A66;--ve-line:rgba(31,77,46,.14);--ve-bronze:#B99A66;--ve-lamp:#B99A66;
   --ve-sans:-apple-system,"SF Pro Text","SF Pro Display","Inter","Segoe UI",Roboto,system-ui,sans-serif;
   --ve-ease:cubic-bezier(.2,.9,.2,1);--ve-ease-2:cubic-bezier(.2,.8,.2,1);
   --ve-r:8px;--ve-gap:72px;--ve-pad:20px;
@@ -59,40 +59,53 @@
 .ve-big{font-weight:600;letter-spacing:-.02em;font-size:26px;line-height:1.1}
 @media(min-width:900px){.ve-big{font-size:30px}}
 
-/* ---- управление: один характер «ботанического» сайта ----
-   кнопки — тёмная зелень, капс с разрядкой, тонкая бронзовая рамка внутри на наведении
-   чипсы — бирки растений: прямые углы, бронзовая точка у выбранной
-   вкладки — текст с бронзовым подчёркиванием
-   поля — линия снизу, подпись капсом; яркий травяной зелёный остаётся мелким сигналам */
-.ve .ve-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:12px;height:54px;padding:0 30px;border-radius:4px;
-  background:var(--ve-ink);color:var(--ve-paper);font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;border:1px solid var(--ve-ink);
-  transition:background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s var(--ve-ease-2),transform .3s var(--ve-ease-2)}
-.ve .ve-btn::after{content:"";position:absolute;inset:4px;border-radius:2px;border:1px solid rgba(176,141,87,0);transition:border-color .35s}
-.ve .ve-btn--ghost{background:transparent;color:var(--ve-ink);border-color:rgba(31,77,46,.42)}
-.ve .ve-btn--light{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
-.ve .ve-btn--sm{height:44px;padding:0 20px;font-size:11.5px}
-/* узкие экраны: кнопка может перенестись на две строки, но не вылезти за край */
-@media(max-width:599px){.ve .ve-btn{height:auto;min-height:52px;padding:13px 22px;white-space:normal;text-align:center;line-height:1.25;letter-spacing:.11em}.ve .ve-btn--sm{min-height:44px;padding:11px 18px}}
+/* ---- управление: Liquid Glass (владелец, 22.10: «кнопки и интерфейс — в стиле Apple glass») ----
+   кнопки — стеклянные капсулы: тонированное стекло для главного действия, прозрачное над фото и на тёмном;
+   чипсы — капсулы, выбранная тонируется; вкладки — сегментный контроль с бегущей стеклянной подложкой;
+   поля — стеклянные вставки. Размытие подложки (backdrop-filter) только там, где под стеклом фото или контент:
+   шапка, кнопки над хиро, cookie-плашка, ручка шторки — на белом размывать нечего, а каждое стекло на телефоне стоит кадров */
+:root{--ve-glass-blur:18px;--ve-tint:linear-gradient(180deg,rgba(31,77,46,.96),rgba(26,66,40,.9));--ve-glass-shadow:0 10px 30px rgba(21,52,32,.16)}
+@media(max-width:899px){:root{--ve-glass-blur:12px}}
+.ve .ve-btn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;
+  background:var(--ve-tint);color:var(--ve-paper);font-size:16px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;border:1px solid rgba(255,255,255,.18);
+  box-shadow:var(--ve-glass-shadow),inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(0,0,0,.18);
+  transition:transform .35s var(--ve-ease),box-shadow .35s var(--ve-ease),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s}
+/* кромка света по верхнему краю и блик-«брюшко» — то, что делает капсулу стеклом */
+.ve .ve-btn::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.7),rgba(255,255,255,0) 42%,rgba(255,255,255,0) 60%,rgba(255,255,255,.3));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.ve .ve-btn::after{content:"";position:absolute;left:7%;right:7%;top:1px;height:48%;border-radius:999px;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0))}
+.ve .ve-btn--ghost{background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.45));color:var(--ve-ink);border-color:rgba(31,77,46,.16);box-shadow:0 6px 20px rgba(21,52,32,.09),inset 0 1px 0 #fff,inset 0 -1px 0 rgba(31,77,46,.05)}
+.ve .ve-btn--ghost::before{background:linear-gradient(135deg,#fff,rgba(255,255,255,.3) 42%,rgba(255,255,255,.15) 60%,rgba(255,255,255,.7))}
+.ve .ve-btn--ghost::after{background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0))}
+/* над фото: прозрачное стекло с размытием */
+.ve .ve-btn--light{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.38);-webkit-backdrop-filter:blur(var(--ve-glass-blur)) saturate(160%);backdrop-filter:blur(var(--ve-glass-blur)) saturate(160%);box-shadow:0 10px 30px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(0,0,0,.1);text-shadow:0 1px 2px rgba(0,0,0,.18)}
+.ve .ve-btn--sm{height:42px;padding:0 18px;font-size:14.5px}
+@media(max-width:599px){.ve .ve-btn{height:auto;min-height:50px;padding:12px 22px;font-size:15.5px;white-space:normal;text-align:center;line-height:1.2}.ve .ve-btn--sm{min-height:40px;padding:9px 16px}}
 @media(hover:hover){
-  .ve .ve-btn:hover{background:#183F27}.ve .ve-btn:hover::after{border-color:rgba(176,141,87,.6)}
-  .ve .ve-btn--ghost:hover{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
-  .ve .ve-btn--light:hover{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}.ve .ve-btn--light:hover::after{border-color:rgba(176,141,87,.7)}
+  .ve .ve-btn:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(21,52,32,.22),inset 0 1px 0 rgba(255,255,255,.46),inset 0 -1px 0 rgba(0,0,0,.18)}
+  .ve .ve-btn--ghost:hover{background:linear-gradient(180deg,#fff,rgba(255,255,255,.75));box-shadow:0 12px 28px rgba(21,52,32,.12),inset 0 1px 0 #fff}
+  .ve .ve-btn--light:hover{background:rgba(255,255,255,.26);box-shadow:0 16px 36px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.6)}
 }
-.ve .ve-btn:active{transform:scale(.985)}
-.ve-chip{position:relative;display:inline-flex;align-items:center;gap:10px;height:42px;padding:0 16px;border-radius:3px;border:1px solid rgba(31,77,46,.26);background:transparent;font-size:15px;color:var(--ve-ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease-2)}
-.ve-chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ve-bronze);opacity:0;transform:scale(.3);margin-right:-4px;transition:opacity .25s,transform .4s var(--ve-ease),margin .3s var(--ve-ease)}
-.ve-chip.is-on,.ve-chip:has(input:checked){background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
-.ve-chip.is-on::before,.ve-chip:has(input:checked)::before{opacity:1;transform:none;margin-right:0}
-.ve-chip:active{transform:scale(.97)}
-@media(hover:hover){.ve-chip:not(.is-on):hover{border-color:rgba(31,77,46,.6)}}
+.ve .ve-btn:active{transform:scale(.97)}
+.ve-chip{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(31,77,46,.14);background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.5));font-size:15px;font-weight:500;color:var(--ve-ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  box-shadow:0 4px 14px rgba(21,52,32,.07),inset 0 1px 0 #fff;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease),box-shadow .3s}
+.ve-chip.is-on,.ve-chip:has(input:checked){background:var(--ve-tint);color:#fff;border-color:rgba(255,255,255,.18);box-shadow:0 6px 18px rgba(21,52,32,.22),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(0,0,0,.15)}
+.ve-chip:active{transform:scale(.96)}
+@media(hover:hover){.ve-chip:not(.is-on):hover{border-color:rgba(31,77,46,.3);background:#fff;box-shadow:0 8px 20px rgba(21,52,32,.1),inset 0 1px 0 #fff}}
 .ve-chip input{position:absolute;opacity:0;width:0;height:0;margin:0}
 .ve-chip:has(input:focus-visible){outline:2px solid var(--ve-moss);outline-offset:3px}
-.ve-tabs{display:flex;gap:0 24px;flex-wrap:wrap;border-bottom:1px solid var(--ve-line)}
-.ve-tab{height:42px;padding:0 2px;margin-bottom:-1px;font-size:15px;color:var(--ve-moss);border-bottom:1.5px solid transparent;transition:color .25s,border-color .3s var(--ve-ease)}
-.ve-tab.is-on{color:var(--ve-ink);border-bottom-color:var(--ve-bronze)}
+/* вкладки = сегментный контроль: стеклянный жёлоб и белая капсула, которая едет к выбранной (VE.pills) */
+.ve-tabs{position:relative;display:inline-flex;flex-wrap:nowrap;max-width:100%;gap:2px;padding:3px;border-radius:999px;border:1px solid rgba(31,77,46,.1);background:linear-gradient(180deg,rgba(31,77,46,.075),rgba(31,77,46,.045));box-shadow:inset 0 1px 2px rgba(21,52,32,.08)}
+.ve-tab{position:relative;z-index:1;height:38px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:500;color:var(--ve-moss);white-space:nowrap;transition:color .25s}
+.ve-tab.is-on{color:var(--ve-ink)}
+.ve-pill{position:absolute;left:0;top:3px;height:calc(100% - 6px);border-radius:999px;background:linear-gradient(180deg,#fff,rgba(255,255,255,.88));border:1px solid rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(21,52,32,.16),inset 0 1px 0 #fff;transition:transform .45s var(--ve-ease),width .45s var(--ve-ease);pointer-events:none}
 @media(hover:hover){.ve-tab:not(.is-on):hover{color:var(--ve-ink)}}
-.ve-panel{border:1px solid var(--ve-line);border-radius:6px}
+@media(max-width:599px){.ve-tab{padding:0 13px;font-size:14.5px;height:36px}}
+/* панель — стеклянная карточка на бумаге: чуть тонированная, с кромкой света и мягкой тенью */
+.ve-panel{position:relative;border-radius:24px;border:1px solid rgba(31,77,46,.09);background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(243,246,242,.7));box-shadow:0 14px 44px rgba(21,52,32,.08),inset 0 1px 0 #fff}
+@media(max-width:599px){.ve-panel{border-radius:20px}}
+/* если стекла нет или пользователь просит без прозрачности — плотные подложки */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve .ve-btn--light{background:rgba(255,255,255,.32)}}
+@media(prefers-reduced-transparency:reduce){.ve .ve-btn--light{background:rgba(255,255,255,.94);color:var(--ve-ink);text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}}
 
 /* ---- система движения ----
    .ve-r      появление: прозрачность + подъём 12px, один раз, по IntersectionObserver
@@ -141,7 +154,7 @@
 @media(prefers-reduced-motion:reduce){
   .ve-r,.ve-rg>*,.ve-img,.ve-img>img,.ve-line::before{opacity:1;transform:none;clip-path:none;transition:none}
   .ve-sil path{stroke-dashoffset:0;transition:none}
-  .ve .ve-btn,.ve-chip,.ve-tab,.ve-swap{transition:none}
+  .ve .ve-btn,.ve-chip,.ve-tab,.ve-pill,.ve-swap{transition:none}
 }
 </style>
 <script>
@@ -149,7 +162,7 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'site/';
-  var VE={v:'4e98684f',base:base,
+  var VE={v:'e75d1f35',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
@@ -264,9 +277,11 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 .ve-hd__right{display:flex;align-items:center;gap:22px}
 .ve-hd__tel{display:none;font-size:15px;letter-spacing:.01em;opacity:.9}
 @media(min-width:900px){.ve-hd__tel{display:inline}}
-.ve-hd.is-solid{background:rgba(255,255,255,.94);color:var(--ve-ink);box-shadow:0 1px 0 var(--ve-line)}
+.ve-hd.is-solid{background:rgba(255,255,255,.72);color:var(--ve-ink);box-shadow:0 1px 0 rgba(31,77,46,.1);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve-hd.is-solid{background:rgba(255,255,255,.94)}}
+@media(prefers-reduced-transparency:reduce){.ve-hd.is-solid{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
 /* после хиро шапка белая — кнопка становится тёмной (вместе с hover) */
-.ve-hd.is-solid .ve-hd__cta,.ve-hd.is-solid .ve-hd__cta:hover{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
+.ve-hd.is-solid .ve-hd__cta,.ve-hd.is-solid .ve-hd__cta:hover{background:var(--ve-tint);color:var(--ve-paper);border-color:rgba(255,255,255,.18);text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .ve-hd.is-hidden{transform:translateY(-110%)}
 @media(prefers-reduced-motion:reduce){.ve-hd{transition:none}}
 </style>
@@ -294,8 +309,8 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=4e98684f">
-      <img src="site/media/scene/poster-wide.webp?v=4e98684f" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=e75d1f35">
+      <img src="site/media/scene/poster-wide.webp?v=e75d1f35" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -523,13 +538,13 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
       </div>
       <div class="ve-ssn__view">
         <ol class="ve-strip ve-ssn__track ve-rg">
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=4e98684f" srcset="site/media/stills/process-1-s.webp?v=4e98684f 560w, site/media/stills/process-1-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=e75d1f35" srcset="site/media/stills/process-1-s.webp?v=e75d1f35 560w, site/media/stills/process-1-l.webp?v=e75d1f35 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>01</b><i></i><span>до сезона</span></p><h3 class="ve-ssn__t">Осмотр и план</h3><p class="ve-ssn__d">Осмотр участка и план работ на сезон.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=4e98684f" srcset="site/media/stills/process-2-s.webp?v=4e98684f 560w, site/media/stills/process-2-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=e75d1f35" srcset="site/media/stills/process-2-s.webp?v=e75d1f35 560w, site/media/stills/process-2-l.webp?v=e75d1f35 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>02</b><i></i><span>в начале</span></p><h3 class="ve-ssn__t">График и команда</h3><p class="ve-ssn__d">Визиты по месяцам, специалисты под ваш сад.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=4e98684f" srcset="site/media/stills/process-3-s.webp?v=4e98684f 560w, site/media/stills/process-3-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=e75d1f35" srcset="site/media/stills/process-3-s.webp?v=e75d1f35 560w, site/media/stills/process-3-l.webp?v=e75d1f35 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>03</b><i></i><span>весь сезон</span></p><h3 class="ve-ssn__t">Работы</h3><p class="ve-ssn__d">По графику, без ваших напоминаний.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=4e98684f" srcset="site/media/stills/process-4-s.webp?v=4e98684f 560w, site/media/stills/process-4-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=e75d1f35" srcset="site/media/stills/process-4-s.webp?v=e75d1f35 560w, site/media/stills/process-4-l.webp?v=e75d1f35 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>04</b><i></i><span>после каждого визита</span></p><h3 class="ve-ssn__t">Контроль и отчёт</h3><p class="ve-ssn__d">Проверяем результат, коротко сообщаем.</p></li>
         </ol>
       </div>
@@ -599,7 +614,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
   <div class="ve-wrap ve-tar__wrap">
     <div class="ve-strip ve-tar__strip ve-rg">
       <article class="ve-tar__card" data-tariff="BASIC">
-        <div class="ve-tar__img ve-px" data-loop="t1"><img src="site/media/stills/tariff-basic-l.webp?v=4e98684f" srcset="site/media/stills/tariff-basic-s.webp?v=4e98684f 560w, site/media/stills/tariff-basic-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px" data-loop="t1"><img src="site/media/stills/tariff-basic-l.webp?v=e75d1f35" srcset="site/media/stills/tariff-basic-s.webp?v=e75d1f35 560w, site/media/stills/tariff-basic-l.webp?v=e75d1f35 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-cap ve-tar__name"><b>Basic</b><i></i><span>до 10 соток</span></p>
         <p class="ve-tar__price ve-price">от 60&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для небольших и относительно простых участков.</p>
@@ -609,7 +624,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="PREMIUM">
-        <div class="ve-tar__img ve-px" data-loop="t2"><img src="site/media/stills/tariff-premium-l.webp?v=4e98684f" srcset="site/media/stills/tariff-premium-s.webp?v=4e98684f 560w, site/media/stills/tariff-premium-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px" data-loop="t2"><img src="site/media/stills/tariff-premium-l.webp?v=e75d1f35" srcset="site/media/stills/tariff-premium-s.webp?v=e75d1f35 560w, site/media/stills/tariff-premium-l.webp?v=e75d1f35 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-cap ve-tar__name"><b>Premium</b><i></i><span>10–25 соток</span></p>
         <p class="ve-tar__price ve-price">от 110&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для полноценных частных садов.</p>
@@ -619,7 +634,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="ESTATE">
-        <div class="ve-tar__img ve-px" data-loop="t3"><img src="site/media/stills/tariff-estate-l.webp?v=4e98684f" srcset="site/media/stills/tariff-estate-s.webp?v=4e98684f 560w, site/media/stills/tariff-estate-l.webp?v=4e98684f 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px" data-loop="t3"><img src="site/media/stills/tariff-estate-l.webp?v=e75d1f35" srcset="site/media/stills/tariff-estate-s.webp?v=e75d1f35 560w, site/media/stills/tariff-estate-l.webp?v=e75d1f35 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-cap ve-tar__name"><b>Estate</b><i></i><span>от 25 соток</span></p>
         <p class="ve-tar__price ve-price">от 190&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для больших и сложных территорий.</p>
@@ -636,8 +651,9 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 .ve-tar{background:var(--ve-ink);color:var(--ve-paper);padding-bottom:var(--ve-gap);margin-top:var(--ve-gap);--ve-line:rgba(255,255,255,.16);--ve-moss:rgba(255,255,255,.66)}
 .ve-tar .ve-caps{color:rgba(255,255,255,.66)}
 .ve-tar .ve-sub{color:rgba(255,255,255,.66)}
-.ve-tar .ve-btn--ghost{color:var(--ve-paper);border-color:rgba(255,255,255,.4)}
-@media(hover:hover){.ve-tar .ve-btn--ghost:hover{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}}
+.ve-tar .ve-btn--ghost{color:var(--ve-paper);border-color:rgba(255,255,255,.3);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08));box-shadow:0 8px 24px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(0,0,0,.12)}
+.ve-tar .ve-btn--ghost::before{background:linear-gradient(135deg,rgba(255,255,255,.7),rgba(255,255,255,0) 42%,rgba(255,255,255,0) 60%,rgba(255,255,255,.3))}.ve-tar .ve-btn--ghost::after{background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,0))}
+@media(hover:hover){.ve-tar .ve-btn--ghost:hover{background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.16))}}
 .ve-tar__h{margin-top:14px}
 .ve-tar__wrap{margin-top:36px}
 .ve-tar__card{width:84vw;max-width:420px;display:flex;flex-direction:column}
@@ -716,11 +732,11 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 .ve-bld__val{font-weight:600;letter-spacing:-.015em;font-size:26px;line-height:1;white-space:nowrap;font-variant-numeric:lining-nums proportional-nums}
 .ve-bld__val b{font-weight:500;font-size:34px}
 .ve-bld__range{grid-column:1/-1;width:100%;margin:18px 0 0;-webkit-appearance:none;appearance:none;height:32px;background:transparent;cursor:pointer}
-.ve-bld__range::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,var(--ve-ink) var(--p,14%),rgba(31,77,46,.22) var(--p,14%));border-radius:2px}
+.ve-bld__range::-webkit-slider-runnable-track{height:4px;background:linear-gradient(to right,var(--ve-ink) var(--p,14%),rgba(31,77,46,.14) var(--p,14%));border-radius:4px;box-shadow:inset 0 1px 1px rgba(21,52,32,.1)}
 .ve-bld__range::-moz-range-track{height:2px;background:rgba(31,77,46,.25);border-radius:2px}
 .ve-bld__range::-moz-range-progress{height:2px;background:var(--ve-ink);border-radius:2px}
-.ve-bld__range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ve-paper);margin-top:-12px;border:1.5px solid var(--ve-ink);box-shadow:inset 0 0 0 7px var(--ve-paper),inset 0 0 0 12px var(--ve-bronze)}
-.ve-bld__range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ve-paper);border:1.5px solid var(--ve-ink)}
+.ve-bld__range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:linear-gradient(180deg,#fff,rgba(243,246,242,.9));margin-top:-12px;border:1px solid rgba(255,255,255,.9);box-shadow:0 4px 14px rgba(21,52,32,.22),0 0 0 1px rgba(31,77,46,.12),inset 0 1px 0 #fff}
+.ve-bld__range::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:1px solid rgba(31,77,46,.15);box-shadow:0 4px 14px rgba(21,52,32,.22)}
 .ve-bld__scale{grid-column:1/-1;display:flex;justify-content:space-between;font-size:12px;color:var(--ve-moss);margin-top:2px}
 .ve-bld__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
 .ve-bld__price{display:inline-block;min-width:11ch}
@@ -903,9 +919,9 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
         <p class="ve-pr__note ve-muted">Сложные работы — по смете.</p>
       </div>
       <div class="ve-pr__pic ve-r ve-px" aria-hidden="true">
-        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1000" height="1250">
       </div>
     </div>
   </div>
@@ -948,7 +964,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
     for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-cat')===cat);
   }
   for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-cat'))});
-  show('lawn');
+  show('lawn');var movePill=VE.pills(root.querySelector('.ve-pr__tabs'));var show0=show;show=function(c){show0(c);movePill()};
 })();
 </script>
 
@@ -1017,8 +1033,8 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
     <p class="ve-caps ve-r">До и после</p>
     <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
     <div class="ve-ba__box ve-r" style="--x:50%">
-      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=4e98684f" srcset="site/media/stills/ba-before-s.webp?v=4e98684f 720w, site/media/stills/ba-before-l.webp?v=4e98684f 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
-      <img class="ve-ba__img ve-ba__img--after" data-loop="b2" src="site/media/stills/ba-after-l.webp?v=4e98684f" srcset="site/media/stills/ba-after-s.webp?v=4e98684f 720w, site/media/stills/ba-after-l.webp?v=4e98684f 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=e75d1f35" srcset="site/media/stills/ba-before-s.webp?v=e75d1f35 720w, site/media/stills/ba-before-l.webp?v=e75d1f35 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--after" data-loop="b2" src="site/media/stills/ba-after-l.webp?v=e75d1f35" srcset="site/media/stills/ba-after-s.webp?v=e75d1f35 720w, site/media/stills/ba-after-l.webp?v=e75d1f35 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
       <span class="ve-ba__lab ve-ba__lab--b">до</span>
       <span class="ve-ba__lab ve-ba__lab--a">после</span>
       <div class="ve-ba__bar" aria-hidden="true"><i></i></div>
@@ -1035,9 +1051,10 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 .ve-ba__lab--b{left:16px}.ve-ba__lab--a{right:16px}
 .ve-ba__bar{position:absolute;top:0;bottom:0;left:var(--x);width:0;pointer-events:none}
 .ve-ba__bar::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:var(--ve-paper);opacity:.9}
-.ve-ba__bar i{position:absolute;top:50%;left:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:var(--ve-paper);box-shadow:0 2px 12px rgba(0,0,0,.25)}
-.ve-ba__bar i::before,.ve-ba__bar i::after{content:"";position:absolute;top:50%;width:6px;height:6px;border-top:1.5px solid var(--ve-ink);border-left:1.5px solid var(--ve-ink);margin-top:-3px}
-.ve-ba__bar i::before{left:11px;transform:rotate(-45deg)}.ve-ba__bar i::after{right:11px;transform:rotate(135deg)}
+.ve-ba__bar i{position:absolute;top:50%;left:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.65);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);box-shadow:0 6px 20px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.75),inset 0 -1px 0 rgba(0,0,0,.1)}
+.ve-ba__bar i::before,.ve-ba__bar i::after{content:"";position:absolute;top:50%;width:7px;height:7px;border-top:1.5px solid #fff;border-left:1.5px solid #fff;margin-top:-4px}
+.ve-ba__bar i::before{left:13px;transform:rotate(-45deg)}.ve-ba__bar i::after{right:13px;transform:rotate(135deg)}
+@media(prefers-reduced-transparency:reduce){.ve-ba__bar i{background:rgba(255,255,255,.95);-webkit-backdrop-filter:none;backdrop-filter:none}.ve-ba__bar i::before,.ve-ba__bar i::after{border-color:var(--ve-ink)}}
 .ve-ba__range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;-webkit-appearance:none;appearance:none;touch-action:pan-y}
 .ve-ba__range::-webkit-slider-thumb{-webkit-appearance:none;width:60px;height:100%}
 .ve-ba__range::-moz-range-thumb{width:60px;height:100%;border:0;background:transparent}
@@ -1069,10 +1086,10 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
     <h2 class="ve-h2 ve-r ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" data-loop="z1" src="site/media/stills/season-summer-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=4e98684f" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" data-loop="z1" src="site/media/stills/season-summer-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=e75d1f35" alt="" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
         <div class="ve-tabs ve-sea__tabs ve-r" role="tablist">
@@ -1156,7 +1173,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
   }
   var ORDER=['spring','summer','autumn','winter'],auto=null;
   for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){stop();show(this.getAttribute('data-s'))});
-  show('spring');
+  show('spring');var movePill=VE.pills(root.querySelector('.ve-sea__tabs'));var show0=show;show=function(s){show0(s);movePill()};
   // пока посетитель не трогал вкладки, сезоны листаются сами (в поле зрения); первый клик останавливает
   function stop(){if(auto){clearInterval(auto);auto=null}}
   function start(){if(auto||VE.rm)return;auto=setInterval(function(){show(ORDER[(ORDER.indexOf(cur)+1)%ORDER.length])},3600)}
@@ -1181,7 +1198,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 </section>
 <style>
 .ve-faq__h{margin-top:14px;max-width:14ch}
-.ve-faq__draft{display:inline-block;margin-top:16px;padding:6px 12px;border-radius:999px;background:var(--ve-paper-2);font-size:12px;color:var(--ve-moss)}
+.ve-faq__draft{display:inline-block;margin-top:16px;padding:6px 12px;border-radius:999px;border:1px solid rgba(31,77,46,.12);background:linear-gradient(180deg,#fff,rgba(243,246,242,.8));box-shadow:0 3px 10px rgba(21,52,32,.07),inset 0 1px 0 #fff;font-size:12px;color:var(--ve-moss)}
 .ve-faq__list{margin-top:30px;border-bottom:1px solid var(--ve-line)}
 .ve-faq__q{display:flex;width:100%;align-items:flex-start;justify-content:space-between;gap:20px;padding:20px 0;border-top:1px solid var(--ve-line);text-align:left;font-weight:600;letter-spacing:-.012em;font-size:18px;line-height:1.3}
 .ve-faq__q i{position:relative;flex:0 0 auto;width:14px;height:14px;margin-top:4px;color:var(--ve-bronze)}
@@ -1317,18 +1334,18 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 .ve-fm__row .ve-fm__field{margin-top:0}
 .ve-fm__row{margin-top:18px}
 /* поля — линией, подписи капсом: как бланк, а не как приложение */
-.ve-fm__field>span{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ve-moss);margin-bottom:6px}
-.ve-fm input[type=text],.ve-fm input[type=tel],.ve-fm input[type=number],.ve-fm textarea{width:100%;font:inherit;font-size:17px;color:var(--ve-ink);background:transparent;border:0;border-bottom:1px solid rgba(31,77,46,.3);border-radius:0;padding:10px 0 12px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .3s}
+.ve-fm__field>span{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ve-moss);margin-bottom:8px}
+.ve-fm input[type=text],.ve-fm input[type=tel],.ve-fm input[type=number],.ve-fm textarea{width:100%;font:inherit;font-size:17px;color:var(--ve-ink);background:linear-gradient(180deg,rgba(31,77,46,.05),rgba(31,77,46,.03));border:1px solid rgba(31,77,46,.14);border-radius:14px;padding:13px 16px;outline:none;-webkit-appearance:none;appearance:none;box-shadow:inset 0 1px 2px rgba(21,52,32,.06),inset 0 1px 0 rgba(255,255,255,.7);transition:border-color .3s,box-shadow .3s,background .3s}
 .ve-fm textarea{resize:vertical;min-height:72px;line-height:1.45}
-.ve-fm input:focus,.ve-fm textarea:focus{border-bottom-color:var(--ve-ink);box-shadow:0 1px 0 var(--ve-ink)}
-.ve-fm input.is-bad{border-bottom-color:#B0553F}
+.ve-fm input:focus,.ve-fm textarea:focus{border-color:rgba(31,77,46,.5);background:#fff;box-shadow:0 0 0 4px rgba(31,77,46,.1),inset 0 1px 0 #fff}
+.ve-fm input.is-bad{border-color:#B0553F;box-shadow:0 0 0 4px rgba(176,85,63,.12)}
 .ve-fm input::placeholder,.ve-fm textarea::placeholder{color:rgba(31,77,46,.38)}
 .ve-fm__radios,.ve-fm__chips{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px}
 .ve-fm__consent{display:flex;align-items:flex-start;gap:12px;margin-top:22px;font-size:14px;color:var(--ve-moss);cursor:pointer}
 .ve-fm__consent input{position:absolute;opacity:0;width:0;height:0}
-.ve-fm__consent i{flex:0 0 auto;width:20px;height:20px;border-radius:3px;border:1px solid rgba(31,77,46,.4);margin-top:1px;position:relative;transition:background .2s,border-color .2s}
-.ve-fm__consent:has(input:checked) i{background:var(--ve-ink);border-color:var(--ve-ink)}
-.ve-fm__consent i::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border-right:2px solid var(--ve-paper);border-bottom:2px solid var(--ve-paper);transform:rotate(45deg);opacity:0}
+.ve-fm__consent i{flex:0 0 auto;width:22px;height:22px;border-radius:7px;border:1px solid rgba(31,77,46,.2);background:linear-gradient(180deg,#fff,rgba(243,246,242,.8));box-shadow:0 2px 6px rgba(21,52,32,.08),inset 0 1px 0 #fff;margin-top:0;position:relative;transition:background .2s,border-color .2s}
+.ve-fm__consent:has(input:checked) i{background:var(--ve-tint);border-color:rgba(255,255,255,.2);box-shadow:0 4px 12px rgba(21,52,32,.2),inset 0 1px 0 rgba(255,255,255,.3)}
+.ve-fm__consent i::after{content:"";position:absolute;left:7px;top:3px;width:5px;height:10px;border-right:2px solid var(--ve-paper);border-bottom:2px solid var(--ve-paper);transform:rotate(45deg);opacity:0}
 .ve-fm__consent:has(input:checked) i::after{opacity:1}
 .ve-fm__consent.is-bad i{border-color:#B0553F}
 .ve-fm__err{margin-top:14px;font-size:14px;color:#B0553F}
@@ -1417,13 +1434,16 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
   <div class="ve-ck__in"><p>Сайт использует cookie — так он работает лучше. <a href="#" data-ve-policy>Подробнее</a></p><button class="ve-btn ve-btn--sm ve-btn--ghost" type="button" data-ve-ck-ok>Хорошо</button></div>
 </div>
 <style>
-.ve-ck{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(255,255,255,.96);border-top:1px solid var(--ve-line);padding-bottom:env(safe-area-inset-bottom);transform:translateY(100%);transition:transform .5s var(--ve-ease)}
+.ve-ck{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50;border-radius:20px;background:rgba(255,255,255,.74);border:1px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 14px 40px rgba(21,52,32,.18),inset 0 1px 0 #fff;transform:translateY(calc(100% + 24px));transition:transform .55s var(--ve-ease)}
 .ve-ck.is-on{transform:none}
-.ve-ck__in{max-width:1240px;margin:0 auto;padding:12px var(--ve-pad);display:flex;align-items:center;justify-content:space-between;gap:16px}
+@media(min-width:900px){.ve-ck{left:auto;right:24px;bottom:24px;max-width:600px}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve-ck{background:rgba(255,255,255,.96)}}
+@media(prefers-reduced-transparency:reduce){.ve-ck{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
+.ve-ck__in{padding:12px 14px 12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .ve-ck__in p{font-size:13px;line-height:1.4;color:var(--ve-moss)}
 .ve-ck__in p a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
 .ve-ck .ve-btn--sm{flex:0 0 auto;min-height:38px;height:38px;padding:0 16px}
-@media(max-width:599px){.ve-ck .ve-btn--sm{min-height:38px;padding:0 16px}}
+@media(max-width:599px){.ve-ck .ve-btn--sm{min-height:38px;padding:0 16px;font-size:14px}}
 @media(prefers-reduced-motion:reduce){.ve-ck{transition:none}}
 </style>
 <script>
@@ -1478,6 +1498,6 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 })();
 </script>
 
-<div class="ve-preview-note">превью сборки 4e98684f · изображения временные, до генераций · контакты в подвале — заглушки</div>
+<div class="ve-preview-note">превью сборки e75d1f35 · изображения временные, до генераций · контакты в подвале — заглушки</div>
 </body>
 </html>

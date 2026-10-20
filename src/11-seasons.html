@@ -91,7 +91,7 @@
   }
   var ORDER=['spring','summer','autumn','winter'],auto=null;
   for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){stop();show(this.getAttribute('data-s'))});
-  show('spring');
+  show('spring');var movePill=VE.pills(root.querySelector('.ve-sea__tabs'));var show0=show;show=function(s){show0(s);movePill()};
   // пока посетитель не трогал вкладки, сезоны листаются сами (в поле зрения); первый клик останавливает
   function stop(){if(auto){clearInterval(auto);auto=null}}
   function start(){if(auto||VE.rm)return;auto=setInterval(function(){show(ORDER[(ORDER.indexOf(cur)+1)%ORDER.length])},3600)}
