@@ -41,7 +41,14 @@ const SIL = JSON.parse(await readFile(join(ROOT, 'brand/vector/silhouettes.json'
 const [vx, vy, vw, vh] = LP.vbFull.split(' ').map(Number);
 const ARC_MASK = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='${LP.vbFull}'><path d='${LP.ring}' fill='#000'/></svg>`)}")`;
 const ARC_CX = (((638.8 - vx) / vw) * 100).toFixed(2) + '%', ARC_CY = (((506.2 - vy) / vh) * 100).toFixed(2) + '%';
-const MARK = `<svg viewBox="${LP.vbMark}" fill="currentColor" aria-hidden="true" focusable="false"><use href="#ve-l-mark"/></svg>`;
+// знак шапки: сам логотип как объёмный предмет в спектральной обводке (без подложки): свечение + кромка — градиент, который крутит VE.spectral (data-spin = центр), тело currentColor, блик по верху
+const MARK = `<svg class="ve-mark" viewBox="${LP.vbMark}" overflow="visible" aria-hidden="true" focusable="false">
+<defs><linearGradient id="ve-mg" gradientUnits="userSpaceOnUse" x1="300" y1="220" x2="910" y2="780" data-spin="605 500"><stop offset="0" stop-color="hsl(228,85%,66%)"/><stop offset=".18" stop-color="hsl(195,95%,74%)"/><stop offset=".38" stop-color="#fff"/><stop offset=".52" stop-color="hsl(46,100%,82%)"/><stop offset=".7" stop-color="hsl(18,90%,66%)"/><stop offset=".86" stop-color="hsl(214,80%,72%)"/><stop offset="1" stop-color="hsl(228,85%,66%)"/></linearGradient>
+<linearGradient id="ve-mgl" gradientUnits="userSpaceOnUse" x1="0" y1="220" x2="0" y2="780"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+<use class="ve-mark__glow" href="#ve-l-mark" fill="none" stroke="url(#ve-mg)" stroke-width="34" stroke-linejoin="round"/>
+<use class="ve-mark__rim" href="#ve-l-mark" fill="none" stroke="url(#ve-mg)" stroke-width="11" stroke-linejoin="round"/>
+<use class="ve-mark__body" href="#ve-l-mark" fill="currentColor"/>
+<use class="ve-mark__gloss" href="#ve-l-mark" fill="url(#ve-mgl)"/></svg>`;
 
 // ---------- проверки ----------
 async function checkScripts(html, name) {

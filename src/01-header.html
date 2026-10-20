@@ -1,7 +1,7 @@
 <header class="ve ve-hd" id="ve-hd">
   __LOGO_SPRITE__
   <div class="ve-hd__in">
-    <a class="ve-hd__mark ve-ring" href="#ve-hero" aria-label="Verdant Estate" data-spectral>__MARK__</a>
+    <a class="ve-hd__mark" href="#ve-hero" aria-label="Verdant Estate" data-spectral>__MARK__</a>
     <div class="ve-hd__right">
       <a class="ve-hd__tel ve-num" href="tel:+70000000000" data-ve-tel>+7 000 000-00-00</a>
       <button class="ve-btn ve-btn--sm ve-btn--light ve-hd__cta" type="button" data-ve-go-form>Рассчитать</button>
@@ -17,11 +17,16 @@
 /* после хиро шапка — плавающий стеклянный док (материал xtcpay.me), а не полоса */
 .ve-hd.is-solid .ve-hd__in{width:max-content;max-width:calc(100% - 24px);height:56px;margin:10px auto 0;padding:0 7px 0 7px;gap:14px;border-radius:999px}
 @media(min-width:900px){.ve-hd.is-solid .ve-hd__in{height:62px;margin-top:12px;gap:22px;padding:0 8px}}
-.ve-hd__mark{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;color:inherit;transition:opacity .25s var(--ve-ease-2),background .3s;
-  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(14px) saturate(1.6) brightness(1.12);backdrop-filter:blur(14px) saturate(1.6) brightness(1.12);box-shadow:0 8px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.5);--ve-ring-sat:1.2}
-.ve-hd__mark svg{width:66%;height:60%}
-@media(min-width:900px){.ve-hd__mark{width:48px;height:48px}}
-.ve-hd.is-solid .ve-hd__mark{background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(243,246,242,.8));border-color:rgba(255,255,255,.9);box-shadow:0 4px 14px rgba(21,52,32,.16),inset 0 1px 0 #fff;-webkit-backdrop-filter:none;backdrop-filter:none;--ve-ring-sat:1.35}
+/* знак — сам логотип как объёмный предмет (владелец: «без подложки, как собственный 3D-лого в обводке»): тень под ним, спектральная кромка и свечение крутятся */
+.ve-hd__mark{position:relative;display:flex;align-items:center;justify-content:center;width:46px;height:42px;color:inherit;transition:opacity .25s var(--ve-ease-2)}
+.ve-hd__mark svg{width:42px;height:38px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35)) drop-shadow(0 0 1px rgba(255,255,255,.4))}
+.ve-mark__glow{opacity:calc(.55*var(--ve-f,1));filter:blur(9px)}
+.ve-mark__rim{opacity:.95}
+.ve-mark__gloss{opacity:.9}
+@media(min-width:900px){.ve-hd__mark{width:52px;height:48px}.ve-hd__mark svg{width:48px;height:44px}}
+.ve-hd.is-solid .ve-hd__mark svg{filter:drop-shadow(0 2px 4px rgba(21,52,32,.3)) drop-shadow(0 0 1px rgba(255,255,255,.8))}
+.ve-hd.is-solid .ve-mark__glow{opacity:calc(.4*var(--ve-f,1))}
+.ve-hd.is-solid .ve-mark__gloss{opacity:.5}
 /* на странице с хиро знак шапки появляется, когда в него «садится» логотип первого экрана */
 html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
 /* над хиро — как у студий: только знак и телефон; кнопка приходит вместе с белой шапкой после пролёта (html.ve-hero-done ставит хиро) */
@@ -37,9 +42,9 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 .ve-hd.is-solid{color:var(--ve-ink)}
 .ve-hd.is-solid .ve-hd__in{background:linear-gradient(180deg,rgba(255,255,255,.64),rgba(255,255,255,.42));border:1px solid rgba(255,255,255,.8);-webkit-backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.6) brightness(1.04);backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.6) brightness(1.04);box-shadow:0 14px 40px rgba(21,52,32,.16),inset 0 1px 0 #fff,inset 0 -8px 20px rgba(255,255,255,.2)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve-hd.is-solid .ve-hd__in{background:rgba(255,255,255,.95)}}
-@media(prefers-reduced-transparency:reduce){.ve-hd.is-solid .ve-hd__in{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}.ve-hd__mark{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(255,255,255,.9);color:var(--ve-ink)}}
+@media(prefers-reduced-transparency:reduce){.ve-hd.is-solid .ve-hd__in{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
 /* после хиро шапка белая — кнопка становится тёмной (вместе с hover) */
-.ve-hd.is-solid .ve-hd__cta,.ve-hd.is-solid .ve-hd__cta:hover{background:var(--ve-tint);color:var(--ve-paper);border-color:rgba(255,255,255,.18);text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.ve-hd.is-solid .ve-hd__cta,.ve-hd.is-solid .ve-hd__cta:hover{background:linear-gradient(180deg,rgba(31,77,46,.12),rgba(31,77,46,.06));color:var(--ve-ink);border-color:rgba(31,77,46,.24);text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 6px 18px rgba(21,52,32,.12),inset 0 1px 0 #fff;--ve-bloom-on:0}
 .ve-hd.is-hidden{transform:translateY(-110%)}
 @media(prefers-reduced-motion:reduce){.ve-hd{transition:none}}
 </style>
