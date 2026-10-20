@@ -1,64 +1,76 @@
-<!-- VE · 02-hero.html · сборка 415cce9d -->
+<!-- VE · 02-hero.html · сборка bf1a772f -->
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=415cce9d">
-      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=415cce9d" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=bf1a772f">
+      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=bf1a772f" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
+    <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="ve-hero__shade" aria-hidden="true"></div>
     <nav class="ve-hero__orbit" aria-label="Разделы сайта"></nav>
-    <div class="ve-hero__logo"><svg viewBox="150 220 954 784" fill="currentColor" role="img" aria-label="Verdant Estate — Private Garden Service"><g class="ve-hero__lm"><use href="#ve-l-mark"/></g><g class="ve-hero__lt"><use href="#ve-l-word"/><use href="#ve-l-rules"/><use href="#ve-l-leaf"/><use href="#ve-l-tag2"/></g></svg></div>
     <div class="ve-hero__text">
-      <div class="ve-hero__ch" data-at="0">
-        <h1 class="ve-h1 ve-hero__h1">Сад, за которым не&nbsp;нужно следить</h1>
-      </div>
-      <p class="ve-hero__ch ve-hero__big" data-at="1">Один договор.</p>
-      <p class="ve-hero__ch ve-hero__big" data-at="2">Один ответственный.</p>
-      <div class="ve-hero__ch" data-at="3">
-        <p class="ve-hero__big">Весь сад под&nbsp;контролем.</p>
-        <p class="ve-hero__cta"><button class="ve-btn ve-btn--light" type="button" data-ve-go-form>Рассчитать стоимость</button></p>
-      </div>
+      <h1 class="ve-h1 ve-hero__h1 ve-hero__ch" data-at="1">Сад, за которым не&nbsp;нужно следить</h1>
+      <p class="ve-hero__sub ve-hero__ch" data-at="2">Один договор. Один ответственный.<br>Весь сад под&nbsp;контролем.</p>
+      <p class="ve-hero__cta ve-hero__ch" data-at="2"><button class="ve-btn ve-btn--light" type="button" data-ve-go-form>Рассчитать стоимость</button></p>
     </div>
-    <div class="ve-hero__clock ve-num" aria-hidden="true"><i></i><span>07:10</span></div>
     <div class="ve-hero__hint" aria-hidden="true"><span></span></div>
+    <!-- заставка: белый экран, логотип наполняется, пока грузятся кадры; потом улетает в знак шапки -->
+    <div class="ve-hero__intro" aria-hidden="true"></div>
+    <div class="ve-hero__logo" aria-hidden="true">
+      <svg viewBox="150 220 954 784" fill="currentColor">
+        <defs>
+          <mask id="ve-him-ring" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><path class="ve-hero__wedge" fill="#fff" d="M0 0Z"/></mask>
+          <linearGradient id="ve-hig-br" gradientUnits="userSpaceOnUse" x1="0" y1="800" x2="0" y2="210"><stop class="ve-hero__s1" offset="0" stop-color="#fff"/><stop class="ve-hero__s2" offset="0" stop-color="#000"/></linearGradient>
+          <mask id="ve-him-br" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><rect width="1254" height="1254" fill="url(#ve-hig-br)"/></mask>
+        </defs>
+        <g class="ve-hero__lm"><use href="#ve-l-ring" mask="url(#ve-him-ring)"/><use href="#ve-l-branch" mask="url(#ve-him-br)"/><use class="ve-hero__lp" href="#ve-l-letters" style="--d:900ms"/></g>
+        <g class="ve-hero__lt"><use class="ve-hero__lp" href="#ve-l-word" style="--d:1150ms"/><use class="ve-hero__lp" href="#ve-l-rules" style="--d:1350ms"/><use class="ve-hero__lp" href="#ve-l-leaf" style="--d:1450ms"/><use class="ve-hero__lp" href="#ve-l-tag2" style="--d:1550ms"/></g>
+      </svg>
+    </div>
   </div>
 </section>
 <style>
 /* пролёт ~ 3 экрана на клип + превращение и стоп-кадр с меню */
 .ve-hero{position:relative;height:560vh;height:560svh;background:#2B3A2E;color:var(--ve-paper);margin:0}
 .ve-hero__stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#2B3A2E}
-.ve-hero__poster,.ve-hero__canvas,.ve-hero__shade{position:absolute;inset:0}
+.ve-hero__poster,.ve-hero__canvas,.ve-hero__loop,.ve-hero__shade,.ve-hero__intro{position:absolute;inset:0}
 .ve-hero__poster img{width:100%;height:100%;object-fit:cover}
 .ve-hero__canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .6s var(--ve-ease)}
 .ve-hero.is-live .ve-hero__canvas{opacity:1}
-.ve-hero__shade{background:linear-gradient(to top,rgba(17,38,24,.6) 0%,rgba(17,38,24,.26) 34%,rgba(17,38,24,0) 62%),linear-gradient(to bottom,rgba(17,38,24,.34) 0%,rgba(17,38,24,0) 24%)}
-.ve-hero__text{position:absolute;left:0;right:0;bottom:0;padding:0 var(--ve-pad) calc(30px + env(safe-area-inset-bottom));max-width:1240px;margin:0 auto;display:grid}
+/* ночной луп: живёт поверх финального кадра, появляется, когда свет включён */
+.ve-hero__loop{width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:0;transition:opacity .9s var(--ve-ease);pointer-events:none}
+.ve-hero.is-loop .ve-hero__loop{opacity:1}
+/* тень только снизу и только когда есть текст — пролёт чистый */
+.ve-hero__shade{background:linear-gradient(to top,rgba(17,38,24,.62) 0%,rgba(17,38,24,.28) 34%,rgba(17,38,24,0) 62%);opacity:0;transition:opacity .8s var(--ve-ease)}
+.ve-hero:not([data-ch="0"]) .ve-hero__shade{opacity:1}
+.ve-hero__text{position:absolute;left:0;right:0;bottom:0;padding:0 var(--ve-pad) calc(30px + env(safe-area-inset-bottom));max-width:1240px;margin:0 auto}
 @media(min-width:900px){.ve-hero__text{padding:0 40px 64px}}
-/* главы лежат в одной ячейке и сменяют друг друга */
-.ve-hero__ch{grid-area:1/1;align-self:end;opacity:0;transform:translateY(14px);transition:opacity .5s var(--ve-ease),transform .5s var(--ve-ease);pointer-events:none}
-.ve-hero[data-ch="0"] [data-at="0"],.ve-hero[data-ch="1"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="2"],.ve-hero[data-ch="3"] [data-at="3"]{opacity:1;transform:none;pointer-events:auto}
-/* логотип первого экрана: по центру, на первых шагах скролла улетает в знак шапки */
-.ve-hero__logo{position:absolute;left:50%;top:calc(17% + env(safe-area-inset-top));width:264px;margin-left:-132px;transform-origin:0 0;will-change:transform;filter:drop-shadow(0 2px 18px rgba(10,24,14,.38))}
-.ve-hero__logo svg{display:block;width:100%;height:auto;overflow:visible}
-.ve-hero__lt{transition:none}
-.ve-hero.is-docked .ve-hero__logo{visibility:hidden}
-@media(min-width:900px){.ve-hero__logo{width:330px;margin-left:-165px;top:14%}}
-@media(max-height:700px) and (max-width:899px){.ve-hero__logo{width:190px;margin-left:-95px;top:13%}}
+.ve-hero__ch{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ve-ease),transform .6s var(--ve-ease);pointer-events:none}
+.ve-hero[data-ch="1"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="2"]{opacity:1;transform:none;pointer-events:auto}
 .ve-hero__h1{color:inherit}
 @media(min-width:900px){.ve-hero__h1{max-width:14ch}}
-.ve-hero__big{margin:0;font-weight:600;letter-spacing:-.025em;font-size:40px;line-height:1.02;max-width:12ch}
-@media(min-width:900px){.ve-hero__big{font-size:64px;max-width:none}}
-.ve-hero__cta{margin-top:22px}
-.ve-hero__clock{position:absolute;right:var(--ve-pad);top:calc(72px + env(safe-area-inset-top));display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.06em;opacity:.88}
-@media(min-width:900px){.ve-hero__clock{top:auto;bottom:64px;right:40px}}
-.ve-hero__clock i{width:6px;height:6px;border-radius:50%;background:var(--ve-bronze);transition:box-shadow .6s}
-.ve-hero.is-night .ve-hero__clock i{box-shadow:0 0 0 3px rgba(176,141,87,.25),0 0 10px rgba(176,141,87,.9)}
+.ve-hero__sub{margin-top:16px;min-height:2.6em;font-weight:500;font-size:17px;line-height:1.3;opacity:0;transition-delay:.15s}
+@media(min-width:900px){.ve-hero__sub{font-size:21px;margin-top:20px}}
+.ve-hero__cta{margin-top:20px;transition-delay:.3s}
 .ve-hero__hint{position:absolute;right:calc(var(--ve-pad) + 2px);bottom:calc(30px + env(safe-area-inset-bottom));width:1px;height:36px;overflow:hidden;opacity:.5;transition:opacity .4s}
 @media(min-width:900px){.ve-hero__hint{display:none}}
 .ve-hero__hint span{display:block;width:1px;height:100%;background:currentColor;animation:ve-hint 2.4s var(--ve-ease) infinite}
 @keyframes ve-hint{0%{transform:translateY(-100%)}60%,100%{transform:translateY(100%)}}
-.ve-hero[data-ch="3"] .ve-hero__hint{opacity:0}
+.ve-hero:not([data-ch="0"]) .ve-hero__hint,html.ve-intro .ve-hero__hint{opacity:0}
+
+/* ---- заставка ---- */
+.ve-hero__intro{background:var(--ve-paper);z-index:5;transition:opacity .9s var(--ve-ease)}
+.ve-hero.is-fly .ve-hero__intro{opacity:0}
+.ve-hero.is-docked .ve-hero__intro{visibility:hidden}
+.ve-hero__logo{position:absolute;z-index:6;left:50%;top:50%;width:min(300px,70vw);margin:calc(min(300px,70vw) * -.41) 0 0 calc(min(300px,70vw) * -.5);transform-origin:0 0;will-change:transform;color:var(--ve-ink);transition:color .6s var(--ve-ease)}
+@media(min-width:900px){.ve-hero__logo{width:380px;margin:-156px 0 0 -190px}}
+.ve-hero__logo svg{display:block;width:100%;height:auto;overflow:visible}
+.ve-hero.is-fly .ve-hero__logo{color:var(--ve-paper);filter:drop-shadow(0 2px 14px rgba(10,24,14,.4))}
+.ve-hero.is-docked .ve-hero__logo{visibility:hidden}
+.ve-hero__lp{opacity:0;transform:translateY(10px);transition:opacity .7s var(--ve-ease),transform .7s var(--ve-ease);transition-delay:var(--d,0ms)}
+.ve-hero__logo.is-in .ve-hero__lp{opacity:1;transform:none}
+.ve-hero.is-fly .ve-hero__lt{transition:opacity .35s}
 
 /* сферы меню: шесть стеклянных шаров на наклонной орбите над партером */
 .ve-hero__orbit{position:absolute;inset:0;visibility:hidden;pointer-events:none}
@@ -68,7 +80,7 @@
   background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.7) 0,rgba(255,255,255,.26) 24%,rgba(255,255,255,.12) 54%,rgba(255,255,255,.2) 100%);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.34),inset -10px -14px 22px rgba(10,24,14,.28),0 16px 34px rgba(5,14,8,.32);text-shadow:0 1px 8px rgba(5,14,8,.55)}
 .ve-orb--go .ve-orb__b,.ve-orb-fly.is-go{background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.5) 0,rgba(46,125,70,.92) 34%,#1F5C33 100%)}
-.ve-orb__b{transform:scale(0);opacity:0;transition:transform .7s var(--ve-ease),opacity .5s var(--ve-ease),filter .3s;transition-delay:var(--d,0ms)}
+.ve-orb__b{transform:scale(0);opacity:0;transition:transform .7s var(--ve-ease),opacity .5s var(--ve-ease);transition-delay:var(--d,0ms)}
 .ve-hero.is-menu .ve-orb__b{transform:scale(1);opacity:1}
 @media(hover:hover){.ve-hero.is-menu .ve-orb:hover .ve-orb__b{transform:scale(1.08);transition-delay:0ms}}
 .ve-orb:focus-visible{outline:2px solid #fff;outline-offset:4px}
@@ -76,57 +88,61 @@
 .ve-orb-fly{position:fixed;z-index:80;left:0;top:0;margin:0;pointer-events:none;will-change:transform}
 .ve-orb-fly span{transition:opacity .25s}
 @media(min-width:900px){.ve-orb__b,.ve-orb-fly{font-size:13px;padding:14px}}
-@media(prefers-reduced-motion:reduce){.ve-hero__ch,.ve-orb__b{transition:none}.ve-hero__hint{display:none}}
+@media(prefers-reduced-motion:reduce){.ve-hero__ch,.ve-orb__b,.ve-hero__lp,.ve-hero__intro,.ve-hero__loop{transition:none}.ve-hero__hint{display:none}.ve-hero__lp{opacity:1;transform:none}}
 </style>
 <script>
 (function(){
   var root=document.getElementById('ve-hero');if(!root)return;
-  var stage=root.querySelector('.ve-hero__stage'),clock=root.querySelector('.ve-hero__clock span'),orbit=root.querySelector('.ve-hero__orbit');
+  var stage=root.querySelector('.ve-hero__stage'),orbit=root.querySelector('.ve-hero__orbit'),video=root.querySelector('.ve-hero__loop');
   // таймлайн общий для движка и текста: пролёт · покос · свет · меню
   var TL={flight:.66,groom:.8,light:.88,menu:.9};
-  // часы: опорные точки прогресс → минуты (07:10 у травы → 21:30 синий час)
-  var CK=[[0,430],[.22,460],[.44,780],[.66,1240],[.8,1255],[.88,1290]];
-  var lastCh=-1,lastT='',menu=false;
-  function minutes(p){for(var i=1;i<CK.length;i++)if(p<=CK[i][0]){var a=CK[i-1],b=CK[i];return a[1]+(b[1]-a[1])*(p-a[0])/(b[0]-a[0])}return CK[CK.length-1][1]}
-  // ---- логотип первого экрана → знак шапки ----
-  var logo=root.querySelector('.ve-hero__logo'),lm=root.querySelector('.ve-hero__lm'),lt=root.querySelector('.ve-hero__lt'),geo=null,lastK=-1;
-  document.documentElement.classList.add('ve-has-hero');
-  function measureLogo(){
+  var VE_RM=false;try{VE_RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+  var html=document.documentElement;html.classList.add('ve-has-hero','ve-intro');
+
+  // ---- заставка: логотип рисуется, ждём первый кадр сцены, потом логотип улетает в знак шапки ----
+  var logo=root.querySelector('.ve-hero__logo'),lm=root.querySelector('.ve-hero__lm'),lt=root.querySelector('.ve-hero__lt');
+  var wedge=root.querySelector('.ve-hero__wedge'),s1=root.querySelector('.ve-hero__s1'),s2=root.querySelector('.ve-hero__s2');
+  var CX=638.8,CY=506.2,R=420,A0=-96,A1=142;
+  function ring(t){var a1=A0+(A1-A0)*t,n=Math.max(2,Math.ceil(t*60)),d='M'+CX+' '+CY;for(var k=0;k<=n;k++){var a=(A0+(a1-A0)*k/n)*Math.PI/180;d+='L'+(CX+R*Math.cos(a)).toFixed(1)+' '+(CY+R*Math.sin(a)).toFixed(1)}wedge.setAttribute('d',d+'Z')}
+  function branch(t){var o=Math.min(1,t*1.08);s1.setAttribute('offset',Math.max(0,o-.08).toFixed(3));s2.setAttribute('offset',o.toFixed(3))}
+  function drawn(){ring(1);branch(1);s2.setAttribute('offset','1.1');logo.classList.add('is-in')}
+  ring(0);branch(0);
+  var t0=performance.now(),introDone=false;
+  if(VE_RM)drawn();
+  else{logo.classList.add('is-in');(function f(now){var t=(now-t0)/1000,a=Math.min(1,t/1.3),b=Math.min(1,Math.max(0,(t-.45)/1.5));ring(1-Math.pow(1-a,3));branch(1-Math.pow(1-b,2));if(a<1||b<1)requestAnimationFrame(f);else drawn()})(t0)}
+  function measure(){
     var hm=document.querySelector('.ve-hd__mark');if(!hm)return null;
     var keep=logo.style.transform;logo.style.transform='none';
     var c=logo.getBoundingClientRect(),m=lm.getBoundingClientRect(),h=hm.getBoundingClientRect();logo.style.transform=keep;
-    if(!m.width||!h.width)return null;
-    var sc=h.width/m.width;
+    if(!m.width||!h.width)return null;var sc=h.width/m.width;
     return {sc:sc,tx:h.left-c.left-(m.left-c.left)*sc,ty:h.top-c.top-(m.top-c.top)*sc};
   }
-  function dock(p){
-    var k=Math.min(1,Math.max(0,p/.045));
-    if(Math.abs(k-lastK)<.001)return;lastK=k;
-    if(!geo)geo=measureLogo();if(!geo)return;
-    var e=VE_RM?(k>.5?1:0):1-Math.pow(1-k,3),s=1+(geo.sc-1)*e;
-    logo.style.transform=e>0?'translate3d('+(geo.tx*e).toFixed(1)+'px,'+(geo.ty*e).toFixed(1)+'px,0) scale('+s.toFixed(4)+')':'';
-    lt.style.opacity=Math.max(0,1-k*2.4).toFixed(3);
-    var on=k>=1;root.classList.toggle('is-docked',on);document.documentElement.classList.toggle('ve-logo-docked',on);
+  function fly(){
+    if(introDone)return;introDone=true;
+    var g=measure();root.classList.add('is-fly');html.classList.remove('ve-intro');
+    var end=function(){root.classList.add('is-docked');html.classList.add('ve-logo-docked')};
+    if(VE_RM||!g){end();return}
+    lt.style.opacity=0;
+    VE.tween(0,1,1000,function(k){var e=1-Math.pow(1-k,3),s=1+(g.sc-1)*e;logo.style.transform='translate3d('+(g.tx*e).toFixed(1)+'px,'+(g.ty*e).toFixed(1)+'px,0) scale('+s.toFixed(4)+')';if(k>=1)end()});
   }
-  var VE_RM=false;try{VE_RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
-  window.addEventListener('resize',function(){geo=null;lastK=-1;dock(Math.max(0,lastP))});
-  var lastP=0;
+  // готово = первый кадр нарисован и логотип дорисован; потолок ожидания 5 с
+  var gate=setInterval(function(){var t=performance.now()-t0;if((root.classList.contains('is-live')&&t>2200)||t>5000){clearInterval(gate);fly()}},100);
+
+  // ---- главы текста и луп по прогрессу ----
+  var lastCh=-1,menu=false,loopSrc=null,loopOn=false;
   function onP(p){
-    lastP=p;dock(p);
-    var ch=p<.22?0:p<.44?1:p<.7?2:3;
+    var ch=p<TL.groom?0:p<TL.light?1:2;
     if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
-    var m=Math.round(minutes(p)),s=('0'+Math.floor(m/60)).slice(-2)+':'+('0'+(m%60)).slice(-2);
-    if(s!==lastT){lastT=s;clock.textContent=s}
-    root.classList.toggle('is-night',p>.84);
     var on=p>=TL.menu;if(on!==menu){menu=on;root.classList.toggle('is-menu',on);if(on)spin()}
+    var lo=!!loopSrc&&p>=TL.light+.01;
+    if(lo!==loopOn){loopOn=lo;root.classList.toggle('is-loop',lo);if(lo){if(!video.getAttribute('src')){video.src=loopSrc;video.load()}var pr=video.play();if(pr&&pr.catch)pr.catch(function(){})}else video.pause()}
   }
   root.querySelector('[data-ve-go-form]').addEventListener('click',function(){if(window.VE)VE.goForm()});
 
   // ---- сферы меню ----
   var ORB=[['Постоянный уход','ve-tariffs'],['Разовые работы','ve-pricelist'],['Сад под ключ','ve-ways'],['Почему выгодно','ve-economics'],['Специальные условия','ve-bonuses'],['Рассчитать','ve-form']];
   orbit.innerHTML=ORB.map(function(o,i){return '<a class="ve-orb'+(o[1]==='ve-form'?' ve-orb--go':'')+'" href="#'+o[1]+'" data-to="'+o[1]+'"><span class="ve-orb__b" style="--d:'+(i*70)+'ms"><span>'+o[0]+'</span></span></a>'}).join('');
-  var orbs=[].slice.call(orbit.children),ang=-Math.PI/2,speed=1,hover=false,raf=0,t0=0,rmq=false;
-  try{rmq=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+  var orbs=[].slice.call(orbit.children),ang=-Math.PI/2,speed=1,hover=false,raf=0,ts=0;
   function place(){
     var w=stage.clientWidth,h=stage.clientHeight,wide=w>=900;
     var S=wide?Math.min(116,Math.max(92,w*.075)):Math.min(80,w*.2);
@@ -140,35 +156,35 @@
   }
   function frame(t){
     raf=0;if(!menu||document.hidden)return;
-    var dt=t0?Math.min(64,t-t0):16;t0=t;
+    var dt=ts?Math.min(64,t-ts):16;ts=t;
     speed+=((hover?0:1)-speed)*.06;
-    if(!rmq)ang+=dt/1000*speed*Math.PI*2/64; // оборот за ~64 с
+    if(!VE_RM)ang+=dt/1000*speed*Math.PI*2/64; // оборот за ~64 с
     place();raf=requestAnimationFrame(frame);
   }
-  function spin(){place();if(!raf&&!rmq){t0=0;raf=requestAnimationFrame(frame)}}
+  function spin(){place();if(!raf&&!VE_RM){ts=0;raf=requestAnimationFrame(frame)}}
   orbit.addEventListener('pointerover',function(e){if(e.target.closest('.ve-orb'))hover=true});
   orbit.addEventListener('pointerout',function(e){if(!e.relatedTarget||!e.relatedTarget.closest||!e.relatedTarget.closest('.ve-orb'))hover=false});
   orbit.addEventListener('focusin',function(){hover=true});orbit.addEventListener('focusout',function(){hover=false});
   window.addEventListener('resize',function(){if(menu)place()});
-  document.addEventListener('visibilitychange',function(){if(menu&&!document.hidden)spin()});
+  document.addEventListener('visibilitychange',function(){if(menu&&!document.hidden)spin();if(loopOn){if(document.hidden)video.pause();else{var pr=video.play();if(pr&&pr.catch)pr.catch(function(){})}}});
 
   // тап по сфере: страница перелетает в раздел, сфера садится точкой в его подпись
   var flying=null;
   orbit.addEventListener('click',function(e){
     var a=e.target.closest('.ve-orb');if(!a)return;
     var sec=document.getElementById(a.getAttribute('data-to'));if(!sec)return;
-    e.preventDefault();fly(a,sec);
+    e.preventDefault();flyOrb(a,sec);
   });
   function dotOf(sec){
     var cap=sec.querySelector('.ve-caps')||sec.querySelector('h2');if(!cap)return null;
     var d=cap.querySelector('.ve-dot');if(!d){d=document.createElement('i');d.className='ve-dot';d.setAttribute('aria-hidden','true');cap.insertBefore(d,cap.firstChild)}
     return d;
   }
-  function fly(a,sec){
+  function flyOrb(a,sec){
     if(flying)flying.stop();
     var dot=dotOf(sec),y0=window.scrollY,r=a.getBoundingClientRect(),S=r.width;
     var target=function(){return Math.max(0,sec.getBoundingClientRect().top+window.scrollY-(window.innerWidth>=900?24:8))};
-    if(rmq||!dot){window.scrollTo(0,target());if(dot)dot.classList.add('is-on');return}
+    if(VE_RM||!dot){window.scrollTo(0,target());if(dot)dot.classList.add('is-on');return}
     var c=document.createElement('div');c.className='ve-orb-fly'+(a.classList.contains('ve-orb--go')?' is-go':'');c.innerHTML='<span>'+a.textContent+'</span>';
     c.style.width=c.style.height=S+'px';document.body.appendChild(c);
     var sx=r.left+S/2,sy=r.top+S/2,dist=Math.abs(target()-y0),dur=Math.min(1500,Math.max(800,dist/7)),st=performance.now(),dead=false;
@@ -191,7 +207,7 @@
 
   function start(){
     var VE=window.VE;if(!VE)return setTimeout(start,50);
-    import(VE.url('js/scene.js')).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,onProgress:onP,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static')});
+    import(VE.url('js/scene.js')).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,onProgress:onP,onManifest:function(man){if(man.loop)loopSrc=VE.url('media/scene/'+man.loop)},reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();

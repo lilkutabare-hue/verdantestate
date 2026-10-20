@@ -5,7 +5,7 @@
 //   [groom, light]     включается свет: S5a → S5 (синий час, подсветка)
 //   [light, 1]         стоп-кадр S5 (над ним сферы меню, их ведёт сама секция)
 // Кадры и серии — в media/scene/manifest.json (v2, пишет tools/frames.mjs).
-// mount(root, { base, v, reducedMotion, onProgress, timeline }) → { destroy, hold(p), progress }
+// mount(root, { base, v, reducedMotion, onProgress, onManifest, timeline }) → { destroy, hold(p), progress }
 export function mount(root, opts = {}) {
   const stage = root.querySelector('.ve-hero__stage');
   const canvas = root.querySelector('canvas');
@@ -150,7 +150,7 @@ export function mount(root, opts = {}) {
 
   fetch(base + 'media/scene/manifest.json' + v).then((r) => r.json()).then((m) => {
     if (dead) return;
-    man = m; size(); pickSet(); wake();
+    man = m; if (opts.onManifest) opts.onManifest(m); size(); pickSet(); wake();
   }).catch(() => { root.classList.add('is-static'); });
 
   const onScroll = () => wake();
