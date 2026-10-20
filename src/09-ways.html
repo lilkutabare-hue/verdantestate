@@ -17,10 +17,11 @@
 .ve-ways__img img{width:100%;height:100%;object-fit:cover;pointer-events:none}
 .ve-ways__n{margin:16px 0 0}.ve-ways__n b{color:var(--ve-moss)}.ve-ways__n span{color:var(--ve-ink)}
 .ve-ways__d{margin-top:8px;font-size:14px;color:var(--ve-moss);line-height:1.45}
+/* компьютер: сетка 3 колонки (MOX), карточка = фото 4:5 + подпись; лента остаётся на телефоне */
 @media(min-width:900px){
   .ve-ways__wrap{margin-top:56px}
-  .ve-ways__strip{gap:24px;padding-left:40px;padding-right:40px;margin:0 -40px}
-  .ve-ways__card{width:272px}
+  .ve-ways__strip{display:grid;grid-template-columns:repeat(3,1fr);gap:48px 40px;overflow:visible;scroll-snap-type:none;margin:0;padding:0;cursor:auto}
+  .ve-ways__card{width:auto;max-width:none}
 }
 </style>
 <script>
@@ -41,8 +42,8 @@
   var strip=root.querySelector('.ve-ways__strip');
   strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);return '<article class="ve-ways__card"><div class="ve-ways__img ve-px"><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">'+n+'</b><i></i><span>'+w[0]+'</span></h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
   VE.reveal(root);VE.emit('px:refresh');
-  // на компьютере — тянуть мышью, без перехвата колеса
-  if(window.matchMedia('(pointer:fine)').matches){
+  // на телефоне с мышью (узкое окно) — тянуть мышью, без перехвата колеса; на компьютере лента стала сеткой
+  if(window.matchMedia('(pointer:fine) and (max-width:899px)').matches){
     var down=false,sx=0,sl=0,moved=false;
     strip.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse')return;down=true;moved=false;sx=e.clientX;sl=strip.scrollLeft;strip.setPointerCapture(e.pointerId)});
     strip.addEventListener('pointermove',function(e){if(!down)return;var dx=e.clientX-sx;if(Math.abs(dx)>4&&!moved){moved=true;strip.classList.add('is-drag')}if(moved)strip.scrollLeft=sl-dx});
