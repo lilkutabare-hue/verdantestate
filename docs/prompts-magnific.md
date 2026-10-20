@@ -232,3 +232,35 @@ One continuous, slow and smooth drone move: the camera rises high above the gard
 | S1, S2, S3, S4, S5a, S5 | `media-src/s1.png … s5.png`, `media-src/s5a.png` |
 | клипы | `media-src/k1.mp4`, `k2.mp4`, `k3.mp4` |
 | стиллы секций | `tools/.cache/stills/<имя>.png`: `process-1…4`, `tariff-basic/premium/estate`, `price-lawn/plants/trees`, `way-01…10`, `ba-before/after`, `season-summer/spring/autumn/winter` |
+
+## 6. Видео второй волны (21.10.2026) — для качества на телефоне и живых секций
+
+### 6.1 Вертикальный пролёт 9:16 — S1v–S4v и К1v–К3v
+
+Сейчас телефон получает кроп из 16:9 и теряет половину кадра. Делаем вертикальные стиллы эдитами принятых S1–S4 (тот же сад, та же камера, кадр продолжен вверх и вниз), затем те же три клипа в 9:16.
+
+**S1v … S4v** — Nano Banana 2.1 · edit · thinking high · **9:16** · 2K · `@img1` = S1 (S2, S3, S4) · 2 генерации
+```
+Using @img1, change only the frame: extend the scene to a 9:16 vertical frame — keep the original image unchanged in the middle, and continue the sky and the tree crowns naturally above, the lawn and the grass naturally below. Keep exactly the same: the camera, the light, the house, the garden and every plant.
+```
+Для S4v (вид сверху) вместо неба и газона: `continue the lawn and the pine crowns naturally above and below`.
+Проверка: наложить S2v на S2 по центру — середина совпадает пиксель в пиксель; иначе перегенерировать.
+
+**К1v, К2v, К3v** — Kling 3.0 · start/end = S1v→S2v, S2v→S3v, S3v→S4v · 10 s · 1080p · **9:16** · промпты и негатив те же, что у К1–К3 (раздел 3). Клипы → `media-src/k1v.mp4 … k3v.mp4`; `tools/frames.mjs` берёт их для серии tall (доработка: если есть kNv.mp4 — tall-кадры из них, а не кропом).
+
+### 6.2 Лупы секций (Kling 3.0, start = end = стилл, 5 s, 1080p)
+
+Проверенная схема «меняется только свет» (§7.G плана, тетрадь Magnific §28/§34): все прогоны одного промпта взаимозаменяемы и клеятся в длинную петлю.
+
+- **T1, T2, T3** (тарифы): 
+```
+Locked-off static camera. The ONLY thing that changes is the light: the soft shadow of a passing cloud slowly glides across the lawn from left to right and the sunlight returns, ending on exactly the starting look. The house, the plants, the path and the beds stay exactly the same; the grasses stir very slightly.
+```
+- **B2** (шторка «после»):
+```
+Locked-off static camera. The ONLY things that move are the air and the light: the feather reed grass and the hydrangeas sway softly in a light breeze, thin sunbeams between the pines drift slowly, and the clip ends on exactly the starting look. The terrace, the steps, the path, the beds and the trees keep exactly the same position and shape.
+```
+- **Z1** (лето в «Круглый год»): промпт T1–T3.
+
+**Negative (все):** `camera movement, zoom, pan, people, animals, birds, cars, text, watermark, deformation, morphing plants, plants growing, new objects, flicker, background change, lights turning on`
+**Настройки:** по 2 прогона на кадр; файлы → `media-src/loop-t1.mp4`, `loop-t2.mp4`, `loop-t3.mp4`, `loop-b2.mp4`, `loop-z1.mp4`.
