@@ -7,11 +7,11 @@
 <meta name="description" content="Постоянное управление садом: один договор, один ответственный, весь сад под контролем. Москва и Московская область.">
 <meta property="og:title" content="Verdant Estate — Private Garden Service">
 <meta property="og:description" content="Сад, за которым не нужно следить. Постоянный уход за частными садами в Москве и Московской области.">
-<meta property="og:image" content="site/media/scene/poster-wide.webp?v=43620933">
+<meta property="og:image" content="site/media/scene/poster-wide.webp?v=76786c4b">
 <meta name="robots" content="noindex">
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
 <script>window.VE_BASE=new URL('site/',location.href).href</script>
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 43620933 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 76786c4b -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
 :root{
@@ -67,6 +67,8 @@
 .ve .ve-btn--ghost{background:transparent;color:var(--ve-ink);border-color:rgba(31,77,46,.42)}
 .ve .ve-btn--light{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
 .ve .ve-btn--sm{height:44px;padding:0 20px;font-size:11.5px}
+/* узкие экраны: кнопка может перенестись на две строки, но не вылезти за край */
+@media(max-width:599px){.ve .ve-btn{height:auto;min-height:52px;padding:13px 22px;white-space:normal;text-align:center;line-height:1.25;letter-spacing:.11em}.ve .ve-btn--sm{min-height:44px;padding:11px 18px}}
 @media(hover:hover){
   .ve .ve-btn:hover{background:#183F27}.ve .ve-btn:hover::after{border-color:rgba(176,141,87,.6)}
   .ve .ve-btn--ghost:hover{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
@@ -132,7 +134,7 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'site/';
-  var VE={v:'43620933',base:base,
+  var VE={v:'76786c4b',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
@@ -243,8 +245,8 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=43620933">
-      <img src="site/media/scene/poster-wide.webp?v=43620933" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=76786c4b">
+      <img src="site/media/scene/poster-wide.webp?v=76786c4b" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -455,13 +457,13 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
       </div>
       <div class="ve-ssn__view">
         <ol class="ve-strip ve-ssn__track ve-rg">
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=43620933" srcset="site/media/stills/process-1-s.webp?v=43620933 560w, site/media/stills/process-1-l.webp?v=43620933 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=76786c4b" srcset="site/media/stills/process-1-s.webp?v=76786c4b 560w, site/media/stills/process-1-l.webp?v=76786c4b 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-ssn__n ve-num">01 <span>до сезона</span></p><h3 class="ve-ssn__t">Осмотр и план</h3><p class="ve-ssn__d">Приезжаем, смотрим участок и составляем план работ на сезон.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=43620933" srcset="site/media/stills/process-2-s.webp?v=43620933 560w, site/media/stills/process-2-l.webp?v=43620933 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=76786c4b" srcset="site/media/stills/process-2-s.webp?v=76786c4b 560w, site/media/stills/process-2-l.webp?v=76786c4b 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-ssn__n ve-num">02 <span>в начале</span></p><h3 class="ve-ssn__t">График и команда</h3><p class="ve-ssn__d">Расписываем визиты по месяцам и подбираем специалистов под ваш сад.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=43620933" srcset="site/media/stills/process-3-s.webp?v=43620933 560w, site/media/stills/process-3-l.webp?v=43620933 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=76786c4b" srcset="site/media/stills/process-3-s.webp?v=76786c4b 560w, site/media/stills/process-3-l.webp?v=76786c4b 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-ssn__n ve-num">03 <span>весь сезон</span></p><h3 class="ve-ssn__t">Работы</h3><p class="ve-ssn__d">Покос, стрижка, обрезка, обработки — по графику, без ваших напоминаний.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=43620933" srcset="site/media/stills/process-4-s.webp?v=43620933 560w, site/media/stills/process-4-l.webp?v=43620933 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=76786c4b" srcset="site/media/stills/process-4-s.webp?v=76786c4b 560w, site/media/stills/process-4-l.webp?v=76786c4b 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-ssn__n ve-num">04 <span>после каждого визита</span></p><h3 class="ve-ssn__t">Контроль и отчёт</h3><p class="ve-ssn__d">Проверяем результат и коротко сообщаем, что сделано и что дальше.</p></li>
         </ol>
       </div>
@@ -471,7 +473,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
 </section>
 <style>
 .ve-ssn__h{margin-top:14px}
-.ve-ssn__view{margin-top:32px}
+.ve-ssn__view{margin-top:32px;padding-left:var(--ve-pad);padding-right:var(--ve-pad)} /* лента вне .ve-wrap: поля даём сами, иначе её отрицательные поля выталкивают документ */
 .ve-ssn__track{list-style:none;margin-top:0;margin-bottom:0;gap:14px}
 .ve-ssn__card{width:72vw;max-width:320px}
 .ve-ssn__img{aspect-ratio:4/5;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
@@ -488,7 +490,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
 @media(min-width:900px){
   .ve-ssn.is-pin .ve-ssn__stage{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
   .ve-ssn.is-pin .ve-ssn__track{overflow:visible;scroll-snap-type:none;margin:0;padding-left:max(40px,calc((100vw - 1240px) / 2 + 40px));padding-right:40px;will-change:transform;transform:translateX(var(--x,0px))}
-  .ve-ssn__view{margin-top:44px}
+  .ve-ssn__view{margin-top:44px;padding-left:0;padding-right:0}
   .ve-ssn__track{gap:32px}
   .ve-ssn__card{width:min(40vw,calc((100svh - 390px) * 4 / 3));max-width:none;min-width:300px}
   .ve-ssn__img{aspect-ratio:4/3}
@@ -533,7 +535,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
   <div class="ve-wrap ve-tar__wrap">
     <div class="ve-strip ve-tar__strip ve-rg">
       <article class="ve-tar__card" data-tariff="BASIC">
-        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-basic-l.webp?v=43620933" srcset="site/media/stills/tariff-basic-s.webp?v=43620933 560w, site/media/stills/tariff-basic-l.webp?v=43620933 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-basic-l.webp?v=76786c4b" srcset="site/media/stills/tariff-basic-s.webp?v=76786c4b 560w, site/media/stills/tariff-basic-l.webp?v=76786c4b 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-caps ve-tar__name">Basic</p>
         <p class="ve-tar__price ve-price">от 60&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для небольших и относительно простых участков.</p>
@@ -543,7 +545,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="PREMIUM">
-        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-premium-l.webp?v=43620933" srcset="site/media/stills/tariff-premium-s.webp?v=43620933 560w, site/media/stills/tariff-premium-l.webp?v=43620933 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-premium-l.webp?v=76786c4b" srcset="site/media/stills/tariff-premium-s.webp?v=76786c4b 560w, site/media/stills/tariff-premium-l.webp?v=76786c4b 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-caps ve-tar__name">Premium</p>
         <p class="ve-tar__price ve-price">от 110&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для полноценных частных садов.</p>
@@ -553,7 +555,7 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="ESTATE">
-        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-estate-l.webp?v=43620933" srcset="site/media/stills/tariff-estate-s.webp?v=43620933 560w, site/media/stills/tariff-estate-l.webp?v=43620933 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px"><img src="site/media/stills/tariff-estate-l.webp?v=76786c4b" srcset="site/media/stills/tariff-estate-s.webp?v=76786c4b 560w, site/media/stills/tariff-estate-l.webp?v=76786c4b 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-caps ve-tar__name">Estate</p>
         <p class="ve-tar__price ve-price">от 190&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Для больших и сложных территорий.</p>
@@ -836,9 +838,9 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
         <p class="ve-pr__note ve-muted">Сложные работы — по смете.</p>
       </div>
       <div class="ve-pr__pic ve-r ve-px" aria-hidden="true">
-        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=43620933" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=43620933" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=43620933" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=76786c4b" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=76786c4b" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=76786c4b" alt="" loading="lazy" decoding="async" width="1000" height="1250">
       </div>
     </div>
   </div>
@@ -949,8 +951,8 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
     <p class="ve-caps ve-r">До и после</p>
     <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
     <div class="ve-ba__box ve-r" style="--x:50%">
-      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=43620933" srcset="site/media/stills/ba-before-s.webp?v=43620933 720w, site/media/stills/ba-before-l.webp?v=43620933 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
-      <img class="ve-ba__img ve-ba__img--after" src="site/media/stills/ba-after-l.webp?v=43620933" srcset="site/media/stills/ba-after-s.webp?v=43620933 720w, site/media/stills/ba-after-l.webp?v=43620933 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=76786c4b" srcset="site/media/stills/ba-before-s.webp?v=76786c4b 720w, site/media/stills/ba-before-l.webp?v=76786c4b 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <img class="ve-ba__img ve-ba__img--after" src="site/media/stills/ba-after-l.webp?v=76786c4b" srcset="site/media/stills/ba-after-s.webp?v=76786c4b 720w, site/media/stills/ba-after-l.webp?v=76786c4b 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
       <span class="ve-ba__lab ve-ba__lab--b">до</span>
       <span class="ve-ba__lab ve-ba__lab--a">после</span>
       <div class="ve-ba__bar" aria-hidden="true"><i></i></div>
@@ -1001,10 +1003,10 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
     <h2 class="ve-h2 ve-r ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=43620933" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" src="site/media/stills/season-summer-l.webp?v=43620933" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=43620933" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=43620933" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=76786c4b" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" src="site/media/stills/season-summer-l.webp?v=76786c4b" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=76786c4b" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=76786c4b" alt="" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
         <div class="ve-tabs ve-sea__tabs ve-r" role="tablist">
@@ -1352,6 +1354,6 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none}
 })();
 </script>
 
-<div class="ve-preview-note">превью сборки 43620933 · изображения временные, до генераций · контакты в подвале — заглушки</div>
+<div class="ve-preview-note">превью сборки 76786c4b · изображения временные, до генераций · контакты в подвале — заглушки</div>
 </body>
 </html>

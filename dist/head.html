@@ -1,4 +1,4 @@
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 43620933 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 76786c4b -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
 :root{
@@ -54,6 +54,8 @@
 .ve .ve-btn--ghost{background:transparent;color:var(--ve-ink);border-color:rgba(31,77,46,.42)}
 .ve .ve-btn--light{background:var(--ve-paper);color:var(--ve-ink);border-color:var(--ve-paper)}
 .ve .ve-btn--sm{height:44px;padding:0 20px;font-size:11.5px}
+/* узкие экраны: кнопка может перенестись на две строки, но не вылезти за край */
+@media(max-width:599px){.ve .ve-btn{height:auto;min-height:52px;padding:13px 22px;white-space:normal;text-align:center;line-height:1.25;letter-spacing:.11em}.ve .ve-btn--sm{min-height:44px;padding:11px 18px}}
 @media(hover:hover){
   .ve .ve-btn:hover{background:#183F27}.ve .ve-btn:hover::after{border-color:rgba(176,141,87,.6)}
   .ve .ve-btn--ghost:hover{background:var(--ve-ink);color:var(--ve-paper);border-color:var(--ve-ink)}
@@ -119,7 +121,7 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'https://lilkutabare-hue.github.io/verdantestate/site/';
-  var VE={v:'43620933',base:base,
+  var VE={v:'76786c4b',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
