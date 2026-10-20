@@ -59,7 +59,14 @@
     for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-s')===s;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
     for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-s')===s);
   }
-  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-s'))});
+  var ORDER=['spring','summer','autumn','winter'],cur='spring',auto=null;
+  for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){stop();cur=this.getAttribute('data-s');show(cur)});
   show('spring');
+  // пока посетитель не трогал вкладки, сезоны листаются сами (в поле зрения); первый клик останавливает
+  function stop(){if(auto){clearInterval(auto);auto=null}}
+  function start(){if(auto||VE.rm)return;auto=setInterval(function(){cur=ORDER[(ORDER.indexOf(cur)+1)%ORDER.length];show(cur)},3600)}
+  var pic=root.querySelector('.ve-sea__pic'),stopped=false;
+  root.querySelector('.ve-sea__tabs').addEventListener('click',function(){stopped=true;stop()});
+  if('IntersectionObserver' in window)new IntersectionObserver(function(en){if(stopped)return;en[0].isIntersecting?start():stop()},{threshold:.4}).observe(pic);
 })();
 </script>

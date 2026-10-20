@@ -33,7 +33,16 @@
 (function(){
   var root=document.getElementById('ve-before-after');if(!root||!window.VE)return;
   VE.reveal(root);
-  var box=root.querySelector('.ve-ba__box'),r=root.querySelector('.ve-ba__range');
-  r.addEventListener('input',function(){box.style.setProperty('--x',r.value+'%')});
+  var box=root.querySelector('.ve-ba__box'),r=root.querySelector('.ve-ba__range'),touched=false;
+  r.addEventListener('input',function(){touched=true;box.style.setProperty('--x',r.value+'%')});
+  r.addEventListener('pointerdown',function(){touched=true});
+  // подсказка: при появлении шторка сама проезжает к «после», к «до» и возвращается; прерывается первым касанием
+  function demo(){
+    if(VE.rm||touched)return;
+    var K=[[0,50],[.38,24],[.72,70],[1,50]],t0=performance.now(),D=2600;
+    (function f(now){if(touched)return;var t=Math.min(1,(now-t0)/D),i=1;while(K[i][0]<t)i++;var a=K[i-1],b=K[i],k=(t-a[0])/(b[0]-a[0]),e=.5-.5*Math.cos(Math.PI*k),x=a[1]+(b[1]-a[1])*e;
+      box.style.setProperty('--x',x.toFixed(2)+'%');r.value=x;if(t<1)requestAnimationFrame(f)})(t0);
+  }
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();setTimeout(demo,500)}},{threshold:.5});io.observe(box)}
 })();
 </script>

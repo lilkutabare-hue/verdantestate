@@ -40,8 +40,8 @@
     ['Премиальное обновление','комплексное преображение: дизайн, растения, дорожки, подсветка, детали']
   ];
   var strip=root.querySelector('.ve-ways__strip');
-  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);return '<article class="ve-ways__card"><div class="ve-ways__img"><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><p class="ve-ways__n">'+n+'</p><h3 class="ve-ways__t">'+w[0]+'</h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
-  VE.reveal(root);
+  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);return '<article class="ve-ways__card"><div class="ve-ways__img ve-px"><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(min-width:900px) 272px, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><p class="ve-ways__n">'+n+'</p><h3 class="ve-ways__t">'+w[0]+'</h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
+  VE.reveal(root);VE.emit('px:refresh');
   // на компьютере — тянуть мышью, без перехвата колеса
   if(window.matchMedia('(pointer:fine)').matches){
     var down=false,sx=0,sl=0,moved=false;
