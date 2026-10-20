@@ -1,9 +1,13 @@
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка b1285581 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 76825995 -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
+/* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
+@font-face{font-family:"Cormorant VE";font-style:italic;font-weight:500;font-display:swap;src:url(https://lilkutabare-hue.github.io/verdantestate/site/fonts/cormorant-garamond-cyrillic-500-italic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Cormorant VE";font-style:italic;font-weight:500;font-display:swap;src:url(https://lilkutabare-hue.github.io/verdantestate/site/fonts/cormorant-garamond-latin-500-italic.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   --ve-paper:#FFFFFF;--ve-paper-2:#F3F6F2;--ve-ink:#1B462A;--ve-acc:#2E7D46;--ve-moss:#617A66;--ve-line:rgba(31,77,46,.14);--ve-bronze:#B99A66;--ve-lamp:#B99A66;
   --ve-sans:-apple-system,"SF Pro Text","SF Pro Display","Inter","Segoe UI",Roboto,system-ui,sans-serif;
+  --ve-serif:"Cormorant VE","Cormorant Garamond",Georgia,"Times New Roman",serif;
   --ve-ease:cubic-bezier(.2,.9,.2,1);--ve-ease-2:cubic-bezier(.2,.8,.2,1);
   --ve-r:8px;--ve-gap:72px;--ve-pad:20px;
   color-scheme:light only;
@@ -36,10 +40,11 @@
 @media(min-width:900px){.ve-h1{font-size:64px;line-height:1}.ve-h2{font-size:42px;line-height:1.04}.ve-h3{font-size:22px}}
 .ve-caps{font-family:var(--ve-sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ve-moss)}
 .ve-price,.ve-num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
-/* подпись к фото «что · где»: одна строка капсом, бронзовая точка-разделитель (L.BURO, MOX) */
-.ve-cap{display:flex;align-items:center;flex-wrap:wrap;gap:0 10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ve-moss);line-height:1.5}
-.ve-cap b{font-weight:600;color:var(--ve-ink)}
-.ve-cap i{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--ve-bronze);flex:0 0 auto}
+/* подпись к фото «что · где»: антиква курсивом (владелец, 21.10), бронзовая точка-разделитель */
+.ve-cap{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 10px;font-family:var(--ve-serif);font-style:italic;font-weight:500;font-size:17px;letter-spacing:.01em;color:var(--ve-moss);line-height:1.35}
+.ve-cap b{font-weight:500;color:var(--ve-ink)}
+.ve-cap i{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--ve-bronze);flex:0 0 auto;align-self:center}
+@media(min-width:900px){.ve-cap{font-size:18px}}
 .ve-lead{font-size:18px;line-height:1.45;max-width:56ch;font-weight:500;letter-spacing:-.01em}
 @media(min-width:900px){.ve-lead{font-size:22px}}
 .ve-sub{margin-top:14px;max-width:56ch;color:var(--ve-moss)}
@@ -160,7 +165,7 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'https://lilkutabare-hue.github.io/verdantestate/site/';
-  var VE={v:'b1285581',base:base,
+  var VE={v:'76825995',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
