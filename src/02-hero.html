@@ -133,6 +133,7 @@
     var ch=p<TL.groom?0:p<TL.light?1:2;
     if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
     var on=p>=TL.menu;if(on!==menu){menu=on;root.classList.toggle('is-menu',on);if(on)spin()}
+    html.classList.toggle('ve-hero-done',p>=TL.light); // кнопка шапки появляется только после пролёта
     var lo=!!loopSrc&&p>=TL.light+.01;
     if(lo!==loopOn){loopOn=lo;root.classList.toggle('is-loop',lo);if(lo){if(!video.getAttribute('src')){video.src=loopSrc;video.load()}var pr=video.play();if(pr&&pr.catch)pr.catch(function(){})}else video.pause()}
   }

@@ -18,6 +18,9 @@
 @media(min-width:900px){.ve-hd__mark{width:44px;height:40px}}
 /* на странице с хиро знак шапки появляется, когда в него «садится» логотип первого экрана */
 html.ve-has-hero:not(.ve-logo-docked) .ve-hd__mark{opacity:0}
+/* над хиро — как у студий: только знак и телефон; кнопка приходит вместе с белой шапкой после пролёта (html.ve-hero-done ставит хиро) */
+html.ve-has-hero:not(.ve-hero-done) .ve-hd__cta{opacity:0;visibility:hidden;transform:translateY(-6px)}
+.ve-hd__cta{transition:opacity .4s var(--ve-ease),visibility .4s,transform .4s var(--ve-ease),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s var(--ve-ease-2)}
 /* пока идёт заставка, шапки нет */
 .ve-hd{transition:transform .32s var(--ve-ease-2),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),box-shadow .3s,opacity .5s var(--ve-ease)}
 html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* прячется сразу, без затухания — иначе кнопка мигает над заставкой */

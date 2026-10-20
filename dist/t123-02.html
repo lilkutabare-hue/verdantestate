@@ -1,9 +1,9 @@
-<!-- VE · 02-hero.html · сборка 6852e7ab -->
+<!-- VE · 02-hero.html · сборка c08a594b -->
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=6852e7ab">
-      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=6852e7ab" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=c08a594b">
+      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=c08a594b" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -134,6 +134,7 @@
     var ch=p<TL.groom?0:p<TL.light?1:2;
     if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
     var on=p>=TL.menu;if(on!==menu){menu=on;root.classList.toggle('is-menu',on);if(on)spin()}
+    html.classList.toggle('ve-hero-done',p>=TL.light); // кнопка шапки появляется только после пролёта
     var lo=!!loopSrc&&p>=TL.light+.01;
     if(lo!==loopOn){loopOn=lo;root.classList.toggle('is-loop',lo);if(lo){if(!video.getAttribute('src')){video.src=loopSrc;video.load()}var pr=video.play();if(pr&&pr.catch)pr.catch(function(){})}else video.pause()}
   }
