@@ -1,7 +1,7 @@
 <section class="ve ve-sec ve-man" id="ve-manifest">
   <div class="ve-wrap">
     <p class="ve-caps ve-r">Что мы берём на себя</p>
-    <div class="ve-man__rows ve-rg">
+    <div class="ve-man__rows">
       <div class="ve-man__row ve-line"><h2 class="ve-man__w">Планируем</h2><p class="ve-man__p">работы и график на весь сезон</p></div>
       <div class="ve-man__row ve-line"><h2 class="ve-man__w">Организуем</h2><p class="ve-man__p">садовника, арбориста, газон и полив — искать никого не нужно</p></div>
       <div class="ve-man__row ve-line"><h2 class="ve-man__w">Контролируем</h2><p class="ve-man__p">подрядчиков и состояние участка до конца сезона</p></div>
@@ -14,13 +14,30 @@
 .ve-man__row{padding:20px 0 22px}
 .ve-man__w{margin:0;font-weight:600;letter-spacing:-.03em;font-size:44px;line-height:1}
 .ve-man__p{margin-top:10px;color:var(--ve-moss);max-width:34ch}
+/* слова читаются одно за другим по скроллу: пока «Планируем» не прочитано, следующее полупрозрачно (как «Сад как состояние» у L.BURO) */
+.ve-man__row{opacity:.22;transition:opacity .6s var(--ve-ease)}
+.ve-man__row.is-on{opacity:1}
+@media(prefers-reduced-motion:reduce){.ve-man__row{opacity:1;transition:none}}
 .ve-man__end{margin-top:30px;font-weight:600;letter-spacing:-.015em;font-size:20px;line-height:1.3;max-width:28ch}
 @media(min-width:900px){
   .ve-man__rows{margin-top:40px}
   .ve-man__row{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:baseline;gap:40px;padding:30px 0 32px}
-  .ve-man__w{font-size:88px}
+  .ve-man__w{font-size:96px}
   .ve-man__p{margin-top:0;font-size:18px}
   .ve-man__end{margin-top:44px;font-size:24px}
 }
 </style>
-<script>(function(){if(window.VE)VE.reveal(document.getElementById('ve-manifest'))})();</script>
+<script>
+(function(){
+  var root=document.getElementById('ve-manifest');if(!root||!window.VE)return;
+  VE.reveal(root);
+  var rows=root.querySelectorAll('.ve-man__row'),raf=0,n=0;
+  if(VE.rm){for(var i=0;i<rows.length;i++)rows[i].classList.add('is-on');return}
+  // строка «прочитана», когда её середина поднялась выше 62 % экрана; следующая открывается только после предыдущей; назад не гаснут
+  function tick(){raf=0;var vh=window.innerHeight||1,line=vh*.62;
+    while(n<rows.length){var r=rows[n].getBoundingClientRect();if(r.top+r.height*.5<line){rows[n].classList.add('is-on');n++}else break}
+    if(n>=rows.length)window.removeEventListener('scroll',ask)}
+  var ask=function(){if(!raf)raf=requestAnimationFrame(tick)};
+  window.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',ask);ask();
+})();
+</script>
