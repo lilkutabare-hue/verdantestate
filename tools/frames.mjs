@@ -4,6 +4,7 @@
 // Вход (media-src/):
 //   k1.mp4 k2.mp4 k3.mp4   клипы Kling пролёта (S1→S2, S2→S3, S3→S4); нет клипов — сцена из стиллов (путь A)
 //   k4.mp4                 ночной луп (start = end = S5) → scene/loop.mp4, играет поверх финального кадра
+//   k1v k2v k3v.mp4 + s4v s5av s5v   вертикальная серия 9:16 для телефона (prompts §6.1); нет — tall кропом из 16:9
 //   s1 s2 s3 s4 s5a s5     стиллы (.png/.jpg/.webp); s4 закрывает пролёт, s5a и s5 — превращение «до → после»
 //   focus.json             по желанию: ведение кропа 9:16, [[t, x], …], t и x от 0 до 1 (по умолчанию x = .5 весь пролёт)
 // Флаги: --src=папка  вход не из media-src/
@@ -60,32 +61,42 @@ if (missing.length) { console.error('нет в media-src/: ' + missing.join(', '
 
 await rm(TMP, { recursive: true, force: true }); await mkdir(TMP, { recursive: true }); await mkdir(OUT, { recursive: true });
 
-// пролёт: список исходных картинок по порядку
-const flight = []; let manLoop = null;
-if (useClips) {
-  const ff = await findFfmpeg();
-  const firstOf = [];
-  for (let c = 0; c < 3; c++) {
-    const d = await duration(ff, clips[c]);
-    for (let i = 0; i < PER; i++) { const p = join(TMP, `k${c + 1}-${String(i).padStart(2, '0')}.png`); await grab(ff, clips[c], (d * i) / PER, p); flight.push(p); if (i === 0) firstOf.push(p); }
+// пролёт: список исходных картинок по порядку.
+// Из клипов: PER кадров на клип + финальный стилл; последние RAMP кадров каждого клипа растворяются
+// в первый кадр следующего (или в финальный стилл) — Kling доезжает до энд-кадра неточно (К3 → S4 ≈ 7/255).
+async function extractFlight(ff, clipList, tag, size, finalStill) {
+  const out = [], firstOf = [], RAMP = 4;
+  for (let c = 0; c < clipList.length; c++) {
+    const d = await duration(ff, clipList[c]);
+    for (let i = 0; i < PER; i++) { const p = join(TMP, `${tag}${c + 1}-${String(i).padStart(2, '0')}.png`); await grab(ff, clipList[c], (d * i) / PER, p); out.push(p); if (i === 0) firstOf.push(p); }
   }
-  flight.push(still('s4')); // финал пролёта — сам стилл S4: на него ровно ложится S5a
-  // стыки: Kling доезжает до энд-кадра неточно (К3 → S4 ≈ 7/255), поэтому последние RAMP кадров каждого клипа
-  // растворяются в первый кадр следующего (или в S4) — скачка на стыке нет
-  const RAMP = 4;
-  for (let c = 0; c < 3; c++) {
-    const target = c < 2 ? firstOf[c + 1] : still('s4');
-    const tgt = await sharp(target).resize(1928, 1072, { fit: 'fill' }).png().toBuffer();
-    for (let j = 1; j <= RAMP; j++) {
-      const idx = (c + 1) * PER - j, alpha = 1 - j / (RAMP + 1); // последний кадр ближе всего к цели
-      const base = await sharp(flight[idx]).resize(1928, 1072, { fit: 'fill' }).png().toBuffer();
+  out.push(finalStill);
+  for (let c = 0; c < clipList.length; c++) {
+    const target = c < clipList.length - 1 ? firstOf[c + 1] : finalStill;
+    const tgt = await sharp(target).resize(size[0], size[1], { fit: 'fill' }).png().toBuffer();
+    for (let k = 1; k <= RAMP; k++) {
+      const idx = (c + 1) * PER - k, alpha = 1 - k / (RAMP + 1);
+      const base = await sharp(out[idx]).resize(size[0], size[1], { fit: 'fill' }).png().toBuffer();
       const over = await sharp(tgt).ensureAlpha(alpha).png().toBuffer();
-      const out = join(TMP, `k${c + 1}-${String(PER - j).padStart(2, '0')}-r.png`);
-      await sharp(base).composite([{ input: over }]).png().toFile(out);
-      flight[idx] = out;
+      const o = join(TMP, `${tag}${c + 1}-${String(PER - k).padStart(2, '0')}-r.png`);
+      await sharp(base).composite([{ input: over }]).png().toFile(o);
+      out[idx] = o;
     }
   }
-  console.log(`клипы: ${PER} кадров на клип + S4 = ${flight.length}, стыки сглажены по ${RAMP} кадра`);
+  return out;
+}
+const flight = []; let manLoop = null, tallFlight = null, tallAfter = null;
+if (useClips) {
+  const ff = await findFfmpeg();
+  flight.push(...(await extractFlight(ff, clips, 'k', [1928, 1072], still('s4'))));
+  console.log(`клипы: ${PER} кадров на клип + S4 = ${flight.length}, стыки сглажены`);
+  // вертикальная серия для телефона: k1v..k3v.mp4 (9:16) + стиллы s4v, s5av, s5v — вместо кропа из 16:9
+  const vclips = ['k1v', 'k2v', 'k3v'].map((k) => (files.includes(k + '.mp4') ? join(SRC, k + '.mp4') : null));
+  if (vclips.every(Boolean) && still('s4v') && still('s5av') && still('s5v')) {
+    tallFlight = await extractFlight(ff, vclips, 'v', [1080, 1920], still('s4v'));
+    tallAfter = [still('s5av'), still('s5v')];
+    console.log(`вертикальные клипы: ${tallFlight.length} кадров 9:16 — телефон получает полный кадр`);
+  } else console.log('вертикальных клипов нет — tall-серия кропом из 16:9 (см. prompts-magnific.md §6.1)');
   // ночной луп поверх финала
   if (files.includes('k4.mp4')) {
     await run(ff, ['-y', '-v', 'error', '-i', join(SRC, 'k4.mp4'), '-an', '-vf', 'scale=1440:-2', '-c:v', 'libx264', '-preset', 'slow', '-crf', '22', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', join(OUT, 'loop.mp4')]);
@@ -117,19 +128,26 @@ const enc = (pipe, q) => (FMT === 'avif' ? pipe.avif({ quality: q, effort: 4 }) 
 const put = async (pipe, name, q) => { const buf = await enc(pipe, q).toBuffer(); await writeFile(join(OUT, name), buf); total += buf.length; for (const k in bySet) if (name.includes(k)) bySet[k] += buf.length; return buf.length; };
 
 for (let i = 0; i < flight.length; i++) {
-  const t = flight.length > 1 ? i / (flight.length - 1) : 0, k = String(i).padStart(2, '0');
+  const k = String(i).padStart(2, '0');
   await put(await render(flight[i], WIDE, 0.5), `wide-${k}.${EXT}`, WIDE.q); man.sets.wide.frames.push(`wide-${k}.${EXT}`);
-  await put(await render(flight[i], TALL, fx(t)), `tall-${k}.${EXT}`, TALL.q); man.sets.tall.frames.push(`tall-${k}.${EXT}`);
+}
+const tSrc = tallFlight || flight;
+for (let i = 0; i < tSrc.length; i++) {
+  const t = tSrc.length > 1 ? i / (tSrc.length - 1) : 0, k = String(i).padStart(2, '0');
+  await put(await render(tSrc[i], TALL, tallFlight ? 0.5 : fx(t)), `tall-${k}.${EXT}`, TALL.q); man.sets.tall.frames.push(`tall-${k}.${EXT}`);
 }
 for (const [j, src] of after.entries()) {
   const k = ['a', 'b'][j];
   await put(await render(src, WIDE, 0.5), `after-${k}-wide.${EXT}`, WIDE.q); man.sets.wide.after.push(`after-${k}-wide.${EXT}`);
-  await put(await render(src, TALL, fx(1)), `after-${k}-tall.${EXT}`, TALL.q); man.sets.tall.after.push(`after-${k}-tall.${EXT}`);
+}
+for (const [j, src] of (tallAfter || after).entries()) {
+  const k = ['a', 'b'][j];
+  await put(await render(src, TALL, tallAfter ? 0.5 : fx(1)), `after-${k}-tall.${EXT}`, TALL.q); man.sets.tall.after.push(`after-${k}-tall.${EXT}`);
 }
 // у sharp один resize на конвейер: постер — из готового кропа вторым проходом
 const small = async (set, x, w) => sharp(await (await render(flight[0], set, x)).png().toBuffer()).resize(w);
 await put(await small(WIDE, 0.5, 960), 'poster-wide.webp', 70);
-await put(await small(TALL, fx(0), 540), 'poster-tall.webp', 70);
+await put(sharp(await (await render(tSrc[0], TALL, tallFlight ? 0.5 : fx(0))).png().toBuffer()).resize(540), 'poster-tall.webp', 70);
 await writeFile(join(OUT, 'manifest.json'), JSON.stringify(man, null, 2) + '\n');
 
 // старые кадры, которых нет в манифесте, убираем

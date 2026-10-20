@@ -239,11 +239,12 @@ One continuous, slow and smooth drone move: the camera rises high above the gard
 
 Сейчас телефон получает кроп из 16:9 и теряет половину кадра. Делаем вертикальные стиллы эдитами принятых S1–S4 (тот же сад, та же камера, кадр продолжен вверх и вниз), затем те же три клипа в 9:16.
 
-**S1v … S4v** — Nano Banana 2.1 · edit · thinking high · **9:16** · 2K · `@img1` = S1 (S2, S3, S4) · 2 генерации
+**S1v … S5v (шесть стиллов: S1, S2, S3, S4, S5a, S5)** — Nano Banana 2.1 · edit · thinking high · **9:16** · 2K · `@img1` = соответствующий горизонтальный стилл · 2 генерации. S5av и S5v нужны для шторки и света: делать их эдитами от S4v (S5av = S4v + «сад ухожен», S5v = S5av + «синий час и подсветка», промпты S5a/S5 из раздела 2), а не расширением S5a/S5 — иначе края не совпадут.
 ```
 Using @img1, change only the frame: extend the scene to a 9:16 vertical frame — keep the original image unchanged in the middle, and continue the sky and the tree crowns naturally above, the lawn and the grass naturally below. Keep exactly the same: the camera, the light, the house, the garden and every plant.
 ```
 Для S4v (вид сверху) вместо неба и газона: `continue the lawn and the pine crowns naturally above and below`.
+Файлы: `media-src/s1v.png … s4v.png`, `s5av.png`, `s5v.png`.
 Проверка: наложить S2v на S2 по центру — середина совпадает пиксель в пиксель; иначе перегенерировать.
 
 **К1v, К2v, К3v** — Kling 3.0 · start/end = S1v→S2v, S2v→S3v, S3v→S4v · 10 s · 1080p · **9:16** · промпты и негатив те же, что у К1–К3 (раздел 3). Клипы → `media-src/k1v.mp4 … k3v.mp4`; `tools/frames.mjs` берёт их для серии tall (доработка: если есть kNv.mp4 — tall-кадры из них, а не кропом).
