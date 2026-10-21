@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 const run = promisify(execFile);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'src'), DIST = join(ROOT, 'dist'), DOCS = join(ROOT, 'docs'), SITE = join(DOCS, 'site');
-const PAGES_BASE = 'https://lilkutabare-hue.github.io/verdantestate/site/';
+const PAGES_BASE = 'https://verdant-assets.lilkutabare.workers.dev/'; // медиа для Тильды: node tools/deploy.mjs --assets (публичный воркер со статикой, CORS *); при своём домене — media.<домен>
 const LIMIT_BLOCK = 84 * 1024, LIMIT_HEAD = 64 * 1024;
 await mkdir(DIST, { recursive: true });
 
