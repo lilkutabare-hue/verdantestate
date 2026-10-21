@@ -41,6 +41,7 @@
 <style>
 .ve-ck{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50;border-radius:20px;transform:translateY(calc(100% + 24px));transition:transform .55s var(--ve-ease)}
 .ve-ck.is-on{transform:none}
+html.ve-coarse .ve-ck{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.9));-webkit-backdrop-filter:none;backdrop-filter:none}
 @media(min-width:900px){.ve-ck{left:auto;right:24px;bottom:24px;max-width:600px}}
 .ve-ck__in{padding:12px 14px 12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .ve-ck__in p{font-size:13px;line-height:1.4;color:var(--ve-moss)}

@@ -8,11 +8,12 @@
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
     <canvas class="ve-hero__dust" aria-hidden="true"></canvas>
     <div class="ve-hero__shade" aria-hidden="true"></div>
-    <nav class="ve-hero__index ve-dock" aria-label="Разделы сайта"></nav>
+
     <div class="ve-hero__text">
       <h1 class="ve-h1 ve-hero__h1 ve-hero__ch" data-at="1"><span class="ve-w">Сад,</span> <span class="ve-w">за</span> <span class="ve-w">которым</span> <span class="ve-w">не&nbsp;нужно</span> <span class="ve-w">следить</span></h1>
       <p class="ve-hero__sub ve-hero__ch" data-at="2"><span class="ve-w">Один договор.</span> <span class="ve-w">Один ответственный.</span><br><span class="ve-w">Весь сад под&nbsp;контролем.</span></p>
       <p class="ve-hero__cta ve-hero__ch" data-at="2"><button class="ve-btn ve-btn--light ve-w" type="button" data-ve-go-form>Рассчитать стоимость</button></p>
+      <nav class="ve-hero__index" aria-label="Разделы сайта"></nav>
     </div>
     <div class="ve-hero__hint" aria-hidden="true"><span></span></div>
     <!-- заставка: белый экран, логотип наполняется, пока грузятся кадры; потом улетает в знак шапки -->
@@ -95,25 +96,21 @@ html.ve-no-dust .ve-hero__dust{display:none}
 .ve-hero.is-fly .ve-hero__lt{transition:opacity .35s}
 
 /* указатель разделов в финале: шесть строк капсом с бронзовой точкой, лесенкой над ночным садом */
-/* указатель разделов — стеклянный док (xtcpay.me): плитка со световым пятном под курсором, бронзовая точка */
-.ve-hero__index{position:absolute;left:var(--ve-pad);top:calc(84px + env(safe-area-inset-top));display:flex;flex-direction:column;align-items:stretch;gap:2px;padding:5px;border-radius:20px;visibility:hidden;pointer-events:none;opacity:0} /* прозрачность дока ведёт onP вместе с первой строкой — пустая панель не висит */
+/* указатель разделов — второй ряд стеклянных кнопок под «Рассчитать стоимость» (владелец: «как рассчитать, только списочек снизу») */
+.ve-hero__index{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;visibility:hidden;pointer-events:none}
 .ve-hero.is-menu .ve-hero__index{visibility:visible;pointer-events:auto}
-.ve-hero__index a{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;gap:10px;padding:9px 14px 9px 12px;border-radius:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.5),0 0 2px rgba(0,0,0,.35);opacity:0;transform:translateX(-10px);will-change:opacity,transform}
-.ve-hero__index a i{width:6px;height:6px;border-radius:50%;background:var(--ve-bronze);box-shadow:0 0 8px rgba(185,154,102,.9);flex:0 0 auto}
-.ve-hero__index a::before{content:"";position:absolute;inset:2px;z-index:-1;border-radius:12px;background:radial-gradient(64px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.5),rgba(255,255,255,0) 60%),linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.04) 50%,rgba(255,255,255,.12));border:1px solid rgba(255,255,255,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -8px 16px rgba(255,255,255,.06),0 6px 18px rgba(0,0,0,.26);opacity:0;transform:scale(.82);transition:opacity .3s ease,transform .4s var(--ve-ease)}
-@media(prefers-reduced-motion:reduce){.ve-hero.is-menu .ve-hero__index a{opacity:1!important;transform:none!important}}
-/* телефон: без панели — строки с бронзовой точкой и тонкой линией, точки дышат по очереди */
-html.ve-coarse .ve-hero__index{background:none;border:0;box-shadow:none;padding:0;gap:0;border-radius:0;left:var(--ve-pad);right:auto;width:max-content;max-width:calc(100% - 2*var(--ve-pad))}
-html.ve-coarse .ve-hero__index a{padding:11px 4px 11px 0;border-radius:0;overflow:visible;border-top:1px solid rgba(255,255,255,.16);font-size:11.5px}
-html.ve-coarse .ve-hero__index a:first-child{border-top:0}
-html.ve-coarse .ve-hero__index a::before{display:none}
-html.ve-coarse .ve-hero.is-menu .ve-hero__index a i{animation:ve-dot 2.8s ease-in-out infinite;animation-delay:calc(var(--i,0)*.35s)}
-@keyframes ve-dot{0%,100%{box-shadow:0 0 6px rgba(185,154,102,.55);opacity:.85}50%{box-shadow:0 0 14px rgba(185,154,102,1);opacity:1}}
-@media(prefers-reduced-motion:reduce){html.ve-coarse .ve-hero.is-menu .ve-hero__index a i{animation:none}}
-@media(hover:hover){.ve-hero__index a:hover{transform:translateY(-1px) scale(1.03)}.ve-hero__index a:hover::before{opacity:1;transform:scale(1)}}
-.ve-hero__index a:active::before{opacity:1;transform:scale(1)}
+.ve-hero__index a{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-radius:999px;font-size:13.5px;font-weight:600;letter-spacing:-.01em;color:#fff;white-space:nowrap;text-shadow:0 1px 8px rgba(0,0,0,.45);
+  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.3);box-shadow:0 8px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.5),inset 0 -6px 12px rgba(255,255,255,.05);
+  opacity:0;transform:translateY(10px);will-change:opacity,transform;transition:background .3s var(--ve-ease-2),transform .3s var(--ve-ease)}
+.ve-hero__index a i{width:5px;height:5px;border-radius:50%;background:var(--ve-bronze);box-shadow:0 0 6px rgba(185,154,102,.8);flex:0 0 auto}
+.ve-hero__index a::before{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--ve-ring-w);pointer-events:none;background:var(--ve-ring);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+@media(hover:hover){.ve-hero__index a:hover{background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.14));transform:translateY(-2px)!important}}
+.ve-hero__index a:active{transform:scale(.97)!important}
 .ve-hero__index a:focus-visible{outline:2px solid #fff;outline-offset:2px}
-@media(min-width:900px){.ve-hero__index{left:auto;right:40px;top:auto;bottom:64px}.ve-hero__index a{font-size:11.5px;padding:10px 16px 10px 14px;transform:translateX(10px)}}
+@media(min-width:900px){.ve-hero__index{margin-top:18px;gap:10px;max-width:640px}.ve-hero__index a{height:40px;padding:0 16px;font-size:14px}}
+@media(prefers-reduced-motion:reduce){.ve-hero.is-menu .ve-hero__index a{opacity:1!important;transform:none!important}}
+/* тач: без размытия, как и кнопка над фото */
+html.ve-coarse .ve-hero__index a{background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.11))}
 /* логотип в стекле: блик по верху, бегущий свет раз в 7 с, спектральное свечение по дуге */
 .ve-logo__gloss{opacity:0;transition:opacity 1.2s var(--ve-ease)}
 .ve-hero__logo.is-in .ve-logo__gloss{opacity:1}
@@ -184,11 +181,11 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
     for(var i=0;i<n;i++){var k=(p-p0-i*per)/(per*2.4);k=k<0?0:k>1?1:k;k=1-Math.pow(1-k,3);
       var st=els[i].style;st.opacity=k.toFixed(3);st.transform=dx?'translateX('+(dx*(1-k)).toFixed(1)+'px)':'translateY('+((1-k)*.5).toFixed(3)+'em)'}
   }
-  var IDX=null,idxDx=window.innerWidth>=900?10:-10;
+  var IDX=null;
   function onP(p){
     var ch=p<TL.groom?0:p<TL.light?1:2;
     if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
-    if(!VE_RM){seq(W1,p,.76,.86,'h1');seq(W2,p,.85,.9,'sub');seq(W3,p,.89,.92,'cta');if(IDX){seq(IDX,p,.9,.98,'idx',idxDx);index.style.opacity=IDX[0].style.opacity}}else index.style.opacity=p>=TL.menu?1:0;
+    if(!VE_RM){seq(W1,p,.76,.86,'h1');seq(W2,p,.85,.9,'sub');seq(W3,p,.89,.92,'cta');if(IDX)seq(IDX,p,.91,.98,'idx')}
     var on=p>=TL.menu;if(on!==menu){menu=on;root.classList.toggle('is-menu',on);if(on)spin()}
     html.classList.toggle('ve-hero-done',p>=TL.light); // кнопка шапки появляется только после пролёта
     root.classList.toggle('is-idle',p<.002);
@@ -198,11 +195,11 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
   root.querySelector('[data-ve-go-form]').addEventListener('click',function(){if(window.VE)VE.goForm()});
 
   // ---- указатель разделов ----
-  var SEC=[['Постоянный уход','ve-tariffs'],['Разовые работы','ve-pricelist'],['Сад под ключ','ve-ways'],['Почему выгодно','ve-economics'],['Специальные условия','ve-bonuses'],['Рассчитать','ve-form']];
+  var SEC=[['Постоянный уход','ve-tariffs'],['Разовые работы','ve-pricelist'],['Сад под ключ','ve-ways'],['Почему выгодно','ve-economics'],['Спецусловия','ve-bonuses']];
   var index=root.querySelector('.ve-hero__index');
   index.innerHTML=SEC.map(function(o,i){return '<a href="#'+o[1]+'" data-to="'+o[1]+'" style="--i:'+i+'"><i></i><span>'+o[0]+'</span></a>'}).join('');
   IDX=[].slice.call(index.querySelectorAll('a'));
-  index.addEventListener('pointermove',function(e){var a=e.target.closest('a');if(!a||e.pointerType!=='mouse')return;var r=a.getBoundingClientRect();a.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');a.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%')});
+
   function spin(){}
   // тап по строке: плавно едем в раздел, точка садится в его подпись
   var going=null;

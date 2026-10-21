@@ -43,6 +43,8 @@ html.ve-intro .ve-hd{opacity:0;pointer-events:none;transition:none} /* пряч�
 .ve-hd.is-solid{color:var(--ve-ink)}
 .ve-hd.is-solid .ve-hd__in{background:linear-gradient(180deg,rgba(255,255,255,.64),rgba(255,255,255,.42));border:1px solid rgba(255,255,255,.8);-webkit-backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.6) brightness(1.04);backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.6) brightness(1.04);box-shadow:0 14px 40px rgba(21,52,32,.16),inset 0 1px 0 #fff,inset 0 -8px 20px rgba(255,255,255,.2)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve-hd.is-solid .ve-hd__in{background:rgba(255,255,255,.95)}}
+/* тач: фиксированный док с размытием в WebKit (Safari, Telegram) мигает при прокрутке — плотная подложка без backdrop-filter */
+html.ve-coarse .ve-hd.is-solid .ve-hd__in{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.9));-webkit-backdrop-filter:none;backdrop-filter:none}
 @media(prefers-reduced-transparency:reduce){.ve-hd.is-solid .ve-hd__in{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
 /* после хиро шапка белая — кнопка становится тёмной (вместе с hover) */
 .ve-hd.is-solid .ve-hd__cta,.ve-hd.is-solid .ve-hd__cta:hover{background:linear-gradient(180deg,rgba(31,77,46,.12),rgba(31,77,46,.06));color:var(--ve-ink);border-color:rgba(31,77,46,.24);text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 6px 18px rgba(21,52,32,.12),inset 0 1px 0 #fff;--ve-bloom-on:0}
