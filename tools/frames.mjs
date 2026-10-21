@@ -12,6 +12,7 @@
 //        --per=24  кадров на клип (по умолчанию 24 → 73 кадра на пролёт: меньше — слайд-шоу)
 //        --fmt=avif|webp  формат кадров (avif вдвое легче при том же виде; по умолчанию avif)
 //        --q=72  качество webp (tall на 2 ниже); перевалило за бюджет — снижать
+//        --tallw=720  ширина tall-кадра (600 для лёгкой серии телефона)
 //        --placeholder  пометить серию как временную (превью покажет это в манифесте)
 import sharp from 'sharp';
 import { readdir, mkdir, writeFile, readFile, unlink, rm } from 'node:fs/promises';
@@ -30,7 +31,8 @@ const opt = (k, d) => { const a = args.find((x) => x.startsWith('--' + k + '='))
 const PER = +opt('per', 24);
 const FMT = opt('fmt', 'avif');
 const Q = +opt('q', FMT === 'avif' ? 52 : 72);
-const WIDE = { w: 1440, h: 810, q: Q }, TALL = { w: 720, h: 1280, q: Q - 2 };
+const TW = +opt('tallw', 720); // ширина tall-кадра: на телефоне холст не крупнее 1.5× ширины экрана, 600 хватает и весит на треть меньше
+const WIDE = { w: 1440, h: 810, q: Q }, TALL = { w: TW, h: Math.round((TW * 16) / 9), q: Q - 2 };
 
 // ---------- ffmpeg: системный, из FFMPEG или из imageio-ffmpeg ----------
 async function findFfmpeg() {

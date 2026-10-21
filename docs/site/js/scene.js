@@ -16,6 +16,22 @@ export function mount(root, opts = {}) {
   const TL = Object.assign({ flight: 0.66, groom: 0.8, light: 0.88 }, opts.timeline || {});
 
   let man = null, set = null, imgs = [], ready = [], nFlight = 0, curP = 0, held = null, running = false, dead = false;
+  // декодированные битмапы: браузер на телефоне выкидывает декод картинок из кеша и декодирует заново при каждом drawImage — отсюда фризы.
+  // Держим ImageBitmap сами, окном вокруг текущего кадра (на компьютере — все), остальное закрываем.
+  let bmps = [], bmpBusy = 0, bmpCenter = -1;
+  const canBmp = typeof createImageBitmap === 'function';
+  const WIN = slow ? 14 : 24; // окно битмапов: телефон ±14 (≈75 МБ), компьютер ±24 (≈230 МБ)
+  function tend(center) {
+    if (!canBmp || center === bmpCenter) return; bmpCenter = center;
+    const lo = Math.max(0, center - WIN), hi = Math.min(imgs.length - 1, center + WIN);
+    for (let k = 0; k < bmps.length; k++) if (bmps[k] && (k < lo - WIN || k > hi + WIN)) { try { bmps[k].close(); } catch {} bmps[k] = null; }
+    const want = [];
+    for (let d = 0; d <= Math.max(center - lo, hi - center); d++) { if (center + d <= hi) want.push(center + d); if (d && center - d >= lo) want.push(center - d); }
+    for (const k of want) { if (bmpBusy >= 3) break; if (bmps[k] || bmps[k] === 0 || !ready[k]) continue; bmps[k] = 0; bmpBusy++;
+      createImageBitmap(imgs[k]).then((b) => { if (dead || bmps[k] !== 0) { b.close(); return; } bmps[k] = b; if (Math.abs(k - bmpCenter) <= 1) { lastKey = ''; wake(); } }).catch(() => { bmps[k] = null; }).finally(() => { bmpBusy--; tend2(); }); }
+  }
+  function tend2() { const c = bmpCenter; bmpCenter = -1; tend(c); }
+  const pick = (k) => bmps[k] || imgs[k];
   let W = 0, H = 0, dpr = 1, tick = 0, lastKey = '';
   const slow = (() => { try { return matchMedia('(hover:none) and (pointer:coarse)').matches; } catch { return false; } })();
 
@@ -40,6 +56,8 @@ export function mount(root, opts = {}) {
     set = { name: want, ...man.sets[want] };
     const list = set.frames.concat(set.after || []);
     nFlight = set.frames.length;
+    for (const b of bmps) if (b) { try { b.close(); } catch {} }
+    bmps = list.map(() => null); bmpCenter = -1;
     imgs = list.map(() => null); ready = list.map(() => false);
     load(list);
   }
@@ -62,7 +80,7 @@ export function mount(root, opts = {}) {
           img.src = base + 'media/scene/' + list[k] + v;
           await img.decode();
           if (gen !== loadGen) return;
-          imgs[k] = img; ready[k] = true; lastKey = ''; wake();
+          imgs[k] = img; ready[k] = true; if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
           if (opts.onLoad) { let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight); }
         } catch (e) { /* кадр не пришёл — рисуем ближайший загруженный */ }
       }
@@ -77,6 +95,7 @@ export function mount(root, opts = {}) {
 
   // --- cover-кроп: tall-серия уже в 9:16 с ведением фокуса, тут только вписать ---
   function cover(img, alpha, x0 = 0, x1 = W) {
+    if (!img) return;
     const fw = set.w, fh = set.h, s = Math.max(W / fw, H / fh), dw = fw * s, dh = fh * s;
     const dx = (W - dw) / 2, dy = (H - dh) / 2;
     ctx.save();
@@ -95,23 +114,25 @@ export function mount(root, opts = {}) {
     if (p <= TL.flight) {
       const t = seg(p, 0, TL.flight) * last, a = Math.floor(t), b = Math.min(last, a + 1), al = t - a;
       const ia = nearest(a), ib = nearest(b);
-      key = 'f' + ia + ':' + ib + ':' + al.toFixed(3);
+      tend(a);
+      key = 'f' + ia + ':' + ib + ':' + al.toFixed(3) + ':' + (bmps[ia] ? 1 : 0) + (bmps[ib] ? 1 : 0);
       if (key === lastKey || (ia < 0 && ib < 0)) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (ia >= 0) cover(imgs[ia], 1);
-      if (ib >= 0 && ib !== ia && al > 0.002) cover(imgs[ib], al);
+      if (ia >= 0) cover(pick(ia), 1);
+      if (ib >= 0 && ib !== ia && al > 0.002) cover(pick(ib), al);
     } else if (p <= TL.groom) {
       const k = ease(seg(p, TL.flight, TL.groom)), ib = ready[last] ? last : nearest(last);
       key = 'g' + ib + ':' + ready[A] + ':' + k.toFixed(4);
       if (key === lastKey || ib < 0) return;
+      tend(last);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      cover(imgs[ib], 1);
+      cover(pick(ib), 1);
       if (ready[A] && k > 0) {
         // кромка покоса: мягкая (F px), впереди неё — светлая полоса свежего среза
         const F = Math.max(40, W * 0.07), edge = -F + k * (W + 2 * F);
-        cover(imgs[A], 1, 0, Math.max(0, edge - F));
+        cover(pick(A), 1, 0, Math.max(0, edge - F));
         const S = 10;
-        for (let j = 0; j < S; j++) { const x0 = edge - F + (F * j) / S; cover(imgs[A], 1 - (j + 0.5) / S, Math.max(0, x0), Math.max(0, x0 + F / S)); }
+        for (let j = 0; j < S; j++) { const x0 = edge - F + (F * j) / S; cover(pick(A), 1 - (j + 0.5) / S, Math.max(0, x0), Math.max(0, x0 + F / S)); }
         if (k < 1) {
           const g = ctx.createLinearGradient((edge - F * 1.2) * dpr, 0, (edge + F * 0.2) * dpr, 0);
           g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.75, 'rgba(255,255,255,.14)'); g.addColorStop(1, 'rgba(255,255,255,0)');
@@ -123,9 +144,10 @@ export function mount(root, opts = {}) {
       key = 'l' + ready[A] + ':' + ready[A + 1] + ':' + k.toFixed(4);
       if (key === lastKey) return;
       if (!ready[A]) { lastKey = ''; return draw(TL.flight); }
+      tend(last);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      cover(imgs[A], 1);
-      if (ready[A + 1] && k > 0) cover(imgs[A + 1], k);
+      cover(pick(A), 1);
+      if (ready[A + 1] && k > 0) cover(pick(A + 1), k);
     }
     lastKey = key;
     if (!root.classList.contains('is-live')) root.classList.add('is-live');
@@ -170,7 +192,7 @@ export function mount(root, opts = {}) {
   if ('ResizeObserver' in window) { ro = new ResizeObserver(() => { if (size()) wake(); }); ro.observe(stage); }
 
   return {
-    destroy() { dead = true; window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); document.removeEventListener('visibilitychange', onScroll); if (ro) ro.disconnect(); },
+    destroy() { dead = true; for (const b of bmps) if (b) { try { b.close(); } catch {} } bmps = []; window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); document.removeEventListener('visibilitychange', onScroll); if (ro) ro.disconnect(); },
     // отладка: заморозить сцену на прогрессе p (null — вернуть скролл); рисует синхронно, без rAF
     hold(p) { held = p; if (p != null) { curP = p; onProgress(p); lastKey = ''; draw(p); } else wake(); },
     get progress() { return lastP; },
