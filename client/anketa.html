@@ -1,0 +1,228 @@
+<title>Анкета заказчика Verdant Estate</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Cormorant+Garamond:ital,wght@1,500&display=swap">
+<style>
+/* Лист из папки ботанического сада: бумага, тёмная хвоя, бронзовые точки у пунктов; одна колонка для чтения с телефона */
+:root{
+  --paper:#FBFAF6; --card:#FFFFFF; --ink:#1B462A; --text:#26332A; --moss:#5F7464; --line:rgba(27,70,42,.14); --bronze:#A8874F; --warn:#9A4B2F; --warn-bg:#F7EEE8;
+  --sans:"Golos Text",-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;
+  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#121A15;--card:#18221C;--ink:#CFE3D3;--text:#E3E9E4;--moss:#9DB3A3;--line:rgba(207,227,211,.16);--bronze:#C9A86E;--warn:#E7A58B;--warn-bg:#2A1E19;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#121A15;--card:#18221C;--ink:#CFE3D3;--text:#E3E9E4;--moss:#9DB3A3;--line:rgba(207,227,211,.16);--bronze:#C9A86E;--warn:#E7A58B;--warn-bg:#2A1E19;color-scheme:dark}
+
+body{background:var(--paper);color:var(--text);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+header{display:grid;gap:10px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--moss)}
+h1{margin:0;font-family:var(--sans);font-weight:600;font-size:clamp(30px,6vw,44px);line-height:1.05;letter-spacing:-.02em;color:var(--ink);text-wrap:balance}
+.lede{margin:4px 0 0;max-width:60ch;color:var(--text)}
+.note{font-family:var(--serif);font-style:italic;font-size:19px;color:var(--moss);margin:0}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+button{font:600 14.5px var(--sans);color:var(--ink);background:transparent;border:1px solid var(--ink);border-radius:999px;padding:11px 18px;cursor:pointer}
+button:hover{background:var(--ink);color:var(--paper)}
+button:focus-visible{outline:2px solid var(--bronze);outline-offset:3px}
+.status{font-size:13.5px;color:var(--moss)}
+
+section{padding-top:36px}
+h2{margin:0 0 4px;font-size:22px;font-weight:600;letter-spacing:-.01em;color:var(--ink);display:flex;gap:12px;align-items:baseline}
+h2 .tag{font-family:var(--serif);font-style:italic;font-weight:500;font-size:18px;color:var(--bronze)}
+.sub{margin:0 0 14px;color:var(--moss);max-width:62ch}
+ul.items{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--line)}
+ul.items li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+ul.items li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--bronze);margin-top:9px}
+.what{font-weight:600;color:var(--text)}
+.why{display:block;margin-top:3px;font-size:14.5px;color:var(--moss)}
+.ex{display:block;margin-top:4px;font-size:14px;color:var(--moss)}
+.ex b{font-weight:500;color:var(--text)}
+.callout{margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--warn-bg);color:var(--text);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent)}
+.callout strong{color:var(--warn)}
+ol.steps{margin:0;padding-left:22px;display:grid;gap:10px}
+ol.steps li::marker{color:var(--bronze);font-weight:600}
+.docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:4px}
+.doc{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.doc b{display:block;color:var(--ink);font-weight:600}
+.doc span{font-size:14px;color:var(--moss)}
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:13.5px;color:var(--moss);display:grid;gap:8px}
+footer a{color:var(--ink)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Verdant Estate · запуск сайта</span>
+    <h1>Что нужно от вас для запуска сайта</h1>
+    <p class="lede">Две части. Первая — юридическая: сайт принимает заявки с именем и телефоном, поэтому на нём нужны политика, отдельное согласие и сведения о том, кто собирает данные. Вторая — наполнение: цены, условия, ответы на вопросы, фото и доступы. Тексты и документы мы подготовим сами — от вас нужны данные ниже.</p>
+    <p class="note">Заполните, что знаете, и пришлите одним сообщением. Если чего-то нет — так и напишите.</p>
+    <div class="actions">
+      <button type="button" id="copy">Скопировать анкету для ответа</button>
+      <span class="status" id="status" aria-live="polite"></span>
+    </div>
+  </header>
+
+  <section aria-labelledby="s1">
+    <h2 id="s1">Кто собирает данные <span class="tag">оператор</span></h2>
+    <p class="sub">Эти сведения войдут в политику, в согласие и в подвал сайта. Их сверяют с ЕГРЮЛ/ЕГРИП, поэтому пишите точно как в выписке.</p>
+    <ul class="items">
+      <li><span><span class="what">Форма бизнеса</span><span class="why">ИП, ООО или самозанятый.</span></span></li>
+      <li><span><span class="what">Полное наименование</span><span class="ex">Например: <b>Индивидуальный предприниматель Иванов Иван Иванович</b> или <b>ООО «Вердант Эстейт»</b></span></span></li>
+      <li><span><span class="what">ИНН</span></span></li>
+      <li><span><span class="what">ОГРНИП или ОГРН</span><span class="why">Для самозанятого не нужно.</span></span></li>
+      <li><span><span class="what">Адрес для политики</span><span class="why">Юридический адрес ООО или почтовый адрес для обращений. Для ИП домашний адрес публиковать не обязательно — укажите, какой адрес можно показывать.</span></span></li>
+      <li><span><span class="what">Почта для обращений по персональным данным</span><span class="why">Сюда люди пишут, если хотят узнать, удалить или изменить свои данные. Ответить нужно в течение 10 рабочих дней.</span></span></li>
+      <li><span><span class="what">Кто отвечает за обработку данных</span><span class="why">ФИО и должность. У ИП это обычно сам предприниматель.</span></span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="s2">
+    <h2 id="s2">Контакты для сайта <span class="tag">шапка и подвал</span></h2>
+    <ul class="items">
+      <li><span><span class="what">Телефон</span><span class="why">Один основной; если есть второй — для чего он (например, только WhatsApp).</span></span></li>
+      <li><span><span class="what">Telegram</span><span class="ex">Ссылка или имя: <b>@verdant_estate</b></span></span></li>
+      <li><span><span class="what">WhatsApp или MAX</span><span class="why">По желанию.</span></span></li>
+      <li><span><span class="what">Почта для клиентов</span><span class="why">Может совпадать с почтой для обращений.</span></span></li>
+      <li><span><span class="what">Часы работы и география</span><span class="ex">Например: <b>ежедневно 9:00–20:00, Москва и Московская область</b></span></span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="s3">
+    <h2 id="s3">Куда приходят заявки <span class="tag">важно</span></h2>
+    <p class="sub">С 1 июля 2025 года собирать персональные данные граждан России нельзя сразу в иностранные сервисы. Заявка с сайта должна сначала попасть на сервер в России.</p>
+    <ul class="items">
+      <li><span><span class="what">Почта на российском сервисе</span><span class="why">Яндекс 360, Mail.ru, своя почта на российском хостинге — заявка придёт письмом.</span></span></li>
+      <li><span><span class="what">Или CRM</span><span class="why">amoCRM, Битрикс24 или другая — напишите, какая есть, подключим.</span></span></li>
+      <li><span><span class="what">Уведомления в мессенджер</span><span class="why">Можно, но только как копия: основное хранение — в России.</span></span></li>
+    </ul>
+    <div class="callout"><strong>Не подходят как основное место хранения:</strong> Google Формы, Gmail, Google Analytics, Telegram-бот без российской базы. Если сейчас заявки идут туда — скажите, подберём замену.</div>
+  </section>
+
+  <section aria-labelledby="s4">
+    <h2 id="s4">Сайт и аналитика</h2>
+    <ul class="items">
+      <li><span><span class="what">Домен</span><span class="why">Какой адрес у сайта и на кого он оформлен. Лучше — на того же ИП или ООО.</span></span></li>
+      <li><span><span class="what">Нужна ли статистика посещений</span><span class="why">Подойдёт Яндекс Метрика. Если да — нужен доступ к аккаунту или почта, на которую его завести.</span></span></li>
+      <li><span><span class="what">Рассылки</span><span class="why">Будете ли писать клиентам новости и акции. Если да — для этого нужно ещё одно, отдельное согласие.</span></span></li>
+      <li><span><span class="what">Передаёте ли данные клиентов кому-то ещё</span><span class="why">Подрядчикам, бухгалтеру, колл-центру. Если да — кому и зачем, это указывается в политике.</span></span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="c1">
+    <h2 id="c1">Тарифы <span class="tag">постоянный уход</span></h2>
+    <p class="sub">На сайте сейчас: Basic от 60 000 ₽, Premium от 110 000 ₽, Estate от 190 000 ₽ в месяц. Подтвердите или поправьте.</p>
+    <ul class="items">
+      <li><span><span class="what">Цены «от» по трём уровням</span></span></li>
+      <li><span><span class="what">Для какой площади каждый уровень</span><span class="ex">Сейчас ориентир: <b>Basic до 10 соток, Premium 10–25, Estate от 25</b></span></span></li>
+      <li><span><span class="what">Сколько визитов в месяц на каждом уровне</span><span class="why">Самый частый вопрос клиента — «как часто вы приезжаете».</span></span></li>
+      <li><span><span class="what">Что точно входит и что не входит</span><span class="why">Например, входят ли материалы (удобрения, мульча, семена) или оплачиваются отдельно.</span></span></li>
+      <li><span><span class="what">Сезон и зима</span><span class="ex">Например: <b>сезон апрель–ноябрь, зимой — 1 контрольный визит в месяц за 15 000 ₽</b></span></span></li>
+      <li><span><span class="what">Оплата и договор</span><span class="why">Помесячно или за сезон, предоплата, минимальный срок договора, можно ли сменить уровень по ходу.</span></span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="c2">
+    <h2 id="c2">Разовые работы <span class="tag">прайс</span></h2>
+    <ul class="items">
+      <li><span><span class="what">Проверить прайс на сайте</span><span class="why">Газон, растения, деревья — цены из вашего брифа. Добавьте, чего не хватает.</span></span></li>
+      <li><span><span class="what">Минимальный заказ и выезд</span><span class="ex">Например: <b>от 5 000 ₽, выезд за 30 км от МКАД +1 500 ₽</b></span></span></li>
+      <li><span><span class="what">Как считаете «сложные работы по смете»</span><span class="why">Нужен ли осмотр, платный ли он.</span></span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="c3">
+    <h2 id="c3">Спецусловия и вопросы</h2>
+    <ul class="items">
+      <li><span><span class="what">Что именно в бонусах</span><span class="why">«Первый аудит сада», «сезонный комплекс в первый месяц», «дополнительные часы специалиста» — что конкретно получает клиент и сколько.</span></span></li>
+      <li><span><span class="what">Проверить ответы в разделе «Вопросы»</span><span class="why">Там 11 вопросов, ответы написаны по брифу и помечены «черновик». Поправьте формулировки, добавьте вопросы, которые клиенты задают вам по телефону.</span></span></li>
+      <li><span><span class="what">Срочный выезд</span><span class="why">Есть ли, за сколько часов, сколько стоит вне тарифа Estate.</span></span></li>
+      <li><span><span class="what">Гарантии</span><span class="why">Например, на приживаемость посадок или на рулонный газон — если даёте.</span></span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="c4">
+    <h2 id="c4">О компании и людях</h2>
+    <p class="sub">Только то, что правда и что вы готовы показать. Выдуманных цифр и отзывов на сайте не будет.</p>
+    <ul class="items">
+      <li><span><span class="what">С какого года работаете</span></span></li>
+      <li><span><span class="what">Сколько садов на обслуживании сейчас</span><span class="why">Если хотите это показывать.</span></span></li>
+      <li><span><span class="what">Кто «один ответственный» за сад клиента</span><span class="why">Имя, роль, фото — для блока «кто отвечает за ваш сад». По желанию.</span></span></li>
+      <li><span><span class="what">Команда</span><span class="why">Кто выезжает: садовники, арборист, специалист по газону и поливу. Имена и фото по желанию.</span></span></li>
+      <li><span><span class="what">Допуски и страховка</span><span class="why">Например, допуск к высотным работам у арбориста, страхование ответственности — если есть.</span></span></li>
+      <li><span><span class="what">Районы работы</span><span class="ex">Например: <b>Новая Рига, Рублёво-Успенское, Дмитровское шоссе</b></span></span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="c5">
+    <h2 id="c5">Фото и видео <span class="tag">сильнее всего продаёт</span></h2>
+    <p class="sub">Сейчас на сайте рендеры. Настоящие объекты убедительнее. Присылайте оригиналы файлами (не через сжатие мессенджера), лучше ссылкой на Яндекс Диск.</p>
+    <ul class="items">
+      <li><span><span class="what">Сады, которые вы обслуживаете</span><span class="why">Общие планы при хорошем свете, с разрешения владельцев. Без лиц и номеров домов.</span></span></li>
+      <li><span><span class="what">До и после с одной точки</span><span class="why">Для шторки «до / после» — один ракурс в начале сезона и после работ.</span></span></li>
+      <li><span><span class="what">Работа команды</span><span class="why">Покос, стрижка изгороди, обрезка — руки, инструмент, без позирования.</span></span></li>
+      <li><span><span class="what">Короткие видео 5–15 секунд</span><span class="why">Вертикальные, без звука, со штатива или без резких движений.</span></span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="c6">
+    <h2 id="c6">Бренд и доступы</h2>
+    <ul class="items">
+      <li><span><span class="what">Логотип в векторе</span><span class="why">SVG, AI или PDF — если есть. Сейчас логотип перерисован по картинке.</span></span></li>
+      <li><span><span class="what">Фирменные цвета и шрифты</span><span class="why">Если были утверждены где-то ещё — визитки, машины, форма.</span></span></li>
+      <li><span><span class="what">Карточки на картах</span><span class="why">Ссылки на Яндекс Карты и 2ГИС, если есть.</span></span></li>
+      <li><span><span class="what">Соцсети</span><span class="why">Telegram-канал, ВКонтакте — что ведёте.</span></span></li>
+      <li><span><span class="what">Доступ к домену</span><span class="why">У какого регистратора; для подключения сайта понадобится доступ к настройкам DNS или ваш человек, который их поменяет.</span></span></li>
+      <li><span><span class="what">Где будет жить сайт</span><span class="why">Если уже есть аккаунт на Тильде — логин владельца аккаунта мы не спрашиваем, нужен доступ соавтора к проекту.</span></span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="s5">
+    <h2 id="s5">Что нужно сделать вам самим</h2>
+    <ol class="steps">
+      <li><span><b>Подать уведомление в Роскомнадзор</b> об обработке персональных данных — до запуска сайта. Это делается онлайн на сайте Роскомнадзора, вход через Госуслуги. С 30 мая 2025 года штраф за неподачу — до 300 000 ₽. Мы подскажем, что указать в форме.</span></li>
+      <li><span><b>Если вы уже подавали уведомление</b> — проверьте, что в нём есть сбор данных через сайт. Если нет — подаётся уведомление об изменениях.</span></li>
+      <li><span><b>Решить, кто отвечает на обращения</b> по персональным данным и сколько хранить заявки (обычно — пока идёт работа с клиентом плюс срок по договору).</span></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="s6">
+    <h2 id="s6">Что подготовим мы <span class="tag">по вашим данным</span></h2>
+    <div class="docs">
+      <div class="doc"><b>Политика обработки персональных данных</b><span>Отдельная страница сайта, ссылка в подвале.</span></div>
+      <div class="doc"><b>Согласие на обработку данных</b><span>Отдельный документ рядом с галочкой в форме — так требуют правила с 1 сентября 2025.</span></div>
+      <div class="doc"><b>Уведомление о cookie</b><span>Строка внизу сайта, уже есть, текст обновим.</span></div>
+      <div class="doc"><b>Сведения об исполнителе</b><span>Наименование, ИНН, ОГРН в подвале — для клиентов и проверок.</span></div>
+      <div class="doc"><b>Пометка у цен</b><span>«Цены указаны для ориентира и не являются публичной офертой».</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Это перечень данных для подготовки документов, а не юридическая консультация. Перед публикацией тексты политики и согласия стоит показать юристу.</span>
+    <span>На чём основано: изменения 152-ФЗ о согласии отдельным документом с 1.09.2025 (<a href="https://buhexpert8.ru/?p=619740" target="_blank" rel="noopener">обзор</a>, <a href="https://ppt.ru/question/personal-data/oformlenie-soglasiya-na-obrabotku-personalnykh-dannykh-na-sayte" target="_blank" rel="noopener">ppt.ru</a>); запрет сбора в иностранные базы с 1.07.2025 (<a href="https://www.stonebridgelegal.ru/media/files/Alert_Izmenenie-pravil-lokalizacii-dannyh.pdf" target="_blank" rel="noopener">разбор</a>); штрафы за неподачу уведомления с 30.05.2025 (<a href="https://buh.ru/articles/uvedomlenie-ob-obrabotke-personalnykh-dannykh-v-rkn/" target="_blank" rel="noopener">buh.ru</a>, <a href="https://www.garant.ru/article/1831363/" target="_blank" rel="noopener">Гарант</a>).</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var btn=document.getElementById('copy'),st=document.getElementById('status');
+  function text(){
+    var out=['Анкета для сайта Verdant Estate',''];
+    document.querySelectorAll('section').forEach(function(sec){
+      var h=sec.querySelector('h2');var title=h.childNodes[0].textContent.trim();
+      var items=sec.querySelectorAll('ul.items .what');
+      if(!items.length)return;
+      out.push(title.toUpperCase());
+      items.forEach(function(it){out.push('— '+it.textContent.trim()+': ')});
+      out.push('');
+    });
+    out.push('Уведомление в Роскомнадзор подано: да / нет / уже было');
+    return out.join('\n');
+  }
+  btn.addEventListener('click',function(){
+    var t=text();
+    var done=function(){st.textContent='Скопировано — вставьте в сообщение и заполните.'};
+    var fallback=function(){var ta=document.createElement('textarea');ta.value=t;ta.setAttribute('aria-label','Анкета');ta.style.cssText='width:100%;min-height:220px;margin-top:10px;font:14px/1.5 var(--sans);background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px';btn.parentNode.parentNode.appendChild(ta);ta.focus();ta.select();st.textContent='Выделите текст и скопируйте.'};
+    try{navigator.clipboard.writeText(t).then(done,fallback)}catch(e){fallback()}
+  });
+})();
+</script>
