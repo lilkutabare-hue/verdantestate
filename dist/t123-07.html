@@ -1,4 +1,4 @@
-<!-- VE · 07-economics.html · сборка 094d82fd -->
+<!-- VE · 07-economics.html · сборка 35c5541c -->
 <section class="ve ve-sec ve-eco" id="ve-economics">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Почему постоянное обслуживание выгоднее</p>
@@ -7,12 +7,12 @@
     <div class="ve-eco__panel ve-panel ve-r">
       <div class="ve-eco__row ve-eco__row--one">
         <div class="ve-eco__head"><p class="ve-eco__lab">Разовые вызовы</p><p class="ve-eco__count ve-num"><b data-to="10">0</b> отдельных заказов</p></div>
-        <svg class="ve-eco__svg ve-eco__svg--one" aria-hidden="true"></svg>
+        <div class="ve-eco__clip"><svg class="ve-eco__svg ve-eco__svg--one" aria-hidden="true"></svg></div>
         <p class="ve-eco__note">каждый — новый поиск, расчёт и выезд</p>
       </div>
       <div class="ve-eco__row ve-eco__row--ve">
         <div class="ve-eco__head"><p class="ve-eco__lab">Verdant Estate</p><p class="ve-eco__count ve-num"><b data-to="1">0</b> договор</p></div>
-        <svg class="ve-eco__svg ve-eco__svg--ve" aria-hidden="true"></svg>
+        <div class="ve-eco__clip"><svg class="ve-eco__svg ve-eco__svg--ve" aria-hidden="true"></svg></div>
         <p class="ve-eco__note">визиты по графику, один ответственный</p>
       </div>
       <div class="ve-eco__months ve-num" aria-hidden="true"></div>
@@ -42,8 +42,11 @@
 .ve-eco__svg .zig{fill:none;stroke:var(--ve-ink);stroke-opacity:.35;stroke-width:1.5;stroke-dasharray:3 5}
 .ve-eco__svg .line{fill:none;stroke:var(--ve-ink);stroke-width:2;stroke-linecap:round}
 .ve-eco__svg .tick{stroke:var(--ve-bronze);stroke-width:2;stroke-linecap:round}
-.ve-eco__svg .ev{opacity:0;transform:scale(.6);transform-box:fill-box;transform-origin:center;transition:opacity .3s var(--ve-ease),transform .5s var(--ve-ease)}
-.ve-eco__svg .ev.on{opacity:1;transform:none}
+/* схема проявляется слева направо окном (обёртка едет из −100 %, svg внутри — обратно): только transform двух слоёв, без анимаций внутри SVG — в WebKit они перерисовывали схему каждый кадр (10 длинных кадров за 5 с на iPhone) */
+.ve-eco__clip{overflow:hidden;transform:translate3d(-100%,0,0);margin-top:10px}
+.ve-eco__clip>.ve-eco__svg{margin-top:0;transform:translate3d(100%,0,0)}
+.ve-eco__clip.is-on,.ve-eco__clip.is-on>.ve-eco__svg{transform:none;transition:transform var(--dur,1500ms) cubic-bezier(.45,0,.25,1)}
+.ve-eco__clip.is-done,.ve-eco__clip.is-done>.ve-eco__svg{transition:none;transform:none}
 .ve-eco__note{margin-top:6px;font-size:13px;color:var(--ve-moss)}
 .ve-eco__months{display:flex;justify-content:space-between;margin-top:18px;padding-top:12px;border-top:1px solid var(--ve-line);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ve-moss)}
 .ve-eco__facts{margin-top:30px;display:grid;gap:0}
@@ -61,7 +64,7 @@
   .ve-eco__facts p{border-bottom:0!important;padding:22px 0 0;font-size:19px}
   .ve-eco__end{font-size:30px;margin-top:48px}
 }
-@media(prefers-reduced-motion:reduce){.ve-eco__svg .ev{transition:none}}
+@media(prefers-reduced-motion:reduce){.ve-eco__clip,.ve-eco__clip>.ve-eco__svg{transform:none!important;transition:none!important}}
 </style>
 <script>
 (function(){
@@ -91,26 +94,23 @@
     // ряд 2: одна ровная линия и визиты по графику
     var ly=H2/2;line=el('path',{'class':'line',d:'M12 '+ly+' L'+(w-12)+' '+ly});svg2.appendChild(line);
     for(var k=0;k<=16;k++){var tx=12+(k/16)*(w-24),t=el('line',{'class':'tick ev',x1:tx,y1:ly-8,x2:tx,y2:ly+8});svg2.appendChild(t);ticks.push(t)}
-    zlen=zig.getTotalLength();llen=line.getTotalLength();
-    zig.style.strokeDasharray=zlen;zig.style.strokeDashoffset=zlen;line.style.strokeDasharray=llen;line.style.strokeDashoffset=llen;
     if(played)finish();
   }
   var counts=root.querySelectorAll('.ve-eco__count b'),played=false;
-  function finish(){items.forEach(function(g){g.classList.add('on')});ticks.forEach(function(t){t.classList.add('on')});zig.style.strokeDashoffset=0;line.style.strokeDashoffset=0;
+  var clips=root.querySelectorAll('.ve-eco__clip');
+  function finish(){for(var j=0;j<clips.length;j++){clips[j].classList.add('is-on','is-done')}
     for(var i=0;i<counts.length;i++)counts[i].textContent=counts[i].getAttribute('data-to')}
   // играет один раз, когда панель на экране: заказы падают по одному и считаются, потом рисуется ровная линия договора
   function play(){
     played=true;if(VE.rm)return finish();
-    var t0=performance.now(),D1=1500,D2=900;
-    zig.style.transition='stroke-dashoffset '+D1+'ms linear';zig.style.strokeDashoffset=0;
-    items.forEach(function(g,i){setTimeout(function(){g.classList.add('on')},80+i*(D1/items.length))});
-    VE.tween(0,10,D1,function(v){counts[0].textContent=Math.round(v)});
-    setTimeout(function(){
-      line.style.transition='stroke-dashoffset '+D2+'ms var(--ve-ease)';line.style.strokeDashoffset=0;
-      ticks.forEach(function(t,i){setTimeout(function(){t.classList.add('on')},(i/ticks.length)*D2)});
-      setTimeout(function(){counts[1].textContent='1'},D2*.5);
-    },D1+350);
+    var D1=1500,D2=900;
+    clips[0].style.setProperty('--dur',D1+'ms');clips[0].classList.add('is-on');
+    counter(counts[0],10,D1);
+    setTimeout(function(){clips[1].style.setProperty('--dur',D2+'ms');clips[1].classList.add('is-on');setTimeout(function(){counts[1].textContent='1'},D2*.5);
+      setTimeout(function(){for(var j=0;j<clips.length;j++)clips[j].classList.add('is-done')},D2+50)},D1+350);
   }
+  /* счётчик меняет текст только при смене целого числа, не каждый кадр */
+  function counter(el,to,ms){var t0=performance.now(),last=-1;(function f(now){var k=Math.min(1,(now-t0)/ms),v=Math.round(to*(1-Math.pow(1-k,3)));if(v!==last){last=v;el.textContent=v}if(k<1)requestAnimationFrame(f)})(t0)}
   build();
   if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();play()}},{threshold:.35});io.observe(panel)}else play();
   window.addEventListener('resize',build);
