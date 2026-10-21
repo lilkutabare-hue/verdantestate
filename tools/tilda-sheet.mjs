@@ -58,4 +58,8 @@ document.addEventListener('click',function(e){var b=e.target.closest('button[dat
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,fb);else fb()});
 </script></body></html>`;
 writeFileSync(OUT, html);
+// стенд «как Тильда, но медиа с публичного хостинга»: блоки dist без подмены адресов, в обёртках Тильды → /dist/remote.html на стенде
+const head = read('head.html');
+const wrap = blocks.map((f) => `<div class="r t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">${read(f)}</div></div></div></div>`).join('\n');
+writeFileSync(join(DIST, 'remote.html'), `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>стенд Тильды · удалённые медиа</title>${head}<style>body{margin:0}.t-rec{position:relative}</style></head><body class="t-body"><div id="allrecords" class="t-records">${wrap}</div></body></html>`);
 console.log(`dist/ЗАЛИТЬ.html · сборка ${build} · ${items.length} вставок`);

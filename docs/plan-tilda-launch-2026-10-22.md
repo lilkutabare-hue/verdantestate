@@ -15,7 +15,7 @@
 ## Статус (22.10, ночь)
 
 Шаги 1–5 и 7 сделаны в прошлой сессии (см. `git log`):
-- **1.** Медиа для Тильды: `node tools/deploy.mjs --assets` → `https://verdant-assets.lilkutabare.workers.dev/` (воркер со статикой, а не Pages — `pages project create` в wrangler 4.151 не работает), CORS `*`, долгий кеш; `PAGES_BASE` и preconnect переключены. Стенд «как Тильда с удалёнными медиа» — `dist/remote.html` (в git не идёт; собирается скриптом из записки).
+- **1.** Медиа для Тильды: `node tools/deploy.mjs --assets` → `https://verdant-assets.lilkutabare.workers.dev/` (воркер со статикой, а не Pages — `pages project create` в wrangler 4.151 не работает), CORS `*`, долгий кеш; `PAGES_BASE` и preconnect переключены. Стенд «как Тильда с удалёнными медиа» — `dist/remote.html` (в git не идёт; пишет `node tools/tilda-sheet.mjs`).
 - **2.** Блоки в обёртках проверены: матрица 20 устройств, пролёт, липкие секции, якоря. Найден и починен баг: меню хиро дёргалось из-за `html{scroll-behavior:smooth}` → `behavior:'instant'`.
 - **3.** `node tools/tilda-sheet.mjs` → `dist/ЗАЛИТЬ.html`: HEAD, 01–15, страницы П (/policy) и С (/consent), байт в байт с dist.
 - **4.** Воркер `verdant-form` (`tools/form-worker/`) задеплоен, KV `verdant_form`; форма шлёт туда и проверяет ответ. Ждёт токен бота от владельца.
