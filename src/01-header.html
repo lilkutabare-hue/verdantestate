@@ -1,7 +1,7 @@
 <header class="ve ve-hd" id="ve-hd">
   __LOGO_SPRITE__
   <div class="ve-hd__in">
-    <a class="ve-hd__mark" href="#ve-hero" aria-label="Verdant Estate" data-spectral>__MARK__</a>
+    <a class="ve-hd__mark" href="#ve-hero" aria-label="Verdant Estate" data-spectral data-spectral-heavy>__MARK__</a>
     <div class="ve-hd__right">
       <a class="ve-hd__tel ve-num" href="tel:+70000000000" data-ve-tel>+7 000 000-00-00</a>
       <button class="ve-btn ve-btn--sm ve-btn--light ve-hd__cta" type="button" data-ve-go-form>Рассчитать</button>
@@ -21,6 +21,7 @@
 .ve-hd__mark{position:relative;display:flex;align-items:center;justify-content:center;width:46px;height:42px;color:inherit;transition:opacity .25s var(--ve-ease-2)}
 .ve-hd__mark svg{width:42px;height:38px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35)) drop-shadow(0 0 1px rgba(255,255,255,.4))}
 .ve-mark__glow{opacity:calc(.55*var(--ve-f,1));filter:blur(9px)}
+html.ve-coarse .ve-mark__glow{filter:blur(6px)}
 .ve-mark__rim{opacity:.95}
 .ve-mark__gloss{opacity:.9}
 @media(min-width:900px){.ve-hd__mark{width:52px;height:48px}.ve-hd__mark svg{width:48px;height:44px}}

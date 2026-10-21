@@ -14,15 +14,18 @@ export default {
     const url = new URL(req.url);
     const key = env.KEY || '';
     const s = await sig(key);
-    if (key && url.searchParams.get('k') === key) {
-      return new Response(null, { status: 302, headers: { location: url.origin + '/', 'set-cookie': `ve=${s}; Path=/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax`, 'cache-control': 'no-store' } });
-    }
+    // ключ в адресе: отдаём страницу сразу (без редиректа — Safari терял cookie на нём) и ставим cookie
+    const keyed = key && url.searchParams.get('k') === key;
     const cookie = req.headers.get('cookie') || '';
-    if (!key || !cookie.split(';').some((c) => c.trim() === 've=' + s)) {
+    const hasCookie = cookie.split(';').some((c) => c.trim() === 've=' + s);
+    // ассеты со страницы с ключом: Referer той же страницы несёт ?k= (referrer-policy same-origin) — работает и без cookie
+    let byRef = false; try { const r = new URL(req.headers.get('referer') || ''); byRef = r.origin === url.origin && r.searchParams.get('k') === key; } catch {}
+    if (!key || !(keyed || hasCookie || byRef)) {
       return new Response(CLOSED, { status: 403, headers: { 'content-type': 'text/html; charset=utf-8', 'x-robots-tag': 'noindex, nofollow', 'cache-control': 'no-store' } });
     }
-    const res = await env.ASSETS.fetch(req);
+    const res = await env.ASSETS.fetch(keyed ? new Request(url.origin + url.pathname, req) : req);
     const h = new Headers(res.headers);
+    if (keyed && !hasCookie) h.append('set-cookie', `ve=${s}; Path=/; Max-Age=31536000; Secure; SameSite=Lax`);
     const html = (h.get('content-type') || '').includes('text/html');
     h.set('x-robots-tag', 'noindex, nofollow');
     h.set('cache-control', html ? 'no-store' : 'private, max-age=86400');

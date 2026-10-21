@@ -17,12 +17,15 @@ export function mount(root, opts = {}) {
 
   let man = null, set = null, imgs = [], ready = [], nFlight = 0, curP = 0, held = null, running = false, dead = false;
   let W = 0, H = 0, dpr = 1, tick = 0, lastKey = '';
+  const slow = (() => { try { return matchMedia('(hover:none) and (pointer:coarse)').matches; } catch { return false; } })();
 
   // --- размер и серия под ориентацию ---
   function size() {
     const r = stage.getBoundingClientRect();
     const w = Math.round(r.width), h = Math.round(r.height);
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // пикселей не больше, чем в исходном кадре серии (телефон: tall 720 px → холст не 3× ширины экрана), и не больше 1.5 на тач
+    const srcW = man ? (h > w ? man.sets.tall.w : man.sets.wide.w) : 1440;
+    dpr = Math.min(window.devicePixelRatio || 1, slow ? 1.5 : 2, Math.max(1, srcW / w));
     if (w === W && h === H && canvas.width === Math.round(w * dpr)) return false;
     W = w; H = h;
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
@@ -135,8 +138,7 @@ export function mount(root, opts = {}) {
   }
   let lastP = -1;
   // дыхание на покое: пока страница стоит наверху, камера едва дышит по первым кадрам пролёта (период ~9 с) — главная живая без скролла
-  const slow = (() => { try { return matchMedia('(hover:none) and (pointer:coarse)').matches; } catch { return false; } })();
-  const idleOk = () => !rm && held == null && !document.hidden && nFlight > 2 && ready[0] && ready[1] && ready[2];
+  const idleOk = () => !rm && !slow && held == null && !document.hidden && nFlight > 2 && ready[0] && ready[1] && ready[2]; // на тач дыхание делает CSS (is-idle), холст не перерисовывается
   function loop(now) {
     if (dead) return;
     running = true;

@@ -63,6 +63,14 @@
   --ve-ring:linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.08) 30%,rgba(0,0,0,.04) 55%,rgba(0,0,0,.34) 86%,rgba(255,255,255,.14) 100%),conic-gradient(from calc(var(--ve-a)*-.65 + 200deg),rgba(255,255,255,0) 0deg 7deg,rgba(255,255,255,.28) 10.5deg,#fff 13.5deg,rgba(255,255,255,.28) 16.5deg,rgba(255,255,255,0) 20deg 151deg,rgba(255,255,255,.36) 157deg,rgba(255,255,255,0) 163deg),conic-gradient(from var(--ve-a),rgba(255,255,255,0) 0deg,hsla(120,18%,78%,.3) 12deg,hsla(96,22%,86%,.55) 24deg,hsla(60,30%,94%,.85) 31deg,#fff 38deg 46deg,hsla(44,55%,84%,.9) 53deg,hsla(38,45%,70%,.55) 63deg,hsla(28,40%,58%,.22) 76deg,rgba(255,255,255,0) 88deg,rgba(255,255,255,0) 168deg,hsla(120,16%,80%,.2) 182deg,hsla(80,20%,88%,.4) 194deg,rgba(255,255,255,.7) 202deg,hsla(42,50%,80%,.42) 212deg,hsla(30,40%,62%,.16) 224deg,rgba(255,255,255,0) 238deg),repeating-conic-gradient(from calc(var(--ve-a)*1.15),rgba(255,255,255,0) 0deg,rgba(255,255,255,.14) .55deg,rgba(255,255,255,0) 1.2deg),conic-gradient(from calc(var(--ve-a)*.5 + 120deg),rgba(246,248,244,.74),rgba(126,132,122,.4),hsla(90,16%,80%,.5),rgba(255,255,255,.8),rgba(104,110,100,.36),hsla(40,30%,80%,.5),rgba(240,243,236,.64),rgba(140,146,134,.4),rgba(246,248,244,.74));
   --ve-bloom:conic-gradient(from var(--ve-a),rgba(255,255,255,0) 0deg,hsla(110,20%,80%,.2) 16deg,hsla(90,25%,84%,.34) 28deg,rgba(255,255,255,.6) 38deg 46deg,hsla(44,60%,80%,.4) 58deg,hsla(32,45%,64%,.14) 72deg,rgba(255,255,255,0) 88deg,rgba(255,255,255,0) 174deg,hsla(110,18%,80%,.1) 188deg,rgba(255,255,255,.26) 202deg,hsla(42,55%,78%,.12) 216deg,rgba(255,255,255,0) 232deg)}
 @media(max-width:899px){:root{--ve-glass-blur:12px;--ve-dock-blur:18px}}
+/* телефон: размытие подложки дорого на мобильных GPU — док и кнопки в хиро без него (заливка и кромка остаются), шапка и cookie — 10px */
+html.ve-coarse{--ve-dock-blur:10px;--ve-glass-blur:10px}
+html.ve-coarse .ve-hero .ve-dock,html.ve-coarse .ve-hero .ve-btn--light{-webkit-backdrop-filter:none;backdrop-filter:none}
+html.ve-coarse .ve-hero .ve-dock{background:linear-gradient(180deg,rgba(28,46,32,.55),rgba(28,46,32,.42))}
+html.ve-coarse .ve-hero .ve-btn--light{background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.12))}
+html.ve-no-glass .ve-dock,html.ve-no-glass .ve-dock--light,html.ve-no-glass .ve-btn--light,html.ve-no-glass .ve-hd.is-solid .ve-hd__in,html.ve-no-glass .ve-ba__bar i{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.ve-no-glass .ve-ring::before,html.ve-no-glass .ve-ring::after,html.ve-no-glass .ve-btn::before,html.ve-no-glass .ve-btn::after,html.ve-no-glass .ve-pill::before,html.ve-no-glass .ve-pill::after{display:none}
+html.ve-no-breathe .ve-px>img{animation:none}
 /* материал дока (xtcpay.me): на фото — тёмный, на бумаге — светлый */
 .ve-dock{background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.7) brightness(1.18);backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.7) brightness(1.18);box-shadow:0 18px 50px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -8px 20px rgba(255,255,255,.06)}
 .ve-dock--light{background:linear-gradient(180deg,rgba(255,255,255,.64),rgba(255,255,255,.42));border:1px solid rgba(255,255,255,.8);-webkit-backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.6) brightness(1.04);backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.6) brightness(1.04);box-shadow:0 14px 40px rgba(21,52,32,.14),inset 0 1px 0 #fff,inset 0 -8px 20px rgba(255,255,255,.2)}
@@ -172,6 +180,10 @@
 (function(){
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'__BASE__';
+  /* диагностика с телефона: ?nofx=all | glass,dust,spectral,breathe,px,loops — выключает группу эффектов (класс ve-no-<имя> на html) */
+  try{var m=/[?&]nofx=([^&#]*)/.exec(location.search);if(m){var list=decodeURIComponent(m[1]).split(',');if(list.indexOf('all')>=0)list=['glass','dust','spectral','breathe','px','loops'];for(var q=0;q<list.length;q++)if(list[q])document.documentElement.classList.add('ve-no-'+list[q].trim())}}catch(e){}
+  var coarse=false;try{coarse=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
+  if(coarse)document.documentElement.classList.add('ve-coarse');
   var VE={v:'__V__',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
@@ -201,7 +213,7 @@
     tween:function(a,b,ms,fn){if(VE.rm){fn(b);return}var t0=performance.now();(function f(now){var t=Math.min(1,(now-t0)/ms),e=1-Math.pow(1-t,3);fn(a+(b-a)*e);if(t<1)requestAnimationFrame(f)})(t0)},
     /* параллакс фото в секциях: рамка .ve-px с overflow:hidden, картинка внутри чуть крупнее и едет по скроллу */
     parallax:function(){
-      if(VE.rm||VE._px)return;VE._px=true;
+      if(VE.rm||VE._px||document.documentElement.classList.contains('ve-no-px'))return;VE._px=true;
       var raf=0,items=[];
       var collect=function(){items=[].slice.call(document.querySelectorAll('.ve-px'))};
       var paint=function(){raf=0;var vh=window.innerHeight||1;
@@ -215,7 +227,7 @@
        играет только в поле зрения; data-loop-mode="hover" — на компьютере под курсором, на телефоне в центре экрана;
        при prefers-reduced-motion и Save-Data остаётся стилл. Манифест пишет tools/loops.mjs */
     loops:function(){
-      if(VE.rm||VE._lp)return;VE._lp=true;
+      if(VE.rm||VE._lp||document.documentElement.classList.contains('ve-no-loops'))return;VE._lp=true;
       var sd=false;try{sd=!!(navigator.connection&&navigator.connection.saveData)}catch(e){}
       if(sd||!window.fetch)return;
       var coarse=false;try{coarse=window.matchMedia('(hover:none)').matches}catch(e){}
@@ -246,10 +258,10 @@
     spectral:function(root){
       if(!VE._sp){VE._sp={vis:[],io:null};
         if('IntersectionObserver' in window)VE._sp.io=new IntersectionObserver(function(en){en.forEach(function(x){var v=VE._sp.vis,i=v.indexOf(x.target);if(x.isIntersecting){if(i<0)v.push(x.target)}else if(i>=0)v.splice(i,1)})},{rootMargin:'12%'});
-        if(!VE.rm){var SPEED=19,a=0,t=0,last=performance.now(),slow=false,acc=0;try{slow=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
-          (function spin(now){requestAnimationFrame(spin);var dt=(now-last)/1000;last=now;if(document.hidden||dt<=0||dt>.25)return;if(slow){acc+=dt;if(acc<.033)return;dt=acc;acc=0}
+        if(!VE.rm&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=coarse,acc=0;
+          (function spin(now){requestAnimationFrame(spin);var dt=(now-last)/1000;last=now;if(document.hidden||dt<=0||dt>.25)return;if(slow){acc+=dt;if(acc<.08)return;dt=acc;acc=0}
             a=(a+SPEED*dt)%7200;t+=dt;var f=1+.045*Math.sin(t*1.8)+.03*Math.sin(t*4.7+1.4)+.018*Math.sin(t*11.3+3.1),A=a.toFixed(2)+'deg',F=f.toFixed(3),v=VE._sp.vis;
-            for(var i=0;i<v.length;i++){var el=v[i];el.style.setProperty('--ve-a',A);el.style.setProperty('--ve-f',F);var g=el.__grads;if(g)for(var k=0;k<g.length;k++)g[k].setAttribute('gradientTransform','rotate('+a.toFixed(1)+' '+g[k].getAttribute('data-spin')+')')}})(last)}}
+            for(var i=0;i<v.length;i++){var el=v[i];if(slow&&el.hasAttribute('data-spectral-heavy'))continue;el.style.setProperty('--ve-a',A);el.style.setProperty('--ve-f',F);var g=el.__grads;if(g)for(var k=0;k<g.length;k++)g[k].setAttribute('gradientTransform','rotate('+a.toFixed(1)+' '+g[k].getAttribute('data-spin')+')')}})(last)}}
       var els=(root||document).querySelectorAll('[data-spectral],.ve-btn,.ve-pill');
       for(var i=0;i<els.length;i++){var e=els[i];if(e.getAttribute('data-sp'))continue;e.setAttribute('data-sp','1');var g=e.querySelectorAll('linearGradient[data-spin]');if(g.length)e.__grads=g;if(VE._sp.io)VE._sp.io.observe(e);else VE._sp.vis.push(e)}
     },
