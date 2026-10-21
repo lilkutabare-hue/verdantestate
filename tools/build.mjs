@@ -80,7 +80,7 @@ const headSrc = await readFile(join(SRC, 'head.html'), 'utf8');
 let CD = {};
 try { CD = JSON.parse(await readFile(join(DOCS, 'client-data.json'), 'utf8')); } catch {}
 const today = new Date().toLocaleDateString('ru-RU');
-const OPT = { METRICS_LINE: '', METRICS_COOKIE: '', TRANSFER_LINE: '', MAILING_LINE: 'Рекламные и информационные рассылки мы не делаем.', RETENTION: '12 месяцев', OGRN_LABEL: 'ОГРНИП', DATE: today, SITE: 'Verdant Estate' };
+const OPT = { METRICS_LINE: '', METRICS_COOKIE: '', TRANSFER_LINE: '', MAILING_LINE: 'Рекламные и информационные рассылки мы не делаем.', RETENTION: '12 месяцев', OGRN_LABEL: 'ОГРНИП', DATE: today, SITE: 'verdantestate.ru' };
 const legalFill = (s) => {
   let out = s.replace(/\[\[([A-Z_]+)\]\]/g, (m, k) => (CD[k] != null && CD[k] !== '' ? String(CD[k]) : k in OPT ? OPT[k] : m));
   if (CD.DRAFT === false) out = out.replace(/<p class="ve-legal__draft" data-ve-draft>[\s\S]*?<\/p>\s*/g, '');
