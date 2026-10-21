@@ -38,7 +38,7 @@
           </div>
         </div>
         <label class="ve-fm__field"><span>Комментарий</span><textarea name="comment" rows="3" maxlength="1000" placeholder="Где участок, что беспокоит, когда удобно позвонить"></textarea></label>
-        <label class="ve-fm__consent"><input type="checkbox" name="consent" required><i></i><span>Согласен на обработку персональных данных</span></label>
+        <label class="ve-fm__consent"><input type="checkbox" name="consent" required><i></i><span>Даю <a href="/consent" data-ve-consent target="_blank" rel="noopener">согласие на обработку персональных данных</a> и принимаю <a href="/policy" data-ve-policy target="_blank" rel="noopener">политику</a></span></label>
         <p class="ve-fm__err" role="alert" hidden></p>
         <div class="ve-fm__actions">
           <button class="ve-btn" type="submit">Отправить</button>
@@ -71,6 +71,7 @@
 .ve-fm__consent i::after{content:"";position:absolute;left:7px;top:3px;width:5px;height:10px;border-right:2px solid var(--ve-ink);border-bottom:2px solid var(--ve-ink);transform:rotate(45deg);opacity:0}
 .ve-fm__consent:has(input:checked) i::after{opacity:1}
 .ve-fm__consent.is-bad i{border-color:#B0553F}
+.ve-fm__consent a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
 .ve-fm__err{margin-top:14px;font-size:14px;color:#B0553F}
 .ve-fm__actions{margin-top:24px}
 .ve-fm__done{margin-top:24px;font-weight:600;letter-spacing:-.015em;font-size:24px;line-height:1.25}

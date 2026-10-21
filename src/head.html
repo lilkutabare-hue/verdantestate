@@ -302,7 +302,10 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
   try{VE.rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
   try{var s=sessionStorage.getItem('ve-calc');if(s)VE.state=JSON.parse(s)||{}}catch(e){}
   window.VE=VE;
-  var boot=function(){VE.reveal();VE.parallax();VE.loops();VE.spectral();document.documentElement.classList.add('ve-ready')};
+  /* адреса страниц политики и согласия: на Тильде /policy и /consent, в превью — policy.html и consent.html (VE_LEGAL) */
+  VE.legal=Object.assign({policy:'/policy',consent:'/consent',home:'/'},window.VE_LEGAL||{});
+  var links=function(){var m={'data-ve-policy':'policy','data-ve-consent':'consent','data-ve-home':'home'};for(var a in m){var els=document.querySelectorAll('['+a+']');for(var i=0;i<els.length;i++)if(els[i].tagName==='A')els[i].setAttribute('href',VE.legal[m[a]])}};
+  var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
 })();

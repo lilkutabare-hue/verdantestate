@@ -76,7 +76,18 @@ const kb = (n) => (n / 1024).toFixed(1) + ' КБ';
 // ---------- сборка ----------
 const files = (await readdir(SRC)).filter((f) => /^\d\d-.*\.html$/.test(f)).sort();
 const headSrc = await readFile(join(SRC, 'head.html'), 'utf8');
-const fill = (s, base) => s.replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__ARC_MASK__/g, ARC_MASK).replace(/__ARC_CX__/g, ARC_CX).replace(/__ARC_CY__/g, ARC_CY).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
+// данные заказчика для политики, согласия и подвала: docs/client-data.json (образец — client-data.example.json)
+let CD = {};
+try { CD = JSON.parse(await readFile(join(DOCS, 'client-data.json'), 'utf8')); } catch {}
+const today = new Date().toLocaleDateString('ru-RU');
+const OPT = { METRICS_LINE: '', METRICS_COOKIE: '', TRANSFER_LINE: '', MAILING_LINE: 'Рекламные и информационные рассылки мы не делаем.', RETENTION: '12 месяцев', OGRN_LABEL: 'ОГРНИП', DATE: today, SITE: 'Verdant Estate' };
+const legalFill = (s) => {
+  let out = s.replace(/\[\[([A-Z_]+)\]\]/g, (m, k) => (CD[k] != null && CD[k] !== '' ? String(CD[k]) : k in OPT ? OPT[k] : m));
+  if (CD.DRAFT === false) out = out.replace(/<p class="ve-legal__draft" data-ve-draft>[\s\S]*?<\/p>\s*/g, '');
+  if (!CD.INN) out = out.replace(/<span class="ve-ft__req"[^>]*>[\s\S]*?<\/span>/g, ''); // реквизиты в подвале — только когда есть ИНН
+  return out;
+};
+const fill = (s, base) => legalFill(s).replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__ARC_MASK__/g, ARC_MASK).replace(/__ARC_CX__/g, ARC_CX).replace(/__ARC_CY__/g, ARC_CY).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
 
 const headDist = fill(headSrc, PAGES_BASE);
 await checkScripts(headDist, 'head'); checkCss(headDist, 'head');
@@ -100,6 +111,19 @@ for (const f of files) {
   blocksDist.push({ n, f, size, html: dist });
   blocksPreview.push({ n, f, html: fill(src, 'site/') });
   console.log(`t123-${n}.html  ${kb(size)} / 84 КБ  ← ${f}`);
+}
+
+// ---------- отдельные страницы: политика и согласие (свой T123 на страницах /policy и /consent) ----------
+const legalStyle = await readFile(join(SRC, 'legal/_style.html'), 'utf8');
+const LEGAL = [['policy', 'Политика обработки персональных данных'], ['consent', 'Согласие на обработку персональных данных']];
+for (const [name, title] of LEGAL) {
+  const src = legalStyle + (await readFile(join(SRC, `legal/${name}.html`), 'utf8'));
+  const dist = `<!-- VE · legal/${name}.html · сборка ${V} -->\n` + fill(src, PAGES_BASE);
+  checkCss(dist, name);
+  await writeFile(join(DIST, `t123-${name}.html`), dist);
+  console.log(`t123-${name}.html  ${kb(Buffer.byteLength(dist))} / 84 КБ  ← legal/${name}.html`);
+  const prev = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title} — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>${fill(headSrc, 'site/')}<style>html,body{margin:0;background:#fff}</style></head><body>${fill(src, 'site/')}</body></html>`;
+  await writeFile(join(DOCS, `${name}.html`), prev);
 }
 
 // ---------- стенд Тильды: обёртки .t-body > .t-records > .t-rec > .t123 ----------
@@ -127,7 +151,7 @@ const page = `<!doctype html>
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png">
 <meta name="theme-color" content="#1B462A">
-<script>window.VE_BASE=new URL('site/',location.href).href</script>
+<script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>
 ${fill(headSrc, 'site/')}
 <style>html,body{margin:0;padding:0;background:#FFFFFF}body{overflow-x:hidden}.ve-preview-note{font:11px/1.5 -apple-system,system-ui,sans-serif;color:#5E6E45;text-align:center;padding:18px 20px 28px;background:#FFFFFF}</style>
 </head>

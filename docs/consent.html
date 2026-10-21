@@ -1,0 +1,353 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Согласие на обработку персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 418c2a6c -->
+<link rel="preconnect" href="https://verdant-assets.lilkutabare.workers.dev" crossorigin>
+<style>
+/* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
+@font-face{font-family:"Cormorant VE";font-style:italic;font-weight:500;font-display:swap;src:url(site/fonts/cormorant-garamond-cyrillic-500-italic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Cormorant VE";font-style:italic;font-weight:500;font-display:swap;src:url(site/fonts/cormorant-garamond-latin-500-italic.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{
+  --ve-paper:#FFFFFF;--ve-paper-2:#F3F6F2;--ve-ink:#1B462A;--ve-acc:#2E7D46;--ve-moss:#617A66;--ve-line:rgba(31,77,46,.14);--ve-bronze:#B99A66;--ve-lamp:#B99A66;
+  --ve-sans:-apple-system,"SF Pro Text","SF Pro Display","Inter","Segoe UI",Roboto,system-ui,sans-serif;
+  --ve-serif:"Cormorant VE","Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --ve-ease:cubic-bezier(.2,.9,.2,1);--ve-ease-2:cubic-bezier(.2,.8,.2,1);
+  --ve-r:8px;--ve-gap:72px;--ve-pad:20px;
+  color-scheme:light only;
+}
+@media(min-width:900px){:root{--ve-r:12px;--ve-gap:120px;--ve-pad:40px}}
+
+/* якоря едут плавно и встают под док шапки */
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* база блока: всё наше живёт под .ve, стили Тильды .t-* не трогаем */
+.ve{font-family:var(--ve-sans);font-size:16px;line-height:1.5;color:var(--ve-ink);background:var(--ve-paper);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;box-sizing:border-box}
+.ve *,.ve *::before,.ve *::after{box-sizing:inherit}
+@media(min-width:900px){.ve{font-size:17px}}
+:where(.ve) p{margin:0}
+:where(.ve) a{color:inherit;text-decoration:none}
+:where(.ve) img{display:block;max-width:100%;height:auto}
+:where(.ve) button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:where(.ve) :focus{outline:none}
+:where(.ve) :focus-visible{outline:2px solid var(--ve-moss);outline-offset:3px;border-radius:4px}
+
+.ve-wrap{max-width:1240px;margin:0 auto;padding-left:var(--ve-pad);padding-right:var(--ve-pad)}
+.ve-sec{padding-top:var(--ve-gap);padding-bottom:0}
+.ve-sec--last{padding-bottom:var(--ve-gap)}
+.ve-copy{max-width:56ch}
+.ve-muted{color:var(--ve-moss)}
+
+/* типографика: один гротеск, заголовки плотные, без курсива и росчерков */
+.ve-h1,.ve-h2,.ve-h3{font-family:var(--ve-sans);font-weight:600;margin:0;letter-spacing:-.022em;text-wrap:balance}
+.ve-h1{font-size:40px;line-height:1.02}
+.ve-h2{font-size:30px;line-height:1.08;letter-spacing:-.02em}
+.ve-h3{font-size:20px;line-height:1.2;letter-spacing:-.012em}
+@media(min-width:900px){.ve-h1{font-size:64px;line-height:1}.ve-h2{font-size:42px;line-height:1.04}.ve-h3{font-size:22px}}
+.ve-caps{font-family:var(--ve-sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ve-moss)}
+.ve-price,.ve-num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
+/* подпись к фото «что · где»: антиква курсивом (владелец, 21.10), бронзовая точка-разделитель */
+.ve-cap{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 10px;font-family:var(--ve-serif);font-style:italic;font-weight:500;font-size:17px;letter-spacing:.01em;color:var(--ve-moss);line-height:1.35}
+.ve-cap b{font-weight:500;color:var(--ve-ink)}
+.ve-cap i{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--ve-bronze);flex:0 0 auto;align-self:center}
+@media(min-width:900px){.ve-cap{font-size:18px}}
+.ve-lead{font-size:18px;line-height:1.45;max-width:56ch;font-weight:500;letter-spacing:-.01em}
+@media(min-width:900px){.ve-lead{font-size:22px}}
+.ve-sub{margin-top:14px;max-width:56ch;color:var(--ve-moss)}
+.ve-big{font-weight:600;letter-spacing:-.02em;font-size:26px;line-height:1.1}
+@media(min-width:900px){.ve-big{font-size:30px}}
+
+/* ---- управление: Liquid Glass (владелец, 22.10: «кнопки и интерфейс — в стиле Apple glass») ----
+   кнопки — стеклянные капсулы: тонированное стекло для главного действия, прозрачное над фото и на тёмном;
+   чипсы — капсулы, выбранная тонируется; вкладки — сегментный контроль с бегущей стеклянной подложкой;
+   поля — стеклянные вставки. Размытие подложки (backdrop-filter) только там, где под стеклом фото или контент:
+   шапка, кнопки над хиро, cookie-плашка, ручка шторки — на белом размывать нечего, а каждое стекло на телефоне стоит кадров */
+:root{--ve-glass-blur:18px;--ve-dock-blur:26px;--ve-tint:linear-gradient(180deg,rgba(31,77,46,.96),rgba(26,66,40,.9));--ve-glass-shadow:0 10px 30px rgba(21,52,32,.16);
+  /* спектральное кольцо (основа — шапка xtcpay.me): кромка свет/тень + белый блик + спектр + микроштрихи + серебро; угол --ve-a крутит VE.spectral, --ve-f — дыхание яркости */
+  --ve-a:32deg;--ve-f:1;--ve-ring-w:.8px;--ve-ring-sat:1;
+  /* гамма кольца — «садовый свет» (владелец: «не 1 в 1 как у XTC, тона приглушить»): белый, шампань-золото, шалфей, тёплое дерево; основа — кромка свет/тень и серебро */
+  --ve-ring:linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.08) 30%,rgba(0,0,0,.04) 55%,rgba(0,0,0,.34) 86%,rgba(255,255,255,.14) 100%),conic-gradient(from calc(var(--ve-a)*-.65 + 200deg),rgba(255,255,255,0) 0deg 7deg,rgba(255,255,255,.28) 10.5deg,#fff 13.5deg,rgba(255,255,255,.28) 16.5deg,rgba(255,255,255,0) 20deg 151deg,rgba(255,255,255,.36) 157deg,rgba(255,255,255,0) 163deg),conic-gradient(from var(--ve-a),rgba(255,255,255,0) 0deg,hsla(120,18%,78%,.3) 12deg,hsla(96,22%,86%,.55) 24deg,hsla(60,30%,94%,.85) 31deg,#fff 38deg 46deg,hsla(44,55%,84%,.9) 53deg,hsla(38,45%,70%,.55) 63deg,hsla(28,40%,58%,.22) 76deg,rgba(255,255,255,0) 88deg,rgba(255,255,255,0) 168deg,hsla(120,16%,80%,.2) 182deg,hsla(80,20%,88%,.4) 194deg,rgba(255,255,255,.7) 202deg,hsla(42,50%,80%,.42) 212deg,hsla(30,40%,62%,.16) 224deg,rgba(255,255,255,0) 238deg),repeating-conic-gradient(from calc(var(--ve-a)*1.15),rgba(255,255,255,0) 0deg,rgba(255,255,255,.14) .55deg,rgba(255,255,255,0) 1.2deg),conic-gradient(from calc(var(--ve-a)*.5 + 120deg),rgba(246,248,244,.74),rgba(126,132,122,.4),hsla(90,16%,80%,.5),rgba(255,255,255,.8),rgba(104,110,100,.36),hsla(40,30%,80%,.5),rgba(240,243,236,.64),rgba(140,146,134,.4),rgba(246,248,244,.74));
+  --ve-bloom:conic-gradient(from var(--ve-a),rgba(255,255,255,0) 0deg,hsla(110,20%,80%,.2) 16deg,hsla(90,25%,84%,.34) 28deg,rgba(255,255,255,.6) 38deg 46deg,hsla(44,60%,80%,.4) 58deg,hsla(32,45%,64%,.14) 72deg,rgba(255,255,255,0) 88deg,rgba(255,255,255,0) 174deg,hsla(110,18%,80%,.1) 188deg,rgba(255,255,255,.26) 202deg,hsla(42,55%,78%,.12) 216deg,rgba(255,255,255,0) 232deg)}
+@media(max-width:899px){:root{--ve-glass-blur:12px;--ve-dock-blur:18px}}
+/* телефон: размытие подложки дорого на мобильных GPU — док и кнопки в хиро без него (заливка и кромка остаются), шапка и cookie — 10px */
+html.ve-coarse{--ve-dock-blur:10px;--ve-glass-blur:10px}
+html.ve-coarse .ve-hero .ve-dock,html.ve-coarse .ve-hero .ve-btn--light{-webkit-backdrop-filter:none;backdrop-filter:none}
+html.ve-coarse .ve-hero .ve-dock{background:linear-gradient(180deg,rgba(28,46,32,.55),rgba(28,46,32,.42))}
+html.ve-coarse .ve-hero .ve-btn--light{background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.12))}
+/* тач: кольцо стоит, блум (размытая псевдо-копия) выключен — иначе перерисовка размытия на каждом тике */
+html.ve-coarse .ve-btn::after,html.ve-coarse .ve-ring::after,html.ve-coarse .ve-pill::after{display:none}
+html.ve-no-glass .ve-dock,html.ve-no-glass .ve-dock--light,html.ve-no-glass .ve-btn--light,html.ve-no-glass .ve-hd.is-solid .ve-hd__in,html.ve-no-glass .ve-ba__bar i{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.ve-no-glass .ve-ring::before,html.ve-no-glass .ve-ring::after,html.ve-no-glass .ve-btn::before,html.ve-no-glass .ve-btn::after,html.ve-no-glass .ve-pill::before,html.ve-no-glass .ve-pill::after{display:none}
+html.ve-no-breathe .ve-px>img{animation:none}
+/* материал дока (xtcpay.me): на фото — тёмный, на бумаге — светлый */
+.ve-dock{background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.7) brightness(1.18);backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.7) brightness(1.18);box-shadow:0 18px 50px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -8px 20px rgba(255,255,255,.06)}
+.ve-dock--light{background:linear-gradient(180deg,rgba(255,255,255,.64),rgba(255,255,255,.42));border:1px solid rgba(255,255,255,.8);-webkit-backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.6) brightness(1.04);backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.6) brightness(1.04);box-shadow:0 14px 40px rgba(21,52,32,.14),inset 0 1px 0 #fff,inset 0 -8px 20px rgba(255,255,255,.2)}
+/* спектральное кольцо и блум — на любой элемент с position:relative: кольцо = ::before, блум = ::after */
+.ve-ring::before{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--ve-ring-w);pointer-events:none;background:var(--ve-ring);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;filter:saturate(var(--ve-ring-sat))}
+.ve-ring::after{content:"";position:absolute;inset:-3px;z-index:-1;border-radius:inherit;padding:calc(var(--ve-ring-w) + 6px);pointer-events:none;background:var(--ve-bloom);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;filter:blur(5px) saturate(var(--ve-ring-sat)) brightness(var(--ve-f));opacity:var(--ve-bloom-on,0);transition:opacity .5s ease}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve-dock{background:rgba(20,40,28,.7)}.ve-dock--light{background:rgba(255,255,255,.94)}}
+@media(prefers-reduced-transparency:reduce){.ve-dock{background:rgba(20,40,28,.92);-webkit-backdrop-filter:none;backdrop-filter:none}.ve-dock--light{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}.ve-ring::after{display:none}}
+/* кнопка — прозрачное стекло (владелец: «хочу клир, без болота»): на бумаге — лёгкая зелёно-серая дымка и тёмный текст, над фото и на тёмном — белое стекло (.ve-btn--light) */
+.ve .ve-btn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(31,77,46,.1),rgba(31,77,46,.05));color:var(--ve-ink);font-size:16px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;border:1px solid rgba(31,77,46,.22);
+  box-shadow:0 10px 28px rgba(21,52,32,.12),inset 0 1px 0 rgba(255,255,255,.85),inset 0 -6px 14px rgba(255,255,255,.25);
+  transition:transform .35s var(--ve-ease),box-shadow .35s var(--ve-ease),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s}
+/* спектральное кольцо по кромке (::before) и блум (::after, на наведении и над фото) */
+.ve .ve-btn::before{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--ve-ring-w);pointer-events:none;background:var(--ve-ring);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;filter:saturate(var(--ve-ring-sat))}
+.ve .ve-btn::after{content:"";position:absolute;inset:-3px;z-index:-1;border-radius:inherit;padding:calc(var(--ve-ring-w) + 6px);pointer-events:none;background:var(--ve-bloom);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;filter:blur(5px) saturate(var(--ve-ring-sat)) brightness(var(--ve-f));opacity:var(--ve-bloom-on,0);transition:opacity .5s ease}
+.ve .ve-btn--ghost{background:linear-gradient(180deg,rgba(31,77,46,.06),rgba(31,77,46,.03));border-color:rgba(31,77,46,.18);box-shadow:0 6px 20px rgba(21,52,32,.08),inset 0 1px 0 #fff}
+/* над фото: прозрачное стекло с размытием */
+.ve .ve-btn--light{background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.08));color:#fff;border-color:rgba(255,255,255,.3);-webkit-backdrop-filter:blur(var(--ve-glass-blur)) saturate(1.7) brightness(1.18);backdrop-filter:blur(var(--ve-glass-blur)) saturate(1.7) brightness(1.18);box-shadow:0 16px 44px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -8px 16px rgba(255,255,255,.06);text-shadow:0 1px 10px rgba(0,0,0,.5),0 0 2px rgba(0,0,0,.35);--ve-bloom-on:.3}
+.ve .ve-btn--sm{height:42px;padding:0 18px;font-size:14.5px}
+@media(max-width:599px){.ve .ve-btn{height:auto;min-height:50px;padding:12px 22px;font-size:15.5px;white-space:normal;text-align:center;line-height:1.2}.ve .ve-btn--sm{min-height:40px;padding:9px 16px}}
+@media(hover:hover){
+  .ve .ve-btn:hover{transform:translateY(-2px) scale(1.03);background:linear-gradient(180deg,rgba(31,77,46,.15),rgba(31,77,46,.08));box-shadow:0 16px 36px rgba(21,52,32,.16),inset 0 1px 0 #fff;--ve-bloom-on:.45}
+  .ve .ve-btn--ghost:hover{background:linear-gradient(180deg,rgba(31,77,46,.1),rgba(31,77,46,.05))}
+  .ve .ve-btn--light:hover{background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.14));box-shadow:0 18px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.65);--ve-bloom-on:.55}
+}
+.ve .ve-btn:active{transform:scale(.97)}
+.ve-chip{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(31,77,46,.14);background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.5));font-size:15px;font-weight:500;color:var(--ve-ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  box-shadow:0 4px 14px rgba(21,52,32,.07),inset 0 1px 0 #fff;transition:background .25s var(--ve-ease-2),color .25s var(--ve-ease-2),border-color .25s,transform .3s var(--ve-ease),box-shadow .3s}
+.ve-chip.is-on,.ve-chip:has(input:checked){background:linear-gradient(180deg,rgba(31,77,46,.16),rgba(31,77,46,.09));color:var(--ve-ink);border-color:rgba(31,77,46,.3);box-shadow:0 6px 18px rgba(21,52,32,.14),inset 0 1px 0 rgba(255,255,255,.8)}
+.ve-chip.is-on::before,.ve-chip:has(input:checked)::before{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1.2px;pointer-events:none;background:var(--ve-ring);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.ve-chip:active{transform:scale(.96)}
+@media(hover:hover){.ve-chip:not(.is-on):hover{border-color:rgba(31,77,46,.3);background:#fff;box-shadow:0 8px 20px rgba(21,52,32,.1),inset 0 1px 0 #fff}}
+.ve-chip input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.ve-chip:has(input:focus-visible){outline:2px solid var(--ve-moss);outline-offset:3px}
+/* вкладки = сегментный контроль: стеклянный жёлоб и белая капсула, которая едет к выбранной (VE.pills) */
+.ve-tabs{position:relative;display:inline-flex;flex-wrap:nowrap;max-width:100%;gap:2px;padding:3px;border-radius:999px;border:1px solid rgba(31,77,46,.1);background:linear-gradient(180deg,rgba(31,77,46,.075),rgba(31,77,46,.045));box-shadow:inset 0 1px 2px rgba(21,52,32,.08)}
+.ve-tab{position:relative;z-index:1;height:38px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:500;color:var(--ve-moss);white-space:nowrap;transition:color .25s}
+.ve-tab.is-on{color:var(--ve-ink)}
+.ve-pill{position:absolute;left:0;top:3px;height:calc(100% - 6px);border-radius:999px;background:linear-gradient(180deg,#fff,rgba(255,255,255,.88));border:1px solid rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(21,52,32,.16),inset 0 1px 0 #fff;transition:transform .45s var(--ve-ease),width .45s var(--ve-ease);pointer-events:none}
+@media(hover:hover){.ve-tab:not(.is-on):hover{color:var(--ve-ink)}}
+@media(max-width:599px){.ve-tab{padding:0 13px;font-size:14.5px;height:36px}}
+/* панель — стеклянная карточка на бумаге: чуть тонированная, с кромкой света и мягкой тенью */
+.ve-panel{position:relative;border-radius:24px;border:1px solid rgba(31,77,46,.09);background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(243,246,242,.7));box-shadow:0 14px 44px rgba(21,52,32,.08),inset 0 1px 0 #fff}
+@media(max-width:599px){.ve-panel{border-radius:20px}}
+/* если стекла нет или пользователь просит без прозрачности — плотные подложки */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve .ve-btn--light{background:rgba(255,255,255,.32)}}
+@media(prefers-reduced-transparency:reduce){.ve .ve-btn--light{background:rgba(255,255,255,.94);color:var(--ve-ink);text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;--ve-bloom-on:0}}
+
+/* ---- система движения ----
+   .ve-r      появление: прозрачность + подъём 12px, один раз, по IntersectionObserver
+   .ve-rg     группа: дети появляются лесенкой по 60 мс (--d на каждом)
+   .ve-img    картинка открывается снизу вверх и «садится» из лёгкого увеличения
+   .ve-line   верхний хэйрлайн рисуется слева направо
+   VE.swap    смена текста через короткое затухание                                   */
+.ve-r,.ve-rg>*{opacity:0;transform:translateY(12px);transition:opacity .55s var(--ve-ease),transform .55s var(--ve-ease);transition-delay:var(--d,0ms)}
+.ve-r.is-in,.ve-rg.is-in>*{opacity:1;transform:none}
+.ve-img{position:relative;overflow:hidden;border-radius:var(--ve-r);background:var(--ve-paper-2);clip-path:inset(0 0 100% 0 round var(--ve-r));transition:clip-path .9s var(--ve-ease);transition-delay:var(--d,0ms)}
+.ve-img>img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 1.3s var(--ve-ease);transition-delay:var(--d,0ms)}
+.ve-img.is-in{clip-path:inset(0 round var(--ve-r))}
+.ve-img.is-in>img{transform:scale(1)}
+.ve-line{position:relative}
+.ve-line::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ve-line);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ve-ease);transition-delay:var(--d,0ms)}
+.ve-line.is-in::before{transform:scaleX(1)}
+/* «линия Dan Pearson»: верх каждой секции — хэйрлайн, который рисуется при появлении; у ключевых — силуэт из рендера (tools/outline.mjs) */
+.ve-sec__top{padding-top:28px}
+@media(min-width:900px){.ve-sec__top{padding-top:36px}}
+.ve-sil{display:block;width:100%;height:auto;overflow:visible;margin-bottom:22px}
+.ve-sil path{fill:none;stroke:var(--ve-ink);stroke-opacity:.55;stroke-width:1;stroke-dasharray:var(--len,1400);stroke-dashoffset:var(--len,1400);transition:stroke-dashoffset 1.8s var(--ve-ease)}
+.ve-sil.is-in path{stroke-dashoffset:0}
+@media(min-width:900px){.ve-sil{margin-bottom:30px}}
+.ve-swap{display:inline-block;transition:opacity .18s var(--ve-ease-2),transform .18s var(--ve-ease-2)}
+.ve-swap.is-out{opacity:0;transform:translateY(5px)}
+.ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
+.ve-px{position:relative;overflow:hidden}
+.ve-px>img,.ve-px>video{width:100%;height:100%;object-fit:cover;transform:translate3d(0,var(--px,0%),0) scale(1.14)}
+.ve-px.is-vis>img,.ve-px.is-vis>video{will-change:transform} /* слой держим только в кадре: 25 слоёв по мегапикселю на телефоне = дёрганый скролл */
+/* живые фото: медленный наезд (scale отдельно от transform параллакса), играет только пока рамка в кадре (.is-vis ставит VE.parallax) */
+.ve-px>img{animation:ve-breathe 26s ease-in-out infinite alternate;animation-play-state:paused}
+.ve-px.is-vis>img{animation-play-state:running}
+@keyframes ve-breathe{from{scale:1}to{scale:1.07}}
+/* параллакс на композиторе: сдвиг translate по прогрессу рамки в окне, без JS и без scroll-обработчика.
+   overflow:clip, а не hidden: hidden делает рамку контейнером прокрутки, и view() считал прогресс по ней (вечные 50 %) */
+html.ve-sda .ve-px{overflow:clip}
+html.ve-sda .ve-px>img,html.ve-sda .ve-px>video{transform:scale(1.14);animation:ve-px-y linear both,ve-breathe 26s ease-in-out infinite alternate;animation-timeline:view(),auto;animation-range:cover 0% cover 100%,normal;animation-play-state:running,paused}
+html.ve-sda .ve-px.is-vis>img{animation-play-state:running,running}
+@keyframes ve-px-y{from{translate:0 6%}to{translate:0 -6%}}
+/* тач: фото без «дыхания» — меньше работы композитору во время прокрутки */
+html.ve-coarse .ve-px>img{animation:none}
+html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve-px-y linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+@media(prefers-reduced-motion:reduce){.ve-px>img,.ve-px>video{transform:none!important;animation:none!important}}
+/* луп поверх стилла: <video> вставляет VE.loops у [data-loop], когда есть media/loops/manifest.json; проявляется, когда пошли кадры */
+.ve-loop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s var(--ve-ease);pointer-events:none;background:transparent}
+.ve-loop.is-live{opacity:1}
+/* точка, в которую садится сфера меню хиро (ставит хиро у подписи раздела) */
+.ve-caps{position:relative}
+.ve-dot{position:absolute;left:-16px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:var(--ve-acc);transform:scale(0);transition:transform .4s var(--ve-ease)}
+.ve-dot.is-on{transform:scale(1)}
+.ve-tar .ve-dot{background:var(--ve-paper)}
+.ve h2[tabindex="-1"]:focus{outline:none}
+
+/* горизонтальные ленты со snap */
+.ve-strip{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+  padding-left:var(--ve-pad);padding-right:var(--ve-pad);scroll-padding-left:var(--ve-pad);margin:0 calc(-1 * var(--ve-pad))}
+.ve-strip::-webkit-scrollbar{display:none}
+.ve-strip>*{scroll-snap-align:start;flex:0 0 auto}
+
+@media(prefers-reduced-motion:reduce){
+  .ve-r,.ve-rg>*,.ve-img,.ve-img>img,.ve-line::before{opacity:1;transform:none;clip-path:none;transition:none}
+  .ve-sil path{stroke-dashoffset:0;transition:none}
+  .ve .ve-btn,.ve-chip,.ve-tab,.ve-pill,.ve-swap{transition:none}
+  .ve .ve-btn::after,.ve-ring::after{display:none}
+}
+</style>
+<script>
+/* реестр VE: адреса с версией, появление, вкладки, смена текста, общий префилл формы */
+(function(){
+  if(window.VE&&window.VE.v)return;
+  var base=window.VE_BASE||'site/';
+  /* диагностика с телефона: ?nofx=all | glass,dust,spectral,breathe,px,loops — выключает группу эффектов (класс ve-no-<имя> на html) */
+  try{var m=/[?&]nofx=([^&#]*)/.exec(location.search);if(m){var list=decodeURIComponent(m[1]).split(',');if(list.indexOf('all')>=0)list=['glass','dust','spectral','breathe','px','loops'];for(var q=0;q<list.length;q++)if(list[q])document.documentElement.classList.add('ve-no-'+list[q].trim())}}catch(e){}
+  var coarse=false;try{coarse=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
+  if(coarse)document.documentElement.classList.add('ve-coarse');
+  /* ?perf=1 — счётчик кадров в углу: к/с за последнюю секунду, длинные кадры (>34 мс) за 5 с, худший кадр, движок и кадры хиро. Для скриншота с живого телефона */
+  if(/[?&]perf=1/.test(location.search))document.addEventListener('DOMContentLoaded',function(){
+    var box=document.createElement('div');box.id='ve-perf';box.style.cssText='position:fixed;left:8px;right:8px;top:calc(8px + env(safe-area-inset-top));z-index:9999;font:11px/1.35 ui-monospace,Menlo,monospace;color:#fff;background:rgba(0,0,0,.72);padding:7px 9px;border-radius:8px;pointer-events:none;white-space:pre-wrap;word-break:break-word';document.body.appendChild(box);
+    var last=performance.now(),n=0,t0=last,longs=[],worst=0,ua=navigator.userAgent,eng=/CriOS/.test(ua)?'Chrome iOS':/FxiOS/.test(ua)?'Firefox iOS':/Safari/.test(ua)&&/Version\//.test(ua)?'Safari':/Telegram/.test(ua)?'Telegram':/Chrome/.test(ua)?'Chrome':'WebKit?';
+    (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
+      if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
+  });
+  var VE={v:'418c2a6c',base:base,
+    url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
+    fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
+    _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
+    state:{},
+    set:function(k,v){VE.state[k]=v;try{sessionStorage.setItem('ve-calc',JSON.stringify(VE.state))}catch(e){}VE.emit('state',VE.state)},
+    goForm:function(patch){if(patch)for(var k in patch)VE.set(k,patch[k]);var f=document.getElementById('ve-form');if(f){f.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.emit('form:focus')}},
+    rm:false,
+    reveal:function(root){
+      root=root||document;
+      var els=root.querySelectorAll('.ve-r:not(.is-in),.ve-rg:not(.is-in),.ve-img:not(.is-in),.ve-line:not(.is-in),.ve-sil:not(.is-in)');
+      for(var q=0;q<els.length;q++)if(els[q].classList.contains('ve-sil')){var pth=els[q].querySelector('path');if(pth&&pth.getTotalLength){var vb=els[q].viewBox&&els[q].viewBox.baseVal,sc=els[q].getBoundingClientRect().width/(vb&&vb.width||1000);pth.style.setProperty('--len',Math.ceil(pth.getTotalLength()*sc*1.25))}} /* штрих при non-scaling-stroke меряется в px: длина × масштаб, с запасом на рост окна */
+      if(!('IntersectionObserver' in window)||VE.rm){for(var i=0;i<els.length;i++)els[i].classList.add('is-in');return}
+      VE._io=VE._io||new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){var el=x.target;
+        if(el.classList.contains('ve-rg')){var ch=el.children;for(var j=0;j<ch.length;j++){ch[j].style.setProperty('--d',Math.min(j,12)*60+'ms');var sub=ch[j].querySelectorAll('.ve-img,.ve-line');for(var k=0;k<sub.length;k++)sub[k].style.setProperty('--d',Math.min(j,12)*60+'ms')}}
+        el.classList.add('is-in');VE._io.unobserve(el)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+      for(var i=0;i<els.length;i++)VE._io.observe(els[i]);
+    },
+    /* бегущая подложка вкладок: контейнер .ve-tabs, кнопки внутри с .is-on */
+    pills:function(tabs){
+      var pill=tabs.querySelector('.ve-pill');if(!pill){pill=document.createElement('i');pill.className='ve-pill';tabs.insertBefore(pill,tabs.firstChild)}
+      var move=function(){var on=tabs.querySelector('button.is-on');if(!on)return;pill.style.width=on.offsetWidth+'px';pill.style.transform='translateX('+on.offsetLeft+'px)'};
+      move();if('ResizeObserver' in window)new ResizeObserver(move).observe(tabs);window.addEventListener('resize',move);
+      return move;
+    },
+    /* плавное число: tween(from,to,ms,fn) — fn получает текущее значение */
+    tween:function(a,b,ms,fn){if(VE.rm){fn(b);return}var t0=performance.now();(function f(now){var t=Math.min(1,(now-t0)/ms),e=1-Math.pow(1-t,3);fn(a+(b-a)*e);if(t<1)requestAnimationFrame(f)})(t0)},
+    /* параллакс фото в секциях: рамка .ve-px с overflow:hidden, картинка внутри чуть крупнее и едет по скроллу */
+    parallax:function(){
+      if(VE.rm||VE._px||document.documentElement.classList.contains('ve-no-px'))return;VE._px=true;
+      /* где есть CSS scroll-driven animations (Safari 26, Chrome) — параллакс делает композитор (html.ve-sda), JS только отмечает «в кадре» через IO.
+         Без них: компьютер — JS-параллакс, тач — фото стоят (JS за инерцией iOS дёргается) */
+      var sda=false;try{sda=CSS.supports('animation-timeline','view()')}catch(e){}
+      var touch=document.documentElement.classList.contains('ve-coarse');
+      if(sda||touch){if(sda)document.documentElement.classList.add('ve-sda');
+        if(!('IntersectionObserver' in window))return;
+        var io=new IntersectionObserver(function(en){en.forEach(function(x){x.target.classList.toggle('is-vis',x.isIntersecting)})},{rootMargin:'10% 0px'});
+        var watch=function(){var els=document.querySelectorAll('.ve-px:not([data-pxw])');for(var i=0;i<els.length;i++){els[i].setAttribute('data-pxw','1');io.observe(els[i])}};
+        watch();VE.on('px:refresh',watch);return}
+      var raf=0,items=[];
+      var collect=function(){items=[].slice.call(document.querySelectorAll('.ve-px'))};
+      var paint=function(){raf=0;var vh=window.innerHeight||1;
+        for(var i=0;i<items.length;i++){var r=items[i].getBoundingClientRect(),vis=!(r.bottom<0||r.top>vh);if(items[i].classList.contains('is-vis')!==vis)items[i].classList.toggle('is-vis',vis);if(!vis)continue;
+          var t=(r.top+r.height/2-vh/2)/(vh/2+r.height/2);items[i].style.setProperty('--px',(t*-6).toFixed(2)+'%')}};
+      var ask=function(){if(!raf)raf=requestAnimationFrame(paint)};
+      collect();paint();window.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',function(){collect();ask()});
+      VE.on('px:refresh',function(){collect();ask()});
+    },
+    /* лупы секций (план §5): под рамкой [data-loop] появляется <video muted loop playsinline preload=none>,
+       играет только в поле зрения; data-loop-mode="hover" — на компьютере под курсором, на телефоне в центре экрана;
+       при prefers-reduced-motion и Save-Data остаётся стилл. Манифест пишет tools/loops.mjs */
+    loops:function(){
+      if(VE.rm||VE._lp||document.documentElement.classList.contains('ve-no-loops'))return;VE._lp=true;
+      var sd=false;try{sd=!!(navigator.connection&&navigator.connection.saveData)}catch(e){}
+      if(sd||!window.fetch)return;
+      var coarse=false;try{coarse=window.matchMedia('(hover:none)').matches}catch(e){}
+      var play=function(v){if(!v.paused)return;var p=v.play();if(p&&p.catch)p.catch(function(){})},pause=function(v){if(!v.paused)v.pause()};
+      fetch(VE.url('media/loops/manifest.json')).then(function(r){return r.ok?r.json():null}).then(function(m){
+        if(!m||!m.loops)return;VE.loopsMan=m;
+        /* наблюдаем рамку, а не <video>: Chrome считает clip-path (шторка «до/после») в долю видимости, и луп гас на ходу шторки */
+        var io=('IntersectionObserver' in window)?new IntersectionObserver(function(en){en.forEach(function(x){(x.target.__veLoops||[]).forEach(function(v){var hover=v.getAttribute('data-mode')==='hover';
+          if(x.isIntersecting&&x.intersectionRatio>=(hover?.75:.35)){if(!hover||coarse)play(v)}else pause(v)})})},{threshold:[0,.35,.75]}):null;
+        var els=document.querySelectorAll('[data-loop]');
+        for(var i=0;i<els.length;i++)(function(el){
+          var key=el.getAttribute('data-loop'),L=m.loops[key];if(!L||el.getAttribute('data-loop-ready'))return;el.setAttribute('data-loop-ready','1');
+          var v=document.createElement('video');v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('loop','');v.preload='none';v.setAttribute('aria-hidden','true');
+          v.src=VE.url('media/loops/'+L.mp4);v.setAttribute('data-mode',el.getAttribute('data-loop-mode')||'view');v.setAttribute('data-loop-key',key);
+          var host=el;
+          if(el.tagName==='IMG'){v.className=el.className+' ve-loop';if(el.getAttribute('data-s'))v.setAttribute('data-s',el.getAttribute('data-s'));el.parentNode.insertBefore(v,el.nextSibling);host=el.parentNode}
+          else{v.className='ve-loop';el.appendChild(v)}
+          v.addEventListener('playing',function(){v.classList.add('is-live')});
+          if(v.getAttribute('data-mode')==='hover'&&!coarse){var card=el.closest('article')||host;card.addEventListener('pointerenter',function(){play(v)});card.addEventListener('pointerleave',function(){pause(v)})}
+          var obs=el.tagName==='IMG'?(el.closest('[data-loop-root]')||host):el;obs.__veLoops=(obs.__veLoops||[]).concat(v);
+          if(io){if(obs.__veLoops.length===1)io.observe(obs)}else play(v);
+        })(els[i]);
+        VE.emit('loops:ready',m);
+      }).catch(function(){});
+    },
+    /* спектр: угол --ve-a и дыхание --ve-f для элементов в поле зрения (кнопки, капсула вкладок, медальон знака, логотип, ручка шторки);
+       на тач-устройствах 30 к/с; при prefers-reduced-motion кольцо стоит. Основа — шапка xtcpay.me */
+    spectral:function(root){
+      if(!VE._sp){VE._sp={vis:[],io:null};
+        if('IntersectionObserver' in window)VE._sp.io=new IntersectionObserver(function(en){en.forEach(function(x){var v=VE._sp.vis,i=v.indexOf(x.target);if(x.isIntersecting){if(i<0)v.push(x.target)}else if(i>=0)v.splice(i,1)})},{rootMargin:'12%'});
+        if(!VE.rm&&!coarse&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=false,acc=0; // на тач свет стоит: каждая перерисовка конических градиентов дорога
+          (function spin(now){requestAnimationFrame(spin);var dt=(now-last)/1000;last=now;if(document.hidden||dt<=0||dt>.25)return;if(slow){acc+=dt;if(acc<.08)return;dt=acc;acc=0}
+            a=(a+SPEED*dt)%7200;t+=dt;var f=1+.045*Math.sin(t*1.8)+.03*Math.sin(t*4.7+1.4)+.018*Math.sin(t*11.3+3.1),A=a.toFixed(2)+'deg',F=f.toFixed(3),v=VE._sp.vis;
+            for(var i=0;i<v.length;i++){var el=v[i];if(slow&&el.hasAttribute('data-spectral-heavy'))continue;el.style.setProperty('--ve-a',A);el.style.setProperty('--ve-f',F);var g=el.__grads;if(g)for(var k=0;k<g.length;k++)g[k].setAttribute('gradientTransform','rotate('+a.toFixed(1)+' '+g[k].getAttribute('data-spin')+')')}})(last)}}
+      var els=(root||document).querySelectorAll('[data-spectral],.ve-btn,.ve-pill');
+      for(var i=0;i<els.length;i++){var e=els[i];if(e.getAttribute('data-sp'))continue;e.setAttribute('data-sp','1');var g=e.querySelectorAll('linearGradient[data-spin]');if(g.length)e.__grads=g;if(VE._sp.io)VE._sp.io.observe(e);else VE._sp.vis.push(e)}
+    },
+    /* смена текста с коротким затуханием */
+    swap:function(el,html){if(el.innerHTML===html)return;if(VE.rm){el.innerHTML=html;return}el.classList.add('ve-swap');el.classList.add('is-out');setTimeout(function(){el.innerHTML=html;el.classList.remove('is-out')},180)}
+  };
+  try{VE.rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+  try{var s=sessionStorage.getItem('ve-calc');if(s)VE.state=JSON.parse(s)||{}}catch(e){}
+  window.VE=VE;
+  /* адреса страниц политики и согласия: на Тильде /policy и /consent, в превью — policy.html и consent.html (VE_LEGAL) */
+  VE.legal=Object.assign({policy:'/policy',consent:'/consent',home:'/'},window.VE_LEGAL||{});
+  var links=function(){var m={'data-ve-policy':'policy','data-ve-consent':'consent','data-ve-home':'home'};for(var a in m){var els=document.querySelectorAll('['+a+']');for(var i=0;i<els.length;i++)if(els[i].tagName==='A')els[i].setAttribute('href',VE.legal[m[a]])}};
+  var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();document.documentElement.classList.add('ve-ready')};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+  document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
+})();
+</script>
+<style>html,body{margin:0;background:#fff}</style></head><body><style>
+.ve-legal{padding:calc(48px + env(safe-area-inset-top)) 0 72px;background:var(--ve-paper)}
+.ve-legal__in{max-width:760px;margin:0 auto;padding-left:max(var(--ve-pad),env(safe-area-inset-left,0px));padding-right:max(var(--ve-pad),env(safe-area-inset-right,0px))}
+.ve-legal__back{display:inline-flex;gap:8px;font-size:14px;color:var(--ve-moss);border-bottom:1px solid var(--ve-line)}
+.ve-legal h1{margin:22px 0 6px;font-weight:600;font-size:clamp(28px,5vw,40px);line-height:1.08;letter-spacing:-.02em;color:var(--ve-ink);text-wrap:balance}
+.ve-legal__meta{font-family:var(--ve-serif);font-style:italic;font-size:18px;color:var(--ve-moss)}
+.ve-legal__draft{margin-top:16px;padding:10px 14px;border-radius:10px;background:#F6F1E6;color:#6B5226;font-size:14px}
+.ve-legal h2{margin:34px 0 10px;font-weight:600;font-size:20px;letter-spacing:-.01em;color:var(--ve-ink)}
+.ve-legal p,.ve-legal li{font-size:16px;line-height:1.6;color:var(--ve-ink)}
+.ve-legal p+p{margin-top:10px}
+.ve-legal ul{margin:8px 0 0;padding-left:20px;display:grid;gap:6px}
+.ve-legal li::marker{color:var(--ve-bronze)}
+.ve-legal__req{margin-top:12px;padding:14px 16px;border:1px solid var(--ve-line);border-radius:12px;display:grid;gap:4px;font-size:15px}
+.ve-legal__req b{font-weight:600}
+@media(min-width:900px){.ve-legal{padding-top:72px}}
+</style>
+<section class="ve ve-legal" id="ve-consent">
+  <div class="ve-legal__in">
+    <a class="ve-legal__back" href="/" data-ve-home>← Verdant Estate</a>
+    <h1>Согласие на обработку персональных данных</h1>
+    <p class="ve-legal__meta">редакция от 21.10.2026</p>
+    <p class="ve-legal__draft" data-ve-draft>Черновик: текст на проверке у заказчика и юриста.</p>
+
+    <p>Отправляя заявку на сайте Verdant Estate и отмечая галочку «Даю согласие на обработку персональных данных», я свободно, своей волей и в своём интересе даю согласие [[NAME]] (ИНН [[INN]], ОГРНИП [[OGRN]], адрес: [[ADDRESS]]) на обработку моих персональных данных на следующих условиях.</p>
+
+    <h2>Какие данные</h2>
+    <p>Имя, номер телефона, площадь участка, выбранный уровень обслуживания, сведения об участке, которые я отметил, и текст комментария.</p>
+
+    <h2>Для чего</h2>
+    <p>Чтобы со мной связались по заявке, ответили на вопросы и рассчитали стоимость обслуживания сада, а при моём желании — подготовили и заключили договор.</p>
+
+    <h2>Что можно делать с данными</h2>
+    <p>Сбор, запись, систематизация, хранение, уточнение, использование, передача ответственному сотруднику через мессенджер Telegram для связи со мной, блокирование, удаление и уничтожение — с использованием средств автоматизации и без них.</p>
+
+    <h2>Срок и отзыв</h2>
+    <p>Согласие действует до достижения целей обработки, но не дольше 12 месяцев после последнего контакта, если договор не заключён. Я могу отозвать согласие в любой момент, написав на [[PD_EMAIL]].</p>
+
+    <p>Порядок обработки описан в <a href="/policy" data-ve-policy>Политике обработки персональных данных</a>.</p>
+  </div>
+</section>
+</body></html>

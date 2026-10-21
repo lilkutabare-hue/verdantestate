@@ -1,0 +1,41 @@
+<!-- VE · legal/consent.html · сборка 418c2a6c -->
+<style>
+.ve-legal{padding:calc(48px + env(safe-area-inset-top)) 0 72px;background:var(--ve-paper)}
+.ve-legal__in{max-width:760px;margin:0 auto;padding-left:max(var(--ve-pad),env(safe-area-inset-left,0px));padding-right:max(var(--ve-pad),env(safe-area-inset-right,0px))}
+.ve-legal__back{display:inline-flex;gap:8px;font-size:14px;color:var(--ve-moss);border-bottom:1px solid var(--ve-line)}
+.ve-legal h1{margin:22px 0 6px;font-weight:600;font-size:clamp(28px,5vw,40px);line-height:1.08;letter-spacing:-.02em;color:var(--ve-ink);text-wrap:balance}
+.ve-legal__meta{font-family:var(--ve-serif);font-style:italic;font-size:18px;color:var(--ve-moss)}
+.ve-legal__draft{margin-top:16px;padding:10px 14px;border-radius:10px;background:#F6F1E6;color:#6B5226;font-size:14px}
+.ve-legal h2{margin:34px 0 10px;font-weight:600;font-size:20px;letter-spacing:-.01em;color:var(--ve-ink)}
+.ve-legal p,.ve-legal li{font-size:16px;line-height:1.6;color:var(--ve-ink)}
+.ve-legal p+p{margin-top:10px}
+.ve-legal ul{margin:8px 0 0;padding-left:20px;display:grid;gap:6px}
+.ve-legal li::marker{color:var(--ve-bronze)}
+.ve-legal__req{margin-top:12px;padding:14px 16px;border:1px solid var(--ve-line);border-radius:12px;display:grid;gap:4px;font-size:15px}
+.ve-legal__req b{font-weight:600}
+@media(min-width:900px){.ve-legal{padding-top:72px}}
+</style>
+<section class="ve ve-legal" id="ve-consent">
+  <div class="ve-legal__in">
+    <a class="ve-legal__back" href="/" data-ve-home>← Verdant Estate</a>
+    <h1>Согласие на обработку персональных данных</h1>
+    <p class="ve-legal__meta">редакция от 21.10.2026</p>
+    <p class="ve-legal__draft" data-ve-draft>Черновик: текст на проверке у заказчика и юриста.</p>
+
+    <p>Отправляя заявку на сайте Verdant Estate и отмечая галочку «Даю согласие на обработку персональных данных», я свободно, своей волей и в своём интересе даю согласие [[NAME]] (ИНН [[INN]], ОГРНИП [[OGRN]], адрес: [[ADDRESS]]) на обработку моих персональных данных на следующих условиях.</p>
+
+    <h2>Какие данные</h2>
+    <p>Имя, номер телефона, площадь участка, выбранный уровень обслуживания, сведения об участке, которые я отметил, и текст комментария.</p>
+
+    <h2>Для чего</h2>
+    <p>Чтобы со мной связались по заявке, ответили на вопросы и рассчитали стоимость обслуживания сада, а при моём желании — подготовили и заключили договор.</p>
+
+    <h2>Что можно делать с данными</h2>
+    <p>Сбор, запись, систематизация, хранение, уточнение, использование, передача ответственному сотруднику через мессенджер Telegram для связи со мной, блокирование, удаление и уничтожение — с использованием средств автоматизации и без них.</p>
+
+    <h2>Срок и отзыв</h2>
+    <p>Согласие действует до достижения целей обработки, но не дольше 12 месяцев после последнего контакта, если договор не заключён. Я могу отозвать согласие в любой момент, написав на [[PD_EMAIL]].</p>
+
+    <p>Порядок обработки описан в <a href="/policy" data-ve-policy>Политике обработки персональных данных</a>.</p>
+  </div>
+</section>
