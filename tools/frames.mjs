@@ -30,6 +30,7 @@ const flag = (k) => args.includes('--' + k);
 const opt = (k, d) => { const a = args.find((x) => x.startsWith('--' + k + '=')); return a ? a.split('=')[1] : d; };
 const PER = +opt('per', 24);
 const FMT = opt('fmt', 'avif');
+const TFMT = opt('tallfmt', FMT); // формат tall-серии отдельно: jpg — аппаратный декод на iPhone (WebP в WebKit декодируется программно)
 const Q = +opt('q', FMT === 'avif' ? 52 : 72);
 const TW = +opt('tallw', 720); // ширина tall-кадра: на телефоне холст не крупнее 1.5× ширины экрана, 600 хватает и весит на треть меньше
 const WIDE = { w: 1440, h: 810, q: Q }, TALL = { w: TW, h: Math.round((TW * 16) / 9), q: Q - 2 };
@@ -125,9 +126,11 @@ async function render(src, set, x) {
 
 const man = { v: 2, n: flight.length, placeholder: flag('placeholder'), source: useClips ? 'clips' : 'stills', loop: manLoop, sets: { wide: { w: WIDE.w, h: WIDE.h, frames: [], after: [] }, tall: { w: TALL.w, h: TALL.h, frames: [], after: [] } }, poster: { wide: 'poster-wide.webp', tall: 'poster-tall.webp' } };
 let total = 0; const bySet = { wide: 0, tall: 0 };
-const EXT = FMT === 'avif' ? 'avif' : 'webp';
-const enc = (pipe, q) => (FMT === 'avif' ? pipe.avif({ quality: q, effort: 4 }) : pipe.webp({ quality: q, effort: 5 }));
-const put = async (pipe, name, q) => { const buf = await enc(pipe, q).toBuffer(); await writeFile(join(OUT, name), buf); total += buf.length; for (const k in bySet) if (name.includes(k)) bySet[k] += buf.length; return buf.length; };
+const extOf = (f) => (f === 'avif' ? 'avif' : f === 'jpg' ? 'jpg' : 'webp');
+const EXT = extOf(FMT), TEXT = extOf(TFMT);
+const encAs = (f, pipe, q) => (f === 'avif' ? pipe.avif({ quality: q, effort: 4 }) : f === 'jpg' ? pipe.jpeg({ quality: q + 8, mozjpeg: true, chromaSubsampling: '4:2:0' }) : pipe.webp({ quality: q, effort: 5 }));
+const enc = (pipe, q) => encAs(FMT, pipe, q);
+const put = async (pipe, name, q) => { const buf = await (name.startsWith('tall') || name.endsWith('-tall.' + TEXT) ? encAs(TFMT, pipe, q) : enc(pipe, q)).toBuffer(); await writeFile(join(OUT, name), buf); total += buf.length; for (const k in bySet) if (name.includes(k)) bySet[k] += buf.length; return buf.length; };
 
 for (let i = 0; i < flight.length; i++) {
   const k = String(i).padStart(2, '0');
@@ -136,7 +139,7 @@ for (let i = 0; i < flight.length; i++) {
 const tSrc = tallFlight || flight;
 for (let i = 0; i < tSrc.length; i++) {
   const t = tSrc.length > 1 ? i / (tSrc.length - 1) : 0, k = String(i).padStart(2, '0');
-  await put(await render(tSrc[i], TALL, tallFlight ? 0.5 : fx(t)), `tall-${k}.${EXT}`, TALL.q); man.sets.tall.frames.push(`tall-${k}.${EXT}`);
+  await put(await render(tSrc[i], TALL, tallFlight ? 0.5 : fx(t)), `tall-${k}.${TEXT}`, TALL.q); man.sets.tall.frames.push(`tall-${k}.${TEXT}`);
 }
 for (const [j, src] of after.entries()) {
   const k = ['a', 'b'][j];
@@ -144,7 +147,7 @@ for (const [j, src] of after.entries()) {
 }
 for (const [j, src] of (tallAfter || after).entries()) {
   const k = ['a', 'b'][j];
-  await put(await render(src, TALL, tallAfter ? 0.5 : fx(1)), `after-${k}-tall.${EXT}`, TALL.q); man.sets.tall.after.push(`after-${k}-tall.${EXT}`);
+  await put(await render(src, TALL, tallAfter ? 0.5 : fx(1)), `after-${k}-tall.${TEXT}`, TALL.q); man.sets.tall.after.push(`after-${k}-tall.${TEXT}`);
 }
 // у sharp один resize на конвейер: постер — из готового кропа вторым проходом
 const small = async (set, x, w) => sharp(await (await render(flight[0], set, x)).png().toBuffer()).resize(w);

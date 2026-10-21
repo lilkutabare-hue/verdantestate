@@ -198,5 +198,6 @@ export function mount(root, opts = {}) {
     // отладка: заморозить сцену на прогрессе p (null — вернуть скролл); рисует синхронно, без rAF
     hold(p) { held = p; if (p != null) { curP = p; onProgress(p); lastKey = ''; draw(p); } else wake(); },
     get progress() { return lastP; },
+    info() { let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height; },
   };
 }
