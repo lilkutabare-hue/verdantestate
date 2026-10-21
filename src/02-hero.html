@@ -6,6 +6,7 @@
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <canvas class="ve-hero__dust" aria-hidden="true"></canvas>
     <div class="ve-hero__shade" aria-hidden="true"></div>
     <nav class="ve-hero__index ve-dock" aria-label="Разделы сайта"></nav>
     <div class="ve-hero__text">
@@ -39,7 +40,11 @@
 /* пролёт ~ 3 экрана на клип + превращение и стоп-кадр с меню */
 .ve-hero{position:relative;height:560vh;height:560svh;background:#2B3A2E;color:var(--ve-paper);margin:0}
 .ve-hero__stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#2B3A2E}
-.ve-hero__poster,.ve-hero__canvas,.ve-hero__loop,.ve-hero__shade,.ve-hero__intro{position:absolute;inset:0}
+.ve-hero__poster,.ve-hero__canvas,.ve-hero__loop,.ve-hero__shade,.ve-hero__intro,.ve-hero__dust{position:absolute;inset:0}
+/* пух одуванчиков днём и светлячки ночью — лёгкий холст поверх кадра, живёт только пока хиро на экране */
+.ve-hero__dust{width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity 1.2s var(--ve-ease)}
+.ve-hero.is-fly .ve-hero__dust{opacity:1}
+@media(prefers-reduced-motion:reduce){.ve-hero__dust{display:none}}
 .ve-hero__poster img{width:100%;height:100%;object-fit:cover}
 .ve-hero__canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .6s var(--ve-ease)}
 .ve-hero.is-live .ve-hero__canvas{opacity:1}
@@ -184,6 +189,34 @@
       if(t<1)requestAnimationFrame(step);else{stop();if(dot)dot.classList.add('is-on');var h=sec.querySelector('h2');if(h){h.setAttribute('tabindex','-1');h.focus({preventScroll:true})}}})(st);
   }
 
+  // ---- пух и светлячки: 30 частиц (18 на телефоне), дрейф вверх-вправо с качанием; ночью — тёплые ----
+  (function(){
+    var cv=root.querySelector('.ve-hero__dust');if(!cv||VE_RM)return;var ctx=cv.getContext('2d');
+    var coarse=false;try{coarse=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
+    var N=coarse?18:30,P=[],W=0,H=0,dpr=1,on=false,raf=0,last=0,acc=0,sprite=null;
+    function mk(i){return{x:Math.random(),y:Math.random(),r:.8+Math.random()*1.6,v:.012+Math.random()*.02,s:.6+Math.random()*.8,ph:Math.random()*6.28,a:.25+Math.random()*.5}}
+    for(var i=0;i<N;i++)P.push(mk(i));
+    var spriteN=null;
+    function mkSprite(c){var sp=document.createElement('canvas');sp.width=sp.height=32;var g=sp.getContext('2d'),gr=g.createRadialGradient(16,16,0,16,16,16);gr.addColorStop(0,'rgba('+c+',1)');gr.addColorStop(.3,'rgba('+c+',.6)');gr.addColorStop(1,'rgba('+c+',0)');g.fillStyle=gr;g.fillRect(0,0,32,32);return sp}
+    function size(){var r=cv.getBoundingClientRect();dpr=Math.min(window.devicePixelRatio||1,2);W=Math.round(r.width);H=Math.round(r.height);cv.width=W*dpr;cv.height=H*dpr;
+      sprite=mkSprite('255,252,240');spriteN=mkSprite('255,206,112')} // днём — белый пух, ночью — тёплые светлячки (без ctx.filter: Safari)
+    function frame(now){raf=0;if(!on)return;var dt=last?Math.min(.05,(now-last)/1000):0;last=now;
+      if(coarse){acc+=dt;if(acc<.03){raf=requestAnimationFrame(frame);return}dt=acc;acc=0}
+      if(!W)size();ctx.clearRect(0,0,cv.width,cv.height);
+      var night=lastCh===2,t=now/1000;
+      ctx.globalCompositeOperation='lighter';
+      for(var i=0;i<P.length;i++){var q=P[i];q.y-=q.v*dt*q.s;q.x+=(.004*q.s+Math.sin(t*.7+q.ph)*.003)*dt*60/60;q.x+=Math.sin(t*.9+q.ph)*.0006;
+        if(q.y<-.05||q.x>1.05){q.y=1.05;q.x=Math.random()*.9-.1}
+        var tw=.5+.5*Math.sin(t*1.6+q.ph*2),al=q.a*(night?.55+.45*tw:.7+.3*tw),rr=q.r*(night?1.5:1.25)*dpr*(coarse?1.6:2.2);
+        ctx.globalAlpha=al;ctx.drawImage(night?spriteN:sprite,q.x*W*dpr-rr*2,q.y*H*dpr-rr*2,rr*4,rr*4)}
+      ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+      raf=requestAnimationFrame(frame)}
+    function play(){if(on||document.hidden)return;on=true;last=0;if(!raf)raf=requestAnimationFrame(frame)}
+    function stop(){on=false}
+    if('IntersectionObserver' in window)new IntersectionObserver(function(en){en[0].isIntersecting?play():stop()},{threshold:.05}).observe(root.querySelector('.ve-hero__stage'));else play();
+    document.addEventListener('visibilitychange',function(){document.hidden?stop():play()});
+    window.addEventListener('resize',function(){W=0});
+  })();
   function start(){
     var VE=window.VE;if(!VE)return setTimeout(start,50);
     import(VE.url('js/scene.js')).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,onProgress:onP,onManifest:function(man){if(man.loop)loopSrc=VE.url('media/scene/'+man.loop)},onLoad:onLoad,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});

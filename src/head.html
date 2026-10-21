@@ -139,7 +139,11 @@
 .ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
 .ve-px{position:relative;overflow:hidden}
 .ve-px>img,.ve-px>video{width:100%;height:100%;object-fit:cover;transform:translate3d(0,var(--px,0%),0) scale(1.14);will-change:transform}
-@media(prefers-reduced-motion:reduce){.ve-px>img,.ve-px>video{transform:none}}
+/* живые фото: медленный наезд (scale отдельно от transform параллакса), играет только пока рамка в кадре (.is-vis ставит VE.parallax) */
+.ve-px>img{animation:ve-breathe 26s ease-in-out infinite alternate;animation-play-state:paused}
+.ve-px.is-vis>img{animation-play-state:running}
+@keyframes ve-breathe{from{scale:1}to{scale:1.07}}
+@media(prefers-reduced-motion:reduce){.ve-px>img,.ve-px>video{transform:none}.ve-px>img{animation:none}}
 /* луп поверх стилла: <video> вставляет VE.loops у [data-loop], когда есть media/loops/manifest.json; проявляется, когда пошли кадры */
 .ve-loop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s var(--ve-ease);pointer-events:none;background:transparent}
 .ve-loop.is-live{opacity:1}
@@ -201,7 +205,7 @@
       var raf=0,items=[];
       var collect=function(){items=[].slice.call(document.querySelectorAll('.ve-px'))};
       var paint=function(){raf=0;var vh=window.innerHeight||1;
-        for(var i=0;i<items.length;i++){var r=items[i].getBoundingClientRect();if(r.bottom<0||r.top>vh)continue;
+        for(var i=0;i<items.length;i++){var r=items[i].getBoundingClientRect(),vis=!(r.bottom<0||r.top>vh);if(items[i].classList.contains('is-vis')!==vis)items[i].classList.toggle('is-vis',vis);if(!vis)continue;
           var t=(r.top+r.height/2-vh/2)/(vh/2+r.height/2);items[i].style.setProperty('--px',(t*-6).toFixed(2)+'%')}};
       var ask=function(){if(!raf)raf=requestAnimationFrame(paint)};
       collect();paint();window.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',function(){collect();ask()});

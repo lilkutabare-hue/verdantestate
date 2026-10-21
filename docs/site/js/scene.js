@@ -134,17 +134,22 @@ export function mount(root, opts = {}) {
     return travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0;
   }
   let lastP = -1;
-  function loop() {
+  // дыхание на покое: пока страница стоит наверху, камера едва дышит по первым кадрам пролёта (период ~9 с) — главная живая без скролла
+  const slow = (() => { try { return matchMedia('(hover:none) and (pointer:coarse)').matches; } catch { return false; } })();
+  const idleOk = () => !rm && held == null && !document.hidden && nFlight > 2 && ready[0] && ready[1] && ready[2];
+  function loop(now) {
     if (dead) return;
     running = true;
     if ((++tick % 20) === 0) size();
     const p = held != null ? held : progress();
     if (p !== lastP) { lastP = p; onProgress(p); }
+    let idle = false;
     if (rm || held != null) curP = p;
+    else if (p < 0.002 && idleOk()) { idle = true; if (!slow || tick % 2 === 0) { const ph = (1 - Math.cos(((now || performance.now()) / 9000) * Math.PI * 2)) / 2; curP = (ph * 1.9 * TL.flight) / (nFlight - 1); } }
     else { curP += (p - curP) * 0.16; if (Math.abs(p - curP) < 0.0004) curP = p; }
     draw(curP);
     const loading = !ready.every(Boolean);
-    if (Math.abs(p - curP) > 0.0002 || (loading && tick % 10 !== 0)) requestAnimationFrame(loop);
+    if (idle || Math.abs(p - curP) > 0.0002 || (loading && tick % 10 !== 0)) requestAnimationFrame(loop);
     else running = false;
   }
   function wake() { if (!running && !dead && !document.hidden) requestAnimationFrame(loop); }
@@ -155,6 +160,7 @@ export function mount(root, opts = {}) {
   }).catch(() => { root.classList.add('is-static'); });
 
   const onScroll = () => wake();
+  setInterval(() => { if (!running && idleOk() && progress() < 0.002) wake(); }, 500); // покой: если цикл уснул, а мы наверху — разбудить дыхание
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
   document.addEventListener('visibilitychange', onScroll);
