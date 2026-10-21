@@ -1,9 +1,9 @@
-<!-- VE · 02-hero.html · сборка ef940c4d -->
+<!-- VE · 02-hero.html · сборка 4b542c2f -->
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=ef940c4d">
-      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=ef940c4d" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=4b542c2f">
+      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=4b542c2f" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -232,14 +232,16 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
     var cv=root.querySelector('.ve-hero__dust');if(!cv||VE_RM)return;var ctx=cv.getContext('2d');
     var coarse=false;try{coarse=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
     if(html.classList.contains('ve-no-dust'))return;
-    var N=coarse?14:30,P=[],W=0,H=0,dpr=1,on=false,raf=0,last=0,acc=0,sprite=null;
+    var N=coarse?8:30,P=[],W=0,H=0,dpr=1,on=false,raf=0,last=0,acc=0,sprite=null,scrolling=0;
+    /* во время прокрутки пух стоит (холст не перерисовывается) — вся мощность кадру пролёта; продолжает через 300 мс тишины */
+    window.addEventListener('scroll',function(){scrolling=performance.now()},{passive:true});
     function mk(i){return{x:Math.random(),y:Math.random(),r:.8+Math.random()*1.6,v:.012+Math.random()*.02,s:.6+Math.random()*.8,ph:Math.random()*6.28,a:.25+Math.random()*.5}}
     for(var i=0;i<N;i++)P.push(mk(i));
     var spriteN=null;
     function mkSprite(c){var sp=document.createElement('canvas');sp.width=sp.height=32;var g=sp.getContext('2d'),gr=g.createRadialGradient(16,16,0,16,16,16);gr.addColorStop(0,'rgba('+c+',1)');gr.addColorStop(.3,'rgba('+c+',.6)');gr.addColorStop(1,'rgba('+c+',0)');g.fillStyle=gr;g.fillRect(0,0,32,32);return sp}
     function size(){var r=cv.getBoundingClientRect();dpr=coarse?1:Math.min(window.devicePixelRatio||1,2);W=Math.round(r.width);H=Math.round(r.height);cv.width=W*dpr;cv.height=H*dpr;
       sprite=mkSprite('255,252,240');spriteN=mkSprite('255,206,112')} // днём — белый пух, ночью — тёплые светлячки (без ctx.filter: Safari)
-    function frame(now){raf=0;if(!on)return;var dt=last?Math.min(.05,(now-last)/1000):0;last=now;
+    function frame(now){raf=0;if(!on)return;if(now-scrolling<300){last=now;raf=requestAnimationFrame(frame);return}var dt=last?Math.min(.05,(now-last)/1000):0;last=now;
       if(coarse){acc+=dt;if(acc<.05){raf=requestAnimationFrame(frame);return}dt=acc;acc=0}
       if(!W)size();ctx.clearRect(0,0,cv.width,cv.height);
       var night=lastCh===2,t=now/1000;
