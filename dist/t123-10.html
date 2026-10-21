@@ -1,12 +1,12 @@
-<!-- VE · 10-before-after.html · сборка 4b542c2f -->
+<!-- VE · 10-before-after.html · сборка 02baaf31 -->
 <section class="ve ve-sec ve-ba" id="ve-before-after">
   <div class="ve-wrap">
     <svg class="ve-sil" viewBox="0 0 1000 106" preserveAspectRatio="none" style="aspect-ratio:1000/106" aria-hidden="true"><path d="M0 2L8 2L10 10L46 10L48 2L79 0L81 87L88 87L90 106L167 106L169 71L242 71L244 42L363 42L365 71L371 71L373 42L448 42L450 71L456 71L458 42L521 42L523 71L529 71L531 42L575 42L577 71L827 71L829 106L913 106L915 0L998 0" vector-effect="non-scaling-stroke"/></svg>
     <p class="ve-caps ve-r">До и после</p>
     <h2 class="ve-h2 ve-r ve-ba__h">Сад до обслуживания — и через один сезон</h2>
-    <div class="ve-ba__box ve-r" style="--x:50%">
-      <img class="ve-ba__img ve-ba__img--before" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-l.webp?v=4b542c2f" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-s.webp?v=4b542c2f 720w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-l.webp?v=4b542c2f 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
-      <img class="ve-ba__img ve-ba__img--after" data-loop="b2" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-l.webp?v=4b542c2f" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-s.webp?v=4b542c2f 720w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-l.webp?v=4b542c2f 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+    <div class="ve-ba__box ve-r" data-loop-root>
+      <img class="ve-ba__img ve-ba__img--before" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-l.webp?v=02baaf31" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-s.webp?v=02baaf31 720w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-before-l.webp?v=02baaf31 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <div class="ve-ba__after"><img class="ve-ba__img ve-ba__img--after" data-loop="b2" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-l.webp?v=02baaf31" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-s.webp?v=02baaf31 720w, https://lilkutabare-hue.github.io/verdantestate/site/media/stills/ba-after-l.webp?v=02baaf31 1440w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900"></div>
       <span class="ve-ba__lab ve-ba__lab--b">до</span>
       <span class="ve-ba__lab ve-ba__lab--a">после</span>
       <div class="ve-ba__bar" aria-hidden="true"><i class="ve-ring" data-spectral><b></b></i></div>
@@ -18,10 +18,13 @@
 .ve-ba__h{margin-top:14px;max-width:22ch}
 .ve-ba__box{position:relative;margin-top:36px;aspect-ratio:16/10;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
 .ve-ba__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.ve-ba__img--after{clip-path:inset(0 0 0 var(--x))}
+/* шторка сдвигом слоёв, а не clip-path (clip-path в WebKit перерисовывал картинку 1440 px каждый кадр — 7–12 рывков/с на iPhone):
+   обёртка «после» уезжает вправо на x, картинка внутри — обратно на x; JS пишет transform напрямую */
+.ve-ba__after{position:absolute;inset:0;overflow:hidden;transform:translate3d(50%,0,0);will-change:transform}
+.ve-ba__after .ve-ba__img--after{transform:translate3d(-50%,0,0);will-change:transform}
 .ve-ba__lab{position:absolute;top:12px;font-family:var(--ve-serif);font-style:italic;font-weight:500;font-size:18px;letter-spacing:.01em;color:var(--ve-paper);opacity:.95;text-shadow:0 1px 8px rgba(0,0,0,.4)}
 .ve-ba__lab--b{left:16px}.ve-ba__lab--a{right:16px}
-.ve-ba__bar{position:absolute;top:0;bottom:0;left:var(--x);width:0;pointer-events:none}
+.ve-ba__bar{position:absolute;top:0;bottom:0;left:0;width:100%;pointer-events:none;transform:translate3d(50%,0,0);will-change:transform} /* линия и ручка у левого края полосы, полоса едет transform'ом */
 .ve-ba__bar::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:var(--ve-paper);opacity:.9}
 .ve-ba__bar i{position:absolute;top:50%;left:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;isolation:isolate;--ve-bloom-on:.6;--ve-ring-w:1.2px;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.65);-webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);box-shadow:0 6px 20px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.75),inset 0 -1px 0 rgba(0,0,0,.1)}
 .ve-ba__bar i b{position:absolute;inset:0;pointer-events:none}
@@ -38,14 +41,16 @@
   var root=document.getElementById('ve-before-after');if(!root||!window.VE)return;
   VE.reveal(root);
   var box=root.querySelector('.ve-ba__box'),r=root.querySelector('.ve-ba__range'),touched=false;
-  r.addEventListener('input',function(){touched=true;box.style.setProperty('--x',r.value+'%')});
+  var aw=root.querySelector('.ve-ba__after'),bar=root.querySelector('.ve-ba__bar');
+  function setX(x){var v=(+x).toFixed(2);aw.style.transform='translate3d('+v+'%,0,0)';bar.style.transform='translate3d('+v+'%,0,0)';var inner=aw.querySelectorAll('.ve-ba__img--after');for(var i=0;i<inner.length;i++)inner[i].style.transform='translate3d(-'+v+'%,0,0)'}
+  r.addEventListener('input',function(){touched=true;setX(r.value)});
   r.addEventListener('pointerdown',function(){touched=true});
   // подсказка: при появлении шторка сама проезжает к «после», к «до» и возвращается; прерывается первым касанием
   function demo(){
     if(VE.rm||touched)return;
     var K=[[0,50],[.38,24],[.72,70],[1,50]],t0=performance.now(),D=2600;
     (function f(now){if(touched)return;var t=Math.min(1,(now-t0)/D),i=1;while(K[i][0]<t)i++;var a=K[i-1],b=K[i],k=(t-a[0])/(b[0]-a[0]),e=.5-.5*Math.cos(Math.PI*k),x=a[1]+(b[1]-a[1])*e;
-      box.style.setProperty('--x',x.toFixed(2)+'%');r.value=x;if(t<1)requestAnimationFrame(f)})(t0);
+      setX(x);r.value=x;if(t<1)requestAnimationFrame(f)})(t0);
   }
   if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();setTimeout(demo,500)}},{threshold:.5});io.observe(box)}
 })();

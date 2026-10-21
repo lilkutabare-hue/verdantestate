@@ -260,7 +260,7 @@ html.ve-no-breathe .ve-px>img{animation:none}
           else{v.className='ve-loop';el.appendChild(v)}
           v.addEventListener('playing',function(){v.classList.add('is-live')});
           if(v.getAttribute('data-mode')==='hover'&&!coarse){var card=el.closest('article')||host;card.addEventListener('pointerenter',function(){play(v)});card.addEventListener('pointerleave',function(){pause(v)})}
-          var obs=el.tagName==='IMG'?host:el;obs.__veLoops=(obs.__veLoops||[]).concat(v);
+          var obs=el.tagName==='IMG'?(el.closest('[data-loop-root]')||host):el;obs.__veLoops=(obs.__veLoops||[]).concat(v);
           if(io){if(obs.__veLoops.length===1)io.observe(obs)}else play(v);
         })(els[i]);
         VE.emit('loops:ready',m);
