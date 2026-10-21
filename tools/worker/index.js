@@ -23,7 +23,9 @@ export default {
     if (!key || !(keyed || hasCookie || byRef)) {
       return new Response(CLOSED, { status: 403, headers: { 'content-type': 'text/html; charset=utf-8', 'x-robots-tag': 'noindex, nofollow', 'cache-control': 'no-store' } });
     }
-    const res = await env.ASSETS.fetch(keyed ? new Request(url.origin + url.pathname, req) : req);
+    // страницы в превью ссылаются на policy.html / consent.html, а статика отдаёт их без расширения
+    const path = /^\/(policy|consent)\.html$/.test(url.pathname) ? url.pathname.replace(/\.html$/, '') : url.pathname;
+    const res = await env.ASSETS.fetch(keyed || path !== url.pathname ? new Request(url.origin + path, req) : req);
     const h = new Headers(res.headers);
     if (keyed && !hasCookie) h.append('set-cookie', `ve=${s}; Path=/; Max-Age=31536000; Secure; SameSite=Lax`);
     const html = (h.get('content-type') || '').includes('text/html');

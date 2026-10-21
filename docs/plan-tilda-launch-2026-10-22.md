@@ -12,6 +12,17 @@
 - Форма (`src/14-form.html`) шлёт JSON на `data-endpoint`, пока пустой → открывает письмо `mailto:`. Чекбокс согласия есть, ссылки на документы нет.
 - В подвале и шапке — заглушки контактов (`+7 000 000-00-00`, `hello@example.com`), ссылка «Политика конфиденциальности» ведёт на `#`.
 
+## Статус (22.10, ночь)
+
+Шаги 1–5 и 7 сделаны в прошлой сессии (см. `git log`):
+- **1.** Медиа для Тильды: `node tools/deploy.mjs --assets` → `https://verdant-assets.lilkutabare.workers.dev/` (воркер со статикой, а не Pages — `pages project create` в wrangler 4.151 не работает), CORS `*`, долгий кеш; `PAGES_BASE` и preconnect переключены. Стенд «как Тильда с удалёнными медиа» — `dist/remote.html` (в git не идёт; собирается скриптом из записки).
+- **2.** Блоки в обёртках проверены: матрица 20 устройств, пролёт, липкие секции, якоря. Найден и починен баг: меню хиро дёргалось из-за `html{scroll-behavior:smooth}` → `behavior:'instant'`.
+- **3.** `node tools/tilda-sheet.mjs` → `dist/ЗАЛИТЬ.html`: HEAD, 01–15, страницы П (/policy) и С (/consent), байт в байт с dist.
+- **4.** Воркер `verdant-form` (`tools/form-worker/`) задеплоен, KV `verdant_form`; форма шлёт туда и проверяет ответ. Ждёт токен бота от владельца.
+- **5.** Политика и согласие — `src/legal/*.html`, метки `[[…]]` подставляет сама сборка из `docs/client-data.json` (образец `docs/client-data.example.json`; отдельный `legal-fill.mjs` не понадобился). Реквизиты в подвале — только когда есть ИНН; «черновик» снимается `"DRAFT": false`.
+- **7.** Превью заказчику и артефакт обновлены.
+- **6** (плавность №8) — ждёт записи экрана с айфона.
+
 ## 1. Что делаем по команде «Go» — по порядку, без владельца
 
 1. **Публичный хостинг медиа.** Cloudflare Pages проект `verdant-assets` на аккаунте lilkutabare (wrangler залогинен): `npx wrangler pages deploy docs/site --project-name verdant-assets`. В корень положить `_headers` с `Access-Control-Allow-Origin: *` (сцена грузит кадры с `crossOrigin='anonymous'`) и долгим кешем для медиа (`Cache-Control: public, max-age=31536000, immutable` — адреса и так с `?v=`). В `tools/build.mjs` поменять `PAGES_BASE` на `https://verdant-assets.pages.dev/`. Проверить: кадр, луп, шрифт отдаются с нужным заголовком. Оформить командой `node tools/deploy.mjs --assets` (добавить флаг), чтобы владелец мог повторять.

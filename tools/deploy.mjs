@@ -45,17 +45,19 @@ const keyFile = join(OUT, '.key');
 let KEY = existsSync(keyFile) && !args.includes('--new-key') ? (await readFile(keyFile, 'utf8')).trim() : '';
 if (!KEY) { KEY = randomBytes(9).toString('base64url'); await writeFile(keyFile, KEY + '\n'); }
 
-// ---------- страница: комментарии долой, стили и скрипты — минификация с переименованием ----------
-let html = await readFile(join(DOCS, 'index.html'), 'utf8');
-html = html.replace(/<!--[\s\S]*?-->/g, '');
+// ---------- страницы (главная, политика, согласие): комментарии долой, стили и скрипты — минификация с переименованием ----------
 const minCss = async (css) => (await transform(css, { loader: 'css', minify: true })).code.trim();
 const minJs = async (js) => (await transform(js, { loader: 'js', minify: true, target: 'es2018', format: 'iife', legalComments: 'none' })).code.trim();
-const styles = [...html.matchAll(/<style([^>]*)>([\s\S]*?)<\/style>/g)];
-for (const m of styles) html = html.replace(m[0], `<style${m[1]}>${await minCss(m[2])}</style>`);
-const scripts = [...html.matchAll(/<script(?![^>]*\bsrc=)([^>]*)>([\s\S]*?)<\/script>/g)];
-for (const m of scripts) { if (!m[2].trim()) continue; html = html.replace(m[0], `<script${m[1]}>${await minJs(m[2])}</script>`); }
-html = html.replace(/\n\s+/g, '\n').replace(/>\n</g, '><').replace(/\n{2,}/g, '\n');
-html = html.replace('<meta name="robots" content="noindex">', '<meta name="robots" content="noindex,nofollow">');
+async function minPage(name) {
+  let html = await readFile(join(DOCS, name), 'utf8');
+  html = html.replace(/<!--[\s\S]*?-->/g, '');
+  for (const m of [...html.matchAll(/<style([^>]*)>([\s\S]*?)<\/style>/g)]) html = html.replace(m[0], `<style${m[1]}>${await minCss(m[2])}</style>`);
+  for (const m of [...html.matchAll(/<script(?![^>]*\bsrc=)([^>]*)>([\s\S]*?)<\/script>/g)]) { if (!m[2].trim()) continue; html = html.replace(m[0], `<script${m[1]}>${await minJs(m[2])}</script>`); }
+  html = html.replace(/\n\s+/g, '\n').replace(/>\n</g, '><').replace(/\n{2,}/g, '\n');
+  return html.replace('<meta name="robots" content="noindex">', '<meta name="robots" content="noindex,nofollow">');
+}
+const PAGES = (await readdir(DOCS)).filter((f) => /^(index|policy|consent)\.html$/.test(f));
+const html = await minPage('index.html');
 
 // ---------- ассеты ----------
 await rm(PUB, { recursive: true, force: true }); await mkdir(PUB, { recursive: true });
@@ -66,7 +68,7 @@ for (const f of await readdir(join(PUB, 'site/js'))) {
   const code = await readFile(p, 'utf8');
   await writeFile(p, (await transform(code, { loader: 'js', minify: true, target: 'es2018', format: 'esm', legalComments: 'none' })).code);
 }
-await writeFile(join(PUB, 'index.html'), html);
+for (const f of PAGES) await writeFile(join(PUB, f), f === 'index.html' ? html : await minPage(f));
 await writeFile(join(PUB, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
 
 // ---------- воркер ----------
