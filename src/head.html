@@ -157,7 +157,16 @@ html.ve-no-breathe .ve-px>img{animation:none}
 .ve-px>img{animation:ve-breathe 26s ease-in-out infinite alternate;animation-play-state:paused}
 .ve-px.is-vis>img{animation-play-state:running}
 @keyframes ve-breathe{from{scale:1}to{scale:1.07}}
-@media(prefers-reduced-motion:reduce){.ve-px>img,.ve-px>video{transform:none}.ve-px>img{animation:none}}
+/* параллакс на композиторе: сдвиг translate по прогрессу рамки в окне, без JS и без scroll-обработчика.
+   overflow:clip, а не hidden: hidden делает рамку контейнером прокрутки, и view() считал прогресс по ней (вечные 50 %) */
+html.ve-sda .ve-px{overflow:clip}
+html.ve-sda .ve-px>img,html.ve-sda .ve-px>video{transform:scale(1.14);animation:ve-px-y linear both,ve-breathe 26s ease-in-out infinite alternate;animation-timeline:view(),auto;animation-range:cover 0% cover 100%,normal;animation-play-state:running,paused}
+html.ve-sda .ve-px.is-vis>img{animation-play-state:running,running}
+@keyframes ve-px-y{from{translate:0 6%}to{translate:0 -6%}}
+/* тач: фото без «дыхания» — меньше работы композитору во время прокрутки */
+html.ve-coarse .ve-px>img{animation:none}
+html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve-px-y linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+@media(prefers-reduced-motion:reduce){.ve-px>img,.ve-px>video{transform:none!important;animation:none!important}}
 /* луп поверх стилла: <video> вставляет VE.loops у [data-loop], когда есть media/loops/manifest.json; проявляется, когда пошли кадры */
 .ve-loop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s var(--ve-ease);pointer-events:none;background:transparent}
 .ve-loop.is-live{opacity:1}
@@ -227,6 +236,15 @@ html.ve-no-breathe .ve-px>img{animation:none}
     /* параллакс фото в секциях: рамка .ve-px с overflow:hidden, картинка внутри чуть крупнее и едет по скроллу */
     parallax:function(){
       if(VE.rm||VE._px||document.documentElement.classList.contains('ve-no-px'))return;VE._px=true;
+      /* где есть CSS scroll-driven animations (Safari 26, Chrome) — параллакс делает композитор (html.ve-sda), JS только отмечает «в кадре» через IO.
+         Без них: компьютер — JS-параллакс, тач — фото стоят (JS за инерцией iOS дёргается) */
+      var sda=false;try{sda=CSS.supports('animation-timeline','view()')}catch(e){}
+      var touch=document.documentElement.classList.contains('ve-coarse');
+      if(sda||touch){if(sda)document.documentElement.classList.add('ve-sda');
+        if(!('IntersectionObserver' in window))return;
+        var io=new IntersectionObserver(function(en){en.forEach(function(x){x.target.classList.toggle('is-vis',x.isIntersecting)})},{rootMargin:'10% 0px'});
+        var watch=function(){var els=document.querySelectorAll('.ve-px:not([data-pxw])');for(var i=0;i<els.length;i++){els[i].setAttribute('data-pxw','1');io.observe(els[i])}};
+        watch();VE.on('px:refresh',watch);return}
       var raf=0,items=[];
       var collect=function(){items=[].slice.call(document.querySelectorAll('.ve-px'))};
       var paint=function(){raf=0;var vh=window.innerHeight||1;
