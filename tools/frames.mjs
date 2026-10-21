@@ -15,6 +15,7 @@
 //        --q=72  качество webp (tall на 2 ниже); перевалило за бюджет — снижать
 //        --tallw=720  ширина tall-кадра (600 для лёгкой серии телефона)
 //        --placeholder  пометить серию как временную (превью покажет это в манифесте)
+//        --no-video  не собирать видео пролёта (flight-tall.mp4: все кадры клипов 24 к/с одним файлом для телефона, ?hero=video)
 import sharp from 'sharp';
 import { readdir, mkdir, writeFile, readFile, unlink, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -160,10 +161,40 @@ for (const [j, src] of (tallAfter || after).entries()) {
 const small = async (set, x, w) => sharp(await (await render(flight[0], set, x)).png().toBuffer()).resize(w);
 await put(await small(WIDE, 0.5, 960), 'poster-wide.webp', 70);
 await put(sharp(await (await render(tSrc[0], TALL, tallFlight ? 0.5 : fx(0))).png().toBuffer()).resize(540), 'poster-tall.webp', 70);
+// ---------- видео пролёта для телефона: все кадры клипов (24 к/с) одним H.264 ----------
+// Картинками телефон получает 97 кадров из 723 (≈3 к/с движения камеры, 4.4 МБ); видео — все 723 за ~4 МБ, декод аппаратный.
+// Ключевой кадр каждые 8 кадров, без B-кадров: перемотка декодирует не больше 7 кадров. Стыки клипов и выход в S4 — растворением 0.5 с.
+let manVideo = null;
+if (useClips && !flag('no-video')) {
+  const ff = await findFfmpeg();
+  const vc = tallFlight ? ['k1v', 'k2v', 'k3v'].map((k) => join(SRC, k + '.mp4')) : clips;
+  const fin = tallFlight ? still('s4v') : still('s4');
+  const X = 0.5, FPS = 24, VW = 480, VH = 854;
+  const durs = []; for (const c of vc) durs.push(await duration(ff, c));
+  // кроп как у кадров (render): вписать по высоте и взять середину — иначе на стыке видео → стилл S4 кадр сдвигается
+  const norm = `scale=-2:${VH}:flags=lanczos,crop=${VW}:${VH}`;
+  const prep = (i) => `[${i}:v]fps=${FPS},${norm},setsar=1,format=yuv420p,settb=AVTB[v${i}]`;
+  const parts = [0, 1, 2, 3].map(prep);
+  let len = durs[0], prev = 'v0';
+  for (let i = 1; i <= 3; i++) {
+    const d = i < 3 ? durs[i] : X + 2 / FPS;
+    parts.push(`[${prev}][v${i}]xfade=transition=fade:duration=${X}:offset=${(len - X).toFixed(4)}[x${i}]`);
+    len = len + d - X; prev = 'x' + i;
+  }
+  const out = join(OUT, 'flight-tall.mp4');
+  await run(ff, ['-y', '-v', 'error', ...vc.flatMap((c) => ['-i', c]), '-loop', '1', '-framerate', String(FPS), '-t', (X + 2 / FPS).toFixed(4), '-i', fin,
+    '-filter_complex', parts.join(';'), '-map', `[${prev}]`, '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', '29', '-g', '8', '-keyint_min', '8', '-bf', '0', '-sc_threshold', '0',
+    '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { maxBuffer: 1e7 });
+  const st = await (await import('node:fs/promises')).stat(out);
+  manVideo = { tall: { src: 'flight-tall.mp4', fps: FPS, dur: +len.toFixed(4), w: VW, h: VH } };
+  console.log(`видео пролёта: scene/flight-tall.mp4 · ${Math.round(len * FPS)} кадров · ${(st.size / 1048576).toFixed(2)} МБ${existsSync(join(SRC, 'focus.json')) && !tallFlight ? ' · ⚠ focus.json в видео не учтён — кроп по центру' : ''}`);
+  if (st.size > 5 * 1048576) console.warn('⚠ видео тяжелее 5 МБ — лимит Тильды на файл; поднять --crf или ужать');
+}
+if (manVideo) man.video = manVideo;
 await writeFile(join(OUT, 'manifest.json'), JSON.stringify(man, null, 2) + '\n');
 
 // старые кадры, которых нет в манифесте, убираем
-const keep = new Set([...man.sets.wide.frames, ...man.sets.tall.frames, ...man.sets.wide.after, ...man.sets.tall.after, man.poster.wide, man.poster.tall, 'manifest.json', manLoop, manLoopTall].filter(Boolean));
+const keep = new Set([...man.sets.wide.frames, ...man.sets.tall.frames, ...man.sets.wide.after, ...man.sets.tall.after, man.poster.wide, man.poster.tall, 'manifest.json', manLoop, manLoopTall, manVideo && manVideo.tall.src].filter(Boolean));
 for (const f of await readdir(OUT)) if (!keep.has(f)) await unlink(join(OUT, f));
 const mb = (n) => (n / 1048576).toFixed(2) + ' МБ';
 console.log(`сцена: ${man.n} кадров пролёта + 2 превращения; wide ${mb(bySet.wide)} (бюджет 4.5), tall ${mb(bySet.tall)} (бюджет 2.2)`);

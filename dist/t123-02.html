@@ -1,9 +1,9 @@
-<!-- VE · 02-hero.html · сборка d660106e -->
+<!-- VE · 02-hero.html · сборка a5210ca2 -->
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="https://verdant-assets.lilkutabare.workers.dev/media/scene/poster-tall.webp?v=d660106e">
-      <img src="https://verdant-assets.lilkutabare.workers.dev/media/scene/poster-wide.webp?v=d660106e" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="https://verdant-assets.lilkutabare.workers.dev/media/scene/poster-tall.webp?v=a5210ca2">
+      <img src="https://verdant-assets.lilkutabare.workers.dev/media/scene/poster-wide.webp?v=a5210ca2" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -42,7 +42,10 @@
 /* пролёт ~ 3 экрана на клип + превращение и стоп-кадр с меню */
 .ve-hero{position:relative;height:560vh;height:560svh;background:#2B3A2E;color:var(--ve-paper);margin:0}
 .ve-hero__stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#2B3A2E}
-.ve-hero__poster,.ve-hero__canvas,.ve-hero__loop,.ve-hero__shade,.ve-hero__intro,.ve-hero__dust{position:absolute;inset:0}
+.ve-hero__poster,.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__shade,.ve-hero__intro,.ve-hero__dust{position:absolute;inset:0}
+/* ?hero=video: пролёт на телефоне — видео под холстом (все 24 к/с клипов), холст в пролёте прозрачный; после пролёта холст снова рисует шторку и свет */
+.ve-hero__vid{width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none}
+.ve-hero.is-live .ve-hero__vid.is-on{opacity:1}
 /* пух одуванчиков днём и светлячки ночью — лёгкий холст поверх кадра, живёт только пока хиро на экране */
 .ve-hero__dust{width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity 1.2s var(--ve-ease)}
 .ve-hero.is-fly .ve-hero__dust{opacity:1}
@@ -50,12 +53,12 @@
 .ve-hero__poster img{width:100%;height:100%;object-fit:cover}
 .ve-hero__canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .6s var(--ve-ease)}
 /* телефон: камера дышит CSS-масштабом (холст, постер и луп вместе, чтобы стык не прыгал); компьютер дышит кадрами в scene.js */
-html.ve-coarse .ve-hero.is-docked :is(.ve-hero__canvas,.ve-hero__loop,.ve-hero__poster){animation:ve-hero-breathe 9s ease-in-out infinite alternate}
+html.ve-coarse .ve-hero.is-docked :is(.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__poster){animation:ve-hero-breathe 9s ease-in-out infinite alternate}
 @keyframes ve-hero-breathe{from{scale:1}to{scale:1.03}}
 /* телефон: пролёт короче — меньше свайпов, кадры идут быстрее */
 html.ve-coarse .ve-hero{height:440vh;height:440svh}
-html.ve-no-breathe .ve-hero__canvas,html.ve-no-breathe .ve-hero__loop,html.ve-no-breathe .ve-hero__poster{animation:none!important}
-@media(prefers-reduced-motion:reduce){.ve-hero__canvas,.ve-hero__loop,.ve-hero__poster{animation:none!important}}
+html.ve-no-breathe .ve-hero__canvas,html.ve-no-breathe .ve-hero__vid,html.ve-no-breathe .ve-hero__loop,html.ve-no-breathe .ve-hero__poster{animation:none!important}
+@media(prefers-reduced-motion:reduce){.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__poster{animation:none!important}}
 html.ve-no-dust .ve-hero__dust{display:none}
 .ve-hero.is-live .ve-hero__canvas{opacity:1}
 /* ночной луп: живёт поверх финального кадра, появляется, когда свет включён */

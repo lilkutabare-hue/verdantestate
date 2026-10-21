@@ -224,5 +224,14 @@
   "poster": {
     "wide": "poster-wide.webp",
     "tall": "poster-tall.webp"
+  },
+  "video": {
+    "tall": {
+      "src": "flight-tall.mp4",
+      "fps": 24,
+      "dur": 29.2033,
+      "w": 480,
+      "h": 854
+    }
   }
 }

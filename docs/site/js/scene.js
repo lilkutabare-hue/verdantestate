@@ -35,6 +35,61 @@ export function mount(root, opts = {}) {
   function tend2() { const c = bmpCenter; bmpCenter = -1; tend(c); }
   const pick = (k) => bmps[k] || imgs[k];
   let W = 0, H = 0, dpr = 1, tick = 0, lastKey = '';
+  // ?hero=video (или класс ve-hero-video на html): пролёт из видео manifest.video[серия] — все кадры клипов 24 к/с одним H.264, аппаратный декод.
+  // Видео лежит под холстом; в пролёте холст прозрачный, после пролёта рисует шторку и свет как раньше. Не перематывается за 4 с — назад на кадры.
+  const wantVid = (() => { try { return /[?&]hero=video\b/.test(location.search) || document.documentElement.classList.contains('ve-hero-video'); } catch { return false; } })();
+  let vidProg = 0; // доля скачанного видео
+  // полоса загрузки заставки: кадры — доля загруженных; видео — доля скачанных байт, но до готовности к перемотке не больше 49 % (заставка на телефоне ждёт 50 %)
+  function report() {
+    if (!opts.onLoad) return;
+    if (vidMeta()) { opts.onLoad(vidOk ? 1 : Math.min(0.49, vidProg * 0.49), 1); return; }
+    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight);
+  }
+  let vid = null, vidUrl = '', vidOk = false, vidBad = false, vidSeeking = false, vidTarget = 0, vidSeekAt = 0, vidFor = '';
+  const flips = []; // моменты смены кадра пролёта на экране — для счётчика ?perf=1
+  const vidMeta = () => (wantVid && !vidBad && man && man.video && set && man.video[set.name]) || null;
+  const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
+  function vidFail() {
+    if (vidBad) return; vidBad = true; vidOk = false;
+    if (vid) { vid.classList.remove('is-on'); vid.removeAttribute('src'); try { vid.load(); } catch {} }
+    if (vidUrl) { URL.revokeObjectURL(vidUrl); vidUrl = ''; }
+    lastKey = ''; if (set) load(set.frames.concat(set.after || [])); report(); wake(); // догрузить кадры, которые пропускали ради видео
+  }
+  function setupVideo() {
+    const m = vidMeta(); if (!m || vidFor === set.name) { if (vid) vid.classList.toggle('is-on', vidOn()); return; }
+    vidFor = set.name; vidOk = false;
+    if (!vid) {
+      vid = document.createElement('video');
+      vid.className = 've-hero__vid'; vid.muted = true; vid.defaultMuted = true; vid.playsInline = true; vid.preload = 'auto'; vid.disablePictureInPicture = true;
+      vid.setAttribute('muted', ''); vid.setAttribute('playsinline', ''); vid.setAttribute('aria-hidden', 'true');
+      stage.insertBefore(vid, canvas);
+      vid.addEventListener('seeked', () => { vidSeeking = false; flips.push(performance.now()); if (!vidOk && !vidBad) { vidOk = true; vid.classList.add('is-on'); lastKey = ''; report(); } wake(); });
+      vid.addEventListener('error', vidFail);
+    }
+    // файл целиком в память (Blob): перемотка без сети и без Range-запросов; на iOS иначе видео грузится только по play()
+    fetch(base + 'media/scene/' + m.src + v).then(async (r) => {
+      if (!r.ok) throw new Error(r.status);
+      const total = +r.headers.get('content-length') || 0;
+      if (!total || !r.body || !r.body.getReader) return r.blob();
+      const rd = r.body.getReader(), parts = []; let got = 0, at = 0;
+      for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); got += value.length; vidProg = got / total; const now = performance.now(); if (now - at > 120) { at = now; report(); } }
+      return new Blob(parts, { type: 'video/mp4' });
+    }).then((b) => {
+      if (dead || vidBad) return;
+      vidUrl = URL.createObjectURL(b); vid.src = vidUrl; vid.load();
+      const first = () => { vidSeeking = true; vidSeekAt = performance.now(); try { vid.currentTime = Math.max(0.001, vidTarget); } catch { vidSeeking = false; } };
+      vid.addEventListener('loadedmetadata', first, { once: true });
+      // не перемоталось за 1,5 с — пнуть play/pause (немой инлайн можно без жеста); за 4 с — сдаёмся, остаёмся на кадрах (режим энергосбережения, старый браузер)
+      setTimeout(() => { if (!vidOk && !vidBad) { const pr = vid.play && vid.play(); if (pr && pr.then) pr.then(() => { vid.pause(); first(); }, () => {}); } }, 1500);
+      setTimeout(() => { if (!vidOk) vidFail(); }, 4000);
+    }).catch(vidFail);
+  }
+  function pump() {
+    if (!vid || vidSeeking) { if (vidSeeking && performance.now() - vidSeekAt > 2000) vidSeeking = false; return; }
+    const m = vidMeta(); if (!m || Math.abs(vid.currentTime - vidTarget) <= 0.5 / m.fps) return;
+    vidSeeking = true; vidSeekAt = performance.now();
+    try { vid.currentTime = vidTarget; } catch { vidSeeking = false; }
+  }
 
   // --- размер и серия под ориентацию ---
   function size() {
@@ -61,6 +116,7 @@ export function mount(root, opts = {}) {
     bmps = list.map(() => null); bmpCenter = -1;
     imgs = list.map(() => null); ready = list.map(() => false);
     load(list);
+    setupVideo();
   }
 
   // --- загрузка: опорные кадры пролёта → кадры превращения → остальные ---
@@ -72,9 +128,11 @@ export function mount(root, opts = {}) {
     for (let i = nFlight; i < list.length; i++) order.push(i);
     for (let i = 0; i < nFlight; i++) if (!order.includes(i)) order.push(i);
     let i = 0;
+    const anchors = new Set(order.slice(0, order.indexOf(nFlight) > 0 ? order.indexOf(nFlight) : 8));
     const worker = async () => {
       while (i < order.length && gen === loadGen && !dead) {
         const k = order[i++];
+        if (ready[k] || (k < nFlight && !anchors.has(k) && vidMeta() && !vidBad)) continue; // видео пролёта: кадры между опорными не нужны, пока видео не отказало
         try {
           const img = new Image();
           img.crossOrigin = 'anonymous'; img.decoding = 'async';
@@ -82,7 +140,7 @@ export function mount(root, opts = {}) {
           await img.decode();
           if (gen !== loadGen) return;
           imgs[k] = img; ready[k] = true; if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
-          if (opts.onLoad) { let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight); }
+          report();
         } catch (e) { /* кадр не пришёл — рисуем ближайший загруженный */ }
       }
     };
@@ -112,6 +170,12 @@ export function mount(root, opts = {}) {
     if (!set || !imgs.length) return;
     const A = nFlight, last = nFlight - 1;
     let key;
+    if (p <= TL.flight && vidOn()) {
+      const m = vidMeta(); vidTarget = seg(p, 0, TL.flight) * Math.max(0, m.dur - 1 / m.fps); pump();
+      if (lastKey !== 'v') ctx.clearRect(0, 0, canvas.width, canvas.height);
+      lastKey = 'v'; if (!root.classList.contains('is-live')) root.classList.add('is-live');
+      return;
+    }
     if (p <= TL.flight) {
       let t = seg(p, 0, TL.flight) * last, a = Math.floor(t), b = Math.min(last, a + 1), al = t - a;
       if (slow) { a = Math.round(t); b = a; al = 0; } // телефон: один ближайший кадр, без смешивания — 97 кадров на 2,4 экрана и так идут по 10 px на кадр
@@ -119,6 +183,7 @@ export function mount(root, opts = {}) {
       tend(a);
       key = 'f' + ia + ':' + ib + ':' + al.toFixed(3) + ':' + (bmps[ia] ? 1 : 0) + (bmps[ib] ? 1 : 0);
       if (key === lastKey || (ia < 0 && ib < 0)) return;
+      if (!lastKey.startsWith('f' + ia + ':' + ib + ':')) flips.push(performance.now());
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (ia >= 0) cover(pick(ia), 1);
       if (ib >= 0 && ib !== ia && al > 0.002) cover(pick(ib), al);
@@ -175,7 +240,8 @@ export function mount(root, opts = {}) {
     else { curP += (p - curP) * 0.16; if (Math.abs(p - curP) < 0.0004) curP = p; }
     draw(curP);
     const loading = !ready.every(Boolean);
-    if (idle || Math.abs(p - curP) > 0.0002 || (loading && tick % 10 !== 0)) requestAnimationFrame(loop);
+    const vlag = vidOn() && curP <= TL.flight && (vidSeeking || Math.abs(vid.currentTime - vidTarget) > 0.5 / vidMeta().fps);
+    if (idle || vlag || Math.abs(p - curP) > 0.0002 || (loading && tick % 10 !== 0 && !vidOn())) requestAnimationFrame(loop);
     else running = false;
   }
   function wake() { if (!running && !dead && !document.hidden) requestAnimationFrame(loop); }
@@ -194,10 +260,10 @@ export function mount(root, opts = {}) {
   if ('ResizeObserver' in window) { ro = new ResizeObserver(() => { if (size()) wake(); }); ro.observe(stage); }
 
   return {
-    destroy() { dead = true; for (const b of bmps) if (b) { try { b.close(); } catch {} } bmps = []; window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); document.removeEventListener('visibilitychange', onScroll); if (ro) ro.disconnect(); },
+    destroy() { dead = true; if (vidUrl) URL.revokeObjectURL(vidUrl); if (vid) vid.remove(); for (const b of bmps) if (b) { try { b.close(); } catch {} } bmps = []; window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); document.removeEventListener('visibilitychange', onScroll); if (ro) ro.disconnect(); },
     // отладка: заморозить сцену на прогрессе p (null — вернуть скролл); рисует синхронно, без rAF
     hold(p) { held = p; if (p != null) { curP = p; onProgress(p); lastKey = ''; draw(p); } else wake(); },
     get progress() { return lastP; },
-    info() { let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height; },
+    info() { const now = performance.now(); while (flips.length && now - flips[0] > 1000) flips.shift(); let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height + '\nпролёт: ' + (vidOn() ? 'видео ' + vidMeta().fps + ' к/с' : wantVid ? (vidBad ? 'видео отказало → кадры' : 'видео грузится') : 'кадры') + ' · смен кадра ' + flips.length + '/с'; },
   };
 }
