@@ -1,0 +1,11 @@
+name = "verdant-form"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+ALLOW_USER = "flowwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+# ORIGINS = "https://verdantestate.ru"   # домен сайта, когда будет; tilda.ws и localhost разрешены в коде
+
+[[kv_namespaces]]
+binding = "KV"
+id = "1099342dcf2f4efa83aaeaabe14c74ee"

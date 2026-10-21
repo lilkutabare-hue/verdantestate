@@ -1,4 +1,4 @@
-<!-- VE · 14-form.html · сборка 161d708d -->
+<!-- VE · 14-form.html · сборка 9f56de0b -->
 <section class="ve ve-sec ve-sec--last ve-fm" id="ve-form">
   <div class="ve-wrap ve-sec__top ve-line">
     <div class="ve-fm__grid">
@@ -7,7 +7,8 @@
         <h2 class="ve-h2 ve-r ve-fm__h">Расскажите о саде — ответим в течение дня</h2>
         <p class="ve-sub ve-r">Точную цифру называем после осмотра участка. Заявка ни к чему не обязывает.</p>
       </div>
-      <form class="ve-fm__form ve-r" novalidate data-endpoint="">
+      <form class="ve-fm__form ve-r" novalidate data-endpoint="https://verdant-form.lilkutabare.workers.dev/lead">
+        <label class="ve-fm__hp" aria-hidden="true">Сайт<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
         <div class="ve-fm__row">
           <label class="ve-fm__field"><span>Имя</span><input name="name" type="text" autocomplete="name" required maxlength="80"></label>
           <label class="ve-fm__field"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+7"></label>
@@ -50,6 +51,7 @@
 </section>
 <style>
 .ve-fm__h{margin-top:14px;max-width:18ch}
+.ve-fm__hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden} /* ловушка для ботов: люди поле не видят */
 .ve-fm__form{margin-top:36px}
 .ve-fm__row{display:grid;gap:18px}
 .ve-fm__field{display:block;margin-top:18px}
@@ -111,7 +113,10 @@
     data.page=location.href;data.estimate=VE.state.estimate||'';
     var ep=form.getAttribute('data-endpoint');
     var done=function(){form.classList.add('is-sent');form.querySelector('.ve-fm__done').hidden=false};
-    if(ep){fetch(ep,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}).then(done,function(){err.textContent='Не отправилось. Позвоните нам или напишите в мессенджер.';err.hidden=false})}
+    /* заявка уходит на сервер заявок (tools/form-worker) → Telegram заказчику; ответ проверяем, а не только сеть */
+    var btn=form.querySelector('button[type=submit]');
+    var fail=function(code){err.textContent=code===429?'Слишком много заявок подряд. Попробуйте через 10 минут или позвоните нам.':'Не отправилось. Позвоните нам или напишите в мессенджер.';err.hidden=false;btn.disabled=false;btn.textContent='Отправить'};
+    if(ep){btn.disabled=true;btn.textContent='Отправляем…';fetch(ep,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}).then(function(r){if(r.ok)done();else fail(r.status)},function(){fail(0)})}
     else{ // пока бэкенд не выбран (PLAN §9.2) — письмо
       var body='Имя: '+data.name+'\nТелефон: '+data.phone+'\nПлощадь: '+(data.area||'—')+'\nУровень: '+(data.tariff||'не выбран')+'\nНа участке: '+((data.factors||[]).join(', ')||'—')+'\nКомментарий: '+(data.comment||'—');
       location.href='mailto:hello@example.com?subject='+encodeURIComponent('Заявка с сайта Verdant Estate')+'&body='+encodeURIComponent(body);done()}
