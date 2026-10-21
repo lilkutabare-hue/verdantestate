@@ -80,4 +80,4 @@ Locked-off static camera, the exact same view from the first frame to the last. 
 node tools/frames.mjs --per=32 --fmt=webp --tallfmt=jpg --q=58 --tallw=600 && node tools/build.mjs && node tools/deploy.mjs --publish
 ```
 
-`frames.mjs` сам увидит `k1v..k3v.mp4` и `s4v/s5av/s5v` и соберёт tall-серию из них; `k4v.mp4` пока не подхватывает — добавлю, когда файл будет.
+`frames.mjs` сам увидит `k1v..k3v.mp4` и `s4v/s5av/s5v` и соберёт tall-серию из них; `k4v.mp4` подхватывается тоже: на телефоне ночной луп будет вертикальным.

@@ -1,9 +1,9 @@
-<!-- VE · 02-hero.html · сборка 0bad1cdf -->
+<!-- VE · 02-hero.html · сборка 65a2e06a -->
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=0bad1cdf">
-      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=0bad1cdf" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=65a2e06a">
+      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=65a2e06a" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -255,7 +255,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
   })();
   function start(){
     var VE=window.VE;if(!VE)return setTimeout(start,50);
-    import(VE.url('js/scene.js')).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,onProgress:onP,onManifest:function(man){if(man.loop&&!html.classList.contains('ve-no-loops'))loopSrc=VE.url('media/scene/'+man.loop)},onLoad:onLoad,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});
+    import(VE.url('js/scene.js')).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,onProgress:onP,onManifest:function(man){if(html.classList.contains('ve-no-loops'))return;var tall=window.innerHeight>window.innerWidth,f=tall&&man.loopTall?man.loopTall:man.loop;if(f)loopSrc=VE.url('media/scene/'+f)},onLoad:onLoad,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();

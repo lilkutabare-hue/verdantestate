@@ -4,6 +4,7 @@
 // Вход (media-src/):
 //   k1.mp4 k2.mp4 k3.mp4   клипы Kling пролёта (S1→S2, S2→S3, S3→S4); нет клипов — сцена из стиллов (путь A)
 //   k4.mp4                 ночной луп (start = end = S5) → scene/loop.mp4, играет поверх финального кадра
+//   k4v.mp4                ночной луп 9:16 (start = end = S5v) → scene/loop-tall.mp4, на вертикальных экранах вместо loop.mp4
 //   k1v k2v k3v.mp4 + s4v s5av s5v   вертикальная серия 9:16 для телефона (prompts §6.1); нет — tall кропом из 16:9
 //   s1 s2 s3 s4 s5a s5     стиллы (.png/.jpg/.webp); s4 закрывает пролёт, s5a и s5 — превращение «до → после»
 //   focus.json             по желанию: ведение кропа 9:16, [[t, x], …], t и x от 0 до 1 (по умолчанию x = .5 весь пролёт)
@@ -88,7 +89,7 @@ async function extractFlight(ff, clipList, tag, size, finalStill) {
   }
   return out;
 }
-const flight = []; let manLoop = null, tallFlight = null, tallAfter = null;
+const flight = []; let manLoop = null, manLoopTall = null, tallFlight = null, tallAfter = null;
 if (useClips) {
   const ff = await findFfmpeg();
   flight.push(...(await extractFlight(ff, clips, 'k', [1928, 1072], still('s4'))));
@@ -104,6 +105,12 @@ if (useClips) {
   if (files.includes('k4.mp4')) {
     await run(ff, ['-y', '-v', 'error', '-i', join(SRC, 'k4.mp4'), '-an', '-vf', 'scale=1440:-2', '-c:v', 'libx264', '-preset', 'slow', '-crf', '22', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', join(OUT, 'loop.mp4')]);
     manLoop = 'loop.mp4';
+  }
+  // вертикальный ночной луп для телефона (prompts-vertical §5): k4v.mp4 → scene/loop-tall.mp4, 720 по ширине
+  if (files.includes('k4v.mp4')) {
+    await run(ff, ['-y', '-v', 'error', '-i', join(SRC, 'k4v.mp4'), '-an', '-vf', 'scale=720:-2', '-c:v', 'libx264', '-preset', 'slow', '-crf', '23', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', join(OUT, 'loop-tall.mp4')]);
+    manLoopTall = 'loop-tall.mp4';
+    console.log('луп телефона: scene/loop-tall.mp4');
     console.log('луп: scene/loop.mp4', ((await import('node:fs/promises')).stat(join(OUT, 'loop.mp4')).then((s) => (s.size / 1024).toFixed(0) + ' КБ').then(console.log), ''));
   }
 } else {
@@ -124,7 +131,7 @@ async function render(src, set, x) {
   return img.resize(w, h, { kernel: 'lanczos3' }).extract({ left, top, width: set.w, height: set.h });
 }
 
-const man = { v: 2, n: flight.length, placeholder: flag('placeholder'), source: useClips ? 'clips' : 'stills', loop: manLoop, sets: { wide: { w: WIDE.w, h: WIDE.h, frames: [], after: [] }, tall: { w: TALL.w, h: TALL.h, frames: [], after: [] } }, poster: { wide: 'poster-wide.webp', tall: 'poster-tall.webp' } };
+const man = { v: 2, n: flight.length, placeholder: flag('placeholder'), source: useClips ? 'clips' : 'stills', loop: manLoop, loopTall: manLoopTall, sets: { wide: { w: WIDE.w, h: WIDE.h, frames: [], after: [] }, tall: { w: TALL.w, h: TALL.h, frames: [], after: [] } }, poster: { wide: 'poster-wide.webp', tall: 'poster-tall.webp' } };
 let total = 0; const bySet = { wide: 0, tall: 0 };
 const extOf = (f) => (f === 'avif' ? 'avif' : f === 'jpg' ? 'jpg' : 'webp');
 const EXT = extOf(FMT), TEXT = extOf(TFMT);
@@ -156,7 +163,7 @@ await put(sharp(await (await render(tSrc[0], TALL, tallFlight ? 0.5 : fx(0))).pn
 await writeFile(join(OUT, 'manifest.json'), JSON.stringify(man, null, 2) + '\n');
 
 // старые кадры, которых нет в манифесте, убираем
-const keep = new Set([...man.sets.wide.frames, ...man.sets.tall.frames, ...man.sets.wide.after, ...man.sets.tall.after, man.poster.wide, man.poster.tall, 'manifest.json', manLoop].filter(Boolean));
+const keep = new Set([...man.sets.wide.frames, ...man.sets.tall.frames, ...man.sets.wide.after, ...man.sets.tall.after, man.poster.wide, man.poster.tall, 'manifest.json', manLoop, manLoopTall].filter(Boolean));
 for (const f of await readdir(OUT)) if (!keep.has(f)) await unlink(join(OUT, f));
 const mb = (n) => (n / 1048576).toFixed(2) + ' МБ';
 console.log(`сцена: ${man.n} кадров пролёта + 2 превращения; wide ${mb(bySet.wide)} (бюджет 4.5), tall ${mb(bySet.tall)} (бюджет 2.2)`);
