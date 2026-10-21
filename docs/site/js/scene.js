@@ -15,11 +15,13 @@ export function mount(root, opts = {}) {
   const onProgress = opts.onProgress || (() => {});
   const TL = Object.assign({ flight: 0.66, groom: 0.8, light: 0.88 }, opts.timeline || {});
 
+  const slow = (() => { try { return matchMedia('(hover:none) and (pointer:coarse)').matches; } catch { return false; } })();
   let man = null, set = null, imgs = [], ready = [], nFlight = 0, curP = 0, held = null, running = false, dead = false;
   // декодированные битмапы: браузер на телефоне выкидывает декод картинок из кеша и декодирует заново при каждом drawImage — отсюда фризы.
   // Держим ImageBitmap сами, окном вокруг текущего кадра (на компьютере — все), остальное закрываем.
   let bmps = [], bmpBusy = 0, bmpCenter = -1;
-  const canBmp = typeof createImageBitmap === 'function';
+  // на тач битмапы не держим: пачки createImageBitmap роняли кадры (18 к/с при 4× замедлении), а WebP декодируется быстро; ?nofx=bmp — диагностика на компьютере
+  const canBmp = typeof createImageBitmap === 'function' && !slow && !document.documentElement.classList.contains('ve-no-bmp');
   const WIN = slow ? 14 : 24; // окно битмапов: телефон ±14 (≈75 МБ), компьютер ±24 (≈230 МБ)
   function tend(center) {
     if (!canBmp || center === bmpCenter) return; bmpCenter = center;
@@ -33,7 +35,6 @@ export function mount(root, opts = {}) {
   function tend2() { const c = bmpCenter; bmpCenter = -1; tend(c); }
   const pick = (k) => bmps[k] || imgs[k];
   let W = 0, H = 0, dpr = 1, tick = 0, lastKey = '';
-  const slow = (() => { try { return matchMedia('(hover:none) and (pointer:coarse)').matches; } catch { return false; } })();
 
   // --- размер и серия под ориентацию ---
   function size() {
@@ -112,7 +113,8 @@ export function mount(root, opts = {}) {
     const A = nFlight, last = nFlight - 1;
     let key;
     if (p <= TL.flight) {
-      const t = seg(p, 0, TL.flight) * last, a = Math.floor(t), b = Math.min(last, a + 1), al = t - a;
+      let t = seg(p, 0, TL.flight) * last, a = Math.floor(t), b = Math.min(last, a + 1), al = t - a;
+      if (slow) { a = Math.round(t); b = a; al = 0; } // телефон: один ближайший кадр, без смешивания — 97 кадров на 2,4 экрана и так идут по 10 px на кадр
       const ia = nearest(a), ib = nearest(b);
       tend(a);
       key = 'f' + ia + ':' + ib + ':' + al.toFixed(3) + ':' + (bmps[ia] ? 1 : 0) + (bmps[ib] ? 1 : 0);
