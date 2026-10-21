@@ -171,7 +171,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
   var loadBar=root.querySelector('.ve-hero__load i'),loaded=0;
   function onLoad(n,total){loaded=total?n/total:1;loadBar.style.setProperty('--p',loaded.toFixed(3))}
   var coarseGate=false;try{coarseGate=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
-  var NEED=coarseGate?.6:.92; // телефон: отпускаем на 60 % — остальное догружается, пока камера дышит на первом кадре
+  var NEED=coarseGate?.5:.92; // телефон: отпускаем на 50 % (опорные кадры уже есть) — остальное догружается, пока камера дышит на первом кадре
   var gate=setInterval(function(){var t=performance.now()-t0;if((root.classList.contains('is-live')&&loaded>=NEED&&t>2200)||t>15000){clearInterval(gate);loadBar.style.setProperty('--p','1');fly()}},100);
 
   // ---- главы текста и луп по прогрессу ----
