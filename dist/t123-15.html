@@ -1,4 +1,4 @@
-<!-- VE · 15-footer.html · сборка f07e7c24 -->
+<!-- VE · 15-footer.html · сборка a4d8887c -->
 <footer class="ve ve-ft" id="ve-footer">
   <div class="ve-wrap">
     <div class="ve-ft__logo" data-spectral data-spectral-heavy>
@@ -56,7 +56,7 @@
   try{ok=localStorage.getItem(KEY)==='1'}catch(e){}
   if(ok)return;ck.hidden=false;
   // показываем после хиро, чтобы первый экран был чистым
-  var shown=false;function tick(){if(shown)return;var h=document.getElementById('ve-hero');if(h&&h.getBoundingClientRect().bottom>window.innerHeight)return;shown=true;ck.classList.add('is-on');window.removeEventListener('scroll',tick)}
+  var shown=false;function tick(){if(shown)return;var h=document.getElementById('ve-hero');if(h&&h.getBoundingClientRect().bottom>window.innerHeight*.4)return;/* не раньше, чем хиро ушёл больше чем наполовину — иначе плашка ложится на кнопку */shown=true;ck.classList.add('is-on');window.removeEventListener('scroll',tick)}
   window.addEventListener('scroll',tick,{passive:true});tick();
   ck.querySelector('[data-ve-ck-ok]').addEventListener('click',function(){ck.classList.remove('is-on');try{localStorage.setItem(KEY,'1')}catch(e){}setTimeout(function(){ck.hidden=true},500)});
 })();
