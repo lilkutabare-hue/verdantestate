@@ -9,3 +9,8 @@ ALLOW_USER = "flowwwwwwwwwwwwwwwwwwwwwwwwwwwww"
 [[kv_namespaces]]
 binding = "KV"
 id = "1099342dcf2f4efa83aaeaabe14c74ee"
+
+# медиа сайта (аватарка бота) — напрямую, не через workers.dev
+[[services]]
+binding = "MEDIA"
+service = "verdant-assets"
