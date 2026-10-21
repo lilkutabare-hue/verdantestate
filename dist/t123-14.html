@@ -1,4 +1,4 @@
-<!-- VE · 14-form.html · сборка 53ec2806 -->
+<!-- VE · 14-form.html · сборка d660106e -->
 <section class="ve ve-sec ve-sec--last ve-fm" id="ve-form">
   <div class="ve-wrap ve-sec__top ve-line">
     <div class="ve-fm__grid">
@@ -41,6 +41,7 @@
         <label class="ve-fm__field"><span>Комментарий</span><textarea name="comment" rows="3" maxlength="1000" placeholder="Где участок, что беспокоит, когда удобно позвонить"></textarea></label>
         <label class="ve-fm__consent"><input type="checkbox" name="consent" required><i></i><span>Даю <a href="/consent" data-ve-consent target="_blank" rel="noopener">согласие на обработку персональных данных</a> и принимаю <a href="/policy" data-ve-policy target="_blank" rel="noopener">политику</a></span></label>
         <p class="ve-fm__err" role="alert" hidden></p>
+        <div class="ve-fm__alt" hidden><a class="ve-btn ve-btn--sm" data-ve-alt-wa href="https://wa.me/79804009448" target="_blank" rel="noopener">Отправить в WhatsApp</a><a class="ve-btn ve-btn--sm" data-ve-alt-tel href="tel:+79804009448">Позвонить</a></div>
         <div class="ve-fm__actions">
           <button class="ve-btn" type="submit">Отправить</button>
         </div>
@@ -74,6 +75,8 @@
 .ve-fm__consent.is-bad i{border-color:#B0553F}
 .ve-fm__consent a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
 .ve-fm__err{margin-top:14px;font-size:14px;color:#B0553F}
+.ve-fm__alt{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.ve-fm__alt[hidden]{display:none}
 .ve-fm__actions{margin-top:24px}
 .ve-fm__done{margin-top:24px;font-weight:600;letter-spacing:-.015em;font-size:24px;line-height:1.25}
 .ve-fm__form.is-sent .ve-fm__actions,.ve-fm__form.is-sent .ve-fm__row,.ve-fm__form.is-sent .ve-fm__field,.ve-fm__form.is-sent .ve-fm__consent{display:none}
@@ -116,8 +119,15 @@
     var done=function(){form.classList.add('is-sent');form.querySelector('.ve-fm__done').hidden=false};
     /* заявка уходит на сервер заявок (tools/form-worker) → Telegram заказчику; ответ проверяем, а не только сеть */
     var btn=form.querySelector('button[type=submit]');
-    var fail=function(code){err.textContent=code===429?'Слишком много заявок подряд. Попробуйте через 10 минут или позвоните нам.':'Не отправилось. Позвоните нам или напишите в мессенджер.';err.hidden=false;btn.disabled=false;btn.textContent='Отправить'};
-    if(ep){btn.disabled=true;btn.textContent='Отправляем…';fetch(ep,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}).then(function(r){if(r.ok)done();else fail(r.status)},function(){fail(0)})}
+    /* запасной путь: сервер не ответил за 8 с или ответил ошибкой — та же заявка уходит в WhatsApp уже набранным текстом, рядом звонок; номер берём из подвала */
+    var alt=form.querySelector('.ve-fm__alt'),T={BASIC:'Basic',PREMIUM:'Premium',ESTATE:'Estate'};
+    var leadText=function(){return ['Здравствуйте! Заявка с сайта Verdant Estate','Имя: '+data.name,'Телефон: '+data.phone,data.area?'Площадь: '+data.area+' сот.':'','Уровень: '+(T[data.tariff]||'не выбран'),(data.factors||[]).length?'На участке: '+data.factors.join(', '):'',data.comment?'Комментарий: '+data.comment:''].filter(Boolean).join('\n')};
+    var showAlt=function(){var wa=document.querySelector('[data-ve-wa]'),tel=document.querySelector('[data-ve-tel]'),a=alt.querySelector('[data-ve-alt-wa]'),t=alt.querySelector('[data-ve-alt-tel]');
+      var waBase=(wa&&/wa\.me\/\d/.test(wa.href)?wa.href:a.href).split('?')[0];a.href=waBase+'?text='+encodeURIComponent(leadText());if(tel&&/^tel:\+?\d{11}/.test(tel.getAttribute('href')))t.href=tel.getAttribute('href');alt.hidden=false};
+    var fail=function(code){err.textContent=code===429?'Слишком много заявок подряд. Отправьте эту же заявку в WhatsApp — текст уже набран — или позвоните.':'Сайт не смог отправить заявку. Отправьте её в WhatsApp — текст уже набран — или позвоните.';err.hidden=false;showAlt();btn.disabled=false;btn.textContent='Отправить'};
+    if(ep){btn.disabled=true;btn.textContent='Отправляем…';alt.hidden=true;
+      var ac=window.AbortController?new AbortController():null,settled=false,to=setTimeout(function(){if(settled)return;settled=true;if(ac)ac.abort();fail(0)},8000);
+      fetch(ep,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data),signal:ac?ac.signal:undefined}).then(function(r){if(settled)return;settled=true;clearTimeout(to);if(r.ok)done();else fail(r.status)},function(){if(settled)return;settled=true;clearTimeout(to);fail(0)})}
     else{ // пока бэкенд не выбран (PLAN §9.2) — письмо
       var body='Имя: '+data.name+'\nТелефон: '+data.phone+'\nПлощадь: '+(data.area||'—')+'\nУровень: '+(data.tariff||'не выбран')+'\nНа участке: '+((data.factors||[]).join(', ')||'—')+'\nКомментарий: '+(data.comment||'—');
       location.href='mailto:hello@example.com?subject='+encodeURIComponent('Заявка с сайта Verdant Estate')+'&body='+encodeURIComponent(body);done()}
