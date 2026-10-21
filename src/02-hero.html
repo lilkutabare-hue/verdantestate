@@ -177,9 +177,12 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
   var W1=[].slice.call(root.querySelectorAll('.ve-hero__h1 .ve-w')),W2=[].slice.call(root.querySelectorAll('.ve-hero__sub .ve-w')),W3=[].slice.call(root.querySelectorAll('.ve-hero__cta .ve-w'));
   var seqLast={};
   function seq(els,p,p0,p1,id,dx){
-    var n=els.length,per=(p1-p0)/(n+1.4),key=id+':'+p.toFixed(4);if(seqLast[id]===key)return;seqLast[id]=key;
-    for(var i=0;i<n;i++){var k=(p-p0-i*per)/(per*2.4);k=k<0?0:k>1?1:k;k=1-Math.pow(1-k,3);
-      var st=els[i].style;st.opacity=k.toFixed(3);st.transform=dx?'translateX('+(dx*(1-k)).toFixed(1)+'px)':'translateY('+((1-k)*.5).toFixed(3)+'em)'}
+    /* вне своего диапазона и без изменений — ни одной записи в стиль: раньше 10 слов переписывались на каждом шаге скролла */
+    var n=els.length,per=(p1-p0)/(n+1.4);
+    if(p<p0-.01&&seqLast[id]==='lo')return;if(p>p1+.02&&seqLast[id]==='hi')return;seqLast[id]=p<p0-.01?'lo':p>p1+.02?'hi':'mid';
+    for(var i=0;i<n;i++){var k=(p-p0-i*per)/(per*2.4);k=k<0?0:k>1?1:k;k=Math.round((1-Math.pow(1-k,3))*100)/100;
+      if(els[i].__k===k)continue;els[i].__k=k;
+      var st=els[i].style;st.opacity=k;st.transform=k===1?'none':dx?'translateX('+(dx*(1-k)).toFixed(1)+'px)':'translateY('+((1-k)*.5).toFixed(2)+'em)'}
   }
   var IDX=null;
   function onP(p){
