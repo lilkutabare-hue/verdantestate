@@ -64,7 +64,7 @@ export function mount(root, opts = {}) {
         } catch (e) { /* кадр не пришёл — рисуем ближайший загруженный */ }
       }
     };
-    await Promise.all([worker(), worker(), worker()]);
+    await Promise.all(Array.from({ length: 8 }, worker)); // 8 параллельных: на медленной сети (VPN, мобильный) серия ограничена задержкой запроса, а не полосой
   }
   const nearest = (k) => {
     if (ready[k]) return k;
