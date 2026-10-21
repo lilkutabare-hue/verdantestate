@@ -47,10 +47,13 @@
 @media(prefers-reduced-motion:reduce){.ve-hero__dust{display:none}}
 .ve-hero__poster img{width:100%;height:100%;object-fit:cover}
 .ve-hero__canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .6s var(--ve-ease)}
-/* телефон: дыхание камеры на покое — CSS-масштаб холста (компьютер дышит кадрами в scene.js) */
-html.ve-coarse .ve-hero.is-idle.is-docked .ve-hero__canvas{animation:ve-hero-breathe 9s ease-in-out infinite alternate}
-@keyframes ve-hero-breathe{from{scale:1}to{scale:1.035}}
-html.ve-no-breathe .ve-hero__canvas{animation:none!important}
+/* телефон: камера дышит CSS-масштабом (холст, постер и луп вместе, чтобы стык не прыгал); компьютер дышит кадрами в scene.js */
+html.ve-coarse .ve-hero.is-docked :is(.ve-hero__canvas,.ve-hero__loop,.ve-hero__poster){animation:ve-hero-breathe 9s ease-in-out infinite alternate}
+@keyframes ve-hero-breathe{from{scale:1}to{scale:1.03}}
+/* телефон: пролёт короче — меньше свайпов, кадры идут быстрее */
+html.ve-coarse .ve-hero{height:440vh;height:440svh}
+html.ve-no-breathe .ve-hero__canvas,html.ve-no-breathe .ve-hero__loop,html.ve-no-breathe .ve-hero__poster{animation:none!important}
+@media(prefers-reduced-motion:reduce){.ve-hero__canvas,.ve-hero__loop,.ve-hero__poster{animation:none!important}}
 html.ve-no-dust .ve-hero__dust{display:none}
 .ve-hero.is-live .ve-hero__canvas{opacity:1}
 /* ночной луп: живёт поверх финального кадра, появляется, когда свет включён */
@@ -108,6 +111,8 @@ html.ve-no-dust .ve-hero__dust{display:none}
 .ve-logo__halo{position:absolute;inset:0;pointer-events:none;-webkit-mask:__ARC_MASK__ center/100% 100% no-repeat;mask:__ARC_MASK__ center/100% 100% no-repeat;background:conic-gradient(from var(--ve-a) at __ARC_CX__ __ARC_CY__,rgba(255,255,255,0) 0deg,hsla(110,20%,78%,.35) 12deg,hsla(80,25%,86%,.7) 24deg,hsla(60,30%,94%,.9) 31deg,#fff 38deg 46deg,hsla(44,65%,82%,.95) 53deg,hsla(36,50%,68%,.7) 63deg,hsla(28,40%,58%,.3) 76deg,rgba(255,255,255,0) 88deg,rgba(255,255,255,0) 168deg,hsla(110,18%,80%,.25) 182deg,hsla(80,22%,88%,.5) 194deg,rgba(255,255,255,.8) 202deg,hsla(42,55%,80%,.5) 212deg,hsla(30,40%,62%,.2) 224deg,rgba(255,255,255,0) 238deg);opacity:calc(.9*var(--ve-f));mix-blend-mode:screen;transition:opacity .8s var(--ve-ease)}
 .ve-logo__halo::after{content:"";position:absolute;inset:0;background:inherit;filter:blur(10px) saturate(1.3);opacity:.7}
 html.ve-coarse .ve-logo__halo::after{display:none}
+html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f))} /* mix-blend на тач заставляет композитить всю сцену */
+.ve-hero.is-docked .ve-logo__halo{display:none}
 .ve-hero__logo:not(.is-in) .ve-logo__halo,.ve-hero.is-docked .ve-logo__halo{opacity:0}
 /* линия загрузки серии под логотипом: растёт по кадрам */
 .ve-hero__load{position:absolute;left:50%;top:calc(50% + min(300px,70vw) * .5);width:min(200px,46vw);margin-left:calc(min(200px,46vw) / -2);height:1px;background:rgba(31,77,46,.14)}

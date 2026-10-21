@@ -1,4 +1,4 @@
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка fc3ebb45 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка e21d2a76 -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -14,6 +14,9 @@
 }
 @media(min-width:900px){:root{--ve-r:12px;--ve-gap:120px;--ve-pad:40px}}
 
+/* якоря едут плавно и встают под док шапки */
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 /* база блока: всё наше живёт под .ve, стили Тильды .t-* не трогаем */
 .ve{font-family:var(--ve-sans);font-size:16px;line-height:1.5;color:var(--ve-ink);background:var(--ve-paper);
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;box-sizing:border-box}
@@ -68,6 +71,8 @@ html.ve-coarse{--ve-dock-blur:10px;--ve-glass-blur:10px}
 html.ve-coarse .ve-hero .ve-dock,html.ve-coarse .ve-hero .ve-btn--light{-webkit-backdrop-filter:none;backdrop-filter:none}
 html.ve-coarse .ve-hero .ve-dock{background:linear-gradient(180deg,rgba(28,46,32,.55),rgba(28,46,32,.42))}
 html.ve-coarse .ve-hero .ve-btn--light{background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.12))}
+/* тач: кольцо стоит, блум (размытая псевдо-копия) выключен — иначе перерисовка размытия на каждом тике */
+html.ve-coarse .ve-btn::after,html.ve-coarse .ve-ring::after,html.ve-coarse .ve-pill::after{display:none}
 html.ve-no-glass .ve-dock,html.ve-no-glass .ve-dock--light,html.ve-no-glass .ve-btn--light,html.ve-no-glass .ve-hd.is-solid .ve-hd__in,html.ve-no-glass .ve-ba__bar i{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html.ve-no-glass .ve-ring::before,html.ve-no-glass .ve-ring::after,html.ve-no-glass .ve-btn::before,html.ve-no-glass .ve-btn::after,html.ve-no-glass .ve-pill::before,html.ve-no-glass .ve-pill::after{display:none}
 html.ve-no-breathe .ve-px>img{animation:none}
@@ -146,7 +151,8 @@ html.ve-no-breathe .ve-px>img{animation:none}
 .ve-swap.is-out{opacity:0;transform:translateY(5px)}
 .ve-hair{border:0;border-top:1px solid var(--ve-line);margin:0}
 .ve-px{position:relative;overflow:hidden}
-.ve-px>img,.ve-px>video{width:100%;height:100%;object-fit:cover;transform:translate3d(0,var(--px,0%),0) scale(1.14);will-change:transform}
+.ve-px>img,.ve-px>video{width:100%;height:100%;object-fit:cover;transform:translate3d(0,var(--px,0%),0) scale(1.14)}
+.ve-px.is-vis>img,.ve-px.is-vis>video{will-change:transform} /* слой держим только в кадре: 25 слоёв по мегапикселю на телефоне = дёрганый скролл */
 /* живые фото: медленный наезд (scale отдельно от transform параллакса), играет только пока рамка в кадре (.is-vis ставит VE.parallax) */
 .ve-px>img{animation:ve-breathe 26s ease-in-out infinite alternate;animation-play-state:paused}
 .ve-px.is-vis>img{animation-play-state:running}
@@ -184,7 +190,7 @@ html.ve-no-breathe .ve-px>img{animation:none}
   try{var m=/[?&]nofx=([^&#]*)/.exec(location.search);if(m){var list=decodeURIComponent(m[1]).split(',');if(list.indexOf('all')>=0)list=['glass','dust','spectral','breathe','px','loops'];for(var q=0;q<list.length;q++)if(list[q])document.documentElement.classList.add('ve-no-'+list[q].trim())}}catch(e){}
   var coarse=false;try{coarse=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
   if(coarse)document.documentElement.classList.add('ve-coarse');
-  var VE={v:'fc3ebb45',base:base,
+  var VE={v:'e21d2a76',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
@@ -258,7 +264,7 @@ html.ve-no-breathe .ve-px>img{animation:none}
     spectral:function(root){
       if(!VE._sp){VE._sp={vis:[],io:null};
         if('IntersectionObserver' in window)VE._sp.io=new IntersectionObserver(function(en){en.forEach(function(x){var v=VE._sp.vis,i=v.indexOf(x.target);if(x.isIntersecting){if(i<0)v.push(x.target)}else if(i>=0)v.splice(i,1)})},{rootMargin:'12%'});
-        if(!VE.rm&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=coarse,acc=0;
+        if(!VE.rm&&!coarse&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=false,acc=0; // на тач свет стоит: каждая перерисовка конических градиентов дорога
           (function spin(now){requestAnimationFrame(spin);var dt=(now-last)/1000;last=now;if(document.hidden||dt<=0||dt>.25)return;if(slow){acc+=dt;if(acc<.08)return;dt=acc;acc=0}
             a=(a+SPEED*dt)%7200;t+=dt;var f=1+.045*Math.sin(t*1.8)+.03*Math.sin(t*4.7+1.4)+.018*Math.sin(t*11.3+3.1),A=a.toFixed(2)+'deg',F=f.toFixed(3),v=VE._sp.vis;
             for(var i=0;i<v.length;i++){var el=v[i];if(slow&&el.hasAttribute('data-spectral-heavy'))continue;el.style.setProperty('--ve-a',A);el.style.setProperty('--ve-f',F);var g=el.__grads;if(g)for(var k=0;k<g.length;k++)g[k].setAttribute('gradientTransform','rotate('+a.toFixed(1)+' '+g[k].getAttribute('data-spin')+')')}})(last)}}

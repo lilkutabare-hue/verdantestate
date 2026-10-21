@@ -25,7 +25,7 @@ async function walk(dir, out = []) {
   return out;
 }
 const h = createHash('sha1');
-for (const f of [...(await walk(SRC)), ...(await walk(SITE)), ...(await walk(join(ROOT, 'brand/vector')))].sort()) { h.update(f); h.update(await readFile(f)); }
+for (const f of [...(await walk(SRC)), ...(await walk(SITE)), ...(await walk(join(ROOT, 'brand/vector')))].sort()) { if (/version\.txt$|apple-touch-icon\.png$/.test(f)) continue; h.update(f); h.update(await readFile(f)); } // то, что пишет сама сборка, в хэш не входит — иначе он менялся от сборки к сборке
 const V = h.digest('hex').slice(0, 8);
 
 // ---------- логотип ----------
@@ -125,6 +125,8 @@ const page = `<!doctype html>
 <meta property="og:image" content="site/media/scene/poster-wide.webp?v=${V}">
 <meta name="robots" content="noindex">
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="site/apple-touch-icon.png">
+<meta name="theme-color" content="#1B462A">
 <script>window.VE_BASE=new URL('site/',location.href).href</script>
 ${fill(headSrc, 'site/')}
 <style>html,body{margin:0;padding:0;background:#FFFFFF}body{overflow-x:hidden}.ve-preview-note{font:11px/1.5 -apple-system,system-ui,sans-serif;color:#5E6E45;text-align:center;padding:18px 20px 28px;background:#FFFFFF}</style>
@@ -136,5 +138,9 @@ ${blocksPreview.map((b) => `<!-- ${b.f} -->\n${b.html}`).join('\n\n')}
 </html>
 `;
 await writeFile(join(DOCS, 'index.html'), page);
+// иконка для «на экран Домой»: знак на бумаге, 180×180
+{ const sharp = (await import('sharp')).default;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700"><rect width="700" height="700" fill="#FFFFFF"/><g transform="translate(45 70) translate(-300 -220)" fill="#1B462A"><path d="${LP.ring}"/><path d="${LP.branch}"/><path d="${LP.letters}"/></g></svg>`;
+  await writeFile(join(SITE, 'apple-touch-icon.png'), await sharp(Buffer.from(svg)).resize(180, 180).png().toBuffer()); }
 await writeFile(join(SITE, 'version.txt'), V + '\n');
 console.log(`docs/index.html  ${kb(Buffer.byteLength(page))}   сборка ${V}`);
