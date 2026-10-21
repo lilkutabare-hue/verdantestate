@@ -4,7 +4,7 @@ compatibility_date = "2026-10-01"
 
 [vars]
 ALLOW_USER = "flowwwwwwwwwwwwwwwwwwwwwwwwwwwww"
-# ORIGINS = "https://verdantestate.ru"   # домен сайта, когда будет; tilda.ws и localhost разрешены в коде
+ORIGINS = "https://verdantestate.ru,https://www.verdantestate.ru"   # домен сайта (куплен 22.10); tilda.ws и localhost разрешены в коде
 
 [[kv_namespaces]]
 binding = "KV"
