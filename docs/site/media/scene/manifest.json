@@ -4,6 +4,7 @@
   "placeholder": false,
   "source": "clips",
   "loop": "loop.mp4",
+  "loopTall": null,
   "sets": {
     "wide": {
       "w": 1440,
@@ -113,8 +114,8 @@
       ]
     },
     "tall": {
-      "w": 600,
-      "h": 1067,
+      "w": 480,
+      "h": 853,
       "frames": [
         "tall-00.jpg",
         "tall-01.jpg",
