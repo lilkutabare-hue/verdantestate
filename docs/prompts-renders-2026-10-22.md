@@ -9,7 +9,7 @@
 2. **Одна ровная скорость весь клип.** Скролл ровный → кадр обязан меняться ровно. Разгон и торможение («settles gently») дают при ровном скролле то стоп, то рывок, особенно на стыках клипов.
 3. **10 секунд на клип пролёта.** Больше кадров на тот же путь камеры — меньше шаг между кадрами. Сайт теперь берёт все кадры клипа (видео, `?hero=video`).
 4. **Каждый кадр резкий.** Скролл может остановиться на любом кадре, смаз в движении на стоп-кадре виден.
-5. **Лупы секций (тарифы, способы, «после», лето) играют сами**, не скроллом — там движение можно, а петлю держит start = end.
+5. **Лупы секций (тарифы, способы, «после», лето) играют сами**, не скроллом — там движение можно, а петлю держит start = end (`tools/loops.mjs` клип не разворачивает — один и тот же первый и последний кадр обязателен).
 6. Kling 3.0 (не Omni: у Omni в Magnific нет энд-кадра) · 1080p · звук выкл · по 2 прогона. Из двух прогонов пролёта брать тот, чей последний кадр ближе к старту следующего клипа; скорость и стыки я дополнительно проверю и выровняю на сборке.
 
 ## 1. Стиллы 9:16 (Nano Banana 2.1, edit, thinking high, 9:16, 2K — проверить тир в пикере, по 2 генерации)
@@ -30,7 +30,7 @@ Using @img1, change only the state of the garden: it has just been fully cared f
 ```
 Using @img1, change only the light: it is now blue hour, half an hour after sunset. The sky light is deep blue and soft, the lawn is dim blue-green, and the lighting of the estate is on: warm hidden linear light under the floating terrace steps and along the edges of the beds, small warm uplights at the base of every thuja, the trunks and crowns of the nearest pines washed softly from below, and the whole glass of the villa glowing warm from inside onto the terrace. All light is warm 2700K, calm and even, without glare and without lens flare. Keep exactly the same, pixel for pixel: the camera, the framing, the house, the garden, every plant and its freshly groomed state.
 ```
-Файлы: `media-src/s1v.png … s4v.png`, `s5av.png`, `s5v.png`.
+Файлы: `media-src/s1v.png … s4v.png`, `s5av.png`, `s5v.png`. Сборке из них нужны s4v, s5av, s5v (финал пролёта и превращение); S1v–S3v — только старт/энд для клипов.
 
 ## 2. Пролёт 9:16 — К1v, К2v, К3v (Kling 3.0, start + end, 10 s, 1080p, 9:16, звук выкл, 2 прогона)
 
@@ -92,11 +92,11 @@ Locked-off static camera, the exact same view from the first frame to the last. 
 ```
 Файлы: `media-src/loop-t1.mp4`, `loop-t2.mp4`, `loop-t3.mp4`, `loop-r02.mp4`, `loop-z1.mp4`.
 
-**«После» в шторке** — B2 · start = B2 · **без end-кадра** (ветер со start = end Kling превращает в пульсацию зума — тетрадь §15.1; петлю туда-обратно соберу сам)
+**«После» в шторке** — B2 · start = end = B2 (`loops.mjs` просто зацикливает клип — петлю держит одинаковый первый и последний кадр; ведёт свет, а не ветер: так собран проверенный ночной луп, шов 0,7/255)
 ```
-Locked-off static camera, the exact same view for the whole clip. The ONLY things that move are the air and the light: a light breeze from the left gently bends the feather reed grass and the hydrangea heads and lets them settle back, again and again for the whole clip, never freezing; thin sunbeams between the pines drift slowly. The terrace, the steps, the path, the beds and the trees keep exactly the same position and shape, and the frame never zooms.
+Locked-off static camera, the exact same view from the first frame to the last. The ONLY things that move are the light and the air: thin sunbeams between the pines drift slowly across the terrace and the beds, the feather reed grass and the hydrangea heads stir gently, and the clip ends on exactly the starting look. The terrace, the steps, the path, the beds and the trees keep exactly the same position and shape, and the frame never zooms.
 ```
-В Negative дописать `still frames, frozen grass, motion stopping`. Файл: `media-src/loop-b2.mp4`.
+Файл: `media-src/loop-b2.mp4`.
 
 **Подсветка** — R04 · start = end = R04
 ```
