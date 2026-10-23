@@ -29,7 +29,7 @@
 | 7 | сезоны | Kling 3.0, 5 s, start + end | Z1→Z3, Z3→Z4 | `season-summer-autumn.mp4`, `season-autumn-winter.mp4` | 1 | 2 × 450 |
 | 8 | лупы R04, R07, R02, Z1 | Kling 3.0, 5 s, start = end | R04, R07, R02, Z1 | `loop-r04/r07/r02/z1.mp4` | 1 | 4 × 450 |
 
-Итого **один прогон всего ≈ 9 000** кредитов (видео 7 650 + стиллы ~1 300); вторые прогоны по критериям — до +7 650. Шаги 2–5 — цепочка (каждый следующий ждёт выбора кадра), 6–8 независимы и могут идти между ними.
+Итого **один прогон всего ≈ 9 000** кредитов (видео 7 650 + стиллы ~1 300); вторые прогоны по критериям — до +7 650. Плюс §7 спецрендеры ≈ 2 200–3 100 и §8 перерендер пролёта 16:9 2 700 → **весь проект ≈ 14 000–15 000** одним кругом, до ~18 500 с лупами на все способы. Шаги 2–5 — цепочка (каждый следующий ждёт выбора кадра), 6–8 независимы и могут идти между ними.
 
 После каждой группы: §4 сборка (`frames.mjs` / `loops.mjs`), проверка стыков и петель, `build` → `tilda-sheet` → `deploy --publish` → коммит.
 
@@ -174,3 +174,84 @@ Locked-off static camera, the exact same view from the first frame to the last. 
 2. Тарифы T1–T3. 3. «После» B2. 4. Сезоны. 5. Способы R04, R07, R02. 6. Лето Z1.
 
 Положил файлы — написать мне: соберу (`tools/frames.mjs`, `tools/loops.mjs`), проверю стыки и скорость, выложу превью. Неудобно переименовывать — кидай в «все рендеры» и напиши, какой файл что.
+
+## 7. Спецрендеры «Сад к празднику» — Хеллоуин и Новый год (23.10; обыгрывание на сайте — план доводки §4.12)
+
+Идея: две карточки 4:5 в блоке «Специальные условия». Стилл карточки — украшенный сад в сумерках **с выключенным светом**; когда карточка доезжает до центра экрана (на компьютере — под курсором), один раз играет клип «включение» — свечи в тыквах / гирлянды загораются, потом подсветка и окна, — и держит последний кадр. Это тот же приём, что превращение в хиро (свет приходит в синий час), и проверенный жанр Kling «меняется ТОЛЬКО свет» (§28, §34, §40.1). Опционально — луп дыхания света поверх зажжённого кадра (первый кадр лупа = последний кадр включения, звенья одной цепи §28).
+
+Всё — эдиты поверх своих мастеров (камера и дом держатся, §40), по одной перемене за проход: свет → декор → свет. Nano Banana 2.1 · edit · 4:5 · 2K · count 2; Kling 3.0 · 5 s · 1080p · пропорция за старт-кадром.
+
+| № | задача | модель | вход | выход (`media-src/`) | ≈ кредитов |
+|---|---|---|---|---|---|
+| 9a | H1 синий час → H2 тыквы и фонари → H0 всё выключено | Nano Banana 2.1 ×3 | R02 → H1 → H2 | `hw-lit.png` (H2), `hw-dark.png` (H0) | 3 × 2 × ~110 |
+| 9b | включение Хеллоуин | Kling 3.0, start H0 · end H2 | H0, H2 | `hw-on.mp4` | 450 |
+| 9c | луп дыхания (опция) | Kling 3.0, start = end = H2 | H2 | `loop-hw.mp4` | 450 |
+| 10a | N1 зима → N2 гирлянды и ель → N0 всё выключено | Nano Banana 2.1 ×3 | R04 → N1 → N2 | `ny-lit.png` (N2), `ny-dark.png` (N0) | 3 × 2 × ~110 |
+| 10b | включение Новый год | Kling 3.0, start N0 · end N2 | N0, N2 | `ny-on.mp4` | 450 |
+| 10c | луп дыхания (опция) | Kling 3.0, start = end = N2 | N2 | `loop-ny.mp4` | 450 |
+
+Итого спецрендеры ≈ **2 200** без лупов дыхания, ≈ **3 100** с ними. Базы разные нарочно: Хеллоуин — дорожка в соснах (R02, у карточки «способов» она золотым часом, здесь — синий час с тыквами), Новый год — фасад виллы (R04) в снегу.
+
+### 7.1 Хеллоуин — база R02 (дорожка в соснах, столбики-фонари)
+
+**H1 · свет** — the first image = R02:
+```
+Using the first image, change only the light: it is now blue hour, half an hour after sunset. The sky between the pine crowns is deep soft blue, the sunbeams and the golden haze are gone, the lawn and the beds are dim blue-green, and the black bollard lights along the path are on, each throwing a small warm 2700K pool of light onto the slabs and the grass beside it; the glass of the garden pavilion in the background glows warm. All light is calm and even, without glare and without lens flare. Keep exactly the same, pixel for pixel: the camera, the framing, the curving stepping-slab path, every bollard, bed, boxwood ball, grass and tree.
+```
+**H2 · декор** — the first image = H1 (принятый):
+```
+Using the first image, change only one thing: the garden has been dressed for Halloween in a restrained, elegant way. Along both edges of the stepping-slab path stand small groups of real pumpkins — deep orange, cream-white and grey-green, of different sizes — and every third pumpkin is carved with a simple classic face and glows from a candle inside with a warm flickering orange light that falls onto the slabs and the grass; a few black metal candle lanterns stand among them, and dried hydrangea heads and fallen golden leaves lie in the beds and on the lawn. Only pumpkins, lanterns and dried garden flowers — nothing else is added. Keep exactly the same, pixel for pixel: the camera, the framing, the blue-hour light, the bollard lights, the path, the beds, the boxwood balls, the grasses and the trees.
+```
+**H0 · всё выключено** — the first image = H2 (принятый):
+```
+Using the first image, change only the light: everything is switched off — the bollard lights are off, no candle burns inside any pumpkin and the carved faces are dark cut-outs, the lanterns are unlit, the pavilion glass is dark, and the whole scene is lit only by the deep blue dusk sky, dim but fully readable. Keep exactly the same, pixel for pixel: the camera, the framing, every pumpkin, lantern, leaf, bollard, bed, boxwood ball, grass and tree.
+```
+**HW-ON · включение** — Kling 3.0 · start = H0 · end = H2 · 5 s:
+```
+Locked-off static camera, the exact same view from the first frame to the last. The ONLY thing that changes is the light: the candles inside the carved pumpkins light up one after another along the path, from the nearest to the farthest, their warm flickering glow spreading onto the slabs and the grass; then the bollard lights come on and the glass of the pavilion warms up, until the scene reaches exactly the look of the last frame and holds it. Everything else is completely still: the pumpkins, the lanterns, the leaves, the plants and the trees keep exactly the same position and shape.
+```
+**Negative:** `camera movement, zoom, pan, zoom pulsing, breathing scale, people, animals, birds, cars, text, watermark, deformation, morphing pumpkins, pumpkins moving, new objects, strobing, flames outside the pumpkins, fire spreading, background change`
+Риск: Kling зажжёт всё разом, а не по очереди — приемлемо, включение всё равно читается.
+
+**HW · луп дыхания (опция)** — Kling 3.0 · start = end = H2 · 5 s:
+```
+Locked-off static camera, the exact same view from the first frame to the last. The ONLY things that move are the light and the air: the candle flames inside the pumpkins flicker softly so their warm glow on the slabs breathes, thin evening mist drifts slowly between the pine trunks, the grasses stir barely, and the clip ends on exactly the starting look. The pumpkins, the lanterns, the leaves, the plants and the trees keep exactly the same position and shape.
+```
+**Negative:** общий негатив лупов §5 + `pumpkins moving, fire spreading`.
+
+### 7.2 Новый год — база R04 (фасад виллы в синий час, подсветка включена)
+
+**N1 · зима** — the first image = R04:
+```
+Using the first image, change only the season: it is now deep winter at the same blue hour. A smooth layer of fresh snow lies on the lawn, on the stepping slabs, on the bed edges, on every boxwood ball and on the terrace steps; the columnar thujas and the pines carry snow on their branches, the birches are bare, the sky is deep blue and clear, the air is crisp. The lighting of the estate stays exactly as it is — the warm linear light under the terrace steps and along the bed edges, the uplights at the thujas and the warm glow of the whole glass villa — now reflected softly by the snow. Keep exactly the same, pixel for pixel: the camera, the framing, the house, the terrace, the path, every bed, ball, thuja and tree.
+```
+**N2 · декор** — the first image = N1 (принятый):
+```
+Using the first image, change only one thing: the garden has been dressed for New Year in a restrained, elegant way. Fine strings of tiny warm-white lights are wrapped evenly around every columnar thuja from base to tip, the same warm micro-lights run along the top edge of the snow-covered beds, and a tall live fir tree stands at the right side of the terrace, dressed only in the same warm-white micro-lights and a few small matte brass baubles. All light is warm 2700K, calm and even — only white light, nothing inflatable, no figures. Keep exactly the same, pixel for pixel: the camera, the framing, the blue-hour light, the snow, the house, the terrace, the path, every bed, ball, thuja and tree.
+```
+**N0 · всё выключено** — the first image = N2 (принятый):
+```
+Using the first image, change only the light: everything is switched off — the light strings on the thujas, the beds and the fir are dark, the terrace and bed lighting is off, the uplights are off, the glass of the villa is dark — and the whole scene is lit only by the deep blue winter dusk reflected by the snow, dim but fully readable. Keep exactly the same, pixel for pixel: the camera, the framing, the snow, the light strings, the fir, the house, the terrace, the path, every bed, ball, thuja and tree.
+```
+**NY-ON · включение** — Kling 3.0 · start = N0 · end = N2 · 5 s:
+```
+Locked-off static camera, the exact same view from the first frame to the last. The ONLY thing that changes is the light: first the strings of tiny warm-white lights come on along the thujas and the fir, one after another from the nearest to the farthest, their glow catching the snow; then the hidden lights under the terrace steps and along the beds come on, and finally the glass of the villa fills with warm light, until the scene reaches exactly the look of the last frame and holds it. Everything else is completely still: the snow, the fir, the plants and the house keep exactly the same position and shape; no snow falls.
+```
+**Negative:** `camera movement, zoom, pan, zoom pulsing, breathing scale, falling snowflakes, snowfall, wind, people, animals, birds, cars, text, watermark, deformation, morphing plants, lights changing color, colored lights, blinking, strobing, new objects, background change`
+
+**NY · луп дыхания (опция)** — Kling 3.0 · start = end = N2 · 5 s:
+```
+Locked-off static camera, the exact same view from the first frame to the last. The ONLY thing that changes is the light: the warm-white light strings on the thujas and the fir twinkle very softly, the glow under the terrace and along the beds breathes gently, the light in the windows stays, and the clip ends on exactly the starting look. The snow, the fir, the plants and the house keep exactly the same position and shape; no snow falls.
+```
+**Negative:** тот же, что у NY-ON.
+
+Приёмка стиллов (из пары count 2): дом, дорожка и растения те же, что в базе (difference-оверлей — изменился только свет/декор); декор без пластика и фигур; у H0/N0 читаемость — не чёрный кадр. Приёмка клипов: первый кадр = H0/N0 (≤ 3/255), последний = H2/N2 (≤ 5/255), между ними только свет.
+
+## 8. Перерендер того, что уже стоит (по слову владельца 23.10: «если надо живее — можно»)
+
+| № | что | зачем | ≈ кредитов | решение |
+|---|---|---|---|---|
+| 11 | пролёт 16:9 для компьютера К1–К3 промптами v2 (одна скорость, без «settles gently») | клипы первой волны тормозят в конце каждого — при ровном скролле стоп и рывок на стыках (§47); телефон получит ровные клипы, компьютер — нет | 3 × 900 = 2 700 | рекомендую, после вертикального набора |
+| 12 | лупы на остальные семь «способов» (R01, R03, R05, R06, R08, R09, R10) | все десять карточек живые, не три | 7 × 450 = 3 150 | по желанию; промпты напишу по кадрам, когда скажешь |
+
+Остальное (процесс, прайс, «до») — статика по замыслу, перерендер не нужен.
