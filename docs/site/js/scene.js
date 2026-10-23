@@ -1,6 +1,6 @@
 // Движок хиро v2 «Пролёт → превращение»: нативный скролл, canvas читает прогресс закреплённой секции.
 // Таймлайн по прогрессу p (0…1):
-//   [0, flight]        пролёт — кадры серии со смешиванием соседних (4 стилла или ~49 кадров из клипов К1–К3)
+//   [0, flight]        пролёт — видео (все кадры клипов, по умолчанию на обоих экранах) или кадры серии, один ближайший кадр без смешивания (§7.2: один кадр на экране)
 //   [flight, groom]    шторка-покос: S4 «до» → S5a «после» мягкой кромкой слева направо
 //   [groom, light]     включается свет: S5a → S5 (синий час, подсветка)
 //   [light, 1]         стоп-кадр S5 (над ним сферы меню, их ведёт сама секция)
@@ -37,7 +37,8 @@ export function mount(root, opts = {}) {
   let W = 0, H = 0, dpr = 1, tick = 0, lastKey = '';
   // ?hero=video (или класс ve-hero-video на html): пролёт из видео manifest.video[серия] — все кадры клипов 24 к/с одним H.264, аппаратный декод.
   // Видео лежит под холстом; в пролёте холст прозрачный, после пролёта рисует шторку и свет как раньше. Не перематывается за 4 с — назад на кадры.
-  const wantVid = (() => { try { return /[?&]hero=video\b/.test(location.search) || document.documentElement.classList.contains('ve-hero-video'); } catch { return false; } })();
+  // по умолчанию видео на телефоне и на компьютере (план доводки §7.3 C); ?hero=frames или класс ve-hero-frames — только кадры (диагностика, старый путь)
+  const wantVid = (() => { try { return !(/[?&]hero=frames\b/.test(location.search) || document.documentElement.classList.contains('ve-hero-frames')); } catch { return true; } })();
   let vidProg = 0; // доля скачанного видео
   // полоса загрузки заставки: кадры — доля загруженных; видео — доля скачанных байт, но до готовности к перемотке не больше 49 % (заставка на телефоне ждёт 50 %)
   function report() {
@@ -178,7 +179,7 @@ export function mount(root, opts = {}) {
     }
     if (p <= TL.flight) {
       let t = seg(p, 0, TL.flight) * last, a = Math.floor(t), b = Math.min(last, a + 1), al = t - a;
-      if (slow) { a = Math.round(t); b = a; al = 0; } // телефон: один ближайший кадр, без смешивания — 97 кадров на 2,4 экрана и так идут по 10 px на кадр
+      a = Math.round(t); b = a; al = 0; // один ближайший кадр, без смешивания соседних: смесь двух кадров на движении камеры = двойная крона (§7.1)
       const ia = nearest(a), ib = nearest(b);
       tend(a);
       key = 'f' + ia + ':' + ib + ':' + al.toFixed(3) + ':' + (bmps[ia] ? 1 : 0) + (bmps[ib] ? 1 : 0);
