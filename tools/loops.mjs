@@ -7,6 +7,8 @@
 //   loop-z1.mp4                           лето в «Круглый год» (16:10)
 //   loop-r02.mp4 loop-r04.mp4 loop-r07.mp4   «10 способов» (карточка 4:5)
 //   season-summer-autumn.mp4, season-autumn-winter.mp4   смена сезонов — не луп, а серия кадров (как хиро): вкладка тянет её по кадрам
+//   hw-on.mp4 ny-on.mp4                   «Сад к празднику» (план доводки 4.12): клип включения, играет один раз и держит кадр → manifest.once
+//   loop-hw.mp4 loop-ny.mp4               лупы дыхания после включения (опция, prompts-renders §7)
 //
 // Выход: loops/<name>.mp4 (1080 по длинной стороне, crf от 24, ≤ 400 КБ — иначе crf выше или 720), loops/<name>.webp (постер = первый кадр),
 //        loops/season-<a>-<b>-NN.avif (24 кадра 1280×800) и manifest.json: { loops:{name:{mp4,poster,w,h}}, seasons:{ 'summer-autumn':{frames:[…],w,h} } }
@@ -30,7 +32,8 @@ const ONLY = opt('only') ? opt('only').split(',') : null;
 const CRF0 = +opt('crf', 24), LIMIT = 400 * 1024;
 
 // имя → пропорция кадра на странице (кроп по центру при кодировании, чтобы не возить лишние пиксели)
-const LOOPS = { t1: [4, 5], t2: [4, 5], t3: [4, 5], r02: [4, 5], r04: [4, 5], r07: [4, 5], b2: [16, 10], z1: [16, 10] };
+const LOOPS = { t1: [4, 5], t2: [4, 5], t3: [4, 5], r02: [4, 5], r04: [4, 5], r07: [4, 5], b2: [16, 10], z1: [16, 10], hw: [4, 5], ny: [4, 5] };
+const ONCE = { 'hw-on': [4, 5], 'ny-on': [4, 5] }; // тот же кроп и бюджет, что у лупов; на странице data-loop-mode="once"
 const SEASONS = { 'summer-autumn': [16, 10], 'autumn-winter': [16, 10] };
 const SEASON_FRAMES = 24, SEASON_W = 1280, SEASON_Q = 42;
 
@@ -59,13 +62,16 @@ const ff = await findFfmpeg();
 await mkdir(OUT, { recursive: true }); await mkdir(TMP, { recursive: true });
 const manPath = join(OUT, 'manifest.json');
 const man = existsSync(manPath) ? JSON.parse(await readFile(manPath, 'utf8')) : { v: 1, loops: {}, seasons: {} };
+man.once = man.once || {};
 const files = existsSync(SRC) ? await readdir(SRC) : [];
 const kb = (n) => (n / 1024).toFixed(0) + ' КБ';
 
-// ---------- лупы ----------
-for (const [name, aspect] of Object.entries(LOOPS)) {
-  const inFile = join(SRC, `loop-${name}.mp4`);
-  if (!files.includes(`loop-${name}.mp4`) || (ONLY && !ONLY.includes(name))) continue;
+// ---------- лупы и клипы включения ----------
+const jobs = [...Object.entries(LOOPS).map(([name, aspect]) => ({ name, aspect, file: `loop-${name}.mp4`, bucket: 'loops', label: 'луп' })),
+  ...Object.entries(ONCE).map(([name, aspect]) => ({ name, aspect, file: `${name}.mp4`, bucket: 'once', label: 'включение' }))];
+for (const { name, aspect, file, bucket, label } of jobs) {
+  const inFile = join(SRC, file);
+  if (!files.includes(file) || (ONLY && !ONLY.includes(name))) continue;
   const src = await probe(ff, inFile);
   let long = 1080, crf = CRF0, size = Infinity, outFile = join(OUT, `${name}.mp4`), g;
   for (let i = 0; i < 6; i++) {
@@ -79,8 +85,8 @@ for (const [name, aspect] of Object.entries(LOOPS)) {
   const png = join(TMP, `${name}.png`);
   await run(ff, ['-y', '-v', 'error', '-i', outFile, '-frames:v', '1', png]);
   await sharp(png).webp({ quality: 72 }).toFile(join(OUT, `${name}.webp`));
-  man.loops[name] = { mp4: `${name}.mp4`, poster: `${name}.webp`, w: g.w, h: g.h, dur: +src.dur.toFixed(2) };
-  console.log(`луп ${name}: ${g.w}×${g.h}, crf ${crf}, ${kb(size)}${size > LIMIT ? ' ⚠ тяжелее 400 КБ' : ''}`);
+  man[bucket][name] = { mp4: `${name}.mp4`, poster: `${name}.webp`, w: g.w, h: g.h, dur: +src.dur.toFixed(2) };
+  console.log(`${label} ${name}: ${g.w}×${g.h}, crf ${crf}, ${kb(size)}${size > LIMIT ? ' ⚠ тяжелее 400 КБ' : ''}`);
 }
 
 // ---------- смена сезонов: серия кадров ----------
@@ -104,4 +110,4 @@ for (const [name, aspect] of Object.entries(SEASONS)) {
 
 await writeFile(manPath, JSON.stringify(man, null, 1) + '\n');
 await rm(TMP, { recursive: true, force: true });
-console.log('→', manPath, 'лупов', Object.keys(man.loops).length, 'сезонов', Object.keys(man.seasons).length);
+console.log('→', manPath, 'лупов', Object.keys(man.loops).length, 'включений', Object.keys(man.once).length, 'сезонов', Object.keys(man.seasons).length);
