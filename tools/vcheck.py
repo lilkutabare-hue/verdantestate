@@ -76,3 +76,58 @@ if __name__ == '__main__':
         tail = 0
         while tail < n and d[n-1-tail] < thr: tail += 1
         print(f"  dead frames: lead {lead}, tail {tail} (thr {thr:.2f})")
+
+# ---- §7.5 приёмка числами: стык в низком разрешении, кадры-смеси, сырой против сайта ----
+def lowres_diff(a, b, w=160):
+    a = a.convert('RGB'); b = b.convert('RGB')
+    if a.size[0]/a.size[1] != b.size[0]/b.size[1]:
+        r = min(a.size[0]/a.size[1], b.size[0]/b.size[1])
+        def crop_to(im):
+            W, H = im.size
+            if W/H > r: nw = int(H*r); return im.crop(((W-nw)//2, 0, (W-nw)//2+nw, H))
+            nh = int(W/r); return im.crop((0, (H-nh)//2, W, (H-nh)//2+nh))
+        a = crop_to(a); b = crop_to(b)
+    h = max(1, round(w*a.size[1]/a.size[0]))
+    A = np.asarray(a.resize((w, h), Image.LANCZOS), np.float32); B = np.asarray(b.resize((w, h), Image.LANCZOS), np.float32)
+    return float(np.abs(A-B).mean())
+
+def blends(f):
+    """Кадры-смеси (remap --blend): смесь двух кадров заметно мягче соседей — резкость (дисперсия лапласиана) проваливается на один кадр."""
+    arr, _ = frames(f, scale=320); g = arr.astype(np.float32).mean(axis=3)
+    lap = np.abs(g[:, 1:-1, 1:-1]*4 - g[:, :-2, 1:-1] - g[:, 2:, 1:-1] - g[:, 1:-1, :-2] - g[:, 1:-1, 2:])
+    sh = lap.reshape(len(g), -1).var(axis=1); n = 0; bad = []
+    for i in range(1, len(sh)-1):
+        if sh[i] < 0.85*min(sh[i-1], sh[i+1]) and np.abs(g[i]-g[i-1]).mean() > 0.5: n += 1; bad.append(i)
+    return n, bad[:10]
+
+def vs_site(raw, site, t=2.0):
+    """Сырой клип против того, что отдаёт сайт, на размере сайта: средняя |разница| и PSNR."""
+    a = frame_at(raw, t); b = frame_at(site, t)
+    r = b.size[0]/b.size[1]
+    W, H = a.size
+    if W/H > r: nw = int(H*r); a = a.crop(((W-nw)//2, 0, (W-nw)//2+nw, H))
+    else: nh = int(W/r); a = a.crop((0, (H-nh)//2, W, (H-nh)//2+nh))
+    # кроп сайта может быть сдвинут на 1–8 px (округление в loops.mjs) — ищем лучшее совмещение
+    best = None
+    RA = np.asarray(frame_at(raw, t), np.float32); B = np.asarray(b, np.float32); Hs, Ws = B.shape[:2]
+    if RA.shape[0] >= Hs and RA.shape[1] >= Ws and RA.shape[0] - Hs <= 16 and RA.shape[1] - Ws <= 16:
+        for dy in range(RA.shape[0]-Hs+1):
+            for dx in range(RA.shape[1]-Ws+1):
+                A = RA[dy:dy+Hs, dx:dx+Ws]; d = float(np.abs(A-B).mean())
+                if best is None or d < best[0]: best = (d, A)
+        A = best[1]
+    else:
+        A = np.asarray(a.resize(b.size, Image.LANCZOS), np.float32)
+    mse = float(((A-B)**2).mean()); psnr = 10*np.log10(255*255/mse) if mse > 0 else 99
+    return float(np.abs(A-B).mean()), psnr
+
+if __name__ == '__main__' and len(sys.argv) > 2:
+    f = sys.argv[1]; args = sys.argv[2:]
+    if '--next-lowres' in args:
+        nx = Image.open(args[args.index('--next-lowres')+1]); print(f"  joint lowres (160 px): last vs next-start {lowres_diff(frame_at(f, last=True), nx):.2f}/255")
+    if '--still-lowres' in args:
+        st = Image.open(args[args.index('--still-lowres')+1]); print(f"  joint lowres (160 px): first vs still {lowres_diff(frame_at(f, 0), st):.2f}/255")
+    if '--blends' in args:
+        n, bad = blends(f); print(f"  blended frames: {n}" + (f" (e.g. {bad})" if bad else ''))
+    if '--vs' in args:
+        site = args[args.index('--vs')+1]; d, p = vs_site(f, site); print(f"  raw vs site @2s: {d:.2f}/255, PSNR {p:.1f} dB")
