@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""tools/remap.py in.mp4 out.mp4 [--frames N] [--crf 14]
+"""tools/remap.py in.mp4 out.mp4 [--frames N] [--crf 14] [--blend]
 Выравнивание скорости клипа под прокрутку скроллом (тетрадь Magnific §47): кадры пересэмплируются так, чтобы
 визуальное изменение (средняя |разница| пикселей) на кадр было одинаковым весь клип — Kling тормозит в конце («settles»)
-и разгоняется в середине даже при «one constant speed». Первый и последний кадр сохраняются, дробные позиции —
-смесь двух соседних кадров. Вход — сырой клип из media-src/alt/*-raw.mp4, выход — media-src/<имя>.mp4 для frames.mjs / loops.mjs.
+и разгоняется в середине даже при «one constant speed». Первый и последний кадр сохраняются; дробные позиции — ближайший настоящий кадр
+(повтор кадра в быстром месте допустим), смесь двух соседних только по флагу --blend (даёт двоение — §7.1). Вход — сырой клип из media-src/alt/*-raw.mp4, выход — media-src/<имя>.mp4 для frames.mjs / loops.mjs.
 Проверка до/после: tools/vcheck.py <клип> --curve (10 отрезков кривой движения должны быть ровными)."""
 import sys, subprocess, re, numpy as np, imageio_ffmpeg
 FF = imageio_ffmpeg.get_ffmpeg_exe()
@@ -12,6 +12,7 @@ args = sys.argv[3:]
 def opt(k, d):
     return type(d)(args[args.index(k)+1]) if k in args else d
 CRF = opt('--crf', 14)
+NEAREST = '--blend' not in args  # §7.2: каждый кадр настоящий — по умолчанию ближайший кадр, смесь только по флагу --blend
 s = subprocess.run([FF, '-i', src], capture_output=True, text=True).stderr
 wh = re.search(r', (\d{3,5})x(\d{3,5})[,\s]', s); W, H = int(wh[1]), int(wh[2])
 fps = float(re.search(r'([\d.]+) fps', s)[1])
@@ -43,7 +44,9 @@ while j < N:
         prev = cur; cur = read(); i += 1
         if cur is None: cur = prev; break
     lo_i = int(np.floor(p)); w = p - lo_i
-    if w < 1e-3 or prev is None or lo_i == i:
+    if NEAREST:
+        out = cur if (w >= 0.5 or prev is None or lo_i == i) else prev
+    elif w < 1e-3 or prev is None or lo_i == i:
         out = cur if lo_i == i else prev
     else:
         out = (prev.astype(np.float32)*(1-w) + cur.astype(np.float32)*w).round().astype(np.uint8)
