@@ -55,7 +55,7 @@ async function probe(ff, file) {
 function cropScale(src, aspect, long) {
   const [aw, ah] = aspect; let cw = src.w, ch = Math.round((src.w * ah) / aw);
   if (ch > src.h) { ch = src.h; cw = Math.round((src.h * aw) / ah); }
-  const s = long / Math.max(cw, ch); let w = Math.round(cw * s), h = Math.round(ch * s); w -= w % 2; h -= h % 2;
+  const s = long ? long / Math.max(cw, ch) : 1; // long не задан — без масштабирования (родной размер кропа, §7.2: ничего не увеличивать) let w = Math.round(cw * s), h = Math.round(ch * s); w -= w % 2; h -= h % 2;
   return { crop: `crop=${cw}:${ch}:${Math.round((src.w - cw) / 2)}:${Math.round((src.h - ch) / 2)}`, w, h };
 }
 
@@ -75,7 +75,7 @@ for (const { name, aspect, file, bucket, label } of jobs) {
   if (!files.includes(file) || (ONLY && !ONLY.includes(name))) continue;
   const src = await probe(ff, inFile);
   // родной размер: длинная сторона = у исходника (1604 у карточек 4:5, 1924 у 16:10) — браузер ничего не увеличивает сильнее рамки
-  let long = Math.max(src.w, src.h), crf = CRF0, size = Infinity, outFile = join(OUT, `${name}.mp4`), g;
+  let long = 0, crf = CRF0, size = Infinity, outFile = join(OUT, `${name}.mp4`), g; // 0 — кроп без масштабирования (у 16:10 из 16:9 раньше увеличивалось 1722→1924)
   for (let i = 0; i < 3; i++) {
     g = cropScale(src, aspect, long);
     await run(ff, ['-y', '-v', 'error', '-i', inFile, '-an', '-vf', `${g.crop},scale=${g.w}:${g.h}:flags=lanczos`, '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(crf), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', outFile]);
