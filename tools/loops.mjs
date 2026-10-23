@@ -55,7 +55,8 @@ async function probe(ff, file) {
 function cropScale(src, aspect, long) {
   const [aw, ah] = aspect; let cw = src.w, ch = Math.round((src.w * ah) / aw);
   if (ch > src.h) { ch = src.h; cw = Math.round((src.h * aw) / ah); }
-  const s = long ? long / Math.max(cw, ch) : 1; // long не задан — без масштабирования (родной размер кропа, §7.2: ничего не увеличивать) let w = Math.round(cw * s), h = Math.round(ch * s); w -= w % 2; h -= h % 2;
+  // long не задан — без масштабирования (родной размер кропа, §7.2: ничего не увеличивать)
+  const s = long ? long / Math.max(cw, ch) : 1; let w = Math.round(cw * s), h = Math.round(ch * s); w -= w % 2; h -= h % 2;
   return { crop: `crop=${cw}:${ch}:${Math.round((src.w - cw) / 2)}:${Math.round((src.h - ch) / 2)}`, w, h };
 }
 
