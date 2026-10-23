@@ -1,5 +1,139 @@
 {
  "v": 1,
- "loops": {},
- "seasons": {}
+ "loops": {
+  "t1": {
+   "mp4": "t1.mp4",
+   "poster": "t1.webp",
+   "w": 864,
+   "h": 1080,
+   "dur": 5.04
+  },
+  "t2": {
+   "mp4": "t2.mp4",
+   "poster": "t2.webp",
+   "w": 864,
+   "h": 1080,
+   "dur": 5.04
+  },
+  "t3": {
+   "mp4": "t3.mp4",
+   "poster": "t3.webp",
+   "w": 864,
+   "h": 1080,
+   "dur": 5.04
+  },
+  "r02": {
+   "mp4": "r02.mp4",
+   "poster": "r02.webp",
+   "w": 864,
+   "h": 1080,
+   "dur": 5.04
+  },
+  "r04": {
+   "mp4": "r04.mp4",
+   "poster": "r04.webp",
+   "w": 864,
+   "h": 1080,
+   "dur": 5.04
+  },
+  "r07": {
+   "mp4": "r07.mp4",
+   "poster": "r07.webp",
+   "w": 864,
+   "h": 1080,
+   "dur": 5.04
+  },
+  "b2": {
+   "mp4": "b2.mp4",
+   "poster": "b2.webp",
+   "w": 1080,
+   "h": 674,
+   "dur": 5.04
+  },
+  "z1": {
+   "mp4": "z1.mp4",
+   "poster": "z1.webp",
+   "w": 1080,
+   "h": 674,
+   "dur": 5.04
+  }
+ },
+ "seasons": {
+  "summer-autumn": {
+   "frames": [
+    "season-summer-autumn-00.avif",
+    "season-summer-autumn-01.avif",
+    "season-summer-autumn-02.avif",
+    "season-summer-autumn-03.avif",
+    "season-summer-autumn-04.avif",
+    "season-summer-autumn-05.avif",
+    "season-summer-autumn-06.avif",
+    "season-summer-autumn-07.avif",
+    "season-summer-autumn-08.avif",
+    "season-summer-autumn-09.avif",
+    "season-summer-autumn-10.avif",
+    "season-summer-autumn-11.avif",
+    "season-summer-autumn-12.avif",
+    "season-summer-autumn-13.avif",
+    "season-summer-autumn-14.avif",
+    "season-summer-autumn-15.avif",
+    "season-summer-autumn-16.avif",
+    "season-summer-autumn-17.avif",
+    "season-summer-autumn-18.avif",
+    "season-summer-autumn-19.avif",
+    "season-summer-autumn-20.avif",
+    "season-summer-autumn-21.avif",
+    "season-summer-autumn-22.avif",
+    "season-summer-autumn-23.avif"
+   ],
+   "w": 1280,
+   "h": 800
+  },
+  "autumn-winter": {
+   "frames": [
+    "season-autumn-winter-00.avif",
+    "season-autumn-winter-01.avif",
+    "season-autumn-winter-02.avif",
+    "season-autumn-winter-03.avif",
+    "season-autumn-winter-04.avif",
+    "season-autumn-winter-05.avif",
+    "season-autumn-winter-06.avif",
+    "season-autumn-winter-07.avif",
+    "season-autumn-winter-08.avif",
+    "season-autumn-winter-09.avif",
+    "season-autumn-winter-10.avif",
+    "season-autumn-winter-11.avif",
+    "season-autumn-winter-12.avif",
+    "season-autumn-winter-13.avif",
+    "season-autumn-winter-14.avif",
+    "season-autumn-winter-15.avif",
+    "season-autumn-winter-16.avif",
+    "season-autumn-winter-17.avif",
+    "season-autumn-winter-18.avif",
+    "season-autumn-winter-19.avif",
+    "season-autumn-winter-20.avif",
+    "season-autumn-winter-21.avif",
+    "season-autumn-winter-22.avif",
+    "season-autumn-winter-23.avif"
+   ],
+   "w": 1280,
+   "h": 800
+  }
+ },
+ "once": {
+  "hw-on": {
+   "mp4": "hw-on.mp4",
+   "poster": "hw-on.webp",
+   "w": 864,
+   "h": 1080,
+   "dur": 5.04
+  },
+  "ny-on": {
+   "mp4": "ny-on.mp4",
+   "poster": "ny-on.webp",
+   "w": 864,
+   "h": 1080,
+   "dur": 5.04
+  }
+ }
 }
