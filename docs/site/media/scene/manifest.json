@@ -4,7 +4,7 @@
   "placeholder": false,
   "source": "clips",
   "loop": "loop.mp4",
-  "loopTall": null,
+  "loopTall": "loop-tall.mp4",
   "sets": {
     "wide": {
       "w": 1440,

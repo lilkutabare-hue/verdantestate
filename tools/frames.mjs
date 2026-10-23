@@ -16,6 +16,7 @@
 //        --tallw=720  ширина tall-кадра (600 для лёгкой серии телефона)
 //        --placeholder  пометить серию как временную (превью покажет это в манифесте)
 //        --no-video  не собирать видео пролёта (flight-tall.mp4: все кадры клипов 24 к/с одним файлом для телефона, ?hero=video)
+//        --vcrf=29  crf видео пролёта (31 — когда файл перевалил за 5 МБ, лимит Тильды)
 import sharp from 'sharp';
 import { readdir, mkdir, writeFile, readFile, unlink, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -169,10 +170,11 @@ if (useClips && !flag('no-video')) {
   const ff = await findFfmpeg();
   const vc = tallFlight ? ['k1v', 'k2v', 'k3v'].map((k) => join(SRC, k + '.mp4')) : clips;
   const fin = tallFlight ? still('s4v') : still('s4');
-  const X = 0.5, FPS = 24, VW = 480, VH = 854;
+  const X = 0.5, FPS = 24, VW = 480, VH = 854, VCRF = +opt('vcrf', 29); // --vcrf: клипы с ровной скоростью весят больше (5,7 МБ при 29) — лимит Тильды 5 МБ
   const durs = []; for (const c of vc) durs.push(await duration(ff, c));
   // кроп как у кадров (render): вписать по высоте и взять середину — иначе на стыке видео → стилл S4 кадр сдвигается
-  const norm = `scale=-2:${VH}:flags=lanczos,crop=${VW}:${VH}`;
+  // клип Kling может быть чуть уже/шире 9:16 (1072×1928): масштаб с запасом по обеим сторонам, потом кроп по центру
+  const norm = `scale=${VW}:${VH}:force_original_aspect_ratio=increase:flags=lanczos,crop=${VW}:${VH}`;
   const prep = (i) => `[${i}:v]fps=${FPS},${norm},setsar=1,format=yuv420p,settb=AVTB[v${i}]`;
   const parts = [0, 1, 2, 3].map(prep);
   let len = durs[0], prev = 'v0';
@@ -183,7 +185,7 @@ if (useClips && !flag('no-video')) {
   }
   const out = join(OUT, 'flight-tall.mp4');
   await run(ff, ['-y', '-v', 'error', ...vc.flatMap((c) => ['-i', c]), '-loop', '1', '-framerate', String(FPS), '-t', (X + 2 / FPS).toFixed(4), '-i', fin,
-    '-filter_complex', parts.join(';'), '-map', `[${prev}]`, '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', '29', '-g', '8', '-keyint_min', '8', '-bf', '0', '-sc_threshold', '0',
+    '-filter_complex', parts.join(';'), '-map', `[${prev}]`, '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', String(VCRF), '-g', '8', '-keyint_min', '8', '-bf', '0', '-sc_threshold', '0',
     '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { maxBuffer: 1e7 });
   const st = await (await import('node:fs/promises')).stat(out);
   manVideo = { tall: { src: 'flight-tall.mp4', fps: FPS, dur: +len.toFixed(4), w: VW, h: VH } };
