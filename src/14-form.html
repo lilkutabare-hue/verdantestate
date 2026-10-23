@@ -103,6 +103,7 @@
     if(s.area&&!area.value)area.value=s.area;
     if(s.tariff!=null){var r=form.querySelector('input[name=tariff][value="'+s.tariff+'"]');if(r)r.checked=true}
     if(s.factors){var cb=form.querySelectorAll('input[name=factors]');for(var i=0;i<cb.length;i++)cb[i].checked=s.factors.indexOf(cb[i].value)>=0}
+    if(s.offer){var cm=form.querySelector('textarea[name=comment]');if(cm&&!cm.value)cm.value=s.offer} // «Сад к празднику» (блок 13)
   }
   prefill(VE.state);VE.on('state',prefill);
   VE.on('form:focus',function(){setTimeout(function(){if(!name.value)name.focus({preventScroll:true})},600)});
