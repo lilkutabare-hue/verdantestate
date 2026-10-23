@@ -16,7 +16,7 @@
 //        --tallw=720  ширина tall-кадра (600 для лёгкой серии телефона)
 //        --placeholder  пометить серию как временную (превью покажет это в манифесте)
 //        --no-video  не собирать видео пролёта (flight-tall.mp4: все кадры клипов 24 к/с одним файлом для телефона, ?hero=video)
-//        --vcrf=22  crf видео пролёта телефона (720×1280), --vcrfw=20 — компьютера (1920×1080); лимит Тильды 5 МБ не держим — файлы отдаёт наше хранилище (§7.4)
+//        --vcrf=23  crf видео пролёта телефона (720×1280), --vcrfw=23 — компьютера (1920×1080), --gop=24 — шаг ключевых кадров; лимит Тильды 5 МБ не держим — файлы отдаёт наше хранилище (§7.4)
 //        --ramp=0  кадров растворения на стыке клипов и в финальный стилл: 0 — стык кадр в кадр (клипы цепочкой, §7.2); >0 только для старых клипов не цепочкой
 import sharp from 'sharp';
 import { readdir, mkdir, writeFile, readFile, unlink, rm } from 'node:fs/promises';
@@ -170,6 +170,7 @@ let manVideo = null;
 if (useClips && !flag('no-video')) {
   const ff = await findFfmpeg();
   const FPS = 24, RAMPV = +opt('ramp', 0), X = RAMPV > 0 ? 0.5 : 0; // xfade только для старых клипов не цепочкой
+  const GOP = +opt('gop', 24); // ключевой кадр каждые GOP кадров: перемотка декодирует ≤ GOP−1 кадров (аппаратно — миллисекунды), при 8 файл в 2–3 раза тяжелее
   // одна серия видео: клипы подряд кадр в кадр (concat) + короткое удержание финального стилла (он = последний кадр К3 при цепочке)
   async function buildVideo(vc, fin, name, VW, VH, VCRF) {
     const durs = []; for (const c of vc) durs.push(await duration(ff, c));
@@ -187,16 +188,16 @@ if (useClips && !flag('no-video')) {
     }
     const out = join(OUT, name);
     await run(ff, ['-y', '-v', 'error', ...vc.flatMap((c) => ['-i', c]), '-loop', '1', '-framerate', String(FPS), '-t', hold.toFixed(4), '-i', fin,
-      '-filter_complex', parts.join(';'), '-map', `[${prev}]`, '-an', '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(VCRF), '-g', '8', '-keyint_min', '8', '-bf', '0', '-sc_threshold', '0',
+      '-filter_complex', parts.join(';'), '-map', `[${prev}]`, '-an', '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(VCRF), '-g', String(GOP), '-keyint_min', String(GOP), '-bf', '0', '-sc_threshold', '0',
       '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { maxBuffer: 1e7 });
     const st = await (await import('node:fs/promises')).stat(out);
     console.log(`видео пролёта: scene/${name} · ${VW}×${VH} crf ${VCRF} · ${Math.round(len * FPS)} кадров · ${(st.size / 1048576).toFixed(2)} МБ${X > 0 ? ' · растворение на стыках (старые клипы)' : ' · стыки кадр в кадр'}`);
     return { src: name, fps: FPS, dur: +len.toFixed(4), w: VW, h: VH };
   }
   manVideo = {};
-  if (tallFlight) manVideo.tall = await buildVideo(['k1v', 'k2v', 'k3v'].map((k) => join(SRC, k + '.mp4')), still('s4v'), 'flight-tall.mp4', +opt('vw', 720), +opt('vh', 1280), +opt('vcrf', 22));
+  if (tallFlight) manVideo.tall = await buildVideo(['k1v', 'k2v', 'k3v'].map((k) => join(SRC, k + '.mp4')), still('s4v'), 'flight-tall.mp4', +opt('vw', 720), +opt('vh', 1280), +opt('vcrf', 23)); // замер 24.10: crf 23 gop 24 ≈ 18 МБ, PSNR ≈ 38 дБ, разница ≈ 2,1/255
   else console.log('вертикальных клипов нет — видео пролёта телефона не собрано (tall кропом из 16:9 только кадрами)');
-  manVideo.wide = await buildVideo(clips, still('s4'), 'flight-wide.mp4', +opt('vww', 1920), +opt('vwh', 1080), +opt('vcrfw', 20));
+  manVideo.wide = await buildVideo(clips, still('s4'), 'flight-wide.mp4', +opt('vww', 1920), +opt('vwh', 1080), +opt('vcrfw', 23));
 }
 if (manVideo) man.video = manVideo;
 await writeFile(join(OUT, 'manifest.json'), JSON.stringify(man, null, 2) + '\n');
