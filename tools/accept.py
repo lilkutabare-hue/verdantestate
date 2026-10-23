@@ -29,13 +29,15 @@ for tag, clips, still, loop in (('16:9', ['k1','k2','k3'], 's4', 'k4'), ('9:16',
         n, _ = blends(p); row(f"смесей в {os.path.basename(p)}", n, 0, '%d'); row(f"разброс скорости {os.path.basename(p)}, %", curve_spread(p), 15, '%.0f')
     vid = os.path.join(SITE, 'scene', 'flight-tall.mp4' if tag == '9:16' else 'flight-wide.mp4')
     if os.path.exists(vid):
-        d, p = vs_site(paths[1], vid, 5.0) if False else (None, None)
-        # видео пролёта — сравнить кадр К2 на 5 с (в видео это 10 с + 5 с)
-        a = frame_at(paths[1], 5.0); b = frame_at(vid, 15.0); r = b.size[0]/b.size[1]; W, H = a.size
-        if W/H > r: nw = int(H*r); a = a.crop(((W-nw)//2, 0, (W-nw)//2+nw, H))
-        else: nh = int(W/r); a = a.crop((0, (H-nh)//2, W, (H-nh)//2+nh))
-        A = np.asarray(a.resize(b.size, Image.LANCZOS), np.float32); B = np.asarray(b, np.float32)
-        row(f"видео {os.path.basename(vid)} против сырого К2 (5 с)", float(np.abs(A-B).mean()), 4)
+        # видео пролёта — тот же кадр по индексу: кадр 120 клипа К2 = кадр (кадров в К1) + 120 в видео; сравниваем на размере видео
+        import imageio_ffmpeg, tempfile
+        FF = imageio_ffmpeg.get_ffmpeg_exe()
+        def fidx(f, idx, size=None):
+            o = tempfile.mktemp(suffix='.png'); vf = f'select=eq(n\\,{idx})' + (f',scale={size[0]}:{size[1]}:force_original_aspect_ratio=increase:flags=lanczos,crop={size[0]}:{size[1]}' if size else '')
+            subprocess.run([FF, '-y', '-v', 'error', '-i', f, '-vf', vf, '-vsync', '0', '-frames:v', '1', o], check=True); im = Image.open(o).convert('RGB'); os.unlink(o); return im
+        n1 = len(frames(paths[0], scale=64)[0]); b = fidx(vid, n1 + 120); a = fidx(paths[1], 120, b.size)
+        A = np.asarray(a, np.float32); B = np.asarray(b, np.float32); mse = float(((A-B)**2).mean()); psnr = 10*np.log10(255*255/mse) if mse > 0 else 99
+        row(f"видео {os.path.basename(vid)} против сырого К2 (кадр 120), PSNR {psnr:.1f} дБ", float(np.abs(A-B).mean()), 4)
 print("лупы на сайте против сырых")
 for f in sorted(os.listdir(os.path.join(SITE, 'loops'))):
     if not f.endswith('.mp4'): continue
