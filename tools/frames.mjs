@@ -16,7 +16,8 @@
 //        --tallw=720  ширина tall-кадра (600 для лёгкой серии телефона)
 //        --placeholder  пометить серию как временную (превью покажет это в манифесте)
 //        --no-video  не собирать видео пролёта (flight-tall.mp4: все кадры клипов 24 к/с одним файлом для телефона, ?hero=video)
-//        --vcrf=29  crf видео пролёта (31 — когда файл перевалил за 5 МБ, лимит Тильды)
+//        --vcrf=22  crf видео пролёта телефона (720×1280), --vcrfw=20 — компьютера (1920×1080); лимит Тильды 5 МБ не держим — файлы отдаёт наше хранилище (§7.4)
+//        --ramp=0  кадров растворения на стыке клипов и в финальный стилл: 0 — стык кадр в кадр (клипы цепочкой, §7.2); >0 только для старых клипов не цепочкой
 import sharp from 'sharp';
 import { readdir, mkdir, writeFile, readFile, unlink, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -71,7 +72,7 @@ await rm(TMP, { recursive: true, force: true }); await mkdir(TMP, { recursive: t
 // Из клипов: PER кадров на клип + финальный стилл; последние RAMP кадров каждого клипа растворяются
 // в первый кадр следующего (или в финальный стилл) — Kling доезжает до энд-кадра неточно (К3 → S4 ≈ 7/255).
 async function extractFlight(ff, clipList, tag, size, finalStill) {
-  const out = [], firstOf = [], RAMP = 4;
+  const out = [], firstOf = [], RAMP = +opt('ramp', 0); // §7.2: растворения нет — стык прячет не наплыв, а тот же кадр
   for (let c = 0; c < clipList.length; c++) {
     const d = await duration(ff, clipList[c]);
     for (let i = 0; i < PER; i++) { const p = join(TMP, `${tag}${c + 1}-${String(i).padStart(2, '0')}.png`); await grab(ff, clipList[c], (d * i) / PER, p); out.push(p); if (i === 0) firstOf.push(p); }
@@ -164,39 +165,44 @@ await put(await small(WIDE, 0.5, 960), 'poster-wide.webp', 70);
 await put(sharp(await (await render(tSrc[0], TALL, tallFlight ? 0.5 : fx(0))).png().toBuffer()).resize(540), 'poster-tall.webp', 70);
 // ---------- видео пролёта для телефона: все кадры клипов (24 к/с) одним H.264 ----------
 // Картинками телефон получает 97 кадров из 723 (≈3 к/с движения камеры, 4.4 МБ); видео — все 723 за ~4 МБ, декод аппаратный.
-// Ключевой кадр каждые 8 кадров, без B-кадров: перемотка декодирует не больше 7 кадров. Стыки клипов и выход в S4 — растворением 0.5 с.
+// Ключевой кадр каждые 8 кадров, без B-кадров: перемотка декодирует не больше 7 кадров. Стыки клипов и выход в S4 — кадр в кадр (клипы цепочкой), растворение только по --ramp.
 let manVideo = null;
 if (useClips && !flag('no-video')) {
   const ff = await findFfmpeg();
-  const vc = tallFlight ? ['k1v', 'k2v', 'k3v'].map((k) => join(SRC, k + '.mp4')) : clips;
-  const fin = tallFlight ? still('s4v') : still('s4');
-  const X = 0.5, FPS = 24, VW = 480, VH = 854, VCRF = +opt('vcrf', 29); // --vcrf: клипы с ровной скоростью весят больше (5,7 МБ при 29) — лимит Тильды 5 МБ
-  const durs = []; for (const c of vc) durs.push(await duration(ff, c));
-  // кроп как у кадров (render): вписать по высоте и взять середину — иначе на стыке видео → стилл S4 кадр сдвигается
-  // клип Kling может быть чуть уже/шире 9:16 (1072×1928): масштаб с запасом по обеим сторонам, потом кроп по центру
-  const norm = `scale=${VW}:${VH}:force_original_aspect_ratio=increase:flags=lanczos,crop=${VW}:${VH}`;
-  const prep = (i) => `[${i}:v]fps=${FPS},${norm},setsar=1,format=yuv420p,settb=AVTB[v${i}]`;
-  const parts = [0, 1, 2, 3].map(prep);
-  let len = durs[0], prev = 'v0';
-  for (let i = 1; i <= 3; i++) {
-    const d = i < 3 ? durs[i] : X + 2 / FPS;
-    parts.push(`[${prev}][v${i}]xfade=transition=fade:duration=${X}:offset=${(len - X).toFixed(4)}[x${i}]`);
-    len = len + d - X; prev = 'x' + i;
+  const FPS = 24, RAMPV = +opt('ramp', 0), X = RAMPV > 0 ? 0.5 : 0; // xfade только для старых клипов не цепочкой
+  // одна серия видео: клипы подряд кадр в кадр (concat) + короткое удержание финального стилла (он = последний кадр К3 при цепочке)
+  async function buildVideo(vc, fin, name, VW, VH, VCRF) {
+    const durs = []; for (const c of vc) durs.push(await duration(ff, c));
+    // клип Kling может быть чуть уже/шире (1072×1928, 1924×1076): масштаб с запасом по обеим сторонам, потом кроп по центру
+    const norm = `scale=${VW}:${VH}:force_original_aspect_ratio=increase:flags=lanczos,crop=${VW}:${VH}`;
+    const prep = (i) => `[${i}:v]fps=${FPS},${norm},setsar=1,format=yuv420p,settb=AVTB[v${i}]`;
+    const parts = [0, 1, 2, 3].map(prep);
+    const hold = X + 2 / FPS;
+    let len, prev;
+    if (X > 0) {
+      len = durs[0]; prev = 'v0';
+      for (let i = 1; i <= 3; i++) { const d = i < 3 ? durs[i] : hold; parts.push(`[${prev}][v${i}]xfade=transition=fade:duration=${X}:offset=${(len - X).toFixed(4)}[x${i}]`); len = len + d - X; prev = 'x' + i; }
+    } else {
+      parts.push('[v0][v1][v2][v3]concat=n=4:v=1:a=0[x3]'); prev = 'x3'; len = durs[0] + durs[1] + durs[2] + hold;
+    }
+    const out = join(OUT, name);
+    await run(ff, ['-y', '-v', 'error', ...vc.flatMap((c) => ['-i', c]), '-loop', '1', '-framerate', String(FPS), '-t', hold.toFixed(4), '-i', fin,
+      '-filter_complex', parts.join(';'), '-map', `[${prev}]`, '-an', '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(VCRF), '-g', '8', '-keyint_min', '8', '-bf', '0', '-sc_threshold', '0',
+      '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { maxBuffer: 1e7 });
+    const st = await (await import('node:fs/promises')).stat(out);
+    console.log(`видео пролёта: scene/${name} · ${VW}×${VH} crf ${VCRF} · ${Math.round(len * FPS)} кадров · ${(st.size / 1048576).toFixed(2)} МБ${X > 0 ? ' · растворение на стыках (старые клипы)' : ' · стыки кадр в кадр'}`);
+    return { src: name, fps: FPS, dur: +len.toFixed(4), w: VW, h: VH };
   }
-  const out = join(OUT, 'flight-tall.mp4');
-  await run(ff, ['-y', '-v', 'error', ...vc.flatMap((c) => ['-i', c]), '-loop', '1', '-framerate', String(FPS), '-t', (X + 2 / FPS).toFixed(4), '-i', fin,
-    '-filter_complex', parts.join(';'), '-map', `[${prev}]`, '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', String(VCRF), '-g', '8', '-keyint_min', '8', '-bf', '0', '-sc_threshold', '0',
-    '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { maxBuffer: 1e7 });
-  const st = await (await import('node:fs/promises')).stat(out);
-  manVideo = { tall: { src: 'flight-tall.mp4', fps: FPS, dur: +len.toFixed(4), w: VW, h: VH } };
-  console.log(`видео пролёта: scene/flight-tall.mp4 · ${Math.round(len * FPS)} кадров · ${(st.size / 1048576).toFixed(2)} МБ${existsSync(join(SRC, 'focus.json')) && !tallFlight ? ' · ⚠ focus.json в видео не учтён — кроп по центру' : ''}`);
-  if (st.size > 5 * 1048576) console.warn('⚠ видео тяжелее 5 МБ — лимит Тильды на файл; поднять --crf или ужать');
+  manVideo = {};
+  if (tallFlight) manVideo.tall = await buildVideo(['k1v', 'k2v', 'k3v'].map((k) => join(SRC, k + '.mp4')), still('s4v'), 'flight-tall.mp4', +opt('vw', 720), +opt('vh', 1280), +opt('vcrf', 22));
+  else console.log('вертикальных клипов нет — видео пролёта телефона не собрано (tall кропом из 16:9 только кадрами)');
+  manVideo.wide = await buildVideo(clips, still('s4'), 'flight-wide.mp4', +opt('vww', 1920), +opt('vwh', 1080), +opt('vcrfw', 20));
 }
 if (manVideo) man.video = manVideo;
 await writeFile(join(OUT, 'manifest.json'), JSON.stringify(man, null, 2) + '\n');
 
 // старые кадры, которых нет в манифесте, убираем
-const keep = new Set([...man.sets.wide.frames, ...man.sets.tall.frames, ...man.sets.wide.after, ...man.sets.tall.after, man.poster.wide, man.poster.tall, 'manifest.json', manLoop, manLoopTall, manVideo && manVideo.tall.src].filter(Boolean));
+const keep = new Set([...man.sets.wide.frames, ...man.sets.tall.frames, ...man.sets.wide.after, ...man.sets.tall.after, man.poster.wide, man.poster.tall, 'manifest.json', manLoop, manLoopTall, manVideo && manVideo.tall && manVideo.tall.src, manVideo && manVideo.wide && manVideo.wide.src].filter(Boolean));
 for (const f of await readdir(OUT)) if (!keep.has(f)) await unlink(join(OUT, f));
 const mb = (n) => (n / 1048576).toFixed(2) + ' МБ';
 console.log(`сцена: ${man.n} кадров пролёта + 2 превращения; wide ${mb(bySet.wide)} (бюджет 4.5), tall ${mb(bySet.tall)} (бюджет 2.2)`);
