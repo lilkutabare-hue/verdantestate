@@ -10,7 +10,8 @@
 //   hw-on.mp4 ny-on.mp4                   «Сад к празднику» (план доводки 4.12): клип включения, играет один раз и держит кадр → manifest.once
 //   loop-hw.mp4 loop-ny.mp4               лупы дыхания после включения (опция, prompts-renders §7)
 //
-// Выход: loops/<name>.mp4 (1080 по длинной стороне, crf от 24, ≤ 400 КБ — иначе crf выше или 720), loops/<name>.webp (постер = первый кадр),
+// Выход: loops/<name>.mp4 (без уменьшения: кроп по центру в родном размере Kling, libx264 crf 18, потолок crf 20, ≤ 1,5 МБ — план доводки §7.3 D),
+//        loops/<name>.webp (постер = первый кадр, q85),
 //        loops/season-<a>-<b>-NN.avif (24 кадра 1280×800) и manifest.json: { loops:{name:{mp4,poster,w,h}}, seasons:{ 'summer-autumn':{frames:[…],w,h} } }
 // Страница: VE.loops() в HEAD вставляет <video> под той же рамкой .ve-px у [data-loop], играет только в поле зрения;
 //           при prefers-reduced-motion и Save-Data — остаётся стилл.
@@ -29,13 +30,13 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const a = args.find((x) => x.startsWith('--' + k + '=')); return a ? a.split('=')[1] : d; };
 const SRC = opt('src') ? resolve(opt('src')) : join(ROOT, 'media-src'), OUT = join(ROOT, 'docs/site/media/loops'), TMP = join(ROOT, 'tools/.cache/loops');
 const ONLY = opt('only') ? opt('only').split(',') : null;
-const CRF0 = +opt('crf', 24), LIMIT = 400 * 1024;
+const CRF0 = +opt('crf', 18), CRFMAX = +opt('crfmax', 20), LIMIT = +opt('limit', 4096) * 1024; // §7: качество важнее веса (crf 18–20 даёт 1,4–2,3 МБ на луп 4:5, включения до 3,6), вес решает хостинг
 
 // имя → пропорция кадра на странице (кроп по центру при кодировании, чтобы не возить лишние пиксели)
 const LOOPS = { t1: [4, 5], t2: [4, 5], t3: [4, 5], r01: [4, 5], r02: [4, 5], r03: [4, 5], r04: [4, 5], r05: [4, 5], r06: [4, 5], r07: [4, 5], r08: [4, 5], r09: [4, 5], r10: [4, 5], b2: [16, 10], z1: [16, 10], hw: [4, 5], ny: [4, 5] };
 const ONCE = { 'hw-on': [4, 5], 'ny-on': [4, 5] }; // тот же кроп и бюджет, что у лупов; на странице data-loop-mode="once"
 const SEASONS = { 'summer-autumn': [16, 10], 'autumn-winter': [16, 10] };
-const SEASON_FRAMES = 24, SEASON_W = 1280, SEASON_Q = 42;
+const SEASON_FRAMES = 24, SEASON_W = 1600, SEASON_Q = 60; // §7.3 D.11: 2× экраны без блоков на листве
 
 async function findFfmpeg() {
   if (process.env.FFMPEG) return process.env.FFMPEG;
@@ -73,20 +74,21 @@ for (const { name, aspect, file, bucket, label } of jobs) {
   const inFile = join(SRC, file);
   if (!files.includes(file) || (ONLY && !ONLY.includes(name))) continue;
   const src = await probe(ff, inFile);
-  let long = 1080, crf = CRF0, size = Infinity, outFile = join(OUT, `${name}.mp4`), g;
-  for (let i = 0; i < 6; i++) {
+  // родной размер: длинная сторона = у исходника (1604 у карточек 4:5, 1924 у 16:10) — браузер ничего не увеличивает сильнее рамки
+  let long = Math.max(src.w, src.h), crf = CRF0, size = Infinity, outFile = join(OUT, `${name}.mp4`), g;
+  for (let i = 0; i < 3; i++) {
     g = cropScale(src, aspect, long);
-    await run(ff, ['-y', '-v', 'error', '-i', inFile, '-an', '-vf', `${g.crop},scale=${g.w}:${g.h}`, '-c:v', 'libx264', '-preset', 'slow', '-crf', String(crf), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', outFile]);
+    await run(ff, ['-y', '-v', 'error', '-i', inFile, '-an', '-vf', `${g.crop},scale=${g.w}:${g.h}:flags=lanczos`, '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(crf), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', outFile]);
     size = (await stat(outFile)).size;
-    if (size <= LIMIT) break;
-    if (crf < 33) crf += 3; else long = 720;
+    if (size <= LIMIT || crf >= CRFMAX) break;
+    crf += 1;
   }
   // постер — первый кадр, webp
   const png = join(TMP, `${name}.png`);
   await run(ff, ['-y', '-v', 'error', '-i', outFile, '-frames:v', '1', png]);
-  await sharp(png).webp({ quality: 72 }).toFile(join(OUT, `${name}.webp`));
+  await sharp(png).webp({ quality: 85 }).toFile(join(OUT, `${name}.webp`));
   man[bucket][name] = { mp4: `${name}.mp4`, poster: `${name}.webp`, w: g.w, h: g.h, dur: +src.dur.toFixed(2) };
-  console.log(`${label} ${name}: ${g.w}×${g.h}, crf ${crf}, ${kb(size)}${size > LIMIT ? ' ⚠ тяжелее 400 КБ' : ''}`);
+  console.log(`${label} ${name}: ${g.w}×${g.h}, crf ${crf}, ${kb(size)}${size > LIMIT ? ' ⚠ тяжелее лимита' : ''}`);
 }
 
 // ---------- смена сезонов: серия кадров ----------
