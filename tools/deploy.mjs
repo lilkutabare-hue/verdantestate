@@ -26,6 +26,11 @@ if (args.includes('--assets')) {
   await rm(A, { recursive: true, force: true }); await mkdir(A, { recursive: true });
   await cp(join(DOCS, 'site'), A, { recursive: true });
   await rm(join(A, 'js/garden3d.js'), { force: true });
+  // лимит Cloudflare на файл ассетов — 25 МиБ: такой файл валит всю заливку («Asset too large»), поэтому убираем его с предупреждением
+  // (страница откатится на кадры — scene.js ждёт видео не дольше 4 с); большие файлы — в хранилище Тильды (план медиа §3)
+  const { readdir: rd, stat: st } = await import('node:fs/promises');
+  const walk = async (d) => { for (const e of await rd(d, { withFileTypes: true })) { const f = join(d, e.name); if (e.isDirectory()) await walk(f); else if ((await st(f)).size > 25 * 1048576) { console.warn(`⚠ ${f.slice(A.length + 1)} ${((await st(f)).size / 1048576).toFixed(1)} МБ > 25 МиБ — не заливается`); await rm(f); } } };
+  await walk(A);
   // CORS обязателен: сцена грузит кадры с crossOrigin='anonymous'; адреса с ?v= — кеш можно держать долго
   // все адреса в блоках идут с ?v=<сборка>, поэтому долгий кеш безопасен и для манифестов
   await writeFile(join(A, '_headers'), ['/*', '  Access-Control-Allow-Origin: *', '  Cache-Control: public, max-age=31536000, immutable', '  X-Content-Type-Options: nosniff', ''].join('\n'));
