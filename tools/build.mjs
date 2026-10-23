@@ -87,7 +87,7 @@ const legalFill = (s) => {
   if (!CD.INN) out = out.replace(/<span class="ve-ft__req"[^>]*>[\s\S]*?<\/span>/g, ''); // реквизиты в подвале — только когда есть ИНН
   return out;
 };
-const fill = (s, base) => legalFill(s).replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__ARC_MASK__/g, ARC_MASK).replace(/__ARC_CX__/g, ARC_CX).replace(/__ARC_CY__/g, ARC_CY).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
+const fill = (s, base) => legalFill(s).replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__OFFERS__/g, JSON.stringify(CD.offers || null)).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__ARC_MASK__/g, ARC_MASK).replace(/__ARC_CX__/g, ARC_CX).replace(/__ARC_CY__/g, ARC_CY).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
 
 const headDist = fill(headSrc, PAGES_BASE);
 await checkScripts(headDist, 'head'); checkCss(headDist, 'head');
