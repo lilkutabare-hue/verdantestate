@@ -1,8 +1,36 @@
-<!-- VE · 13-bonuses.html · сборка a5210ca2 -->
+<!-- VE · 13-bonuses.html · сборка e6782fac -->
 <section class="ve ve-sec ve-bon" id="ve-bonuses">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Специальные условия</p>
     <h2 class="ve-h2 ve-r ve-bon__h">Не скидки — то, что полезно саду</h2>
+  </div>
+  <!-- «Сад к празднику» (план доводки 4.12): стилл — сад с выключенным светом, клип включения играет один раз (data-loop-mode="once");
+       статике (reduced-motion, Save-Data, нет клипа) JS подставляет зажжённый кадр из data-loop-lit. Цены и состав — от заказчика (client-data.json) -->
+  <div class="ve-hol" id="ve-hol" hidden>
+    <div class="ve-wrap">
+      <p class="ve-caps ve-r ve-hol__caps">К празднику · Хеллоуин и Новый год</p>
+      <p class="ve-hol__lead ve-r">Оформление и подсветка сада под ключ: ставим, обслуживаем, убираем после праздника.</p>
+    </div>
+    <div class="ve-wrap ve-hol__wrap">
+      <div class="ve-strip ve-hol__strip ve-rg">
+        <article class="ve-hol__card" data-offer="hw" data-until="2026-10-31">
+          <div class="ve-hol__img ve-px" data-loop="hw-on" data-loop-mode="once" data-loop-then="hw"><img src="https://verdant-assets.lilkutabare.workers.dev/media/stills/holiday-hw-dark-l.webp?v=e6782fac" srcset="https://verdant-assets.lilkutabare.workers.dev/media/stills/holiday-hw-dark-s.webp?v=e6782fac 560w, https://verdant-assets.lilkutabare.workers.dev/media/stills/holiday-hw-dark-l.webp?v=e6782fac 1000w" sizes="(min-width:900px) 420px, 84vw" data-loop-lit="https://verdant-assets.lilkutabare.workers.dev/media/stills/holiday-hw-lit-l.webp?v=e6782fac" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <p class="ve-cap ve-hol__name"><b>Хеллоуин</b><i></i><span>до 31 октября</span></p>
+          <p class="ve-hol__price ve-price">от [[HW_PRICE]]&nbsp;₽</p>
+          <p class="ve-hol__for">[[HW_TEXT]]</p>
+          <button class="ve-btn ve-btn--ghost ve-hol__btn" type="button">Рассчитать</button>
+        </article>
+        <article class="ve-hol__card" data-offer="ny" data-until="2027-01-10">
+          <div class="ve-hol__img ve-px" data-loop="ny-on" data-loop-mode="once" data-loop-then="ny"><img src="https://verdant-assets.lilkutabare.workers.dev/media/stills/holiday-ny-dark-l.webp?v=e6782fac" srcset="https://verdant-assets.lilkutabare.workers.dev/media/stills/holiday-ny-dark-s.webp?v=e6782fac 560w, https://verdant-assets.lilkutabare.workers.dev/media/stills/holiday-ny-dark-l.webp?v=e6782fac 1000w" sizes="(min-width:900px) 420px, 84vw" data-loop-lit="https://verdant-assets.lilkutabare.workers.dev/media/stills/holiday-ny-lit-l.webp?v=e6782fac" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <p class="ve-cap ve-hol__name"><b>Новый год</b><i></i><span>до 10 января</span></p>
+          <p class="ve-hol__price ve-price">от [[NY_PRICE]]&nbsp;₽</p>
+          <p class="ve-hol__for">[[NY_TEXT]]</p>
+          <button class="ve-btn ve-btn--ghost ve-hol__btn" type="button">Рассчитать</button>
+        </article>
+      </div>
+    </div>
+  </div>
+  <div class="ve-wrap ve-bon__body">
     <div class="ve-bon__grid ve-rg">
       <div class="ve-bon__item"><h3 class="ve-h3">Первый аудит сада</h3><p>Осмотр участка и план работ на сезон при заключении договора.</p></div>
       <div class="ve-bon__item"><h3 class="ve-h3">Сезонный комплекс в первый месяц</h3><p>Специальные условия на старт обслуживания.</p></div>
@@ -14,15 +42,46 @@
 </section>
 <style>
 .ve-bon__h{margin-top:14px;max-width:20ch}
+.ve-hol{margin-top:40px}
+.ve-hol__lead{margin-top:12px;max-width:44ch;color:var(--ve-moss)}
+.ve-hol__wrap{margin-top:22px}
+.ve-hol__card{width:84vw;max-width:420px;display:flex;flex-direction:column}
+.ve-hol__img{aspect-ratio:4/5;overflow:hidden;border-radius:var(--ve-r);background:rgba(31,77,46,.06)}
+.ve-hol__name{margin-top:20px}
+.ve-hol__price{margin-top:6px;font-weight:600;letter-spacing:-.015em;font-size:28px;line-height:1.1}
+.ve-hol__for{margin-top:8px;color:var(--ve-moss);max-width:34ch}
+.ve-hol__btn{margin-top:22px;align-self:flex-start}
 .ve-bon__grid{margin-top:36px;display:grid;gap:0}
 .ve-bon__item{padding:22px 0;border-top:1px solid var(--ve-line)}
 .ve-bon__item:last-child{border-bottom:1px solid var(--ve-line)}
 .ve-bon__item p{margin-top:8px;color:var(--ve-moss);max-width:40ch}
 .ve-bon__note{margin-top:22px;font-size:14px}
 @media(min-width:900px){
+  .ve-hol{margin-top:56px}
+  .ve-hol__wrap{margin-top:32px}
+  .ve-hol__strip{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;overflow:visible;margin:0;padding:0;scroll-snap-type:none;max-width:880px}
+  .ve-hol.is-one .ve-hol__strip{grid-template-columns:1fr;max-width:480px}
+  .ve-hol__card{width:auto;max-width:none}
+  .ve-hol__price{font-size:32px}
   .ve-bon__grid{margin-top:56px;grid-template-columns:repeat(2,1fr);column-gap:56px}
   .ve-bon__item{padding:28px 0}
   .ve-bon__item:nth-last-child(-n+2){border-bottom:1px solid var(--ve-line)}
 }
 </style>
-<script>(function(){if(window.VE)VE.reveal(document.getElementById('ve-bonuses'))})();</script>
+<script>(function(){
+  var root=document.getElementById('ve-bonuses');if(!root||!window.VE)return;VE.reveal(root);
+  var hol=document.getElementById('ve-hol');if(!hol)return;
+  var OFF=null; // docs/client-data.json → offers (сборка); null — карточки из разметки с метками [[ ]]
+  var cards=hol.querySelectorAll('.ve-hol__card'),today=new Date(),live=0;
+  for(var i=0;i<cards.length;i++)(function(c){
+    var id=c.getAttribute('data-offer'),o=OFF?OFF.filter(function(x){return x.id===id})[0]:null;
+    if(OFF&&!o){c.hidden=true;return}
+    if(o){var nm=c.querySelector('.ve-hol__name');if(o.title)nm.querySelector('b').textContent=o.title;if(o.untilText)nm.querySelector('span').textContent=o.untilText;
+      if(o.until)c.setAttribute('data-until',o.until);if(o.price)c.querySelector('.ve-hol__price').innerHTML='от '+o.price+'&nbsp;₽';if(o.text)c.querySelector('.ve-hol__for').textContent=o.text}
+    // после даты окончания карточка не показывается; одна карточка — по центру
+    if(today>new Date(c.getAttribute('data-until')+'T23:59:59')){c.hidden=true;return}
+    live++;
+    c.querySelector('.ve-hol__btn').addEventListener('click',function(){VE.goForm({offer:c.querySelector('.ve-hol__name b').textContent+': оформление сада'})});
+  })(cards[i]);
+  hol.hidden=!live;hol.classList.toggle('is-one',live===1);
+})();</script>
