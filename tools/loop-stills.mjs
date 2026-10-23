@@ -21,7 +21,7 @@ const opt = (k) => { const a = args.find((x) => x.startsWith('--' + k + '=')); r
 const ONLY = opt('only') ? opt('only').split(',') : null;
 
 // луп → стилл карточки (имена из src/*.html)
-const MAP = { t1: 'tariff-basic', t2: 'tariff-premium', t3: 'tariff-estate', b2: 'ba-after', z1: 'season-summer', r02: 'way-02', r04: 'way-04', r07: 'way-07' };
+const MAP = { t1: 'tariff-basic', t2: 'tariff-premium', t3: 'tariff-estate', b2: 'ba-after', z1: 'season-summer', ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [`r${String(i + 1).padStart(2, '0')}`, `way-${String(i + 1).padStart(2, '0')}`])) };
 // стиллы сезонов — из ПОСЛЕДНЕГО кадра клипа смены сезона: вкладка доигрывает клип и показывает стилл (src/11-seasons.html setPic),
 // а последний кадр Kling отличается от рендера Z3/Z4 на ~7/255; первый кадр следующего клипа совпадает с ним (≈2/255)
 const SEASONS = { 'season-autumn': 'season-summer-autumn', 'season-winter': 'season-autumn-winter' };
