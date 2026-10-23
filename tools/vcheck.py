@@ -110,9 +110,10 @@ def vs_site(raw, site, t=2.0):
     # кроп сайта может быть сдвинут на 1–8 px (округление в loops.mjs) — ищем лучшее совмещение
     best = None
     RA = np.asarray(frame_at(raw, t), np.float32); B = np.asarray(b, np.float32); Hs, Ws = B.shape[:2]
-    if RA.shape[0] >= Hs and RA.shape[1] >= Ws and RA.shape[0] - Hs <= 16 and RA.shape[1] - Ws <= 16:
-        for dy in range(RA.shape[0]-Hs+1):
-            for dx in range(RA.shape[1]-Ws+1):
+    if RA.shape[0] >= Hs and RA.shape[1] >= Ws:
+        cx, cy = (RA.shape[1]-Ws)//2, (RA.shape[0]-Hs)//2  # ожидаемый кроп по центру ± 8 px
+        for dy in range(max(0, cy-8), min(RA.shape[0]-Hs, cy+8)+1):
+            for dx in range(max(0, cx-8), min(RA.shape[1]-Ws, cx+8)+1):
                 A = RA[dy:dy+Hs, dx:dx+Ws]; d = float(np.abs(A-B).mean())
                 if best is None or d < best[0]: best = (d, A)
         A = best[1]

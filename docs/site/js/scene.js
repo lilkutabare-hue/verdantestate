@@ -228,7 +228,7 @@ export function mount(root, opts = {}) {
   }
   let lastP = -1;
   // дыхание на покое: пока страница стоит наверху, камера едва дышит по первым кадрам пролёта (период ~9 с) — главная живая без скролла
-  const idleOk = () => !rm && !slow && held == null && !document.hidden && nFlight > 2 && ready[0] && ready[1] && ready[2]; // на тач дыхание делает CSS (is-idle), холст не перерисовывается
+  const idleOk = () => !rm && !slow && held == null && !document.hidden && nFlight > 2 && (vidOn() || (ready[0] && ready[1] && ready[2])); // на тач дыхание делает CSS (is-idle), холст не перерисовывается; в видео-режиме дышит само видео
   function loop(now) {
     if (dead) return;
     running = true;
