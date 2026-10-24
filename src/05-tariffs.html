@@ -1,7 +1,7 @@
 <section class="ve ve-sec ve-tar" id="ve-tariffs">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Постоянный уход</p>
-    <h2 class="ve-h2 ve-r ve-tar__h">Три уровня обслуживания</h2>
+    <h2 class="ve-h2 ve-r ve-lines ve-tar__h">Три уровня обслуживания</h2>
   </div>
   <div class="ve-wrap ve-tar__wrap">
     <div class="ve-strip ve-tar__strip ve-rg">
@@ -52,7 +52,7 @@
 .ve-tar__card{width:84vw;max-width:420px;display:flex;flex-direction:column}
 .ve-tar__img{aspect-ratio:4/5;overflow:hidden;border-radius:var(--ve-r);background:rgba(255,255,255,.06)}
 .ve-tar__name{margin-top:20px;color:rgba(255,255,255,.7)}.ve-tar__name b{color:var(--ve-paper)} /* пороги площади — ориентир из конструктора, согласовать с заказчиком */
-.ve-tar__price{margin-top:6px;font-weight:600;letter-spacing:-.015em;font-size:28px;line-height:1.1}
+.ve-tar__price{margin-top:6px;font-weight:600;letter-spacing:-.03em;font-size:clamp(36px,10vw,44px);line-height:1.05} /* A.2: цифра крупно, подпись мелко */
 .ve-tar__price span{font-family:var(--ve-sans);font-size:14px;color:var(--ve-moss);letter-spacing:.01em}
 .ve-tar__for{margin-top:8px;color:var(--ve-moss)}
 .ve-tar__list{list-style:none;margin:18px 0 0;padding:0;font-size:15px;line-height:1.45}
@@ -72,7 +72,7 @@
   .ve-tar__wrap{margin-top:56px}
   .ve-tar__strip{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;overflow:visible;margin:0;padding:0;scroll-snap-type:none}
   .ve-tar__card{width:auto;max-width:none}
-  .ve-tar__price{font-size:32px}
+  .ve-tar__price{font-size:56px}
 }
 </style>
 <script>
