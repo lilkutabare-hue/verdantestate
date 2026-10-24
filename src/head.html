@@ -29,6 +29,9 @@ html{scroll-behavior:smooth;scroll-padding-top:84px}
 :where(.ve) :focus{outline:none}
 :where(.ve) :focus-visible{outline:2px solid var(--ve-moss);outline-offset:3px;border-radius:4px}
 
+/* A.5 цвет (план доводки §8): бумага #FFFFFF и тёплая #F6F4EE чередуются по секциям для ритма; тёмная зелень — одна секция (тарифы); бронза — только точки и линии.
+   Классы секций явно (в Тильде каждый блок — свой контейнер, nth-of-type не сработает): сезон, экономика, способы, круглый год, спецусловия, подвал — тёплая */
+.ve-ssn,.ve-eco,.ve-ways,.ve-sea,.ve-bon,.ve-ft{--ve-paper:#F6F4EE;--ve-paper-2:#ECE9E0;background:var(--ve-paper)}
 .ve-wrap{max-width:1240px;margin:0 auto;padding-left:var(--ve-pad);padding-right:var(--ve-pad)}
 .ve-sec{padding-top:var(--ve-gap);padding-bottom:0}
 .ve-sec--last{padding-bottom:var(--ve-gap)}
