@@ -51,8 +51,8 @@ for (const { key, still, file, last } of jobs) {
   let cw = m.width, ch = Math.round((m.width * H) / W);
   if (ch > m.height) { ch = m.height; cw = Math.round((m.height * W) / H); }
   const crop = { left: Math.round((m.width - cw) / 2), top: Math.round((m.height - ch) / 2), width: cw, height: ch };
-  const l = await sharp(png).extract(crop).resize(W, H, { kernel: 'lanczos3' }).webp({ quality: 78, effort: 5 }).toBuffer();
-  const s = await sharp(png).extract(crop).resize({ width: sw, kernel: 'lanczos3' }).webp({ quality: 74, effort: 5 }).toBuffer();
+  const l = await sharp(png).extract(crop).resize(W, H, { kernel: 'lanczos3' }).webp({ quality: 88, effort: 5 }).toBuffer();
+  const s = await sharp(png).extract(crop).resize({ width: sw, kernel: 'lanczos3' }).webp({ quality: 84, effort: 5 }).toBuffer();
   await writeFile(lPath, l); await writeFile(sPath, s);
   console.log(`${still}: из ${file}${last ? ' (последний кадр)' : ''} ${m.width}×${m.height} → ${W}×${H} (${(l.length / 1024).toFixed(0)} КБ) + ${sw}w (${(s.length / 1024).toFixed(0)} КБ)`);
 }

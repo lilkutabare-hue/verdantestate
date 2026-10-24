@@ -9,6 +9,8 @@
     "wide": {
       "w": 1440,
       "h": 810,
+      "hiw": 1920,
+      "hih": 1080,
       "frames": [
         "wide-00.webp",
         "wide-01.webp",
@@ -114,8 +116,10 @@
       ]
     },
     "tall": {
-      "w": 480,
-      "h": 853,
+      "w": 720,
+      "h": 1280,
+      "hiw": 1080,
+      "hih": 1920,
       "frames": [
         "tall-00.jpg",
         "tall-01.jpg",
@@ -230,22 +234,9 @@
       "src": "flight-tall.mp4",
       "fps": 24,
       "dur": 30.2033,
-      "w": 720,
-      "h": 1280,
-      "parts": [
-        {
-          "src": "flight-tall-1.mp4",
-          "dur": 10.04
-        },
-        {
-          "src": "flight-tall-2.mp4",
-          "dur": 10.04
-        },
-        {
-          "src": "flight-tall-3.mp4",
-          "dur": 10.1233
-        }
-      ]
+      "w": 1080,
+      "h": 1920,
+      "bytes": 84615577
     },
     "wide": {
       "src": "flight-wide.mp4",
@@ -253,20 +244,7 @@
       "dur": 30.2033,
       "w": 1920,
       "h": 1080,
-      "parts": [
-        {
-          "src": "flight-wide-1.mp4",
-          "dur": 10.04
-        },
-        {
-          "src": "flight-wide-2.mp4",
-          "dur": 10.04
-        },
-        {
-          "src": "flight-wide-3.mp4",
-          "dur": 10.1233
-        }
-      ]
+      "bytes": 68150378
     }
   }
 }

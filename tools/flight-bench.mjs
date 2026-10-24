@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Замер пролёта хиро: кадры против видео (?hero=video). Headless Chromium, эмуляция iPhone 390×844 dpr 3, CPU ×4, пролёт за N секунд.
-//   node tools/flight-bench.mjs [url=http://localhost:5181/] [секунд=3]   (стенд: node tools/serve.mjs)
+//   node tools/flight-bench.mjs [url=http://localhost:5181/] [секунд=3] [от=0] [до=0.66]   (стенд: node tools/serve.mjs; 0.66 0.92 — покос и вечер на холсте)
 // Печатает по режимам: rAF к/с, длинные кадры (>34 мс), худший кадр, «смен кадра/с» из VE.hero.info() по ходу прокрутки.
 // WebKit эмуляцией не воспроизвести: решение «видео по умолчанию» — по записи экрана с iPhone (tools/rec-frames.py); этот замер — для сравнения правок.
 // Прокрутка — behavior:'instant': у сайта html{scroll-behavior:smooth}, иначе каждый scrollTo запускает свою плавную анимацию и замер врёт.
@@ -20,18 +20,20 @@ const exe = fs.existsSync(cache) ? fs.readdirSync(cache).filter((d) => /chromium
 
 const URL0 = process.argv[2] || 'http://localhost:5181/';
 const SECS = +(process.argv[3] || 3);
-const br = await chromium.launch({ executablePath: exe, args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
+const FROM = +(process.argv[4] || 0), TO = +(process.argv[5] || 0.66); // доля высоты хиро: 0–0.66 пролёт, 0.66–0.92 покос и вечер (холст)
+// BENCH_GPU=1 — без программного рендера (swiftshader преувеличивает цену большого холста; с ним сравнивать только варианты между собой)
+const br = await chromium.launch({ executablePath: exe, args: process.env.BENCH_GPU ? ['--use-angle=metal', '--enable-gpu-rasterization', '--autoplay-policy=no-user-gesture-required'] : ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
 
 // прокрутка пролёта (0 → TL.flight = 0.66 высоты хиро) за SECS секунд; на каждом шаге — scrollTo без плавности
-const scrub = async (page, poll) => page.evaluate(async ({ SECS, poll }) => {
-  const hero = document.querySelector('.ve-hero'), top = hero.getBoundingClientRect().top + scrollY, travel = hero.offsetHeight - innerHeight, end = top + travel * 0.66;
+const scrub = async (page, poll) => page.evaluate(async ({ SECS, poll, FROM, TO }) => {
+  const hero = document.querySelector('.ve-hero'), top0 = hero.getBoundingClientRect().top + scrollY, travel = hero.offsetHeight - innerHeight, top = top0 + travel * FROM, end = top0 + travel * TO;
   const frames = [], vals = []; let last = performance.now(); const t0 = performance.now();
   const timer = poll ? setInterval(() => { const m = /смен кадра (\d+)\/с/.exec(VE.hero.info()); if (m) vals.push(+m[1]); }, 250) : null;
   await new Promise((res) => { (function step(now) { frames.push(now - last); last = now; const k = Math.min(1, (now - t0) / (SECS * 1000)); window.scrollTo({ top: top + (end - top) * k, behavior: 'instant' }); if (k < 1) requestAnimationFrame(step); else res(); })(performance.now()); });
   await new Promise((r) => setTimeout(r, poll ? 600 : 1000));
   if (timer) clearInterval(timer);
   return { frameMs: frames.slice(2), vals, info: VE.hero.info() };
-}, { SECS, poll });
+}, { SECS, poll, FROM, TO });
 
 const out = {};
 for (const mode of ['frames', 'video']) {
@@ -44,7 +46,7 @@ for (const mode of ['frames', 'video']) {
   await page.waitForFunction((m) => { const h = document.querySelector('.ve-hero'); if (!h || !h.classList.contains('is-fly') || !window.VE || !VE.hero || !VE.hero.info) return false; const i = VE.hero.info(); return m === 'video' ? /видео \d+ к\/с/.test(i) : /кадров (\d+)\/\1/.test(i); }, mode, { timeout: 40000 }).catch(() => {});
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
   const a = await scrub(page, false);
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' })); await page.waitForTimeout(1500);
+  await page.evaluate((F) => { const h = document.querySelector('.ve-hero'); window.scrollTo({ top: h.getBoundingClientRect().top + scrollY + (h.offsetHeight - innerHeight) * F, behavior: 'instant' }); }, FROM); await page.waitForTimeout(1500);
   const b = await scrub(page, true);
   const fm = a.frameMs, avg = fm.reduce((s, x) => s + x, 0) / fm.length, mid = b.vals.length > 4 ? b.vals.slice(2, -2) : b.vals;
   out[mode] = { rafFps: Math.round(1000 / avg), long34: fm.filter((x) => x > 34).length, worstMs: Math.round(Math.max(...fm)), flipsMedian: [...mid].sort((x, y) => x - y)[mid.length >> 1], flipsMax: Math.max(...b.vals), info: b.info.replace(/\n/g, ' | ') };

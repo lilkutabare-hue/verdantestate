@@ -47,7 +47,7 @@ export function mount(root, opts = {}) {
   function report() {
     if (!opts.onLoad) return;
     if (vidMeta()) { opts.onLoad(vidOk ? 1 : vidProg, 1, { video: true, ready: vidOk }); return; } // честный процент по байтам; готово — когда все куски перемотались
-    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight, { video: false, ready: n >= nFlight });
+    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight, { video: false, ready: nFlight > 0 && n >= nFlight });
   }
   // Видео пролёта: один файл (m.src) или куски по клипам (m.parts = [{src,dur},…], каждый ≤ 5 МБ — лимит файла в хранилище Тильды).
   // Все куски качаются целиком в память, у каждого свой <video>; виден тот, в чьём отрезке целевое время; стык кусков — тот же кадр (клипы цепочкой),
@@ -55,7 +55,7 @@ export function mount(root, opts = {}) {
   let vids = [], vidUrls = [], vidOk = false, vidBad = false, vidSeeking = false, vidTarget = 0, vidSeekAt = 0, vidFor = '', vidCur = -1, vidNext = -1, vidBehind = false;
   const flips = []; // моменты смены кадра пролёта на экране — для счётчика ?perf=1
   const vidMeta = () => (wantVid && !vidBad && man && man.video && set && man.video[set.name]) || null;
-  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0 }]; };
+  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off, bytes: q.bytes || 0 }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0, bytes: m.bytes || 0 }]; };
   const vidTotal = () => vidParts().reduce((a, q) => a + q.dur, 0);
   const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
   function vidFail() {
@@ -84,10 +84,10 @@ export function mount(root, opts = {}) {
       // файл целиком в память (Blob): перемотка без сети и без Range-запросов; на iOS иначе видео грузится только по play()
       fetch(urlOf(q.src)).then(async (r) => {
         if (!r.ok) throw new Error(r.status);
-        tot[i] = +r.headers.get('content-length') || 0;
-        if (!tot[i] || !r.body || !r.body.getReader) return r.blob();
+        tot[i] = +r.headers.get('content-length') || q.bytes || 0; // длина из заголовка, иначе из манифеста (стенд и некоторые хосты отдают chunked)
+        if (!r.body || !r.body.getReader) return r.blob();
         const rd = r.body.getReader(), chunks = [];
-        for (;;) { const { done, value } = await rd.read(); if (done) break; chunks.push(value); got[i] += value.length; vidProg = sum(got) / Math.max(1, sum(tot)); const now = performance.now(); if (now - at > 120) { at = now; report(); } }
+        for (;;) { const { done, value } = await rd.read(); if (done) break; chunks.push(value); got[i] += value.length; vidProg = sum(tot) ? Math.min(0.99, sum(got) / sum(tot)) : 0; const now = performance.now(); if (now - at > 120) { at = now; report(); } }
         return new Blob(chunks, { type: 'video/mp4' });
       }).then((b) => {
         if (dead || vidBad) return;
@@ -101,8 +101,10 @@ export function mount(root, opts = {}) {
         setTimeout(() => { if (!vidOk && !vidBad) vidFail(); }, 4000);
       }).catch(vidFail);
     });
-    // Россия без VPN: Cloudflare режут поток после ~16 КБ без ошибки — если за 3,5 с пришло меньше 256 КБ на всё видео, его не будет: сразу на кадры
-    setTimeout(() => { if (!vidOk && !vidBad && sum(got) < 262144) vidFail(); }, 3500);
+    // обрезанная линия (Cloudflare в России режут поток после ~16 КБ без ошибки): новых байт нет 6 с подряд — видео не будет, сразу на кадры.
+    // Раньше было «< 256 КБ за 3,5 с» — ложно срабатывало, когда видео вставало в очередь за шрифтами и кадрами (24.10)
+    let seen = 0, seenAt = performance.now();
+    const watch = setInterval(() => { if (dead || vidOk || vidBad) { clearInterval(watch); return; } const g = sum(got); if (g > seen) { seen = g; seenAt = performance.now(); } else if (performance.now() - seenAt > 6000) { clearInterval(watch); vidFail(); } }, 500);
   }
   function pump() {
     if (!vids.length || vidSeeking) { if (vidSeeking && performance.now() - vidSeekAt > 2000) vidSeeking = false; return; }
@@ -126,8 +128,10 @@ export function mount(root, opts = {}) {
     const r = stage.getBoundingClientRect();
     const w = Math.round(r.width), h = Math.round(r.height);
     // пикселей не больше, чем в исходном кадре серии (телефон: tall 720 px → холст не 3× ширины экрана), и не больше 1.5 на тач
-    const srcW = man ? (h > w ? man.sets.tall.w : man.sets.wide.w) : 1440;
-    dpr = Math.min(window.devicePixelRatio || 1, slow ? 1.5 : 2, Math.max(1, srcW / w));
+    // холст не крупнее финальных кадров серии (родной размер рендеров, 24.10 max quality) и не больше 3× экрана; раньше 480/1440 px и 1,5× на тач
+    const ss = man ? (h > w ? man.sets.tall : man.sets.wide) : null, srcW = ss ? (ss.hiw || ss.w) : 1440;
+    dpr = Math.min(window.devicePixelRatio || 1, 3, Math.max(1, srcW / w));
+    try { const cw = +(/[?&]canvasw=(\d+)/.exec(location.search) || [])[1]; if (cw) dpr = Math.min(dpr, Math.max(1, cw / w)); } catch {} // диагностика: ?canvasw=480 — потолок ширины холста (сравнение с прежним размером)
     if (w === W && h === H && canvas.width === Math.round(w * dpr)) return false;
     W = w; H = h;
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
@@ -169,7 +173,7 @@ export function mount(root, opts = {}) {
           const u0 = urlOf(list[k]); img.src = u0;
           try { await img.decode(); } catch (e1) { const u1 = alt(u0); if (!u1) throw e1; img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async'; img.src = u1; await img.decode(); }
           if (gen !== loadGen) return;
-          imgs[k] = img; ready[k] = true; if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
+          imgs[k] = img; ready[k] = true; if (k >= nFlight - 1) warm(img); if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
           report();
         } catch (e) { /* кадр не пришёл — рисуем ближайший загруженный */ }
       }
@@ -182,6 +186,14 @@ export function mount(root, opts = {}) {
     return -1;
   };
 
+  // прогрев финальных кадров (последний кадр пролёта, «после», «вечер» — родной размер): один раз рисуем 1×1 с почти нулевой прозрачностью,
+  // чтобы текстура ушла на видеокарту заранее, а не в первом кадре покоса (иначе рывок ~0,3 с на эмуляции); следующий draw всё перерисует
+  const warmed = new Set();
+  function warm(img) {
+    if (warmed.has(img)) return; warmed.add(img);
+    const go = () => { if (dead) return; ctx.save(); ctx.globalAlpha = 0.01; ctx.drawImage(img, 0, 0, 1, 1); ctx.restore(); ctx.clearRect(0, 0, 1, 1); lastKey = ''; wake(); };
+    if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 1500 }); else setTimeout(go, 200);
+  }
   // --- cover-кроп: tall-серия уже в 9:16 с ведением фокуса, тут только вписать ---
   function cover(img, alpha, x0 = 0, x1 = W) {
     if (!img) return;

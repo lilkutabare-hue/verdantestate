@@ -38,6 +38,10 @@ const TFMT = opt('tallfmt', FMT); // формат tall-серии отдельн
 const Q = +opt('q', FMT === 'avif' ? 52 : 72);
 const TW = +opt('tallw', 720); // ширина tall-кадра: на телефоне холст не крупнее 1.5× ширины экрана, 600 хватает и весит на треть меньше
 const WIDE = { w: 1440, h: 810, q: Q }, TALL = { w: TW, h: Math.round((TW * 16) / 9), q: Q - 2 };
+// финальные кадры сцены (последний кадр пролёта, «после», «вечер») — родной размер рендеров: их видно всю вторую половину хиро, и на стыке с видео
+// они не должны быть мягче видео (24.10, max quality). Флаги: --hiw=1920 (компьютер), --hitw=1080 (телефон), --hiq=90
+const HIQ = +opt('hiq', 90);
+const WIDE_HI = { w: +opt('hiw', 1920), h: Math.round((+opt('hiw', 1920) * 9) / 16), q: HIQ }, TALL_HI = { w: +opt('hitw', 1080), h: Math.round((+opt('hitw', 1080) * 16) / 9), q: HIQ - 6 };
 
 // ---------- ffmpeg: системный, из FFMPEG или из imageio-ffmpeg ----------
 async function findFfmpeg() {
@@ -106,12 +110,12 @@ if (useClips) {
   } else console.log('вертикальных клипов нет — tall-серия кропом из 16:9 (см. prompts-magnific.md §6.1)');
   // ночной луп поверх финала
   if (files.includes('k4.mp4')) {
-    await run(ff, ['-y', '-v', 'error', '-i', join(SRC, 'k4.mp4'), '-an', '-vf', 'scale=1440:-2', '-c:v', 'libx264', '-preset', 'slow', '-crf', '22', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', join(OUT, 'loop.mp4')]);
+    await run(ff, ['-y', '-v', 'error', '-i', join(SRC, 'k4.mp4'), '-an', '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2', '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(+opt('lcrf', 18)), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', join(OUT, 'loop.mp4')]);
     manLoop = 'loop.mp4';
   }
   // вертикальный ночной луп для телефона (prompts-vertical §5): k4v.mp4 → scene/loop-tall.mp4, 720 по ширине
   if (files.includes('k4v.mp4')) {
-    await run(ff, ['-y', '-v', 'error', '-i', join(SRC, 'k4v.mp4'), '-an', '-vf', 'scale=720:-2', '-c:v', 'libx264', '-preset', 'slow', '-crf', '23', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', join(OUT, 'loop-tall.mp4')]);
+    await run(ff, ['-y', '-v', 'error', '-i', join(SRC, 'k4v.mp4'), '-an', '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2', '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(+opt('lcrf', 18)), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', join(OUT, 'loop-tall.mp4')]);
     manLoopTall = 'loop-tall.mp4';
     console.log('луп телефона: scene/loop-tall.mp4');
     console.log('луп: scene/loop.mp4', ((await import('node:fs/promises')).stat(join(OUT, 'loop.mp4')).then((s) => (s.size / 1024).toFixed(0) + ' КБ').then(console.log), ''));
@@ -134,7 +138,7 @@ async function render(src, set, x) {
   return img.resize(w, h, { kernel: 'lanczos3' }).extract({ left, top, width: set.w, height: set.h });
 }
 
-const man = { v: 2, n: flight.length, placeholder: flag('placeholder'), source: useClips ? 'clips' : 'stills', loop: manLoop, loopTall: manLoopTall, sets: { wide: { w: WIDE.w, h: WIDE.h, frames: [], after: [] }, tall: { w: TALL.w, h: TALL.h, frames: [], after: [] } }, poster: { wide: 'poster-wide.webp', tall: 'poster-tall.webp' } };
+const man = { v: 2, n: flight.length, placeholder: flag('placeholder'), source: useClips ? 'clips' : 'stills', loop: manLoop, loopTall: manLoopTall, sets: { wide: { w: WIDE.w, h: WIDE.h, hiw: WIDE_HI.w, hih: WIDE_HI.h, frames: [], after: [] }, tall: { w: TALL.w, h: TALL.h, hiw: TALL_HI.w, hih: TALL_HI.h, frames: [], after: [] } }, poster: { wide: 'poster-wide.webp', tall: 'poster-tall.webp' } };
 let total = 0; const bySet = { wide: 0, tall: 0 };
 const extOf = (f) => (f === 'avif' ? 'avif' : f === 'jpg' ? 'jpg' : 'webp');
 const EXT = extOf(FMT), TEXT = extOf(TFMT);
@@ -144,25 +148,27 @@ const put = async (pipe, name, q) => { const buf = await (name.startsWith('tall'
 
 for (let i = 0; i < flight.length; i++) {
   const k = String(i).padStart(2, '0');
-  await put(await render(flight[i], WIDE, 0.5), `wide-${k}.${EXT}`, WIDE.q); man.sets.wide.frames.push(`wide-${k}.${EXT}`);
+  const S = i === flight.length - 1 ? WIDE_HI : WIDE;
+  await put(await render(flight[i], S, 0.5), `wide-${k}.${EXT}`, S.q); man.sets.wide.frames.push(`wide-${k}.${EXT}`);
 }
 const tSrc = tallFlight || flight;
 for (let i = 0; i < tSrc.length; i++) {
   const t = tSrc.length > 1 ? i / (tSrc.length - 1) : 0, k = String(i).padStart(2, '0');
-  await put(await render(tSrc[i], TALL, tallFlight ? 0.5 : fx(t)), `tall-${k}.${TEXT}`, TALL.q); man.sets.tall.frames.push(`tall-${k}.${TEXT}`);
+  const S = i === tSrc.length - 1 ? TALL_HI : TALL;
+  await put(await render(tSrc[i], S, tallFlight ? 0.5 : fx(t)), `tall-${k}.${TEXT}`, S.q); man.sets.tall.frames.push(`tall-${k}.${TEXT}`);
 }
 for (const [j, src] of after.entries()) {
   const k = ['a', 'b'][j];
-  await put(await render(src, WIDE, 0.5), `after-${k}-wide.${EXT}`, WIDE.q); man.sets.wide.after.push(`after-${k}-wide.${EXT}`);
+  await put(await render(src, WIDE_HI, 0.5), `after-${k}-wide.${EXT}`, WIDE_HI.q); man.sets.wide.after.push(`after-${k}-wide.${EXT}`);
 }
 for (const [j, src] of (tallAfter || after).entries()) {
   const k = ['a', 'b'][j];
-  await put(await render(src, TALL, tallAfter ? 0.5 : fx(1)), `after-${k}-tall.${TEXT}`, TALL.q); man.sets.tall.after.push(`after-${k}-tall.${TEXT}`);
+  await put(await render(src, TALL_HI, tallAfter ? 0.5 : fx(1)), `after-${k}-tall.${TEXT}`, TALL_HI.q); man.sets.tall.after.push(`after-${k}-tall.${TEXT}`);
 }
 // у sharp один resize на конвейер: постер — из готового кропа вторым проходом
 const small = async (set, x, w) => sharp(await (await render(flight[0], set, x)).png().toBuffer()).resize(w);
-await put(await small(WIDE, 0.5, 960), 'poster-wide.webp', 70);
-await put(sharp(await (await render(tSrc[0], TALL, tallFlight ? 0.5 : fx(0))).png().toBuffer()).resize(540), 'poster-tall.webp', 70);
+await put(await small(WIDE, 0.5, 1440), 'poster-wide.webp', 82);
+await put(sharp(await (await render(tSrc[0], TALL, tallFlight ? 0.5 : fx(0))).png().toBuffer()).resize(TALL.w), 'poster-tall.webp', 82);
 // ---------- видео пролёта для телефона: все кадры клипов (24 к/с) одним H.264 ----------
 // Картинками телефон получает 97 кадров из 723 (≈3 к/с движения камеры, 4.4 МБ); видео — все 723 за ~4 МБ, декод аппаратный.
 // Ключевой кадр каждые 8 кадров, без B-кадров: перемотка декодирует не больше 7 кадров. Стыки клипов и выход в S4 — кадр в кадр (клипы цепочкой), растворение только по --ramp.
@@ -184,7 +190,7 @@ if (useClips && !flag('no-video')) {
       await run(ff, ['-y', '-v', 'error', ...vc.flatMap((c) => ['-i', c]), '-filter_complex', parts.join(';'), '-map', '[x]', '-an', '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(VCRF), '-g', String(G), '-keyint_min', String(G), '-bf', '0', '-sc_threshold', '0', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { maxBuffer: 1e7 });
       const st = await (await import('node:fs/promises')).stat(out);
       console.log(`кусок: scene/${name} · ${VW}×${VH} crf ${VCRF} · ${Math.round(len * FPS)} кадров · ${(st.size / 1048576).toFixed(2)} МБ`);
-      return { src: name, fps: FPS, dur: +len.toFixed(4), w: VW, h: VH };
+      return { src: name, fps: FPS, dur: +len.toFixed(4), w: VW, h: VH, bytes: st.size }; // bytes — честный процент заставки, если хост не шлёт content-length
     }
     const durs = []; for (const c of vc) durs.push(await duration(ff, c));
     // клип Kling может быть чуть уже/шире (1072×1928, 1924×1076): масштаб с запасом по обеим сторонам, потом кроп по центру
@@ -205,7 +211,7 @@ if (useClips && !flag('no-video')) {
       '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { maxBuffer: 1e7 });
     const st = await (await import('node:fs/promises')).stat(out);
     console.log(`видео пролёта: scene/${name} · ${VW}×${VH} crf ${VCRF} · ${Math.round(len * FPS)} кадров · ${(st.size / 1048576).toFixed(2)} МБ${X > 0 ? ' · растворение на стыках (старые клипы)' : ' · стыки кадр в кадр'}`);
-    return { src: name, fps: FPS, dur: +len.toFixed(4), w: VW, h: VH };
+    return { src: name, fps: FPS, dur: +len.toFixed(4), w: VW, h: VH, bytes: st.size }; // bytes — честный процент заставки, если хост не шлёт content-length
   }
   // кусок пролёта = один клип (последний — с удержанием финального стилла), подбор crf под лимит
   async function buildPart(clip, fin, name, VW, VH, crf0, G) {

@@ -28,8 +28,9 @@ for (const f of files) {
   const meta = await sharp(src).metadata();
   const wide = meta.width > meta.height;
   // мастера 2K: большой вариант ужимаем до 1440 по длинной стороне, иначе карточка весит мегабайт
-  const l = await sharp(src).resize(wide ? { width: 1440, withoutEnlargement: true } : { height: 1440, withoutEnlargement: true }).webp({ quality: 78, effort: 5 }).toBuffer();
-  const s = await sharp(src).resize({ width: wide ? 720 : 560 }).webp({ quality: 74, effort: 5 }).toBuffer();
+  // 24.10 max quality: широкие (до/после) — 2400 по ширине (на ретине шторка 1160 css = 2320 px), вертикальные — 1440 по высоте; q 88 / 84
+  const l = await sharp(src).resize(wide ? { width: 2400, withoutEnlargement: true } : { height: 1440, withoutEnlargement: true }).webp({ quality: 88, effort: 5 }).toBuffer();
+  const s = await sharp(src).resize({ width: wide ? 960 : 560 }).webp({ quality: 84, effort: 5 }).toBuffer();
   await writeFile(join(STILLS, `${name}-l.webp`), l); await writeFile(join(STILLS, `${name}-s.webp`), s); total += l.length + s.length;
   console.log(name, (l.length / 1024).toFixed(0), '+', (s.length / 1024).toFixed(0), 'KB');
 }
@@ -37,8 +38,8 @@ for (const f of files) {
 const MS = join(ROOT, 'media-src');
 for (const n of ['hw-dark', 'hw-lit', 'ny-dark', 'ny-lit']) {
   const src = join(MS, `${n}.png`); if (!existsSync(src)) continue;
-  const l = await sharp(src).resize({ height: 1440, withoutEnlargement: true }).webp({ quality: 78, effort: 5 }).toBuffer();
-  const s = await sharp(src).resize({ width: 560 }).webp({ quality: 74, effort: 5 }).toBuffer();
+  const l = await sharp(src).resize({ height: 1440, withoutEnlargement: true }).webp({ quality: 88, effort: 5 }).toBuffer();
+  const s = await sharp(src).resize({ width: 560 }).webp({ quality: 84, effort: 5 }).toBuffer();
   await writeFile(join(STILLS, `holiday-${n}-l.webp`), l); await writeFile(join(STILLS, `holiday-${n}-s.webp`), s); total += l.length + s.length;
   console.log(`holiday-${n}`, (l.length / 1024).toFixed(0), '+', (s.length / 1024).toFixed(0), 'KB');
 }
