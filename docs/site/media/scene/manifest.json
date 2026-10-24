@@ -231,14 +231,42 @@
       "fps": 24,
       "dur": 30.2033,
       "w": 720,
-      "h": 1280
+      "h": 1280,
+      "parts": [
+        {
+          "src": "flight-tall-1.mp4",
+          "dur": 10.04
+        },
+        {
+          "src": "flight-tall-2.mp4",
+          "dur": 10.04
+        },
+        {
+          "src": "flight-tall-3.mp4",
+          "dur": 10.1233
+        }
+      ]
     },
     "wide": {
       "src": "flight-wide.mp4",
       "fps": 24,
       "dur": 30.2033,
       "w": 1920,
-      "h": 1080
+      "h": 1080,
+      "parts": [
+        {
+          "src": "flight-wide-1.mp4",
+          "dur": 10.04
+        },
+        {
+          "src": "flight-wide-2.mp4",
+          "dur": 10.04
+        },
+        {
+          "src": "flight-wide-3.mp4",
+          "dur": 10.1233
+        }
+      ]
     }
   }
 }

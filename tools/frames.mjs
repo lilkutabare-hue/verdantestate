@@ -174,18 +174,30 @@ if (useClips && !flag('no-video')) {
   // одна серия видео: клипы подряд кадр в кадр (concat) + короткое удержание финального стилла (он = последний кадр К3 при цепочке)
   async function buildVideo(vc, fin, name, VW, VH, VCRF, G) {
     G = G || GOP; // шаг ключевых кадров этого файла
+    if (!fin) {
+      // кусок без финального стилла: клип(ы) подряд, без удержания
+      const durs = []; for (const c of vc) durs.push(await duration(ff, c));
+      const norm = `scale=${VW}:${VH}:force_original_aspect_ratio=increase:flags=lanczos,crop=${VW}:${VH}`;
+      const parts = vc.map((_, i) => `[${i}:v]fps=${FPS},${norm},setsar=1,format=yuv420p,settb=AVTB[v${i}]`);
+      parts.push(vc.map((_, i) => `[v${i}]`).join('') + `concat=n=${vc.length}:v=1:a=0[x]`);
+      const out = join(OUT, name), len = durs.reduce((a, b) => a + b, 0);
+      await run(ff, ['-y', '-v', 'error', ...vc.flatMap((c) => ['-i', c]), '-filter_complex', parts.join(';'), '-map', '[x]', '-an', '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(VCRF), '-g', String(G), '-keyint_min', String(G), '-bf', '0', '-sc_threshold', '0', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { maxBuffer: 1e7 });
+      const st = await (await import('node:fs/promises')).stat(out);
+      console.log(`кусок: scene/${name} · ${VW}×${VH} crf ${VCRF} · ${Math.round(len * FPS)} кадров · ${(st.size / 1048576).toFixed(2)} МБ`);
+      return { src: name, fps: FPS, dur: +len.toFixed(4), w: VW, h: VH };
+    }
     const durs = []; for (const c of vc) durs.push(await duration(ff, c));
     // клип Kling может быть чуть уже/шире (1072×1928, 1924×1076): масштаб с запасом по обеим сторонам, потом кроп по центру
     const norm = `scale=${VW}:${VH}:force_original_aspect_ratio=increase:flags=lanczos,crop=${VW}:${VH}`;
     const prep = (i) => `[${i}:v]fps=${FPS},${norm},setsar=1,format=yuv420p,settb=AVTB[v${i}]`;
-    const parts = [0, 1, 2, 3].map(prep);
+    const N = vc.length, parts = [...vc.map((_, i) => i), N].map(prep); // N клипов + финальный стилл (индекс N)
     const hold = X + 2 / FPS;
     let len, prev;
     if (X > 0) {
       len = durs[0]; prev = 'v0';
-      for (let i = 1; i <= 3; i++) { const d = i < 3 ? durs[i] : hold; parts.push(`[${prev}][v${i}]xfade=transition=fade:duration=${X}:offset=${(len - X).toFixed(4)}[x${i}]`); len = len + d - X; prev = 'x' + i; }
+      for (let i = 1; i <= N; i++) { const d = i < N ? durs[i] : hold; parts.push(`[${prev}][v${i}]xfade=transition=fade:duration=${X}:offset=${(len - X).toFixed(4)}[x${i}]`); len = len + d - X; prev = 'x' + i; }
     } else {
-      parts.push('[v0][v1][v2][v3]concat=n=4:v=1:a=0[x3]'); prev = 'x3'; len = durs[0] + durs[1] + durs[2] + hold;
+      parts.push(Array.from({ length: N + 1 }, (_, i) => '[v' + i + ']').join('') + 'concat=n=' + (N + 1) + ':v=1:a=0[x3]'); prev = 'x3'; len = durs.reduce((q, w) => q + w, 0) + hold;
     }
     const out = join(OUT, name);
     await run(ff, ['-y', '-v', 'error', ...vc.flatMap((c) => ['-i', c]), '-loop', '1', '-framerate', String(FPS), '-t', hold.toFixed(4), '-i', fin,
@@ -195,16 +207,38 @@ if (useClips && !flag('no-video')) {
     console.log(`видео пролёта: scene/${name} · ${VW}×${VH} crf ${VCRF} · ${Math.round(len * FPS)} кадров · ${(st.size / 1048576).toFixed(2)} МБ${X > 0 ? ' · растворение на стыках (старые клипы)' : ' · стыки кадр в кадр'}`);
     return { src: name, fps: FPS, dur: +len.toFixed(4), w: VW, h: VH };
   }
+  // кусок пролёта = один клип (последний — с удержанием финального стилла), подбор crf под лимит
+  async function buildPart(clip, fin, name, VW, VH, crf0, G) {
+    const LIM = 4.8 * 1048576; let crf = crf0, r = null;
+    for (let t = 0; t < 3; t++) {
+      r = await buildVideo([clip], fin, name, VW, VH, crf, G);
+      const st = await (await import('node:fs/promises')).stat(join(OUT, name));
+      if (st.size <= LIM) break; console.log(`  ${name}: ${(st.size / 1048576).toFixed(2)} МБ > 4,8 — crf ${crf} → ${crf + 1}`); crf += 1;
+    }
+    return r;
+  }
+  async function buildParts(vc, fin, prefix, VW, VH, crf0, G) {
+    const parts = [];
+    for (let i = 0; i < vc.length; i++) { const r = await buildPart(vc[i], i === vc.length - 1 ? fin : null, `${prefix}-${i + 1}.mp4`, VW, VH, crf0, G); parts.push({ src: r.src, dur: r.dur }); }
+    return parts;
+  }
   manVideo = {};
   if (tallFlight) manVideo.tall = await buildVideo(['k1v', 'k2v', 'k3v'].map((k) => join(SRC, k + '.mp4')), still('s4v'), 'flight-tall.mp4', +opt('vw', 720), +opt('vh', 1280), +opt('vcrf', 23), +opt('gopt', 12)); // --gopt=12 (24.10): перемотка назад на телефоне декодирует ≤ 11 кадров, не 23 — «отбрасывает» меньше; +16 % веса (21,3 МБ) // замер 24.10: crf 23 gop 24 ≈ 18 МБ, PSNR ≈ 38 дБ, разница ≈ 2,1/255
   else console.log('вертикальных клипов нет — видео пролёта телефона не собрано (tall кропом из 16:9 только кадрами)');
-  manVideo.wide = await buildVideo(clips, still('s4'), 'flight-wide.mp4', +opt('vww', 1920), +opt('vwh', 1080), +opt('vcrfw', 25)); // crf 25: ≤ 25 МБ — лимит Cloudflare на файл ассетов (crf 23 давал 34 МБ)
+  manVideo.wide = await buildVideo(clips, still('s4'), 'flight-wide.mp4', +opt('vww', 1920), +opt('vwh', 1080), +opt('vcrfw', 25));
+  // куски ≤ 4,8 МиБ для хранилища Тильды (видео mp4 до 5 МБ): телефон 720×1280 crf от 27 gop 12, компьютер 1440×810 crf от 28 gop 24 (24.10)
+  if (!flag('no-parts')) {
+    if (tallFlight) manVideo.tall.parts = await buildParts(['k1v', 'k2v', 'k3v'].map((k) => join(SRC, k + '.mp4')), still('s4v'), 'flight-tall', +opt('vw', 720), +opt('vh', 1280), +opt('pcrf', 27), +opt('gopt', 12));
+    manVideo.wide.parts = await buildParts(clips, still('s4'), 'flight-wide', +opt('pww', 1440), +opt('pwh', 810), +opt('pcrfw', 28), +opt('gop', 24));
+    const tot = (ps) => ps.reduce((a, q) => a + q.dur, 0).toFixed(2);
+    console.log(`куски пролёта: tall ${manVideo.tall ? manVideo.tall.parts.map((q) => q.src).join(', ') + ' (' + tot(manVideo.tall.parts) + ' с)' : '—'}; wide ${manVideo.wide.parts.map((q) => q.src).join(', ')} (${tot(manVideo.wide.parts)} с)`);
+  } // crf 25: ≤ 25 МБ — лимит Cloudflare на файл ассетов (crf 23 давал 34 МБ)
 }
 if (manVideo) man.video = manVideo;
 await writeFile(join(OUT, 'manifest.json'), JSON.stringify(man, null, 2) + '\n');
 
 // старые кадры, которых нет в манифесте, убираем
-const keep = new Set([...man.sets.wide.frames, ...man.sets.tall.frames, ...man.sets.wide.after, ...man.sets.tall.after, man.poster.wide, man.poster.tall, 'manifest.json', manLoop, manLoopTall, manVideo && manVideo.tall && manVideo.tall.src, manVideo && manVideo.wide && manVideo.wide.src].filter(Boolean));
+const keep = new Set([...man.sets.wide.frames, ...man.sets.tall.frames, ...man.sets.wide.after, ...man.sets.tall.after, man.poster.wide, man.poster.tall, 'manifest.json', manLoop, manLoopTall, manVideo && manVideo.tall && manVideo.tall.src, manVideo && manVideo.wide && manVideo.wide.src, ...((manVideo && manVideo.tall && manVideo.tall.parts) || []).map((q) => q.src), ...((manVideo && manVideo.wide && manVideo.wide.parts) || []).map((q) => q.src)].filter(Boolean));
 for (const f of await readdir(OUT)) if (!keep.has(f)) await unlink(join(OUT, f));
 const mb = (n) => (n / 1048576).toFixed(2) + ' МБ';
 console.log(`сцена: ${man.n} кадров пролёта + 2 превращения; wide ${mb(bySet.wide)} (бюджет 4.5), tall ${mb(bySet.tall)} (бюджет 2.2)`);

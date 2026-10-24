@@ -11,6 +11,9 @@ export function mount(root, opts = {}) {
   const canvas = root.querySelector('canvas');
   const ctx = canvas.getContext('2d', { alpha: true });
   const base = opts.base || '', v = opts.v ? '?v=' + opts.v : '';
+  // адрес файла сцены: opts.url(имя) — карта хранилища Тильды (сборка для Тильды), иначе base + media/scene/ + имя + ?v=
+  const urlOf = (name) => (opts.url ? opts.url(name) : base + 'media/scene/' + name + v);
+  const alt = (u) => (/\/\/static\.tildacdn\.com\//.test(u) ? u.replace('//static.tildacdn.com/', '//static3.tildacdn.com/') : null); // запасной хост Тильды (план медиа §3.4)
   const rm = !!opts.reducedMotion;
   const onProgress = opts.onProgress || (() => {});
   const TL = Object.assign({ flight: 0.66, groom: 0.8, light: 0.88 }, opts.timeline || {});
@@ -46,50 +49,76 @@ export function mount(root, opts = {}) {
     if (vidMeta()) { opts.onLoad(vidOk ? 1 : Math.min(0.49, vidProg * 0.49), 1); return; }
     let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight);
   }
-  let vid = null, vidUrl = '', vidOk = false, vidBad = false, vidSeeking = false, vidTarget = 0, vidSeekAt = 0, vidFor = '';
+  // Видео пролёта: один файл (m.src) или куски по клипам (m.parts = [{src,dur},…], каждый ≤ 5 МБ — лимит файла в хранилище Тильды).
+  // Все куски качаются целиком в память, у каждого свой <video>; виден тот, в чьём отрезке целевое время; стык кусков — тот же кадр (клипы цепочкой),
+  // переключение только после того, как новый кусок перемотался на своё место.
+  let vids = [], vidUrls = [], vidOk = false, vidBad = false, vidSeeking = false, vidTarget = 0, vidSeekAt = 0, vidFor = '', vidCur = -1, vidNext = -1, vidBehind = false;
   const flips = []; // моменты смены кадра пролёта на экране — для счётчика ?perf=1
   const vidMeta = () => (wantVid && !vidBad && man && man.video && set && man.video[set.name]) || null;
+  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0 }]; };
+  const vidTotal = () => vidParts().reduce((a, q) => a + q.dur, 0);
   const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
   function vidFail() {
     if (vidBad) return; vidBad = true; vidOk = false;
-    if (vid) { vid.classList.remove('is-on'); vid.removeAttribute('src'); try { vid.load(); } catch {} }
-    if (vidUrl) { URL.revokeObjectURL(vidUrl); vidUrl = ''; }
+    for (const x of vids) { x.classList.remove('is-on'); x.removeAttribute('src'); try { x.load(); } catch {} x.remove(); }
+    for (const u of vidUrls) if (u) URL.revokeObjectURL(u);
+    vids = []; vidUrls = []; vidCur = -1; vidNext = -1;
     lastKey = ''; if (set) load(set.frames.concat(set.after || [])); report(); wake(); // догрузить кадры, которые пропускали ради видео
   }
   function setupVideo() {
-    const m = vidMeta(); if (!m || vidFor === set.name) { if (vid) vid.classList.toggle('is-on', vidOn()); return; }
-    vidFor = set.name; vidOk = false;
-    if (!vid) {
-      vid = document.createElement('video');
-      vid.className = 've-hero__vid'; vid.muted = true; vid.defaultMuted = true; vid.playsInline = true; vid.preload = 'auto'; vid.disablePictureInPicture = true;
-      vid.setAttribute('muted', ''); vid.setAttribute('playsinline', ''); vid.setAttribute('aria-hidden', 'true');
-      stage.insertBefore(vid, canvas);
-      vid.addEventListener('seeked', () => { vidSeeking = false; flips.push(performance.now()); if (!vidOk && !vidBad) { vidOk = true; vid.classList.add('is-on'); lastKey = ''; report(); } wake(); });
-      vid.addEventListener('error', vidFail);
-    }
-    // файл целиком в память (Blob): перемотка без сети и без Range-запросов; на iOS иначе видео грузится только по play()
-    fetch(base + 'media/scene/' + m.src + v).then(async (r) => {
-      if (!r.ok) throw new Error(r.status);
-      const total = +r.headers.get('content-length') || 0;
-      if (!total || !r.body || !r.body.getReader) return r.blob();
-      const rd = r.body.getReader(), parts = []; let got = 0, at = 0;
-      for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); got += value.length; vidProg = got / total; const now = performance.now(); if (now - at > 120) { at = now; report(); } }
-      return new Blob(parts, { type: 'video/mp4' });
-    }).then((b) => {
-      if (dead || vidBad) return;
-      vidUrl = URL.createObjectURL(b); vid.src = vidUrl; vid.load();
-      const first = () => { vidSeeking = true; vidSeekAt = performance.now(); try { vid.currentTime = Math.max(0.001, vidTarget); } catch { vidSeeking = false; } };
-      vid.addEventListener('loadedmetadata', first, { once: true });
-      // не перемоталось за 1,5 с — пнуть play/pause (немой инлайн можно без жеста); за 4 с — сдаёмся, остаёмся на кадрах (режим энергосбережения, старый браузер)
-      setTimeout(() => { if (!vidOk && !vidBad) { const pr = vid.play && vid.play(); if (pr && pr.then) pr.then(() => { vid.pause(); first(); }, () => {}); } }, 1500);
-      setTimeout(() => { if (!vidOk) vidFail(); }, 4000);
-    }).catch(vidFail);
+    const m = vidMeta(); if (!m || vidFor === set.name) { for (let i = 0; i < vids.length; i++) vids[i].classList.toggle('is-on', vidOn() && i === vidCur); return; }
+    vidFor = set.name; vidOk = false; vidCur = -1; vidNext = -1;
+    for (const x of vids) x.remove(); for (const u of vidUrls) if (u) URL.revokeObjectURL(u); vids = []; vidUrls = [];
+    const parts = vidParts(), got = parts.map(() => 0), tot = parts.map(() => 0); let readyN = 0, at = 0;
+    const sum = (a) => a.reduce((x, y) => x + y, 0);
+    parts.forEach((q, i) => {
+      const x = document.createElement('video');
+      x.className = 've-hero__vid'; x.muted = true; x.defaultMuted = true; x.playsInline = true; x.preload = 'auto'; x.disablePictureInPicture = true;
+      x.setAttribute('muted', ''); x.setAttribute('playsinline', ''); x.setAttribute('aria-hidden', 'true');
+      stage.insertBefore(x, canvas); vids[i] = x;
+      x.addEventListener('seeked', () => {
+        if (i === vidNext) { vidCur = i; vidNext = -1; for (let k = 0; k < vids.length; k++) vids[k].classList.toggle('is-on', k === i); }
+        if (i !== vidCur) return; vidSeeking = false; vidBehind = false; flips.push(performance.now()); wake();
+      });
+      x.addEventListener('error', vidFail);
+      // файл целиком в память (Blob): перемотка без сети и без Range-запросов; на iOS иначе видео грузится только по play()
+      fetch(urlOf(q.src)).then(async (r) => {
+        if (!r.ok) throw new Error(r.status);
+        tot[i] = +r.headers.get('content-length') || 0;
+        if (!tot[i] || !r.body || !r.body.getReader) return r.blob();
+        const rd = r.body.getReader(), chunks = [];
+        for (;;) { const { done, value } = await rd.read(); if (done) break; chunks.push(value); got[i] += value.length; vidProg = sum(got) / Math.max(1, sum(tot)); const now = performance.now(); if (now - at > 120) { at = now; report(); } }
+        return new Blob(chunks, { type: 'video/mp4' });
+      }).then((b) => {
+        if (dead || vidBad) return;
+        const u = URL.createObjectURL(b); vidUrls[i] = u; x.src = u; x.load();
+        const first = () => { try { x.currentTime = 0.001; } catch {} };
+        x.addEventListener('loadedmetadata', first, { once: true });
+        const once = () => { x.removeEventListener('seeked', once); readyN++; if (readyN === parts.length && !vidBad) { vidOk = true; lastKey = ''; report(); wake(); } };
+        x.addEventListener('seeked', once);
+        // не перемоталось за 1,5 с — пнуть play/pause (немой инлайн можно без жеста); за 4 с — сдаёмся, остаёмся на кадрах (режим энергосбережения, старый браузер)
+        setTimeout(() => { if (!vidOk && !vidBad && readyN < parts.length) { const pr = x.play && x.play(); if (pr && pr.then) pr.then(() => { x.pause(); first(); }, () => {}); } }, 1500);
+        setTimeout(() => { if (!vidOk && !vidBad) vidFail(); }, 4000);
+      }).catch(vidFail);
+    });
+    // Россия без VPN: Cloudflare режут поток после ~16 КБ без ошибки — если за 3,5 с пришло меньше 256 КБ на всё видео, его не будет: сразу на кадры
+    setTimeout(() => { if (!vidOk && !vidBad && sum(got) < 262144) vidFail(); }, 3500);
   }
   function pump() {
-    if (!vid || vidSeeking) { if (vidSeeking && performance.now() - vidSeekAt > 2000) vidSeeking = false; return; }
-    const m = vidMeta(); if (!m || Math.abs(vid.currentTime - vidTarget) <= 0.5 / m.fps) return;
-    vidSeeking = true; vidSeekAt = performance.now();
-    try { vid.currentTime = vidTarget; } catch { vidSeeking = false; }
+    if (!vids.length || vidSeeking) { if (vidSeeking && performance.now() - vidSeekAt > 2000) vidSeeking = false; return; }
+    const m = vidMeta(), parts = vidParts(); if (!m || !parts.length) return;
+    let i = 0; while (i < parts.length - 1 && vidTarget >= parts[i].off + parts[i].dur) i++;
+    const local = Math.min(parts[i].dur - 1 / m.fps, Math.max(0.001, vidTarget - parts[i].off)), x = vids[i];
+    if (!x) return;
+    if (i !== vidCur) {
+      // новый кусок: если он уже стоит на нужном кадре — показать сразу, иначе перемотать и показать по seeked
+      if (Math.abs(x.currentTime - local) <= 0.5 / m.fps) { vidCur = i; vidNext = -1; for (let k = 0; k < vids.length; k++) vids[k].classList.toggle('is-on', k === i); vidBehind = false; return; }
+      vidNext = i; vidSeeking = true; vidSeekAt = performance.now(); vidBehind = true; try { x.currentTime = local; } catch { vidSeeking = false; }
+      return;
+    }
+    if (Math.abs(x.currentTime - local) <= 0.5 / m.fps) { vidBehind = false; return; }
+    vidSeeking = true; vidSeekAt = performance.now(); vidBehind = true;
+    try { x.currentTime = local; } catch { vidSeeking = false; }
   }
 
   // --- размер и серия под ориентацию ---
@@ -135,10 +164,10 @@ export function mount(root, opts = {}) {
         const k = order[i++];
         if (ready[k] || (k < nFlight && !anchors.has(k) && vidMeta() && !vidBad)) continue; // видео пролёта: кадры между опорными не нужны, пока видео не отказало
         try {
-          const img = new Image();
+          let img = new Image();
           img.crossOrigin = 'anonymous'; img.decoding = 'async';
-          img.src = base + 'media/scene/' + list[k] + v;
-          await img.decode();
+          const u0 = urlOf(list[k]); img.src = u0;
+          try { await img.decode(); } catch (e1) { const u1 = alt(u0); if (!u1) throw e1; img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async'; img.src = u1; await img.decode(); }
           if (gen !== loadGen) return;
           imgs[k] = img; ready[k] = true; if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
           report();
@@ -172,7 +201,7 @@ export function mount(root, opts = {}) {
     const A = nFlight, last = nFlight - 1;
     let key;
     if (p <= TL.flight && vidOn()) {
-      const m = vidMeta(); vidTarget = seg(p, 0, TL.flight) * Math.max(0, m.dur - 1 / m.fps); pump();
+      const m = vidMeta(); vidTarget = seg(p, 0, TL.flight) * Math.max(0, vidTotal() - 1 / m.fps); pump();
       if (lastKey !== 'v') ctx.clearRect(0, 0, canvas.width, canvas.height);
       lastKey = 'v'; if (!root.classList.contains('is-live')) root.classList.add('is-live');
       return;
@@ -244,13 +273,13 @@ export function mount(root, opts = {}) {
     else { curP += (p - curP) * EASE_K; if (Math.abs(p - curP) < 0.0004) curP = p; }
     draw(curP);
     const loading = !ready.every(Boolean);
-    const vlag = vidOn() && curP <= TL.flight && (vidSeeking || Math.abs(vid.currentTime - vidTarget) > 0.5 / vidMeta().fps);
+    const vlag = vidOn() && curP <= TL.flight && (vidSeeking || vidBehind);
     if (idle || vlag || Math.abs(p - curP) > 0.0002 || (loading && tick % 10 !== 0 && !vidOn())) requestAnimationFrame(loop);
     else running = false;
   }
   function wake() { if (!running && !dead && !document.hidden) requestAnimationFrame(loop); }
 
-  fetch(base + 'media/scene/manifest.json' + v).then((r) => r.json()).then((m) => {
+  (opts.manifest ? Promise.resolve(opts.manifest) : fetch(urlOf('manifest.json')).then((r) => r.json())).then((m) => {
     if (dead) return;
     man = m; if (opts.onManifest) opts.onManifest(m); size(); pickSet(); wake();
   }).catch(() => { root.classList.add('is-static'); });
@@ -264,7 +293,7 @@ export function mount(root, opts = {}) {
   if ('ResizeObserver' in window) { ro = new ResizeObserver(() => { if (size()) wake(); }); ro.observe(stage); }
 
   return {
-    destroy() { dead = true; if (vidUrl) URL.revokeObjectURL(vidUrl); if (vid) vid.remove(); for (const b of bmps) if (b) { try { b.close(); } catch {} } bmps = []; window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); document.removeEventListener('visibilitychange', onScroll); if (ro) ro.disconnect(); },
+    destroy() { dead = true; for (const u of vidUrls) if (u) URL.revokeObjectURL(u); for (const x of vids) x.remove(); for (const b of bmps) if (b) { try { b.close(); } catch {} } bmps = []; window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); document.removeEventListener('visibilitychange', onScroll); if (ro) ro.disconnect(); },
     // отладка: заморозить сцену на прогрессе p (null — вернуть скролл); рисует синхронно, без rAF
     hold(p) { held = p; if (p != null) { curP = p; onProgress(p); lastKey = ''; draw(p); } else wake(); },
     // 24.10: заставка исчерпала 15 с, а видео пролёта ещё не готово — не ждать его с пустым холстом, откатиться на кадры (на 4G видео 21–23 МБ качается ~45 с)
