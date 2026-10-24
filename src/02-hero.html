@@ -40,7 +40,7 @@
 <style>
 /* пролёт ~ 3 экрана на клип + превращение и стоп-кадр с меню */
 .ve-hero{position:relative;height:560vh;height:560svh;background:#2B3A2E;color:var(--ve-paper);margin:0}
-.ve-hero__stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#2B3A2E}
+.ve-hero__stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:#2B3A2E} /* lvh, не svh (24.10): при свёрнутой панели Safari видимая область выше svh, и под видео вылезала полоса фона секции */
 .ve-hero__poster,.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__shade,.ve-hero__intro,.ve-hero__dust{position:absolute;inset:0}
 /* ?hero=video: пролёт на телефоне — видео под холстом (все 24 к/с клипов), холст в пролёте прозрачный; после пролёта холст снова рисует шторку и свет */
 .ve-hero__vid{width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none}

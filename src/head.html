@@ -316,8 +316,10 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     spectral:function(root){
       if(!VE._sp){VE._sp={vis:[],io:null};
         if('IntersectionObserver' in window)VE._sp.io=new IntersectionObserver(function(en){en.forEach(function(x){var v=VE._sp.vis,i=v.indexOf(x.target);if(x.isIntersecting){if(i<0)v.push(x.target)}else if(i>=0)v.splice(i,1)})},{rootMargin:'12%'});
-        if(!VE.rm&&!coarse&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=false,acc=0; // на тач свет стоит: каждая перерисовка конических градиентов дорога
-          (function spin(now){requestAnimationFrame(spin);var dt=(now-last)/1000;last=now;if(document.hidden||dt<=0||dt>.25)return;if(slow){acc+=dt;if(acc<.08)return;dt=acc;acc=0}
+        if(!VE.rm&&!coarse&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=false,acc=0,scrollT=0; // на тач свет стоит: каждая перерисовка конических градиентов дорога
+          /* 24.10: во время прокрутки спектр замирает (и 220 мс после) — перерисовка колец на каждом кадре съедала 2/3 кадров на компьютере (tools/scroll-bench.mjs: 10 → 26 к/с без спектра); в покое крутится не чаще 30 к/с */
+          window.addEventListener('scroll',function(){scrollT=performance.now()},{passive:true});
+          (function spin(now){requestAnimationFrame(spin);var dt=(now-last)/1000;last=now;if(document.hidden||dt<=0||dt>.25)return;if(now-scrollT<220){acc=0;return}acc+=dt;if(acc<(slow?.08:.033))return;dt=acc;acc=0;
             a=(a+SPEED*dt)%7200;t+=dt;var f=1+.045*Math.sin(t*1.8)+.03*Math.sin(t*4.7+1.4)+.018*Math.sin(t*11.3+3.1),A=a.toFixed(2)+'deg',F=f.toFixed(3),v=VE._sp.vis;
             for(var i=0;i<v.length;i++){var el=v[i];if(slow&&el.hasAttribute('data-spectral-heavy'))continue;el.style.setProperty('--ve-a',A);el.style.setProperty('--ve-f',F);var g=el.__grads;if(g)for(var k=0;k<g.length;k++)g[k].setAttribute('gradientTransform','rotate('+a.toFixed(1)+' '+g[k].getAttribute('data-spin')+')')}})(last)}}
       var els=(root||document).querySelectorAll('[data-spectral],.ve-btn,.ve-pill');
