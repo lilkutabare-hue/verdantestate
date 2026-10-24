@@ -176,7 +176,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
   function onLoad(n,total){loaded=total?n/total:1;loadBar.style.setProperty('--p',loaded.toFixed(3))}
   var coarseGate=false;try{coarseGate=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
   var NEED=coarseGate?.5:.92; // телефон: отпускаем на 50 % (опорные кадры уже есть) — остальное догружается, пока камера дышит на первом кадре
-  var gate=setInterval(function(){var t=performance.now()-t0;if((root.classList.contains('is-live')&&loaded>=NEED&&t>2200)||t>15000){clearInterval(gate);loadBar.style.setProperty('--p','1');fly()}},100);
+  var gate=setInterval(function(){var t=performance.now()-t0;if((root.classList.contains('is-live')&&loaded>=NEED&&t>2200)||t>15000){clearInterval(gate);loadBar.style.setProperty('--p','1');if(t>15000&&VE.hero&&VE.hero.fallback)VE.hero.fallback();fly()}},100); // 15 с вышли — сцена откатывается на кадры, если видео не готово (24.10)
 
   // ---- главы текста и луп по прогрессу ----
   var lastCh=-1,menu=false,loopSrc=null,loopOn=false;

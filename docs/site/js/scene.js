@@ -267,6 +267,8 @@ export function mount(root, opts = {}) {
     destroy() { dead = true; if (vidUrl) URL.revokeObjectURL(vidUrl); if (vid) vid.remove(); for (const b of bmps) if (b) { try { b.close(); } catch {} } bmps = []; window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); document.removeEventListener('visibilitychange', onScroll); if (ro) ro.disconnect(); },
     // отладка: заморозить сцену на прогрессе p (null — вернуть скролл); рисует синхронно, без rAF
     hold(p) { held = p; if (p != null) { curP = p; onProgress(p); lastKey = ''; draw(p); } else wake(); },
+    // 24.10: заставка исчерпала 15 с, а видео пролёта ещё не готово — не ждать его с пустым холстом, откатиться на кадры (на 4G видео 21–23 МБ качается ~45 с)
+    fallback() { if (wantVid && !vidOk && !vidBad) vidFail(); },
     get progress() { return lastP; },
     info() { const now = performance.now(); while (flips.length && now - flips[0] > 1000) flips.shift(); let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height + '\nпролёт: ' + (vidOn() ? 'видео ' + vidMeta().fps + ' к/с' : wantVid ? (vidBad ? 'видео отказало → кадры' : 'видео грузится') : 'кадры') + ' · смен кадра ' + flips.length + '/с'; },
   };
