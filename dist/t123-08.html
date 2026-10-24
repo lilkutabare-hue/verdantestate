@@ -1,4 +1,4 @@
-<!-- VE · 08-pricelist.html · сборка 5114eaba -->
+<!-- VE · 08-pricelist.html · сборка e50827e6 -->
 <section class="ve ve-sec ve-pr" id="ve-pricelist">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Без договора</p>
@@ -20,10 +20,10 @@
         <p class="ve-pr__note ve-muted">Индивидуальные работы — от 5&#8239;000&nbsp;₽ за выезд. Сложные работы — по смете. Цены — ориентир, не публичная оферта.</p>
       </div>
       <div class="ve-pr__pic ve-r ve-px" aria-hidden="true">
-        <img data-cat="lawn" class="is-on" src="https://verdant-assets.lilkutabare.workers.dev/media/stills/price-lawn-l.webp?v=5114eaba" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="plants" src="https://verdant-assets.lilkutabare.workers.dev/media/stills/price-plants-l.webp?v=5114eaba" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="trees" src="https://verdant-assets.lilkutabare.workers.dev/media/stills/price-trees-l.webp?v=5114eaba" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="winter" src="https://verdant-assets.lilkutabare.workers.dev/media/stills/season-winter-l.webp?v=5114eaba" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="lawn" class="is-on" src="https://verdant-assets.lilkutabare.workers.dev/media/stills/price-lawn-l.webp?v=e50827e6" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="https://verdant-assets.lilkutabare.workers.dev/media/stills/price-plants-l.webp?v=e50827e6" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="https://verdant-assets.lilkutabare.workers.dev/media/stills/price-trees-l.webp?v=e50827e6" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="winter" src="https://verdant-assets.lilkutabare.workers.dev/media/stills/season-winter-l.webp?v=e50827e6" alt="" loading="lazy" decoding="async" width="1000" height="1250">
       </div>
     </div>
   </div>
@@ -47,7 +47,8 @@
 .ve-pr__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s var(--ve-ease)}
 .ve-pr__pic img.is-on{opacity:1}
 @media(min-width:900px){
-  .ve-pr__grid{margin-top:56px;display:grid;grid-template-columns:1fr 420px;gap:64px;align-items:start}
+  .ve-pr__grid{margin-top:56px;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:64px;align-items:start}
+  .ve-pr__left{min-width:0} /* семь вкладок: без min-width:0 колонка не ужималась и страница ехала вбок на 1024–1133 px (матрица 24.10) */
   .ve-pr__pic{display:block}
 }
 @media(prefers-reduced-motion:reduce){.ve-pr__pic img{transition:none}}

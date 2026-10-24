@@ -46,7 +46,8 @@
 .ve-pr__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s var(--ve-ease)}
 .ve-pr__pic img.is-on{opacity:1}
 @media(min-width:900px){
-  .ve-pr__grid{margin-top:56px;display:grid;grid-template-columns:1fr 420px;gap:64px;align-items:start}
+  .ve-pr__grid{margin-top:56px;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:64px;align-items:start}
+  .ve-pr__left{min-width:0} /* семь вкладок: без min-width:0 колонка не ужималась и страница ехала вбок на 1024–1133 px (матрица 24.10) */
   .ve-pr__pic{display:block}
 }
 @media(prefers-reduced-motion:reduce){.ve-pr__pic img{transition:none}}
