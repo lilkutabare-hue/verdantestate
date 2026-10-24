@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка e87b32c6 -->
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка e4a5d8c5 -->
 <link rel="preconnect" href="https://verdant-assets.lilkutabare.workers.dev" crossorigin>
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -222,6 +222,10 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
   padding-left:var(--ve-pad);padding-right:var(--ve-pad);scroll-padding-left:var(--ve-pad);margin:0 calc(-1 * var(--ve-pad))}
 .ve-strip::-webkit-scrollbar{display:none}
 .ve-strip>*{scroll-snap-align:start;flex:0 0 auto}
+/* A.6 индикатор прогресса ленты: тонкая дорожка под лентой, бронзовый бегунок едет transform'ом по scrollLeft; появляется только если лента длиннее экрана */
+.ve-strip__bar{position:relative;height:2px;margin:14px var(--ve-pad) 0;background:var(--ve-line);border-radius:1px;overflow:hidden}
+.ve-strip__bar i{position:absolute;left:0;top:0;height:100%;width:30%;background:var(--ve-bronze);border-radius:1px;transform:translateX(0);will-change:transform}
+.ve-strip__bar[hidden]{display:none}
 
 @media(prefers-reduced-motion:reduce){
   .ve-r,.ve-rg>*,.ve-img,.ve-img>img,.ve-line::before{opacity:1;transform:none;clip-path:none;transition:none}
@@ -246,7 +250,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'e87b32c6',base:base,
+  var VE={v:'e4a5d8c5',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
@@ -391,7 +395,18 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     var ask=function(){if(!raf)raf=requestAnimationFrame(paint)};
     window.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',function(){L=setLen();ask()});paint();
   };
-  var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();document.documentElement.classList.add('ve-ready')};
+  /* A.6: индикатор прогресса у каждой .ve-strip — дорожка после ленты, бегунок = доля видимого, сдвиг = доля прокрутки; пересчёт на resize */
+  VE.strips=function(root){
+    var list=(root||document).querySelectorAll('.ve-strip:not([data-bar])');
+    for(var i=0;i<list.length;i++)(function(st){
+      st.setAttribute('data-bar','1');var bar=document.createElement('div');bar.className='ve-strip__bar';bar.setAttribute('aria-hidden','true');bar.innerHTML='<i></i>';st.parentNode.insertBefore(bar,st.nextSibling);
+      var th=bar.firstChild,raf=0;
+      var paint=function(){raf=0;var sw=st.scrollWidth,cw=st.clientWidth;if(sw-cw<8){bar.hidden=true;return}bar.hidden=false;var w=Math.max(.12,cw/sw),k=st.scrollLeft/(sw-cw);th.style.width=(w*100).toFixed(2)+'%';th.style.transform='translateX('+(k*(1-w)/w*100).toFixed(2)+'%)'};
+      var ask=function(){if(!raf)raf=requestAnimationFrame(paint)};
+      st.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',ask);paint();
+    })(list[i]);
+  };
+  var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();VE.strips();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
 })();

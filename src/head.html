@@ -222,6 +222,10 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
   padding-left:var(--ve-pad);padding-right:var(--ve-pad);scroll-padding-left:var(--ve-pad);margin:0 calc(-1 * var(--ve-pad))}
 .ve-strip::-webkit-scrollbar{display:none}
 .ve-strip>*{scroll-snap-align:start;flex:0 0 auto}
+/* A.6 индикатор прогресса ленты: тонкая дорожка под лентой, бронзовый бегунок едет transform'ом по scrollLeft; появляется только если лента длиннее экрана */
+.ve-strip__bar{position:relative;height:2px;margin:14px var(--ve-pad) 0;background:var(--ve-line);border-radius:1px;overflow:hidden}
+.ve-strip__bar i{position:absolute;left:0;top:0;height:100%;width:30%;background:var(--ve-bronze);border-radius:1px;transform:translateX(0);will-change:transform}
+.ve-strip__bar[hidden]{display:none}
 
 @media(prefers-reduced-motion:reduce){
   .ve-r,.ve-rg>*,.ve-img,.ve-img>img,.ve-line::before{opacity:1;transform:none;clip-path:none;transition:none}
@@ -391,7 +395,18 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     var ask=function(){if(!raf)raf=requestAnimationFrame(paint)};
     window.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',function(){L=setLen();ask()});paint();
   };
-  var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();document.documentElement.classList.add('ve-ready')};
+  /* A.6: индикатор прогресса у каждой .ve-strip — дорожка после ленты, бегунок = доля видимого, сдвиг = доля прокрутки; пересчёт на resize */
+  VE.strips=function(root){
+    var list=(root||document).querySelectorAll('.ve-strip:not([data-bar])');
+    for(var i=0;i<list.length;i++)(function(st){
+      st.setAttribute('data-bar','1');var bar=document.createElement('div');bar.className='ve-strip__bar';bar.setAttribute('aria-hidden','true');bar.innerHTML='<i></i>';st.parentNode.insertBefore(bar,st.nextSibling);
+      var th=bar.firstChild,raf=0;
+      var paint=function(){raf=0;var sw=st.scrollWidth,cw=st.clientWidth;if(sw-cw<8){bar.hidden=true;return}bar.hidden=false;var w=Math.max(.12,cw/sw),k=st.scrollLeft/(sw-cw);th.style.width=(w*100).toFixed(2)+'%';th.style.transform='translateX('+(k*(1-w)/w*100).toFixed(2)+'%)'};
+      var ask=function(){if(!raf)raf=requestAnimationFrame(paint)};
+      st.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',ask);paint();
+    })(list[i]);
+  };
+  var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();VE.strips();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
 })();
