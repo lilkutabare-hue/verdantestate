@@ -230,6 +230,8 @@ export function mount(root, opts = {}) {
   // дыхание на покое: пока страница стоит наверху, камера едва дышит по первым кадрам пролёта (период ~9 с) — главная живая без скролла
   // 24.10: дыхание на покое — только CSS-масштабом (.ve-hero.is-idle в 02-hero), кадрами/перемоткой больше не дышим: в видео-режиме это была перемотка туда-сюда по первым кадрам травы — 2–3 смены кадра в секунду, читалось как 5 к/с (владелец)
   const idleOk = () => false;
+  // инерция картинки за скроллом: на компьютере 0.16 (≈ 90 мс отставания), на тач 0.4 — у iOS своя инерция, лишнее сглаживание читалось как «отбрасывает» при развороте (владелец, 24.10)
+  const EASE_K = (() => { try { return window.matchMedia('(hover:none) and (pointer:coarse)').matches ? 0.4 : 0.16; } catch { return 0.16; } })();
   function loop(now) {
     if (dead) return;
     running = true;
@@ -239,7 +241,7 @@ export function mount(root, opts = {}) {
     let idle = false;
     if (rm || held != null) curP = p;
     else if (p < 0.002 && idleOk()) { idle = true; if (!slow || tick % 2 === 0) { const ph = (1 - Math.cos(((now || performance.now()) / 9000) * Math.PI * 2)) / 2; curP = (ph * 1.9 * TL.flight) / (nFlight - 1); } }
-    else { curP += (p - curP) * 0.16; if (Math.abs(p - curP) < 0.0004) curP = p; }
+    else { curP += (p - curP) * EASE_K; if (Math.abs(p - curP) < 0.0004) curP = p; }
     draw(curP);
     const loading = !ready.every(Boolean);
     const vlag = vidOn() && curP <= TL.flight && (vidSeeking || Math.abs(vid.currentTime - vidTarget) > 0.5 / vidMeta().fps);
