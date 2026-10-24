@@ -12,7 +12,11 @@ import { tmpdir } from 'node:os';
 const run = promisify(execFile);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'src'), DIST = join(ROOT, 'dist'), DOCS = join(ROOT, 'docs'), SITE = join(DOCS, 'site');
-const PAGES_BASE = 'https://verdant-assets.lilkutabare.workers.dev/'; // медиа для Тильды: node tools/deploy.mjs --assets (публичный воркер со статикой, CORS *); при своём домене — media.<домен>
+// Откуда блоки на Тильде берут медиа. По умолчанию — воркер Cloudflare (в России режут). Переезд: хост с теми же путями (объектное хранилище Яндекса,
+// tools/media-sync.sh) — записать адрес в docs/media-base.txt (одна строка, со слэшем в конце), и сборка подставит его везде; карта ссылок тогда не нужна.
+let PAGES_BASE = 'https://verdant-assets.lilkutabare.workers.dev/';
+try { const b = (await readFile(join(DOCS, 'media-base.txt'), 'utf8')).trim(); if (/^https?:\/\/\S+\/$/.test(b)) PAGES_BASE = b; } catch {}
+if (process.env.VE_MEDIA_BASE) PAGES_BASE = process.env.VE_MEDIA_BASE;
 const LIMIT_BLOCK = 84 * 1024, LIMIT_HEAD = 64 * 1024;
 await mkdir(DIST, { recursive: true });
 
