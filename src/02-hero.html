@@ -50,8 +50,9 @@
 @media(prefers-reduced-motion:reduce){.ve-hero__dust{display:none}}
 .ve-hero__poster img{width:100%;height:100%;object-fit:cover}
 .ve-hero__canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .6s var(--ve-ease)}
-/* телефон: камера дышит CSS-масштабом (холст, постер и луп вместе, чтобы стык не прыгал); компьютер дышит кадрами в scene.js */
-html.ve-coarse .ve-hero.is-docked :is(.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__poster){animation:ve-hero-breathe 9s ease-in-out infinite alternate}
+/* камера дышит CSS-масштабом (холст, постер, видео и луп вместе, чтобы стык не прыгал): на покое наверху (.is-idle) — везде, в финале (.is-docked) — на телефоне.
+   24.10: раньше на компьютере и в видео-режиме дышали кадрами/перемоткой — по первым кадрам травы это 2–3 смены кадра в секунду, «5 к/с» (владелец) */
+.ve-hero.is-idle :is(.ve-hero__canvas,.ve-hero__vid,.ve-hero__poster),html.ve-coarse .ve-hero.is-docked :is(.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__poster){animation:ve-hero-breathe 9s ease-in-out infinite alternate}
 @keyframes ve-hero-breathe{from{scale:1}to{scale:1.03}}
 /* телефон: пролёт короче — меньше свайпов, кадры идут быстрее */
 html.ve-coarse .ve-hero{height:440vh;height:440svh}
