@@ -12,8 +12,7 @@
     <div class="ve-hero__text">
       <h1 class="ve-h1 ve-hero__h1 ve-hero__ch" data-at="1"><span class="ve-w">Сад,</span> <span class="ve-w">за</span> <span class="ve-w">которым</span> <span class="ve-w">не&nbsp;нужно</span> <span class="ve-w">следить</span></h1>
       <p class="ve-hero__sub ve-hero__ch" data-at="2"><span class="ve-w">Один договор.</span> <span class="ve-w">Один ответственный.</span><br><span class="ve-w">Весь сад под&nbsp;контролем.</span></p>
-      <p class="ve-hero__cta ve-hero__ch" data-at="2"><button class="ve-btn ve-btn--light ve-w" type="button" data-ve-go-form>Рассчитать стоимость</button></p>
-      <nav class="ve-hero__index" aria-label="Разделы сайта"></nav>
+      <!-- кнопок на первом экране нет (владелец, 24.10): «Рассчитать стоимость» и указатель разделов убраны, путь к форме — шапка и секции -->
     </div>
     <div class="ve-hero__hint" aria-hidden="true"><span></span></div>
     <!-- заставка: белый экран, логотип наполняется, пока грузятся кадры; потом улетает в знак шапки -->
@@ -198,18 +197,17 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
     var lo=!!loopSrc&&p>=TL.light+.01;
     if(lo!==loopOn){loopOn=lo;root.classList.toggle('is-loop',lo);if(lo){if(!video.getAttribute('src')){video.src=loopSrc;video.load()}var pr=video.play();if(pr&&pr.catch)pr.catch(function(){})}else video.pause()}
   }
-  root.querySelector('[data-ve-go-form]').addEventListener('click',function(){if(window.VE)VE.goForm()});
+  var goBtn=root.querySelector('[data-ve-go-form]');if(goBtn)goBtn.addEventListener('click',function(){if(window.VE)VE.goForm()});
 
   // ---- указатель разделов ----
   var SEC=[['Постоянный уход','ve-tariffs'],['Разовые работы','ve-pricelist'],['Сад под ключ','ve-ways'],['Почему выгодно','ve-economics'],['Спецусловия','ve-bonuses']];
-  var index=root.querySelector('.ve-hero__index');
-  index.innerHTML=SEC.map(function(o,i){return '<a href="#'+o[1]+'" data-to="'+o[1]+'" style="--i:'+i+'"><i></i><span>'+o[0]+'</span></a>'}).join('');
-  IDX=[].slice.call(index.querySelectorAll('a'));
+  var index=root.querySelector('.ve-hero__index'); // указателя на хиро больше нет (24.10); код оставлен на случай возврата
+  if(index){index.innerHTML=SEC.map(function(o,i){return '<a href="#'+o[1]+'" data-to="'+o[1]+'" style="--i:'+i+'"><i></i><span>'+o[0]+'</span></a>'}).join('');IDX=[].slice.call(index.querySelectorAll('a'))}
 
   function spin(){}
   // тап по строке: плавно едем в раздел, точка садится в его подпись
   var going=null;
-  index.addEventListener('click',function(e){
+  if(index)index.addEventListener('click',function(e){
     var a=e.target.closest('a');if(!a)return;var sec=document.getElementById(a.getAttribute('data-to'));if(!sec)return;
     e.preventDefault();go(sec);
   });
