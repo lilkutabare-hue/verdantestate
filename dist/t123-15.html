@@ -1,4 +1,4 @@
-<!-- VE · 15-footer.html · сборка f27fe948 -->
+<!-- VE · 15-footer.html · сборка c63f32e0 -->
 <footer class="ve ve-ft" id="ve-footer">
   <div class="ve-wrap">
     <div class="ve-ft__logo" data-spectral data-spectral-heavy>
@@ -36,19 +36,24 @@
   </div>
 </footer>
 <!-- cookie-строка: одна линия внизу, появляется после хиро, пока не нажали «Хорошо» (нужна при публикации на домене) -->
-<div class="ve ve-ck ve-dock--light" id="ve-cookie" role="region" aria-label="Cookie" hidden>
+<div class="ve ve-ck" id="ve-cookie" role="region" aria-label="Cookie" hidden>
   <div class="ve-ck__in"><p>Сайт использует cookie — так он работает лучше. <a href="/policy" data-ve-policy>Подробнее</a></p><button class="ve-btn ve-btn--sm ve-btn--ghost" type="button" data-ve-ck-ok>Хорошо</button></div>
 </div>
 <style>
-.ve-ck{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50;border-radius:20px;transform:translateY(calc(100% + 24px));transition:transform .55s var(--ve-ease)}
-.ve-ck.is-on{transform:none}
-html.ve-coarse .ve-ck{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.9));-webkit-backdrop-filter:none;backdrop-filter:none}
-@media(min-width:900px){.ve-ck{left:auto;right:24px;bottom:24px;max-width:600px}}
-.ve-ck__in{padding:12px 14px 12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.ve-ck__in p{font-size:13px;line-height:1.4;color:var(--ve-moss)}
-.ve-ck__in p a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
-.ve-ck .ve-btn--sm{flex:0 0 auto;min-height:38px;height:38px;padding:0 16px}
-@media(max-width:599px){.ve-ck .ve-btn--sm{min-height:38px;padding:0 16px;font-size:14px}}
+/* капсула по центру снизу, как док шапки сверху (владелец, 24.10): белое стекло без тонирования — поверх тёмного сада не зеленит */
+.ve-ck{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));z-index:50;width:calc(100% - 24px);max-width:560px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.8));border:1px solid rgba(255,255,255,.95);
+  -webkit-backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.05);backdrop-filter:blur(var(--ve-dock-blur)) saturate(1.05);
+  box-shadow:0 14px 40px rgba(21,52,32,.18),0 1px 2px rgba(21,52,32,.08),inset 0 1px 0 #fff;
+  transform:translate(-50%,calc(100% + 32px));transition:transform .55s var(--ve-ease)}
+.ve-ck.is-on{transform:translate(-50%,0)}
+html.ve-coarse .ve-ck{background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(255,255,255,.93));-webkit-backdrop-filter:none;backdrop-filter:none}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.ve-ck{background:rgba(255,255,255,.97)}}
+.ve-ck__in{padding:9px 9px 9px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.ve-ck__in p{font-size:13.5px;line-height:1.35;color:var(--ve-ink)}
+.ve-ck__in p a{color:var(--ve-moss);border-bottom:1px solid var(--ve-line)}
+.ve-ck .ve-btn--sm{flex:0 0 auto;min-height:40px;height:40px;padding:0 18px;border-radius:999px}
+@media(max-width:599px){.ve-ck{bottom:calc(10px + env(safe-area-inset-bottom));border-radius:24px}.ve-ck__in{padding:10px 10px 10px 16px}.ve-ck__in p{font-size:13px}.ve-ck .ve-btn--sm{min-height:38px;height:38px;padding:0 15px;font-size:14px}}
 @media(prefers-reduced-motion:reduce){.ve-ck{transition:none}}
 </style>
 <script>
