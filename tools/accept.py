@@ -2,7 +2,7 @@
 """tools/accept.py — приёмка моушна числами (план доводки §7.5), прогонять после каждой сборки.
 Стыки пролёта (клип→клип, клип→стилл, стилл→луп) в низком разрешении ≤ 3/255; кадров-смесей 0; кривая движения ±15 %;
 лупы на сайте против сырых ≤ 4/255 (PSNR ≥ 38); видео пролёта против сырого клипа (кадр в середине К2) ≤ 4/255;
-«сцена без морфа» (A0, L-073): верх кадра К1/К2 держит рисунок — NCC к первому кадру ≥ .80, скачки резкости К2 ≤ 15 %, старт К2 против конца К1 ≥ .95.
+«сцена без морфа» (A0, L-073): верх кадра К1/К2 держит рисунок — NCC к первому кадру ≥ .70, скачки резкости К2 ≤ 20 %, старт К2 против конца К1 ≥ .95.
 Печатает таблицу и итог OK/FAIL; код выхода 1 при провале."""
 import sys, os, subprocess, re, numpy as np
 sys.path.insert(0, os.path.dirname(__file__))
@@ -26,14 +26,16 @@ for tag, clips, still, loop in (('16:9', ['k1','k2','k3'], 's4', 'k4'), ('9:16',
     if os.path.exists(sp): row(f"стык {clips[-1]}→{still} (lowres)", lowres_diff(frame_at(paths[-1], last=True), Image.open(sp)), 3)
     lp = os.path.join(MS, loop + '.mp4'); s5 = os.path.join(MS, ('s5v' if tag == '9:16' else 's5') + '.png')
     if os.path.exists(lp) and os.path.exists(s5): row(f"стык {os.path.basename(s5)}→{loop} (lowres)", lowres_diff(Image.open(s5), frame_at(lp, 0)), 3)
-    # A0 «сцена без морфа» (L-073). К1 — подъём на месте: верх кадра против первого кадра NCC ≥ .80 (лучи и дымка слабеют — это свет,
-    # допустимо; у старого К1v с выгоревшими кронами 0,40); скачок резкости у К1 не гейт — перевод фокуса с травы на дом.
-    # К2 — ход вперёд без перевода фокуса: NCC ≥ .80, скачки резкости ≤ 15 % (у старого К2v небо перерисовывалось: 34 %),
+    # A0 «сцена без морфа» (L-073). Верх кадра К1/К2 против первого кадра клипа, NCC при лучшем сдвиге ≥ .70: калибровка 24.10 —
+    # клипы с морфом (кроны выгорели, небо → облака, камера улетела к дому) 0,40–0,59, принятые глазами 0,75–0,98 (лучи и дымка слабеют —
+    # это свет, допустимо). Скачок резкости у К1 не гейт — перевод фокуса с травы на дом.
+    # К2 — ход вперёд без перевода фокуса: скачки резкости ≤ 20 % (морф на старте: 23 % у старого К2, 34 % у старого К2v, 71 % у улетевшего;
+    # принятые 12–13 % в сыром виде и 14–17 % после remap — он ускоряет медленный старт),
     # старт К2 (0,5–1,5 с) против последнего кадра К1 NCC ≥ .95. К3 — только справочно: камера уходит вверх, верх кадра меняется по замыслу.
     for i in (0, 1):
         ncc, jump, joint = scene_morph(paths[i], frame_at(paths[i-1], last=True) if i else None)
-        row(f"морф верха {clips[i]}: 1−NCC против первого кадра", 1-ncc, 0.20)
-        if i: row(f"морф верха {clips[i]}: скачок резкости, %", jump, 15, '%.0f')
+        row(f"морф верха {clips[i]}: 1−NCC против первого кадра", 1-ncc, 0.30)
+        if i: row(f"морф верха {clips[i]}: скачок резкости, %", jump, 20, '%.0f')
         else: print(f"  инфо {clips[i]}: скачок резкости {jump:.0f} % (перевод фокуса — не гейт)")
         if joint is not None: row(f"морф верха на стыке {clips[i-1]}→{clips[i]} (0,5–1,5 с): 1−NCC", 1-joint, 0.05)
     ncc3, jump3, _ = scene_morph(paths[2]); print(f"  инфо {clips[2]}: 1−NCC {1-ncc3:.2f}, скачок резкости {jump3:.0f} % (камера уходит вверх — не гейт)")
@@ -45,7 +47,7 @@ for tag, clips, still, loop in (('16:9', ['k1','k2','k3'], 's4', 'k4'), ('9:16',
         import imageio_ffmpeg, tempfile
         FF = imageio_ffmpeg.get_ffmpeg_exe()
         def fidx(f, idx, size=None):
-            o = tempfile.mktemp(suffix='.png'); vf = f'select=eq(n\\,{idx})' + (f',scale={size[0]}:{size[1]}:force_original_aspect_ratio=increase:flags=lanczos,crop={size[0]}:{size[1]}' if size else '')
+            o = tempfile.mktemp(suffix='.png'); vf = f'select=eq(n\\,{idx})' + (f',scale={size[0]}:{size[1]}:force_original_aspect_ratio=increase:flags=lanczos,crop={size[0]}:{size[1]},format=yuv420p' if size else '')  # format=yuv420p: эталон через тот же шаг 4:2:0, что и видео — иначе lanczos отдаёт PNG с полной цветностью и на траве «разница» 5/255 даже у lossless
             subprocess.run([FF, '-y', '-v', 'error', '-i', f, '-vf', vf, '-vsync', '0', '-frames:v', '1', o], check=True); im = Image.open(o).convert('RGB'); os.unlink(o); return im
         n1 = len(frames(paths[0], scale=64)[0]); b = fidx(vid, n1 + 120); a = fidx(paths[1], 120, b.size)
         A = np.asarray(a, np.float32); B = np.asarray(b, np.float32); mse = float(((A-B)**2).mean()); psnr = 10*np.log10(255*255/mse) if mse > 0 else 99
