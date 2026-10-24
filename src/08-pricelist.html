@@ -9,14 +9,20 @@
           <button class="ve-tab ve-pr__tab is-on" role="tab" aria-selected="true" data-cat="lawn" type="button">Газон</button>
           <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="plants" type="button">Растения</button>
           <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="trees" type="button">Деревья</button>
+          <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="land" type="button">Участок</button>
+          <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="design" type="button">Проект</button>
+          <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="eng" type="button">Инженерия</button>
+          <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="winter" type="button">Зима</button>
         </div>
         <div class="ve-pr__table" role="tabpanel"></div>
-        <p class="ve-pr__note ve-muted">Сложные работы — по смете. Цены — ориентир, не публичная оферта.</p>
+        <p class="ve-pr__cnote ve-muted" hidden></p>
+        <p class="ve-pr__note ve-muted">Индивидуальные работы — от 5&#8239;000&nbsp;₽ за выезд. Сложные работы — по смете. Цены — ориентир, не публичная оферта.</p>
       </div>
       <div class="ve-pr__pic ve-r ve-px" aria-hidden="true">
         <img data-cat="lawn" class="is-on" src="__BASE__media/stills/price-lawn-l.webp?v=__V__" alt="" loading="lazy" decoding="async" width="1000" height="1250">
         <img data-cat="plants" src="__BASE__media/stills/price-plants-l.webp?v=__V__" alt="" loading="lazy" decoding="async" width="1000" height="1250">
         <img data-cat="trees" src="__BASE__media/stills/price-trees-l.webp?v=__V__" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="winter" src="__BASE__media/stills/season-winter-l.webp?v=__V__" alt="" loading="lazy" decoding="async" width="1000" height="1250">
       </div>
     </div>
   </div>
@@ -32,6 +38,10 @@
 .ve-pr__row b{font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ve-ink)}
 .ve-pr__row b i{font-style:normal;color:var(--ve-moss);font-size:14px}
 .ve-pr__note{margin-top:14px;font-size:14px}
+.ve-pr__cnote{margin-top:14px;font-size:14px;color:var(--ve-ink)}
+/* семь вкладок: на телефоне жёлоб прокручивается по горизонтали (полоса скрыта), капсула едет вместе с ним */
+.ve-pr__tabs{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.ve-pr__tabs::-webkit-scrollbar{display:none}
 .ve-pr__pic{display:none;position:relative;aspect-ratio:4/5;border-radius:var(--ve-r);overflow:hidden;background:var(--ve-paper-2)}
 .ve-pr__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s var(--ve-ease)}
 .ve-pr__pic img.is-on{opacity:1}
@@ -45,18 +55,26 @@
 (function(){
   var root=document.getElementById('ve-pricelist');if(!root||!window.VE)return;
   VE.reveal(root);
+  // прайс заказчика, 24.10.2026 (docs/state: «вот цены от заказчика»); вкладка — категория, строка: название, «от» цена, единица; цена null — текст единицы вместо цены
   var DATA={
-    lawn:[['покос газона','1 500','сотка'],['покос высокой травы','2 000','сотка'],['сбор травы','500','сотка'],['аэрация','2 000','сотка'],['скарификация','2 500','сотка'],['подсев газона','2 000','сотка'],['посевной газон','500','м²'],['рулонный газон','800','м²']],
-    plants:[['посадка кустарника','1 000','шт.'],['посадка дерева','3 000','шт.'],['посадка хвойного','4 000','шт.'],['формовка кустарников','1 000','шт.'],['стрижка живой изгороди','900','пог. м'],['мульчирование','500','м²'],['цветники','2 000','м²']],
-    trees:[['санитарная обрезка','3 000','шт.'],['кронирование','5 000','шт.'],['спил дерева','5 000','шт.'],['сложный спил',null,'по смете'],['корчевание пня','4 000','шт.']]
+    lawn:[['посевной газон','500','м²'],['рулонный газон','700','м²'],['мульчирование','350','м²'],['покос травы','1 500','сотка'],['покос камыша','2 500','сотка'],['покос борщевика','3 000','сотка'],['уборка листвы','1 500','сотка'],['вывоз растительных отходов','2 000','м³']],
+    plants:[['устройство цветника','1 800','м²'],['отсыпка','900','м²'],['обработка растений','2 500','сотка'],['услуги садовника','5 000','выезд'],['топиар: формирование куста «Maybach»','50 000','работа'],['топиар: сложная форма','80 000','работа'],['топиар: VIP-проект','200 000','работа'],['поддержание формы','15 000','месяц']],
+    trees:[['спил дерева','3 500','шт.'],['кронирование','4 000','шт.'],['посадка лиственного дерева','2 500','шт.'],['посадка хвойного дерева','3 500','шт.'],['посадка кустарника, в т. ч. плодового','800','шт.'],['живая изгородь','700','пог. м'],['корчевание','4 000','шт.'],['измельчение веток','3 500','м³'],['удаление кустарника','150','м²']],
+    land:[['культивация','3 000','сотка'],['удаление сорняков','1 500','сотка'],['перекапывание земли','3 500','сотка'],['мелиорация участка','15 000','сотка'],['перегной','3 000','м³'],['доставка навоза','8 000','машина'],['благоустройство участка','2 500','м²'],['озеленение участка под ключ','450 000','участок'],['комплексное благоустройство','1 500 000','участок']],
+    design:[['проект озеленения','30 000','проект'],['ландшафтный проект','70 000','проект'],['проект среднего участка','120 000','проект'],['премиальный проект','200 000','проект'],['посадки по проекту','80 000','проект'],['водоёмы','350 000','проект'],['автополив под ключ','150 000','проект'],['освещение участка под ключ','100 000','проект']],
+    eng:[['автоматический полив','15 000','сотка'],['ландшафтное освещение','15 000','проект'],['подсветка дерева','15 000','шт.'],['монтаж светильника','8 000','шт.']],
+    winter:[['уборка снега','8 000','выезд'],['зимний абонемент','35 000','месяц'],['зимний декор','80 000','работа'],['ледовые фигуры','50 000','работа']]
   };
+  var NOTE={eng:'Оборудование и светильники рассчитываются отдельно.',design:'Стоимость проекта зависит от площади участка и состава разделов.',land:'Комплексное благоустройство — по смете: инженерия, мощение, рельеф, растения и материалы.'};
+  var PIC={lawn:'lawn',plants:'plants',trees:'trees',land:'lawn',design:'plants',eng:'trees',winter:'winter'}; // фото вкладки: своих стиллов у новых категорий нет — ближайшее
   var table=root.querySelector('.ve-pr__table'),tabs=root.querySelectorAll('.ve-pr__tab'),pics=root.querySelectorAll('.ve-pr__pic img');
   function show(cat){
     table.innerHTML=DATA[cat].map(function(r){var price=r[1]?'от '+r[1].replace(' ',' ')+'&nbsp;₽ <i>/ '+r[2]+'</i>':'<i>'+r[2]+'</i>';return '<div class="ve-pr__row ve-r"><span>'+r[0]+'</span><i class="ve-pr__lead"></i><b>'+price+'</b></div>'}).join('');
     var rows=table.querySelectorAll('.ve-pr__row');for(var i=0;i<rows.length;i++)rows[i].style.transitionDelay=Math.min(i,10)*45+'ms';
     requestAnimationFrame(function(){requestAnimationFrame(function(){for(var i=0;i<rows.length;i++)rows[i].classList.add('is-in')})});
     for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-cat')===cat;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
-    for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-cat')===cat);
+    for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-cat')===(PIC[cat]||cat));
+    var cn=root.querySelector('.ve-pr__cnote');if(cn){cn.textContent=NOTE[cat]||'';cn.hidden=!NOTE[cat]}
   }
   for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-cat'))});
   show('lawn');var movePill=VE.pills(root.querySelector('.ve-pr__tabs'));var show0=show;show=function(c){show0(c);movePill()};
