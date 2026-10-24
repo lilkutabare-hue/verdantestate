@@ -10,8 +10,9 @@
     <div class="ve-hero__shade" aria-hidden="true"></div>
 
     <div class="ve-hero__text">
-      <h1 class="ve-h1 ve-hero__h1 ve-hero__ch" data-at="1"><span class="ve-w">Сад,</span> <span class="ve-w">за</span> <span class="ve-w">которым</span> <span class="ve-w">не&nbsp;нужно</span> <span class="ve-w">следить</span></h1>
-      <p class="ve-hero__sub ve-hero__ch" data-at="2"><span class="ve-w">Один договор.</span> <span class="ve-w">Один ответственный.</span><br><span class="ve-w">Весь сад под&nbsp;контролем.</span></p>
+      <!-- строки из-под маски (план финала A.1): каждая строка обрезана своей рамкой .ve-ln и выезжает снизу по прогрессу скролла; на телефоне заголовок в три строки, на компьютере — в две -->
+      <h1 class="ve-h1 ve-hero__h1 ve-hero__ch" data-at="1"><span class="ve-ln"><span class="ve-ln__in">Сад, за&nbsp;которым</span></span><br><span class="ve-ln"><span class="ve-ln__in">не&nbsp;нужно</span></span> <br class="ve-br-m"><span class="ve-ln"><span class="ve-ln__in">следить</span></span></h1>
+      <p class="ve-hero__sub ve-hero__ch" data-at="2"><span class="ve-ln"><span class="ve-ln__in">Один договор. Один ответственный.</span></span><br><span class="ve-ln"><span class="ve-ln__in">Весь сад под&nbsp;контролем.</span></span></p>
       <!-- кнопок на первом экране нет (владелец, 24.10): «Рассчитать стоимость» и указатель разделов убраны, путь к форме — шапка и секции -->
     </div>
     <div class="ve-hero__hint" aria-hidden="true"><span></span></div>
@@ -68,16 +69,19 @@ html.ve-no-dust .ve-hero__dust{display:none}
 .ve-hero:not([data-ch="0"]) .ve-hero__shade{opacity:1}
 .ve-hero__text{position:absolute;left:0;right:0;bottom:0;padding:0 var(--ve-pad) calc(30px + env(safe-area-inset-bottom));max-width:1240px;margin:0 auto}
 @media(min-width:900px){.ve-hero__text{padding:0 40px 64px}}
-/* текст идёт по скроллу словами (владелец: «скроллишь — текст появляется подряд»): слова и строки получают opacity/transform из onP, без CSS-переходов */
+/* текст идёт по скроллу строками из-под маски (план финала A.1; раньше — словами с затуханием): строка .ve-ln обрезана своей рамкой,
+   внутренняя .ve-ln__in получает transform из onP по прогрессу, без CSS-переходов. Рамка дотянута на .22em вниз, чтобы не резать хвосты д/у/р в покое */
 .ve-hero__ch{pointer-events:none}
-.ve-hero[data-ch="2"] .ve-hero__cta{pointer-events:auto}
-.ve-w{display:inline-block;opacity:0;transform:translateY(.5em);will-change:opacity,transform}
-.ve-hero__cta .ve-w{transform:translateY(12px)}
-@media(prefers-reduced-motion:reduce){.ve-w{opacity:1!important;transform:none!important}.ve-hero__ch{opacity:0;transition:opacity .4s}.ve-hero[data-ch="1"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="2"]{opacity:1;pointer-events:auto}}
-.ve-hero__h1{color:inherit}
-@media(min-width:900px){.ve-hero__h1{max-width:14ch}}
-.ve-hero__sub{margin-top:16px;min-height:2.6em;font-weight:500;font-size:17px;line-height:1.3}
-@media(min-width:900px){.ve-hero__sub{font-size:21px;margin-top:20px}}
+.ve-ln{display:inline-block;vertical-align:top;overflow:hidden;padding-bottom:.22em;margin-bottom:-.22em}
+.ve-ln__in{display:inline-block;transform:translateY(115%);will-change:transform}
+.ve-br-m{display:inline}
+@media(min-width:900px){.ve-br-m{display:none}}
+@media(prefers-reduced-motion:reduce){.ve-ln__in{transform:none!important}.ve-hero__ch{opacity:0;transition:opacity .4s}.ve-hero[data-ch="1"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="1"],.ve-hero[data-ch="2"] [data-at="2"]{opacity:1;pointer-events:auto}}
+/* шкала clamp() (план доводки §8): H1 хиро 48–56 на телефоне (на 375 px — 44, чтобы «Сад, за которым» не ломалось) / 96–128 на компьютере, межбуквенный −.03em, межстрочный 1 */
+.ve-hero__h1{color:inherit;font-size:clamp(40px,11.7vw,56px);line-height:1;letter-spacing:-.03em;white-space:nowrap}
+@media(min-width:900px){.ve-hero__h1{font-size:clamp(96px,8vw,128px);line-height:.98}}
+.ve-hero__sub{margin-top:16px;min-height:2.6em;font-weight:500;font-size:17px;line-height:1.3;letter-spacing:-.01em}
+@media(min-width:900px){.ve-hero__sub{font-size:22px;margin-top:24px}}
 .ve-hero__cta{margin-top:20px}
 .ve-hero__hint{position:absolute;right:calc(var(--ve-pad) + 2px);bottom:calc(30px + env(safe-area-inset-bottom));width:1px;height:36px;overflow:hidden;opacity:.5;transition:opacity .4s}
 @media(min-width:900px){.ve-hero__hint{display:none}}
@@ -176,22 +180,24 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
 
   // ---- главы текста и луп по прогрессу ----
   var lastCh=-1,menu=false,loopSrc=null,loopOn=false;
-  // слова подряд по скроллу: заголовок .76→.86, подпись .85→.9, кнопка .89→.92, указатель .9→.98; назад — уходят
-  var W1=[].slice.call(root.querySelectorAll('.ve-hero__h1 .ve-w')),W2=[].slice.call(root.querySelectorAll('.ve-hero__sub .ve-w')),W3=[].slice.call(root.querySelectorAll('.ve-hero__cta .ve-w'));
+  // строки подряд по скроллу из-под маски (A.1): заголовок .76→.86, подпись .85→.9, указатель (если есть) .91→.98; назад — уходят
+  var W1=[].slice.call(root.querySelectorAll('.ve-hero__h1 .ve-ln__in')),W2=[].slice.call(root.querySelectorAll('.ve-hero__sub .ve-ln__in')),W3=[];
   var seqLast={};
   function seq(els,p,p0,p1,id,dx){
-    /* вне своего диапазона и без изменений — ни одной записи в стиль: раньше 10 слов переписывались на каждом шаге скролла */
+    /* вне своего диапазона и без изменений — ни одной записи в стиль */
     var n=els.length,per=(p1-p0)/(n+1.4);
     if(p<p0-.01&&seqLast[id]==='lo')return;if(p>p1+.02&&seqLast[id]==='hi')return;seqLast[id]=p<p0-.01?'lo':p>p1+.02?'hi':'mid';
     for(var i=0;i<n;i++){var k=(p-p0-i*per)/(per*2.4);k=k<0?0:k>1?1:k;k=Math.round((1-Math.pow(1-k,3))*100)/100;
       if(els[i].__k===k)continue;els[i].__k=k;
-      var st=els[i].style;st.opacity=k;st.transform=k===1?'none':dx?'translateX('+(dx*(1-k)).toFixed(1)+'px)':'translateY('+((1-k)*.5).toFixed(2)+'em)'}
+      var st=els[i].style;
+      if(dx!=null){st.opacity=k;st.transform=k===1?'none':'translateX('+(dx*(1-k)).toFixed(1)+'px)'} /* указатель: старый ход */
+      else st.transform=k===1?'none':'translateY('+((1-k)*115).toFixed(1)+'%)'} /* строка выезжает из-под маски снизу */
   }
   var IDX=null;
   function onP(p){
     var ch=p<TL.groom?0:p<TL.light?1:2;
     if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
-    if(!VE_RM){seq(W1,p,.76,.86,'h1');seq(W2,p,.85,.9,'sub');seq(W3,p,.89,.92,'cta');if(IDX)seq(IDX,p,.91,.98,'idx')}
+    if(!VE_RM){seq(W1,p,.76,.86,'h1');seq(W2,p,.85,.9,'sub');if(IDX)seq(IDX,p,.91,.98,'idx',24)}
     var on=p>=TL.menu;if(on!==menu){menu=on;root.classList.toggle('is-menu',on);if(on)spin()}
     html.classList.toggle('ve-hero-done',p>=TL.light); // кнопка шапки появляется только после пролёта
     root.classList.toggle('is-idle',p<.002);
