@@ -27,6 +27,6 @@ createServer((req, res) => {
   if (p.startsWith('/dist/') || p.startsWith('/tools/') || p.startsWith('/node_modules/')) file = join(ROOT, p);
   else file = join(ROOT, 'docs', p === '/' ? '/index.html' : p);
   try { const s = statSync(file); if (s.isDirectory()) file = join(file, 'index.html'); } catch { res.writeHead(404); res.end('404 ' + p); return; }
-  res.writeHead(200, { 'content-type': TYPES[extname(file)] || 'application/octet-stream', 'cache-control': 'no-store', 'access-control-allow-origin': '*' });
+  res.writeHead(200, { 'content-type': TYPES[extname(file)] || 'application/octet-stream', 'content-length': statSync(file).size, 'cache-control': 'no-store', 'access-control-allow-origin': '*' }); // длина — как у GitHub Pages: заставка считает процент по байтам
   createReadStream(file).on('error', () => { res.writeHead(404); res.end(); }).pipe(res);
 }).listen(PORT, () => console.log(`stand: http://localhost:${PORT}/  (= docs/ как Pages; /dist/preview.html — стенд Тильды)`));

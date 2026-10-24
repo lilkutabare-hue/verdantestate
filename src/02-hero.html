@@ -177,7 +177,7 @@ __SCENE_INLINE__
   }
   // готово = логотип дорисован и серия пролёта загружена (линия под логотипом растёт по кадрам); потолок ожидания 15 с
   var loadBar=root.querySelector('.ve-hero__load i'),pct=root.querySelector('.ve-hero__pct'),loaded=0,mediaReady=false,isVideo=false,lastGain=performance.now();
-  function onLoad(n,total,st){var v=total?n/total:1;if(v>loaded+.001)lastGain=performance.now();loaded=v;if(st){mediaReady=!!st.ready;isVideo=!!st.video}
+  function onLoad(n,total,st){var v=total?n/total:0; /* 0 из 0 — ещё ничего не известно, не «готово» */if(v>loaded+.001)lastGain=performance.now();loaded=v;if(st){mediaReady=!!st.ready&&total>0;isVideo=!!st.video}
     if(introDone)return;loadBar.style.setProperty('--p',loaded.toFixed(3));if(pct)pct.textContent=Math.round(Math.min(1,loaded)*100)+' %'}
   var coarseGate=false;try{coarseGate=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
   var NEED=1; // 24.10: заставка держит, пока медиа не загружены целиком (владелец: качество важнее, процент честный); раньше .5/.92 // телефон: отпускаем на 50 % (опорные кадры уже есть) — остальное догружается, пока камера дышит на первом кадре

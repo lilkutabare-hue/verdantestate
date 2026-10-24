@@ -1,9 +1,9 @@
-<!-- VE · 02-hero.html · сборка 72d3a0ac -->
+<!-- VE · 02-hero.html · сборка 2034c2dc -->
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=72d3a0ac">
-      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=72d3a0ac" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=2034c2dc">
+      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=2034c2dc" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -189,7 +189,7 @@ function mount(root, opts = {}) {
   function report() {
     if (!opts.onLoad) return;
     if (vidMeta()) { opts.onLoad(vidOk ? 1 : vidProg, 1, { video: true, ready: vidOk }); return; } // честный процент по байтам; готово — когда все куски перемотались
-    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight, { video: false, ready: n >= nFlight });
+    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight, { video: false, ready: nFlight > 0 && n >= nFlight });
   }
   // Видео пролёта: один файл (m.src) или куски по клипам (m.parts = [{src,dur},…], каждый ≤ 5 МБ — лимит файла в хранилище Тильды).
   // Все куски качаются целиком в память, у каждого свой <video>; виден тот, в чьём отрезке целевое время; стык кусков — тот же кадр (клипы цепочкой),
@@ -197,7 +197,7 @@ function mount(root, opts = {}) {
   let vids = [], vidUrls = [], vidOk = false, vidBad = false, vidSeeking = false, vidTarget = 0, vidSeekAt = 0, vidFor = '', vidCur = -1, vidNext = -1, vidBehind = false;
   const flips = []; // моменты смены кадра пролёта на экране — для счётчика ?perf=1
   const vidMeta = () => (wantVid && !vidBad && man && man.video && set && man.video[set.name]) || null;
-  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0 }]; };
+  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off, bytes: q.bytes || 0 }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0, bytes: m.bytes || 0 }]; };
   const vidTotal = () => vidParts().reduce((a, q) => a + q.dur, 0);
   const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
   function vidFail() {
@@ -226,10 +226,10 @@ function mount(root, opts = {}) {
       // файл целиком в память (Blob): перемотка без сети и без Range-запросов; на iOS иначе видео грузится только по play()
       fetch(urlOf(q.src)).then(async (r) => {
         if (!r.ok) throw new Error(r.status);
-        tot[i] = +r.headers.get('content-length') || 0;
-        if (!tot[i] || !r.body || !r.body.getReader) return r.blob();
+        tot[i] = +r.headers.get('content-length') || q.bytes || 0; // длина из заголовка, иначе из манифеста (стенд и некоторые хосты отдают chunked)
+        if (!r.body || !r.body.getReader) return r.blob();
         const rd = r.body.getReader(), chunks = [];
-        for (;;) { const { done, value } = await rd.read(); if (done) break; chunks.push(value); got[i] += value.length; vidProg = sum(got) / Math.max(1, sum(tot)); const now = performance.now(); if (now - at > 120) { at = now; report(); } }
+        for (;;) { const { done, value } = await rd.read(); if (done) break; chunks.push(value); got[i] += value.length; vidProg = sum(tot) ? Math.min(0.99, sum(got) / sum(tot)) : 0; const now = performance.now(); if (now - at > 120) { at = now; report(); } }
         return new Blob(chunks, { type: 'video/mp4' });
       }).then((b) => {
         if (dead || vidBad) return;
@@ -243,8 +243,10 @@ function mount(root, opts = {}) {
         setTimeout(() => { if (!vidOk && !vidBad) vidFail(); }, 4000);
       }).catch(vidFail);
     });
-    // Россия без VPN: Cloudflare режут поток после ~16 КБ без ошибки — если за 3,5 с пришло меньше 256 КБ на всё видео, его не будет: сразу на кадры
-    setTimeout(() => { if (!vidOk && !vidBad && sum(got) < 262144) vidFail(); }, 3500);
+    // обрезанная линия (Cloudflare в России режут поток после ~16 КБ без ошибки): новых байт нет 6 с подряд — видео не будет, сразу на кадры.
+    // Раньше было «< 256 КБ за 3,5 с» — ложно срабатывало, когда видео вставало в очередь за шрифтами и кадрами (24.10)
+    let seen = 0, seenAt = performance.now();
+    const watch = setInterval(() => { if (dead || vidOk || vidBad) { clearInterval(watch); return; } const g = sum(got); if (g > seen) { seen = g; seenAt = performance.now(); } else if (performance.now() - seenAt > 6000) { clearInterval(watch); vidFail(); } }, 500);
   }
   function pump() {
     if (!vids.length || vidSeeking) { if (vidSeeking && performance.now() - vidSeekAt > 2000) vidSeeking = false; return; }
@@ -268,8 +270,10 @@ function mount(root, opts = {}) {
     const r = stage.getBoundingClientRect();
     const w = Math.round(r.width), h = Math.round(r.height);
     // пикселей не больше, чем в исходном кадре серии (телефон: tall 720 px → холст не 3× ширины экрана), и не больше 1.5 на тач
-    const srcW = man ? (h > w ? man.sets.tall.w : man.sets.wide.w) : 1440;
-    dpr = Math.min(window.devicePixelRatio || 1, slow ? 1.5 : 2, Math.max(1, srcW / w));
+    // холст не крупнее финальных кадров серии (родной размер рендеров, 24.10 max quality) и не больше 3× экрана; раньше 480/1440 px и 1,5× на тач
+    const ss = man ? (h > w ? man.sets.tall : man.sets.wide) : null, srcW = ss ? (ss.hiw || ss.w) : 1440;
+    dpr = Math.min(window.devicePixelRatio || 1, 3, Math.max(1, srcW / w));
+    try { const cw = +(/[?&]canvasw=(\d+)/.exec(location.search) || [])[1]; if (cw) dpr = Math.min(dpr, Math.max(1, cw / w)); } catch {} // диагностика: ?canvasw=480 — потолок ширины холста (сравнение с прежним размером)
     if (w === W && h === H && canvas.width === Math.round(w * dpr)) return false;
     W = w; H = h;
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
@@ -311,7 +315,7 @@ function mount(root, opts = {}) {
           const u0 = urlOf(list[k]); img.src = u0;
           try { await img.decode(); } catch (e1) { const u1 = alt(u0); if (!u1) throw e1; img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async'; img.src = u1; await img.decode(); }
           if (gen !== loadGen) return;
-          imgs[k] = img; ready[k] = true; if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
+          imgs[k] = img; ready[k] = true; if (k >= nFlight - 1) warm(img); if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
           report();
         } catch (e) { /* кадр не пришёл — рисуем ближайший загруженный */ }
       }
@@ -324,6 +328,14 @@ function mount(root, opts = {}) {
     return -1;
   };
 
+  // прогрев финальных кадров (последний кадр пролёта, «после», «вечер» — родной размер): один раз рисуем 1×1 с почти нулевой прозрачностью,
+  // чтобы текстура ушла на видеокарту заранее, а не в первом кадре покоса (иначе рывок ~0,3 с на эмуляции); следующий draw всё перерисует
+  const warmed = new Set();
+  function warm(img) {
+    if (warmed.has(img)) return; warmed.add(img);
+    const go = () => { if (dead) return; ctx.save(); ctx.globalAlpha = 0.01; ctx.drawImage(img, 0, 0, 1, 1); ctx.restore(); ctx.clearRect(0, 0, 1, 1); lastKey = ''; wake(); };
+    if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 1500 }); else setTimeout(go, 200);
+  }
   // --- cover-кроп: tall-серия уже в 9:16 с ведением фокуса, тут только вписать ---
   function cover(img, alpha, x0 = 0, x1 = W) {
     if (!img) return;
@@ -444,7 +456,7 @@ function mount(root, opts = {}) {
     info() { const now = performance.now(); while (flips.length && now - flips[0] > 1000) flips.shift(); let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height + '\nпролёт: ' + (vidOn() ? 'видео ' + vidMeta().fps + ' к/с' : wantVid ? (vidBad ? 'видео отказало → кадры' : 'видео грузится') : 'кадры') + ' · смен кадра ' + flips.length + '/с'; },
   };
 }
-;exports.mount=mount;return exports})();window.VE_SCENE_MAN={"v":2,"n":97,"placeholder":false,"source":"clips","loop":"loop.mp4","loopTall":"loop-tall.mp4","sets":{"wide":{"w":1440,"h":810,"frames":["wide-00.webp","wide-01.webp","wide-02.webp","wide-03.webp","wide-04.webp","wide-05.webp","wide-06.webp","wide-07.webp","wide-08.webp","wide-09.webp","wide-10.webp","wide-11.webp","wide-12.webp","wide-13.webp","wide-14.webp","wide-15.webp","wide-16.webp","wide-17.webp","wide-18.webp","wide-19.webp","wide-20.webp","wide-21.webp","wide-22.webp","wide-23.webp","wide-24.webp","wide-25.webp","wide-26.webp","wide-27.webp","wide-28.webp","wide-29.webp","wide-30.webp","wide-31.webp","wide-32.webp","wide-33.webp","wide-34.webp","wide-35.webp","wide-36.webp","wide-37.webp","wide-38.webp","wide-39.webp","wide-40.webp","wide-41.webp","wide-42.webp","wide-43.webp","wide-44.webp","wide-45.webp","wide-46.webp","wide-47.webp","wide-48.webp","wide-49.webp","wide-50.webp","wide-51.webp","wide-52.webp","wide-53.webp","wide-54.webp","wide-55.webp","wide-56.webp","wide-57.webp","wide-58.webp","wide-59.webp","wide-60.webp","wide-61.webp","wide-62.webp","wide-63.webp","wide-64.webp","wide-65.webp","wide-66.webp","wide-67.webp","wide-68.webp","wide-69.webp","wide-70.webp","wide-71.webp","wide-72.webp","wide-73.webp","wide-74.webp","wide-75.webp","wide-76.webp","wide-77.webp","wide-78.webp","wide-79.webp","wide-80.webp","wide-81.webp","wide-82.webp","wide-83.webp","wide-84.webp","wide-85.webp","wide-86.webp","wide-87.webp","wide-88.webp","wide-89.webp","wide-90.webp","wide-91.webp","wide-92.webp","wide-93.webp","wide-94.webp","wide-95.webp","wide-96.webp"],"after":["after-a-wide.webp","after-b-wide.webp"]},"tall":{"w":480,"h":853,"frames":["tall-00.jpg","tall-01.jpg","tall-02.jpg","tall-03.jpg","tall-04.jpg","tall-05.jpg","tall-06.jpg","tall-07.jpg","tall-08.jpg","tall-09.jpg","tall-10.jpg","tall-11.jpg","tall-12.jpg","tall-13.jpg","tall-14.jpg","tall-15.jpg","tall-16.jpg","tall-17.jpg","tall-18.jpg","tall-19.jpg","tall-20.jpg","tall-21.jpg","tall-22.jpg","tall-23.jpg","tall-24.jpg","tall-25.jpg","tall-26.jpg","tall-27.jpg","tall-28.jpg","tall-29.jpg","tall-30.jpg","tall-31.jpg","tall-32.jpg","tall-33.jpg","tall-34.jpg","tall-35.jpg","tall-36.jpg","tall-37.jpg","tall-38.jpg","tall-39.jpg","tall-40.jpg","tall-41.jpg","tall-42.jpg","tall-43.jpg","tall-44.jpg","tall-45.jpg","tall-46.jpg","tall-47.jpg","tall-48.jpg","tall-49.jpg","tall-50.jpg","tall-51.jpg","tall-52.jpg","tall-53.jpg","tall-54.jpg","tall-55.jpg","tall-56.jpg","tall-57.jpg","tall-58.jpg","tall-59.jpg","tall-60.jpg","tall-61.jpg","tall-62.jpg","tall-63.jpg","tall-64.jpg","tall-65.jpg","tall-66.jpg","tall-67.jpg","tall-68.jpg","tall-69.jpg","tall-70.jpg","tall-71.jpg","tall-72.jpg","tall-73.jpg","tall-74.jpg","tall-75.jpg","tall-76.jpg","tall-77.jpg","tall-78.jpg","tall-79.jpg","tall-80.jpg","tall-81.jpg","tall-82.jpg","tall-83.jpg","tall-84.jpg","tall-85.jpg","tall-86.jpg","tall-87.jpg","tall-88.jpg","tall-89.jpg","tall-90.jpg","tall-91.jpg","tall-92.jpg","tall-93.jpg","tall-94.jpg","tall-95.jpg","tall-96.jpg"],"after":["after-a-tall.jpg","after-b-tall.jpg"]}},"poster":{"wide":"poster-wide.webp","tall":"poster-tall.webp"},"video":{"tall":{"src":"flight-tall.mp4","fps":24,"dur":30.2033,"w":720,"h":1280,"parts":[{"src":"flight-tall-1.mp4","dur":10.04},{"src":"flight-tall-2.mp4","dur":10.04},{"src":"flight-tall-3.mp4","dur":10.1233}]},"wide":{"src":"flight-wide.mp4","fps":24,"dur":30.2033,"w":1920,"h":1080,"parts":[{"src":"flight-wide-1.mp4","dur":10.04},{"src":"flight-wide-2.mp4","dur":10.04},{"src":"flight-wide-3.mp4","dur":10.1233}]}}};window.VE_TILD=window.VE_TILD||{h:"",c:{}};Object.assign(window.VE_TILD.c,{});</script>
+;exports.mount=mount;return exports})();window.VE_SCENE_MAN={"v":2,"n":97,"placeholder":false,"source":"clips","loop":"loop.mp4","loopTall":"loop-tall.mp4","sets":{"wide":{"w":1440,"h":810,"hiw":1920,"hih":1080,"frames":["wide-00.webp","wide-01.webp","wide-02.webp","wide-03.webp","wide-04.webp","wide-05.webp","wide-06.webp","wide-07.webp","wide-08.webp","wide-09.webp","wide-10.webp","wide-11.webp","wide-12.webp","wide-13.webp","wide-14.webp","wide-15.webp","wide-16.webp","wide-17.webp","wide-18.webp","wide-19.webp","wide-20.webp","wide-21.webp","wide-22.webp","wide-23.webp","wide-24.webp","wide-25.webp","wide-26.webp","wide-27.webp","wide-28.webp","wide-29.webp","wide-30.webp","wide-31.webp","wide-32.webp","wide-33.webp","wide-34.webp","wide-35.webp","wide-36.webp","wide-37.webp","wide-38.webp","wide-39.webp","wide-40.webp","wide-41.webp","wide-42.webp","wide-43.webp","wide-44.webp","wide-45.webp","wide-46.webp","wide-47.webp","wide-48.webp","wide-49.webp","wide-50.webp","wide-51.webp","wide-52.webp","wide-53.webp","wide-54.webp","wide-55.webp","wide-56.webp","wide-57.webp","wide-58.webp","wide-59.webp","wide-60.webp","wide-61.webp","wide-62.webp","wide-63.webp","wide-64.webp","wide-65.webp","wide-66.webp","wide-67.webp","wide-68.webp","wide-69.webp","wide-70.webp","wide-71.webp","wide-72.webp","wide-73.webp","wide-74.webp","wide-75.webp","wide-76.webp","wide-77.webp","wide-78.webp","wide-79.webp","wide-80.webp","wide-81.webp","wide-82.webp","wide-83.webp","wide-84.webp","wide-85.webp","wide-86.webp","wide-87.webp","wide-88.webp","wide-89.webp","wide-90.webp","wide-91.webp","wide-92.webp","wide-93.webp","wide-94.webp","wide-95.webp","wide-96.webp"],"after":["after-a-wide.webp","after-b-wide.webp"]},"tall":{"w":720,"h":1280,"hiw":1080,"hih":1920,"frames":["tall-00.jpg","tall-01.jpg","tall-02.jpg","tall-03.jpg","tall-04.jpg","tall-05.jpg","tall-06.jpg","tall-07.jpg","tall-08.jpg","tall-09.jpg","tall-10.jpg","tall-11.jpg","tall-12.jpg","tall-13.jpg","tall-14.jpg","tall-15.jpg","tall-16.jpg","tall-17.jpg","tall-18.jpg","tall-19.jpg","tall-20.jpg","tall-21.jpg","tall-22.jpg","tall-23.jpg","tall-24.jpg","tall-25.jpg","tall-26.jpg","tall-27.jpg","tall-28.jpg","tall-29.jpg","tall-30.jpg","tall-31.jpg","tall-32.jpg","tall-33.jpg","tall-34.jpg","tall-35.jpg","tall-36.jpg","tall-37.jpg","tall-38.jpg","tall-39.jpg","tall-40.jpg","tall-41.jpg","tall-42.jpg","tall-43.jpg","tall-44.jpg","tall-45.jpg","tall-46.jpg","tall-47.jpg","tall-48.jpg","tall-49.jpg","tall-50.jpg","tall-51.jpg","tall-52.jpg","tall-53.jpg","tall-54.jpg","tall-55.jpg","tall-56.jpg","tall-57.jpg","tall-58.jpg","tall-59.jpg","tall-60.jpg","tall-61.jpg","tall-62.jpg","tall-63.jpg","tall-64.jpg","tall-65.jpg","tall-66.jpg","tall-67.jpg","tall-68.jpg","tall-69.jpg","tall-70.jpg","tall-71.jpg","tall-72.jpg","tall-73.jpg","tall-74.jpg","tall-75.jpg","tall-76.jpg","tall-77.jpg","tall-78.jpg","tall-79.jpg","tall-80.jpg","tall-81.jpg","tall-82.jpg","tall-83.jpg","tall-84.jpg","tall-85.jpg","tall-86.jpg","tall-87.jpg","tall-88.jpg","tall-89.jpg","tall-90.jpg","tall-91.jpg","tall-92.jpg","tall-93.jpg","tall-94.jpg","tall-95.jpg","tall-96.jpg"],"after":["after-a-tall.jpg","after-b-tall.jpg"]}},"poster":{"wide":"poster-wide.webp","tall":"poster-tall.webp"},"video":{"tall":{"src":"flight-tall.mp4","fps":24,"dur":30.2033,"w":1080,"h":1920,"bytes":84615577},"wide":{"src":"flight-wide.mp4","fps":24,"dur":30.2033,"w":1920,"h":1080,"bytes":68150378}}};window.VE_TILD=window.VE_TILD||{h:"",c:{}};Object.assign(window.VE_TILD.c,{});</script>
 <script>
 (function(){
   var root=document.getElementById('ve-hero');if(!root)return;
@@ -482,7 +494,7 @@ function mount(root, opts = {}) {
   }
   // готово = логотип дорисован и серия пролёта загружена (линия под логотипом растёт по кадрам); потолок ожидания 15 с
   var loadBar=root.querySelector('.ve-hero__load i'),pct=root.querySelector('.ve-hero__pct'),loaded=0,mediaReady=false,isVideo=false,lastGain=performance.now();
-  function onLoad(n,total,st){var v=total?n/total:1;if(v>loaded+.001)lastGain=performance.now();loaded=v;if(st){mediaReady=!!st.ready;isVideo=!!st.video}
+  function onLoad(n,total,st){var v=total?n/total:0; /* 0 из 0 — ещё ничего не известно, не «готово» */if(v>loaded+.001)lastGain=performance.now();loaded=v;if(st){mediaReady=!!st.ready&&total>0;isVideo=!!st.video}
     if(introDone)return;loadBar.style.setProperty('--p',loaded.toFixed(3));if(pct)pct.textContent=Math.round(Math.min(1,loaded)*100)+' %'}
   var coarseGate=false;try{coarseGate=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
   var NEED=1; // 24.10: заставка держит, пока медиа не загружены целиком (владелец: качество важнее, процент честный); раньше .5/.92 // телефон: отпускаем на 50 % (опорные кадры уже есть) — остальное догружается, пока камера дышит на первом кадре
