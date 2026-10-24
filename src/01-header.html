@@ -50,6 +50,13 @@ html.ve-coarse .ve-hd.is-solid .ve-hd__in{background:linear-gradient(180deg,rgba
 .ve-hd.is-solid .ve-hd__cta,.ve-hd.is-solid .ve-hd__cta:hover{background:linear-gradient(180deg,rgba(31,77,46,.12),rgba(31,77,46,.06));color:var(--ve-ink);border-color:rgba(31,77,46,.24);text-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 6px 18px rgba(21,52,32,.12),inset 0 1px 0 #fff;--ve-bloom-on:0}
 .ve-hd.is-hidden{transform:translateY(-110%)}
 @media(prefers-reduced-motion:reduce){.ve-hd{transition:none}}
+/* телефон (владелец, 24.10: «лого по центру»): сетка 1fr auto 1fr — знак ровно по центру, кнопка справа; белый док после хиро — во всю ширину, знак остаётся в центре */
+@media(max-width:899px){
+  .ve-hd__in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+  .ve-hd__mark{grid-column:2;justify-self:center}
+  .ve-hd__right{grid-column:3;justify-self:end}
+  .ve-hd.is-solid .ve-hd__in{width:calc(100% - 24px);padding:0 7px 0 14px}
+}
 </style>
 <script>
 (function(){
