@@ -17,7 +17,7 @@
     </div>
     <div class="ve-hero__hint" aria-hidden="true"><span></span></div>
     <!-- заставка: белый экран, логотип наполняется, пока грузятся кадры; потом улетает в знак шапки -->
-    <div class="ve-hero__intro" aria-hidden="true"><div class="ve-hero__load"><i></i></div></div>
+    <div class="ve-hero__intro" aria-hidden="true"><div class="ve-hero__load"><i></i></div><b class="ve-hero__pct"></b></div>
     <div class="ve-hero__logo" aria-hidden="true" data-spectral data-spectral-heavy>
       <div class="ve-logo__halo"></div>
       <svg viewBox="__VB_FULL__" fill="currentColor">
@@ -134,6 +134,9 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
 .ve-hero__load{position:absolute;left:50%;top:calc(50% + min(300px,70vw) * .5);width:min(200px,46vw);margin-left:calc(min(200px,46vw) / -2);height:1px;background:rgba(31,77,46,.14)}
 @media(min-width:900px){.ve-hero__load{top:calc(50% + 200px);width:220px;margin-left:-110px}}
 .ve-hero__load i{position:absolute;left:0;top:0;height:1px;width:100%;background:var(--ve-bronze);transform:scaleX(var(--p,0));transform-origin:left;transition:transform .35s var(--ve-ease)}
+/* процент загрузки под линией: честные байты медиа, капсом, бронза */
+.ve-hero__pct{position:absolute;left:0;right:0;top:calc(50% + min(300px,70vw) * .5 + 14px);text-align:center;font-family:var(--ve-sans);font-size:11px;letter-spacing:.14em;font-weight:600;color:var(--ve-bronze);font-variant-numeric:tabular-nums}
+@media(min-width:900px){.ve-hero__pct{top:calc(50% + 214px)}}
 @media(prefers-reduced-motion:reduce){.ve-hero__ch,.ve-hero__index a,.ve-hero__index,.ve-hero__lp,.ve-hero__intro,.ve-hero__loop{transition:none}.ve-hero__hint{display:none}.ve-hero__lp{opacity:1;transform:none}.ve-logo__band{animation:none}.ve-logo__halo::after{display:none}}
 </style>
 __SCENE_INLINE__
@@ -173,11 +176,15 @@ __SCENE_INLINE__
     VE.tween(0,1,1000,function(k){var e=1-Math.pow(1-k,3),s=1+(g.sc-1)*e;logo.style.transform='translate3d('+(g.tx*e).toFixed(1)+'px,'+(g.ty*e).toFixed(1)+'px,0) scale('+s.toFixed(4)+')';if(k>=1)end()});
   }
   // готово = логотип дорисован и серия пролёта загружена (линия под логотипом растёт по кадрам); потолок ожидания 15 с
-  var loadBar=root.querySelector('.ve-hero__load i'),loaded=0;
-  function onLoad(n,total){loaded=total?n/total:1;loadBar.style.setProperty('--p',loaded.toFixed(3))}
+  var loadBar=root.querySelector('.ve-hero__load i'),pct=root.querySelector('.ve-hero__pct'),loaded=0,mediaReady=false,isVideo=false,lastGain=performance.now();
+  function onLoad(n,total,st){var v=total?n/total:1;if(v>loaded+.001)lastGain=performance.now();loaded=v;if(st){mediaReady=!!st.ready;isVideo=!!st.video}
+    loadBar.style.setProperty('--p',loaded.toFixed(3));if(pct)pct.textContent=Math.round(Math.min(1,loaded)*100)+' %'}
   var coarseGate=false;try{coarseGate=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
-  var NEED=coarseGate?.5:.92; // телефон: отпускаем на 50 % (опорные кадры уже есть) — остальное догружается, пока камера дышит на первом кадре
-  var gate=setInterval(function(){var t=performance.now()-t0;if((root.classList.contains('is-live')&&loaded>=NEED&&t>2200)||t>15000){clearInterval(gate);loadBar.style.setProperty('--p','1');if(t>15000&&VE.hero&&VE.hero.fallback)VE.hero.fallback();fly()}},100); // 15 с вышли — сцена откатывается на кадры, если видео не готово (24.10)
+  var NEED=1; // 24.10: заставка держит, пока медиа не загружены целиком (владелец: качество важнее, процент честный); раньше .5/.92 // телефон: отпускаем на 50 % (опорные кадры уже есть) — остальное догружается, пока камера дышит на первом кадре
+  // отпускаем, когда сцена живая и медиа готовы (видео перемоталось / все кадры), не раньше 2,2 с; если 8 с нет прироста — видео не идёт: откат на кадры и ждём их; жёсткий потолок 90 с
+  var gate=setInterval(function(){var t=performance.now()-t0,stall=performance.now()-lastGain>8000&&!mediaReady;
+    if(stall&&isVideo&&VE.hero&&VE.hero.fallback){VE.hero.fallback();lastGain=performance.now();isVideo=false;return}
+    if((root.classList.contains('is-live')&&mediaReady&&loaded>=NEED&&t>2200)||t>90000||(stall&&t>20000)){clearInterval(gate);loadBar.style.setProperty('--p','1');if(pct)pct.textContent='';fly()}},100);
 
   // ---- главы текста и луп по прогрессу ----
   var lastCh=-1,menu=false,loopSrc=null,loopOn=false;
@@ -270,7 +277,7 @@ __SCENE_INLINE__
   })();
   function start(){
     var VE=window.VE;if(!VE)return setTimeout(start,50);
-    (window.VE_SCENE_MOD?Promise.resolve(window.VE_SCENE_MOD):import(VE.url('js/scene.js'))).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,url:function(n){return VE.url('media/scene/'+n)},manifest:window.VE_SCENE_MAN||null,onProgress:onP,onManifest:function(man){if(html.classList.contains('ve-no-loops'))return;var tall=window.innerHeight>window.innerWidth,f=tall&&man.loopTall?man.loopTall:man.loop;if(f)loopSrc=VE.url('media/scene/'+f)},onLoad:onLoad,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});
+    (window.VE_SCENE_MOD?Promise.resolve(window.VE_SCENE_MOD):import(VE.url('js/scene.js'))).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,url:function(n){return VE.url('media/scene/'+n)},manifest:window.VE_SCENE_MAN||null,preferParts:!!(window.VE_TILD&&window.VE_TILD.c&&Object.keys(window.VE_TILD.c).length),onProgress:onP,onManifest:function(man){if(html.classList.contains('ve-no-loops'))return;var tall=window.innerHeight>window.innerWidth,f=tall&&man.loopTall?man.loopTall:man.loop;if(f)loopSrc=VE.url('media/scene/'+f)},onLoad:onLoad,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();

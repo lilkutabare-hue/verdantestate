@@ -46,8 +46,8 @@ export function mount(root, opts = {}) {
   // полоса загрузки заставки: кадры — доля загруженных; видео — доля скачанных байт, но до готовности к перемотке не больше 49 % (заставка на телефоне ждёт 50 %)
   function report() {
     if (!opts.onLoad) return;
-    if (vidMeta()) { opts.onLoad(vidOk ? 1 : Math.min(0.49, vidProg * 0.49), 1); return; }
-    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight);
+    if (vidMeta()) { opts.onLoad(vidOk ? 1 : vidProg, 1, { video: true, ready: vidOk }); return; } // честный процент по байтам; готово — когда все куски перемотались
+    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight, { video: false, ready: n >= nFlight });
   }
   // Видео пролёта: один файл (m.src) или куски по клипам (m.parts = [{src,dur},…], каждый ≤ 5 МБ — лимит файла в хранилище Тильды).
   // Все куски качаются целиком в память, у каждого свой <video>; виден тот, в чьём отрезке целевое время; стык кусков — тот же кадр (клипы цепочкой),
@@ -55,7 +55,7 @@ export function mount(root, opts = {}) {
   let vids = [], vidUrls = [], vidOk = false, vidBad = false, vidSeeking = false, vidTarget = 0, vidSeekAt = 0, vidFor = '', vidCur = -1, vidNext = -1, vidBehind = false;
   const flips = []; // моменты смены кадра пролёта на экране — для счётчика ?perf=1
   const vidMeta = () => (wantVid && !vidBad && man && man.video && set && man.video[set.name]) || null;
-  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0 }]; };
+  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0 }]; };
   const vidTotal = () => vidParts().reduce((a, q) => a + q.dur, 0);
   const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
   function vidFail() {
