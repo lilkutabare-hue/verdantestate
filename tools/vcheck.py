@@ -132,3 +132,55 @@ if __name__ == '__main__' and len(sys.argv) > 2:
         n, bad = blends(f); print(f"  blended frames: {n}" + (f" (e.g. {bad})" if bad else ''))
     if '--vs' in args:
         site = args[args.index('--vs')+1]; d, p = vs_site(f, site); print(f"  raw vs site @2s: {d:.2f}/255, PSNR {p:.1f} dB")
+
+# ---- A0 «сцена без морфа» (план финала A0, урок L-073): верхняя треть кадра ----
+# Камера едет — верх кадра сдвигается и чуть масштабируется, это законно; морф содержимого (кроны выгорают в дымку,
+# дымка перерисовывается в небо с облаками) меняет сам рисунок. IoU карт краёв из плана при движущейся камере не работает
+# (0,2–0,8 даже на спокойных местах), поэтому: корреляция при лучшем сдвиге и скачки резкости. Калибровка 24.10 на клипах
+# цепочки: K1v (кроны выгорели) NCC к первому кадру 0,40, K1 16:9 — 0,99; K2v (небо перерисовано) 0,59 и скачок резкости 34 %,
+# K2 16:9 — 0,85 и 23 %; на стыке К1v→К2v старт К2 за 1,5 с уходит от последнего кадра К1 до 0,93. Новые К1 с замком на лес (24.10):
+# 16:9 — 0,98, 9:16 — 0,85 (слабеют лучи и дымка, кроны на месте — глазами ок) → гейт NCC ≥ .80; скачок резкости у К1 — не гейт (перевод фокуса).
+def top_third_samples(f, step_s=0.5, scale=160):
+    arr, p = frames(f, scale=scale); fps = p['fps'] or 24; step = max(1, int(round(fps*step_s)))
+    idx = list(range(0, len(arr), step))
+    if idx[-1] != len(arr)-1: idx.append(len(arr)-1)
+    H = arr.shape[1]
+    return [arr[i, :H//3].astype(np.float32).mean(axis=2) for i in idx]
+
+def _blur(g, s=2.0):
+    from PIL import ImageFilter
+    return np.asarray(Image.fromarray(np.clip(g, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(s)), np.float32)
+
+def ncc_aligned(a, b, r=12):
+    """Нормированная корреляция двух серых карт при лучшем сдвиге ±r px (размытие σ2, чтобы не ловить шум сжатия)."""
+    a = _blur(a); b = _blur(b); H, W = a.shape; best = -2.0
+    for dy in range(-r, r+1):
+        for dx in range(-r, r+1):
+            A = a[max(0, dy):H+min(0, dy), max(0, dx):W+min(0, dx)]; B = b[max(0, -dy):H+min(0, -dy), max(0, -dx):W+min(0, -dx)]
+            A = A - A.mean(); B = B - B.mean(); d = np.sqrt((A*A).sum()*(B*B).sum())
+            c = float((A*B).sum()/d) if d > 0 else 0.0
+            if c > best: best = c
+    return best
+
+def lapvar(g):
+    lap = np.abs(g[1:-1, 1:-1]*4 - g[:-2, 1:-1] - g[2:, 1:-1] - g[1:-1, :-2] - g[1:-1, 2:]); return float(lap.var())
+
+def scene_morph(f, prev=None):
+    """(1) min NCC верхней трети каждого замера (шаг 0,5 с, 160 px) против первого кадра клипа; (2) max скачок резкости
+    (дисперсия лапласиана, 640 px) верхней трети между соседними замерами, %; (3) если дан prev (PIL, последний кадр
+    предыдущего клипа) — min NCC замеров 0,5–1,5 с против него. Возвращает (ncc_first, jump_pct, joint_or_None)."""
+    lo = top_third_samples(f, scale=160); hi = top_third_samples(f, scale=640)
+    ncc_first = min(ncc_aligned(lo[0], x) for x in lo[1:])
+    sh = [lapvar(x) for x in hi]; jump = max(abs(sh[k+1]-sh[k])/max(1e-6, sh[k])*100 for k in range(len(sh)-1))
+    joint = None
+    if prev is not None:
+        pv = np.asarray(prev.convert('L').resize((160, round(160*prev.size[1]/prev.size[0])), Image.LANCZOS), np.float32); pv = pv[:pv.shape[0]//3]
+        h = min(pv.shape[0], lo[1].shape[0]); w = min(pv.shape[1], lo[1].shape[1])
+        joint = min(ncc_aligned(pv[:h, :w], x[:h, :w]) for x in lo[1:4])
+    return ncc_first, jump, joint
+
+if __name__ == '__main__' and len(sys.argv) > 2 and '--morph' in sys.argv:
+    f = sys.argv[1]; args = sys.argv[2:]
+    prev = Image.open(args[args.index('--prev')+1]) if '--prev' in args else None
+    n, j, jo = scene_morph(f, prev)
+    print(f"  scene morph (top third): NCC vs first {n:.3f}, sharpness jump {j:.0f} %" + (f", joint vs prev {jo:.3f}" if jo is not None else ''))
