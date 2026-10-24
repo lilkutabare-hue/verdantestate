@@ -1,9 +1,9 @@
-<!-- VE · 02-hero.html · сборка e50827e6 -->
+<!-- VE · 02-hero.html · сборка a120f1ee -->
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="https://verdant-assets.lilkutabare.workers.dev/media/scene/poster-tall.webp?v=e50827e6">
-      <img src="https://verdant-assets.lilkutabare.workers.dev/media/scene/poster-wide.webp?v=e50827e6" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="https://verdant-assets.lilkutabare.workers.dev/media/scene/poster-tall.webp?v=a120f1ee">
+      <img src="https://verdant-assets.lilkutabare.workers.dev/media/scene/poster-wide.webp?v=a120f1ee" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -137,6 +137,311 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
 .ve-hero__load i{position:absolute;left:0;top:0;height:1px;width:100%;background:var(--ve-bronze);transform:scaleX(var(--p,0));transform-origin:left;transition:transform .35s var(--ve-ease)}
 @media(prefers-reduced-motion:reduce){.ve-hero__ch,.ve-hero__index a,.ve-hero__index,.ve-hero__lp,.ve-hero__intro,.ve-hero__loop{transition:none}.ve-hero__hint{display:none}.ve-hero__lp{opacity:1;transform:none}.ve-logo__band{animation:none}.ve-logo__halo::after{display:none}}
 </style>
+<script>window.VE_SCENE_MOD=(function(){var exports={};// Движок хиро v2 «Пролёт → превращение»: нативный скролл, canvas читает прогресс закреплённой секции.
+// Таймлайн по прогрессу p (0…1):
+//   [0, flight]        пролёт — видео (все кадры клипов, по умолчанию на обоих экранах) или кадры серии, один ближайший кадр без смешивания (§7.2: один кадр на экране)
+//   [flight, groom]    шторка-покос: S4 «до» → S5a «после» мягкой кромкой слева направо
+//   [groom, light]     включается свет: S5a → S5 (синий час, подсветка)
+//   [light, 1]         стоп-кадр S5 (над ним сферы меню, их ведёт сама секция)
+// Кадры и серии — в media/scene/manifest.json (v2, пишет tools/frames.mjs).
+// mount(root, { base, v, reducedMotion, onProgress, onManifest, onLoad(loaded, total), timeline }) → { destroy, hold(p), progress }
+function mount(root, opts = {}) {
+  const stage = root.querySelector('.ve-hero__stage');
+  const canvas = root.querySelector('canvas');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const base = opts.base || '', v = opts.v ? '?v=' + opts.v : '';
+  // адрес файла сцены: opts.url(имя) — карта хранилища Тильды (сборка для Тильды), иначе base + media/scene/ + имя + ?v=
+  const urlOf = (name) => (opts.url ? opts.url(name) : base + 'media/scene/' + name + v);
+  const alt = (u) => (/\/\/static\.tildacdn\.com\//.test(u) ? u.replace('//static.tildacdn.com/', '//static3.tildacdn.com/') : null); // запасной хост Тильды (план медиа §3.4)
+  const rm = !!opts.reducedMotion;
+  const onProgress = opts.onProgress || (() => {});
+  const TL = Object.assign({ flight: 0.66, groom: 0.8, light: 0.88 }, opts.timeline || {});
+
+  const slow = (() => { try { return matchMedia('(hover:none) and (pointer:coarse)').matches; } catch { return false; } })();
+  let man = null, set = null, imgs = [], ready = [], nFlight = 0, curP = 0, held = null, running = false, dead = false;
+  // декодированные битмапы: браузер на телефоне выкидывает декод картинок из кеша и декодирует заново при каждом drawImage — отсюда фризы.
+  // Держим ImageBitmap сами, окном вокруг текущего кадра (на компьютере — все), остальное закрываем.
+  let bmps = [], bmpBusy = 0, bmpCenter = -1;
+  // на тач битмапы не держим: пачки createImageBitmap роняли кадры (18 к/с при 4× замедлении), а WebP декодируется быстро; ?nofx=bmp — диагностика на компьютере
+  const canBmp = typeof createImageBitmap === 'function' && !slow && !document.documentElement.classList.contains('ve-no-bmp');
+  const WIN = slow ? 14 : 24; // окно битмапов: телефон ±14 (≈75 МБ), компьютер ±24 (≈230 МБ)
+  function tend(center) {
+    if (!canBmp || center === bmpCenter) return; bmpCenter = center;
+    const lo = Math.max(0, center - WIN), hi = Math.min(imgs.length - 1, center + WIN);
+    for (let k = 0; k < bmps.length; k++) if (bmps[k] && (k < lo - WIN || k > hi + WIN)) { try { bmps[k].close(); } catch {} bmps[k] = null; }
+    const want = [];
+    for (let d = 0; d <= Math.max(center - lo, hi - center); d++) { if (center + d <= hi) want.push(center + d); if (d && center - d >= lo) want.push(center - d); }
+    for (const k of want) { if (bmpBusy >= 3) break; if (bmps[k] || bmps[k] === 0 || !ready[k]) continue; bmps[k] = 0; bmpBusy++;
+      createImageBitmap(imgs[k]).then((b) => { if (dead || bmps[k] !== 0) { b.close(); return; } bmps[k] = b; if (Math.abs(k - bmpCenter) <= 1) { lastKey = ''; wake(); } }).catch(() => { bmps[k] = null; }).finally(() => { bmpBusy--; tend2(); }); }
+  }
+  function tend2() { const c = bmpCenter; bmpCenter = -1; tend(c); }
+  const pick = (k) => bmps[k] || imgs[k];
+  let W = 0, H = 0, dpr = 1, tick = 0, lastKey = '';
+  // ?hero=video (или класс ve-hero-video на html): пролёт из видео manifest.video[серия] — все кадры клипов 24 к/с одним H.264, аппаратный декод.
+  // Видео лежит под холстом; в пролёте холст прозрачный, после пролёта рисует шторку и свет как раньше. Не перематывается за 4 с — назад на кадры.
+  // по умолчанию видео на телефоне и на компьютере (план доводки §7.3 C); ?hero=frames или класс ve-hero-frames — только кадры (диагностика, старый путь)
+  const wantVid = (() => { try { return !(/[?&]hero=frames\b/.test(location.search) || document.documentElement.classList.contains('ve-hero-frames')); } catch { return true; } })();
+  let vidProg = 0; // доля скачанного видео
+  // полоса загрузки заставки: кадры — доля загруженных; видео — доля скачанных байт, но до готовности к перемотке не больше 49 % (заставка на телефоне ждёт 50 %)
+  function report() {
+    if (!opts.onLoad) return;
+    if (vidMeta()) { opts.onLoad(vidOk ? 1 : Math.min(0.49, vidProg * 0.49), 1); return; }
+    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight);
+  }
+  // Видео пролёта: один файл (m.src) или куски по клипам (m.parts = [{src,dur},…], каждый ≤ 5 МБ — лимит файла в хранилище Тильды).
+  // Все куски качаются целиком в память, у каждого свой <video>; виден тот, в чьём отрезке целевое время; стык кусков — тот же кадр (клипы цепочкой),
+  // переключение только после того, как новый кусок перемотался на своё место.
+  let vids = [], vidUrls = [], vidOk = false, vidBad = false, vidSeeking = false, vidTarget = 0, vidSeekAt = 0, vidFor = '', vidCur = -1, vidNext = -1, vidBehind = false;
+  const flips = []; // моменты смены кадра пролёта на экране — для счётчика ?perf=1
+  const vidMeta = () => (wantVid && !vidBad && man && man.video && set && man.video[set.name]) || null;
+  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0 }]; };
+  const vidTotal = () => vidParts().reduce((a, q) => a + q.dur, 0);
+  const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
+  function vidFail() {
+    if (vidBad) return; vidBad = true; vidOk = false;
+    for (const x of vids) { x.classList.remove('is-on'); x.removeAttribute('src'); try { x.load(); } catch {} x.remove(); }
+    for (const u of vidUrls) if (u) URL.revokeObjectURL(u);
+    vids = []; vidUrls = []; vidCur = -1; vidNext = -1;
+    lastKey = ''; if (set) load(set.frames.concat(set.after || [])); report(); wake(); // догрузить кадры, которые пропускали ради видео
+  }
+  function setupVideo() {
+    const m = vidMeta(); if (!m || vidFor === set.name) { for (let i = 0; i < vids.length; i++) vids[i].classList.toggle('is-on', vidOn() && i === vidCur); return; }
+    vidFor = set.name; vidOk = false; vidCur = -1; vidNext = -1;
+    for (const x of vids) x.remove(); for (const u of vidUrls) if (u) URL.revokeObjectURL(u); vids = []; vidUrls = [];
+    const parts = vidParts(), got = parts.map(() => 0), tot = parts.map(() => 0); let readyN = 0, at = 0;
+    const sum = (a) => a.reduce((x, y) => x + y, 0);
+    parts.forEach((q, i) => {
+      const x = document.createElement('video');
+      x.className = 've-hero__vid'; x.muted = true; x.defaultMuted = true; x.playsInline = true; x.preload = 'auto'; x.disablePictureInPicture = true;
+      x.setAttribute('muted', ''); x.setAttribute('playsinline', ''); x.setAttribute('aria-hidden', 'true');
+      stage.insertBefore(x, canvas); vids[i] = x;
+      x.addEventListener('seeked', () => {
+        if (i === vidNext) { vidCur = i; vidNext = -1; for (let k = 0; k < vids.length; k++) vids[k].classList.toggle('is-on', k === i); }
+        if (i !== vidCur) return; vidSeeking = false; vidBehind = false; flips.push(performance.now()); wake();
+      });
+      x.addEventListener('error', vidFail);
+      // файл целиком в память (Blob): перемотка без сети и без Range-запросов; на iOS иначе видео грузится только по play()
+      fetch(urlOf(q.src)).then(async (r) => {
+        if (!r.ok) throw new Error(r.status);
+        tot[i] = +r.headers.get('content-length') || 0;
+        if (!tot[i] || !r.body || !r.body.getReader) return r.blob();
+        const rd = r.body.getReader(), chunks = [];
+        for (;;) { const { done, value } = await rd.read(); if (done) break; chunks.push(value); got[i] += value.length; vidProg = sum(got) / Math.max(1, sum(tot)); const now = performance.now(); if (now - at > 120) { at = now; report(); } }
+        return new Blob(chunks, { type: 'video/mp4' });
+      }).then((b) => {
+        if (dead || vidBad) return;
+        const u = URL.createObjectURL(b); vidUrls[i] = u; x.src = u; x.load();
+        const first = () => { try { x.currentTime = 0.001; } catch {} };
+        x.addEventListener('loadedmetadata', first, { once: true });
+        const once = () => { x.removeEventListener('seeked', once); readyN++; if (readyN === parts.length && !vidBad) { vidOk = true; lastKey = ''; report(); wake(); } };
+        x.addEventListener('seeked', once);
+        // не перемоталось за 1,5 с — пнуть play/pause (немой инлайн можно без жеста); за 4 с — сдаёмся, остаёмся на кадрах (режим энергосбережения, старый браузер)
+        setTimeout(() => { if (!vidOk && !vidBad && readyN < parts.length) { const pr = x.play && x.play(); if (pr && pr.then) pr.then(() => { x.pause(); first(); }, () => {}); } }, 1500);
+        setTimeout(() => { if (!vidOk && !vidBad) vidFail(); }, 4000);
+      }).catch(vidFail);
+    });
+    // Россия без VPN: Cloudflare режут поток после ~16 КБ без ошибки — если за 3,5 с пришло меньше 256 КБ на всё видео, его не будет: сразу на кадры
+    setTimeout(() => { if (!vidOk && !vidBad && sum(got) < 262144) vidFail(); }, 3500);
+  }
+  function pump() {
+    if (!vids.length || vidSeeking) { if (vidSeeking && performance.now() - vidSeekAt > 2000) vidSeeking = false; return; }
+    const m = vidMeta(), parts = vidParts(); if (!m || !parts.length) return;
+    let i = 0; while (i < parts.length - 1 && vidTarget >= parts[i].off + parts[i].dur) i++;
+    const local = Math.min(parts[i].dur - 1 / m.fps, Math.max(0.001, vidTarget - parts[i].off)), x = vids[i];
+    if (!x) return;
+    if (i !== vidCur) {
+      // новый кусок: если он уже стоит на нужном кадре — показать сразу, иначе перемотать и показать по seeked
+      if (Math.abs(x.currentTime - local) <= 0.5 / m.fps) { vidCur = i; vidNext = -1; for (let k = 0; k < vids.length; k++) vids[k].classList.toggle('is-on', k === i); vidBehind = false; return; }
+      vidNext = i; vidSeeking = true; vidSeekAt = performance.now(); vidBehind = true; try { x.currentTime = local; } catch { vidSeeking = false; }
+      return;
+    }
+    if (Math.abs(x.currentTime - local) <= 0.5 / m.fps) { vidBehind = false; return; }
+    vidSeeking = true; vidSeekAt = performance.now(); vidBehind = true;
+    try { x.currentTime = local; } catch { vidSeeking = false; }
+  }
+
+  // --- размер и серия под ориентацию ---
+  function size() {
+    const r = stage.getBoundingClientRect();
+    const w = Math.round(r.width), h = Math.round(r.height);
+    // пикселей не больше, чем в исходном кадре серии (телефон: tall 720 px → холст не 3× ширины экрана), и не больше 1.5 на тач
+    const srcW = man ? (h > w ? man.sets.tall.w : man.sets.wide.w) : 1440;
+    dpr = Math.min(window.devicePixelRatio || 1, slow ? 1.5 : 2, Math.max(1, srcW / w));
+    if (w === W && h === H && canvas.width === Math.round(w * dpr)) return false;
+    W = w; H = h;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+    pickSet(); lastKey = '';
+    return true;
+  }
+  function pickSet() {
+    if (!man) return;
+    const want = H > W ? 'tall' : 'wide';
+    if (set && set.name === want) return;
+    set = { name: want, ...man.sets[want] };
+    const list = set.frames.concat(set.after || []);
+    nFlight = set.frames.length;
+    for (const b of bmps) if (b) { try { b.close(); } catch {} }
+    bmps = list.map(() => null); bmpCenter = -1;
+    imgs = list.map(() => null); ready = list.map(() => false);
+    load(list);
+    setupVideo();
+  }
+
+  // --- загрузка: опорные кадры пролёта → кадры превращения → остальные ---
+  let loadGen = 0;
+  async function load(list) {
+    const gen = ++loadGen, order = [], step = Math.max(1, Math.round(nFlight / 6));
+    for (let i = 0; i < nFlight; i += step) order.push(i);
+    if (!order.includes(nFlight - 1)) order.push(nFlight - 1);
+    for (let i = nFlight; i < list.length; i++) order.push(i);
+    for (let i = 0; i < nFlight; i++) if (!order.includes(i)) order.push(i);
+    let i = 0;
+    const anchors = new Set(order.slice(0, order.indexOf(nFlight) > 0 ? order.indexOf(nFlight) : 8));
+    const worker = async () => {
+      while (i < order.length && gen === loadGen && !dead) {
+        const k = order[i++];
+        if (ready[k] || (k < nFlight && !anchors.has(k) && vidMeta() && !vidBad)) continue; // видео пролёта: кадры между опорными не нужны, пока видео не отказало
+        try {
+          let img = new Image();
+          img.crossOrigin = 'anonymous'; img.decoding = 'async';
+          const u0 = urlOf(list[k]); img.src = u0;
+          try { await img.decode(); } catch (e1) { const u1 = alt(u0); if (!u1) throw e1; img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async'; img.src = u1; await img.decode(); }
+          if (gen !== loadGen) return;
+          imgs[k] = img; ready[k] = true; if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
+          report();
+        } catch (e) { /* кадр не пришёл — рисуем ближайший загруженный */ }
+      }
+    };
+    await Promise.all(Array.from({ length: 8 }, worker)); // 8 параллельных: на медленной сети (VPN, мобильный) серия ограничена задержкой запроса, а не полосой
+  }
+  const nearest = (k) => {
+    if (ready[k]) return k;
+    for (let d = 1; d < nFlight; d++) { if (k - d >= 0 && ready[k - d]) return k - d; if (k + d < nFlight && ready[k + d]) return k + d; }
+    return -1;
+  };
+
+  // --- cover-кроп: tall-серия уже в 9:16 с ведением фокуса, тут только вписать ---
+  function cover(img, alpha, x0 = 0, x1 = W) {
+    if (!img) return;
+    const fw = set.w, fh = set.h, s = Math.max(W / fw, H / fh), dw = fw * s, dh = fh * s;
+    const dx = (W - dw) / 2, dy = (H - dh) / 2;
+    ctx.save();
+    if (x0 > 0 || x1 < W) { ctx.beginPath(); ctx.rect(x0 * dpr, 0, (x1 - x0) * dpr, H * dpr); ctx.clip(); }
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(img, dx * dpr, dy * dpr, dw * dpr, dh * dpr);
+    ctx.restore();
+  }
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
+
+  function draw(p) {
+    if (!set || !imgs.length) return;
+    const A = nFlight, last = nFlight - 1;
+    let key;
+    if (p <= TL.flight && vidOn()) {
+      const m = vidMeta(); vidTarget = seg(p, 0, TL.flight) * Math.max(0, vidTotal() - 1 / m.fps); pump();
+      if (lastKey !== 'v') ctx.clearRect(0, 0, canvas.width, canvas.height);
+      lastKey = 'v'; if (!root.classList.contains('is-live')) root.classList.add('is-live');
+      return;
+    }
+    if (p <= TL.flight) {
+      let t = seg(p, 0, TL.flight) * last, a = Math.floor(t), b = Math.min(last, a + 1), al = t - a;
+      a = Math.round(t); b = a; al = 0; // один ближайший кадр, без смешивания соседних: смесь двух кадров на движении камеры = двойная крона (§7.1)
+      const ia = nearest(a), ib = nearest(b);
+      tend(a);
+      key = 'f' + ia + ':' + ib + ':' + al.toFixed(3) + ':' + (bmps[ia] ? 1 : 0) + (bmps[ib] ? 1 : 0);
+      if (key === lastKey || (ia < 0 && ib < 0)) return;
+      if (!lastKey.startsWith('f' + ia + ':' + ib + ':')) flips.push(performance.now());
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (ia >= 0) cover(pick(ia), 1);
+      if (ib >= 0 && ib !== ia && al > 0.002) cover(pick(ib), al);
+    } else if (p <= TL.groom) {
+      const k = ease(seg(p, TL.flight, TL.groom)), ib = ready[last] ? last : nearest(last);
+      key = 'g' + ib + ':' + ready[A] + ':' + k.toFixed(4);
+      if (key === lastKey || ib < 0) return;
+      tend(last);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      cover(pick(ib), 1);
+      if (ready[A] && k > 0) {
+        // кромка покоса: мягкая (F px), впереди неё — светлая полоса свежего среза
+        const F = Math.max(40, W * 0.07), edge = -F + k * (W + 2 * F);
+        cover(pick(A), 1, 0, Math.max(0, edge - F));
+        const S = 10;
+        for (let j = 0; j < S; j++) { const x0 = edge - F + (F * j) / S; cover(pick(A), 1 - (j + 0.5) / S, Math.max(0, x0), Math.max(0, x0 + F / S)); }
+        if (k < 1) {
+          const g = ctx.createLinearGradient((edge - F * 1.2) * dpr, 0, (edge + F * 0.2) * dpr, 0);
+          g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.75, 'rgba(255,255,255,.14)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = g; ctx.fillRect((edge - F * 1.2) * dpr, 0, F * 1.4 * dpr, H * dpr);
+        }
+      }
+    } else {
+      const k = ease(seg(p, TL.groom, TL.light));
+      key = 'l' + ready[A] + ':' + ready[A + 1] + ':' + k.toFixed(4);
+      if (key === lastKey) return;
+      if (!ready[A]) { lastKey = ''; return draw(TL.flight); }
+      tend(last);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      cover(pick(A), 1);
+      if (ready[A + 1] && k > 0) cover(pick(A + 1), k);
+    }
+    lastKey = key;
+    if (!root.classList.contains('is-live')) root.classList.add('is-live');
+  }
+
+  // --- прогресс и цикл ---
+  function progress() {
+    const r = root.getBoundingClientRect(), travel = r.height - (window.innerHeight || 1);
+    return travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0;
+  }
+  let lastP = -1;
+  // дыхание на покое: пока страница стоит наверху, камера едва дышит по первым кадрам пролёта (период ~9 с) — главная живая без скролла
+  // 24.10: дыхание на покое — только CSS-масштабом (.ve-hero.is-idle в 02-hero), кадрами/перемоткой больше не дышим: в видео-режиме это была перемотка туда-сюда по первым кадрам травы — 2–3 смены кадра в секунду, читалось как 5 к/с (владелец)
+  const idleOk = () => false;
+  // инерция картинки за скроллом: на компьютере 0.16 (≈ 90 мс отставания), на тач 0.4 — у iOS своя инерция, лишнее сглаживание читалось как «отбрасывает» при развороте (владелец, 24.10)
+  const EASE_K = (() => { try { return window.matchMedia('(hover:none) and (pointer:coarse)').matches ? 0.4 : 0.16; } catch { return 0.16; } })();
+  function loop(now) {
+    if (dead) return;
+    running = true;
+    if ((++tick % 20) === 0) size();
+    const p = held != null ? held : progress();
+    if (p !== lastP) { lastP = p; onProgress(p); }
+    let idle = false;
+    if (rm || held != null) curP = p;
+    else if (p < 0.002 && idleOk()) { idle = true; if (!slow || tick % 2 === 0) { const ph = (1 - Math.cos(((now || performance.now()) / 9000) * Math.PI * 2)) / 2; curP = (ph * 1.9 * TL.flight) / (nFlight - 1); } }
+    else { curP += (p - curP) * EASE_K; if (Math.abs(p - curP) < 0.0004) curP = p; }
+    draw(curP);
+    const loading = !ready.every(Boolean);
+    const vlag = vidOn() && curP <= TL.flight && (vidSeeking || vidBehind);
+    if (idle || vlag || Math.abs(p - curP) > 0.0002 || (loading && tick % 10 !== 0 && !vidOn())) requestAnimationFrame(loop);
+    else running = false;
+  }
+  function wake() { if (!running && !dead && !document.hidden) requestAnimationFrame(loop); }
+
+  (opts.manifest ? Promise.resolve(opts.manifest) : fetch(urlOf('manifest.json')).then((r) => r.json())).then((m) => {
+    if (dead) return;
+    man = m; if (opts.onManifest) opts.onManifest(m); size(); pickSet(); wake();
+  }).catch(() => { root.classList.add('is-static'); });
+
+  const onScroll = () => wake();
+  setInterval(() => { if (!running && idleOk() && progress() < 0.002) wake(); }, 500); // покой: если цикл уснул, а мы наверху — разбудить дыхание
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  document.addEventListener('visibilitychange', onScroll);
+  let ro = null;
+  if ('ResizeObserver' in window) { ro = new ResizeObserver(() => { if (size()) wake(); }); ro.observe(stage); }
+
+  return {
+    destroy() { dead = true; for (const u of vidUrls) if (u) URL.revokeObjectURL(u); for (const x of vids) x.remove(); for (const b of bmps) if (b) { try { b.close(); } catch {} } bmps = []; window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); document.removeEventListener('visibilitychange', onScroll); if (ro) ro.disconnect(); },
+    // отладка: заморозить сцену на прогрессе p (null — вернуть скролл); рисует синхронно, без rAF
+    hold(p) { held = p; if (p != null) { curP = p; onProgress(p); lastKey = ''; draw(p); } else wake(); },
+    // 24.10: заставка исчерпала 15 с, а видео пролёта ещё не готово — не ждать его с пустым холстом, откатиться на кадры (на 4G видео 21–23 МБ качается ~45 с)
+    fallback() { if (wantVid && !vidOk && !vidBad) vidFail(); },
+    get progress() { return lastP; },
+    info() { const now = performance.now(); while (flips.length && now - flips[0] > 1000) flips.shift(); let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height + '\nпролёт: ' + (vidOn() ? 'видео ' + vidMeta().fps + ' к/с' : wantVid ? (vidBad ? 'видео отказало → кадры' : 'видео грузится') : 'кадры') + ' · смен кадра ' + flips.length + '/с'; },
+  };
+}
+;exports.mount=mount;return exports})();window.VE_SCENE_MAN={"v":2,"n":97,"placeholder":false,"source":"clips","loop":"loop.mp4","loopTall":"loop-tall.mp4","sets":{"wide":{"w":1440,"h":810,"frames":["wide-00.webp","wide-01.webp","wide-02.webp","wide-03.webp","wide-04.webp","wide-05.webp","wide-06.webp","wide-07.webp","wide-08.webp","wide-09.webp","wide-10.webp","wide-11.webp","wide-12.webp","wide-13.webp","wide-14.webp","wide-15.webp","wide-16.webp","wide-17.webp","wide-18.webp","wide-19.webp","wide-20.webp","wide-21.webp","wide-22.webp","wide-23.webp","wide-24.webp","wide-25.webp","wide-26.webp","wide-27.webp","wide-28.webp","wide-29.webp","wide-30.webp","wide-31.webp","wide-32.webp","wide-33.webp","wide-34.webp","wide-35.webp","wide-36.webp","wide-37.webp","wide-38.webp","wide-39.webp","wide-40.webp","wide-41.webp","wide-42.webp","wide-43.webp","wide-44.webp","wide-45.webp","wide-46.webp","wide-47.webp","wide-48.webp","wide-49.webp","wide-50.webp","wide-51.webp","wide-52.webp","wide-53.webp","wide-54.webp","wide-55.webp","wide-56.webp","wide-57.webp","wide-58.webp","wide-59.webp","wide-60.webp","wide-61.webp","wide-62.webp","wide-63.webp","wide-64.webp","wide-65.webp","wide-66.webp","wide-67.webp","wide-68.webp","wide-69.webp","wide-70.webp","wide-71.webp","wide-72.webp","wide-73.webp","wide-74.webp","wide-75.webp","wide-76.webp","wide-77.webp","wide-78.webp","wide-79.webp","wide-80.webp","wide-81.webp","wide-82.webp","wide-83.webp","wide-84.webp","wide-85.webp","wide-86.webp","wide-87.webp","wide-88.webp","wide-89.webp","wide-90.webp","wide-91.webp","wide-92.webp","wide-93.webp","wide-94.webp","wide-95.webp","wide-96.webp"],"after":["after-a-wide.webp","after-b-wide.webp"]},"tall":{"w":480,"h":853,"frames":["tall-00.jpg","tall-01.jpg","tall-02.jpg","tall-03.jpg","tall-04.jpg","tall-05.jpg","tall-06.jpg","tall-07.jpg","tall-08.jpg","tall-09.jpg","tall-10.jpg","tall-11.jpg","tall-12.jpg","tall-13.jpg","tall-14.jpg","tall-15.jpg","tall-16.jpg","tall-17.jpg","tall-18.jpg","tall-19.jpg","tall-20.jpg","tall-21.jpg","tall-22.jpg","tall-23.jpg","tall-24.jpg","tall-25.jpg","tall-26.jpg","tall-27.jpg","tall-28.jpg","tall-29.jpg","tall-30.jpg","tall-31.jpg","tall-32.jpg","tall-33.jpg","tall-34.jpg","tall-35.jpg","tall-36.jpg","tall-37.jpg","tall-38.jpg","tall-39.jpg","tall-40.jpg","tall-41.jpg","tall-42.jpg","tall-43.jpg","tall-44.jpg","tall-45.jpg","tall-46.jpg","tall-47.jpg","tall-48.jpg","tall-49.jpg","tall-50.jpg","tall-51.jpg","tall-52.jpg","tall-53.jpg","tall-54.jpg","tall-55.jpg","tall-56.jpg","tall-57.jpg","tall-58.jpg","tall-59.jpg","tall-60.jpg","tall-61.jpg","tall-62.jpg","tall-63.jpg","tall-64.jpg","tall-65.jpg","tall-66.jpg","tall-67.jpg","tall-68.jpg","tall-69.jpg","tall-70.jpg","tall-71.jpg","tall-72.jpg","tall-73.jpg","tall-74.jpg","tall-75.jpg","tall-76.jpg","tall-77.jpg","tall-78.jpg","tall-79.jpg","tall-80.jpg","tall-81.jpg","tall-82.jpg","tall-83.jpg","tall-84.jpg","tall-85.jpg","tall-86.jpg","tall-87.jpg","tall-88.jpg","tall-89.jpg","tall-90.jpg","tall-91.jpg","tall-92.jpg","tall-93.jpg","tall-94.jpg","tall-95.jpg","tall-96.jpg"],"after":["after-a-tall.jpg","after-b-tall.jpg"]}},"poster":{"wide":"poster-wide.webp","tall":"poster-tall.webp"},"video":{"tall":{"src":"flight-tall.mp4","fps":24,"dur":30.2033,"w":720,"h":1280,"parts":[{"src":"flight-tall-1.mp4","dur":10.04},{"src":"flight-tall-2.mp4","dur":10.04},{"src":"flight-tall-3.mp4","dur":10.1233}]},"wide":{"src":"flight-wide.mp4","fps":24,"dur":30.2033,"w":1920,"h":1080,"parts":[{"src":"flight-wide-1.mp4","dur":10.04},{"src":"flight-wide-2.mp4","dur":10.04},{"src":"flight-wide-3.mp4","dur":10.1233}]}}};window.VE_TILD=window.VE_TILD||{h:"",c:{}};Object.assign(window.VE_TILD.c,{});</script>
 <script>
 (function(){
   var root=document.getElementById('ve-hero');if(!root)return;
@@ -270,7 +575,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
   })();
   function start(){
     var VE=window.VE;if(!VE)return setTimeout(start,50);
-    import(VE.url('js/scene.js')).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,onProgress:onP,onManifest:function(man){if(html.classList.contains('ve-no-loops'))return;var tall=window.innerHeight>window.innerWidth,f=tall&&man.loopTall?man.loopTall:man.loop;if(f)loopSrc=VE.url('media/scene/'+f)},onLoad:onLoad,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});
+    (window.VE_SCENE_MOD?Promise.resolve(window.VE_SCENE_MOD):import(VE.url('js/scene.js'))).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,url:function(n){return VE.url('media/scene/'+n)},manifest:window.VE_SCENE_MAN||null,onProgress:onP,onManifest:function(man){if(html.classList.contains('ve-no-loops'))return;var tall=window.innerHeight>window.innerWidth,f=tall&&man.loopTall?man.loopTall:man.loop;if(f)loopSrc=VE.url('media/scene/'+f)},onLoad:onLoad,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();

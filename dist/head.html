@@ -1,4 +1,4 @@
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка e50827e6 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка a120f1ee -->
 <link rel="preconnect" href="https://verdant-assets.lilkutabare.workers.dev" crossorigin>
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -234,6 +234,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
   .ve .ve-btn::after,.ve-ring::after{display:none}
 }
 </style>
+<script>window.VE_LOOPS_MAN={"v":1,"loops":{"t1":{"mp4":"t1.mp4","poster":"t1.webp","w":1282,"h":1604,"dur":5.04},"t2":{"mp4":"t2.mp4","poster":"t2.webp","w":1282,"h":1604,"dur":5.04},"t3":{"mp4":"t3.mp4","poster":"t3.webp","w":1282,"h":1604,"dur":5.04},"r02":{"mp4":"r02.mp4","poster":"r02.webp","w":1282,"h":1604,"dur":5.04},"r04":{"mp4":"r04.mp4","poster":"r04.webp","w":1282,"h":1604,"dur":5.04},"r07":{"mp4":"r07.mp4","poster":"r07.webp","w":1282,"h":1604,"dur":5.04},"b2":{"mp4":"b2.mp4","poster":"b2.webp","w":1722,"h":1076,"dur":5.04},"z1":{"mp4":"z1.mp4","poster":"z1.webp","w":1722,"h":1076,"dur":5.04},"r03":{"mp4":"r03.mp4","poster":"r03.webp","w":1282,"h":1604,"dur":5.04},"r05":{"mp4":"r05.mp4","poster":"r05.webp","w":1282,"h":1604,"dur":5.04},"r06":{"mp4":"r06.mp4","poster":"r06.webp","w":1282,"h":1604,"dur":5.04},"r08":{"mp4":"r08.mp4","poster":"r08.webp","w":1282,"h":1604,"dur":5.04},"r09":{"mp4":"r09.mp4","poster":"r09.webp","w":1282,"h":1604,"dur":5.04},"r10":{"mp4":"r10.mp4","poster":"r10.webp","w":1282,"h":1604,"dur":5.04},"r01":{"mp4":"r01.mp4","poster":"r01.webp","w":1282,"h":1604,"dur":5.04}},"seasons":{"summer-autumn":{"frames":["season-summer-autumn-00.avif","season-summer-autumn-01.avif","season-summer-autumn-02.avif","season-summer-autumn-03.avif","season-summer-autumn-04.avif","season-summer-autumn-05.avif","season-summer-autumn-06.avif","season-summer-autumn-07.avif","season-summer-autumn-08.avif","season-summer-autumn-09.avif","season-summer-autumn-10.avif","season-summer-autumn-11.avif","season-summer-autumn-12.avif","season-summer-autumn-13.avif","season-summer-autumn-14.avif","season-summer-autumn-15.avif","season-summer-autumn-16.avif","season-summer-autumn-17.avif","season-summer-autumn-18.avif","season-summer-autumn-19.avif","season-summer-autumn-20.avif","season-summer-autumn-21.avif","season-summer-autumn-22.avif","season-summer-autumn-23.avif"],"w":1600,"h":1000},"autumn-winter":{"frames":["season-autumn-winter-00.avif","season-autumn-winter-01.avif","season-autumn-winter-02.avif","season-autumn-winter-03.avif","season-autumn-winter-04.avif","season-autumn-winter-05.avif","season-autumn-winter-06.avif","season-autumn-winter-07.avif","season-autumn-winter-08.avif","season-autumn-winter-09.avif","season-autumn-winter-10.avif","season-autumn-winter-11.avif","season-autumn-winter-12.avif","season-autumn-winter-13.avif","season-autumn-winter-14.avif","season-autumn-winter-15.avif","season-autumn-winter-16.avif","season-autumn-winter-17.avif","season-autumn-winter-18.avif","season-autumn-winter-19.avif","season-autumn-winter-20.avif","season-autumn-winter-21.avif","season-autumn-winter-22.avif","season-autumn-winter-23.avif"],"w":1600,"h":1000}},"once":{"hw-on":{"mp4":"hw-on.mp4","poster":"hw-on.webp","w":1282,"h":1604,"dur":5.04},"ny-on":{"mp4":"ny-on.mp4","poster":"ny-on.webp","w":1282,"h":1604,"dur":5.04}}};window.VE_TILD={"h":"","c":{}};</script>
 <script>
 /* реестр VE: адреса с версией, появление, вкладки, смена текста, общий префилл формы */
 (function(){
@@ -250,8 +251,10 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'e50827e6',base:base,
-    url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
+  var VE={v:'a120f1ee',base:base,
+    /* адрес файла: в хранилище Тильды (window.VE_TILD = {h, c:{плоское имя: код папки}}, ставит сборка по docs/media-map.json) или свой хостинг с версией */
+    flat:function(p){return p.replace(/^media\//,'').replace(/\//g,'-')},
+    url:function(p){var t=window.VE_TILD,f=t&&t.c&&t.c[VE.flat(p)];if(f!=null&&t.h)return t.h+(f?f+'/':'')+VE.flat(p);return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
     state:{},
@@ -325,7 +328,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
       var coarse=false;try{coarse=window.matchMedia('(hover:none)').matches}catch(e){}
       var play=function(v){if(!v.paused)return;var p=v.play();if(p&&p.catch)p.catch(function(){})},pause=function(v){if(!v.paused)v.pause()},
           restart=function(v){if(v.__once&&v.getAttribute('src')!==v.__once){v.src=v.__once;v.loop=false;v.removeAttribute('loop')}try{v.currentTime=0}catch(e){}play(v)}; /* once: с первого кадра */
-      fetch(VE.url('media/loops/manifest.json')).then(function(r){return r.ok?r.json():null}).then(function(m){
+      (window.VE_LOOPS_MAN?Promise.resolve(window.VE_LOOPS_MAN):fetch(VE.url('media/loops/manifest.json')).then(function(r){return r.ok?r.json():null})).then(function(m){
         if(!m||!m.loops){lit();return}VE.loopsMan=m;
         /* наблюдаем рамку, а не <video>: Chrome считает clip-path (шторка «до/после») в долю видимости, и луп гас на ходу шторки */
         var io=('IntersectionObserver' in window)?new IntersectionObserver(function(en){en.forEach(function(x){(x.target.__veLoops||[]).forEach(function(v){var mode=v.getAttribute('data-mode'),hover=mode==='hover',once=mode==='once';

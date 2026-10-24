@@ -136,6 +136,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
 .ve-hero__load i{position:absolute;left:0;top:0;height:1px;width:100%;background:var(--ve-bronze);transform:scaleX(var(--p,0));transform-origin:left;transition:transform .35s var(--ve-ease)}
 @media(prefers-reduced-motion:reduce){.ve-hero__ch,.ve-hero__index a,.ve-hero__index,.ve-hero__lp,.ve-hero__intro,.ve-hero__loop{transition:none}.ve-hero__hint{display:none}.ve-hero__lp{opacity:1;transform:none}.ve-logo__band{animation:none}.ve-logo__halo::after{display:none}}
 </style>
+__SCENE_INLINE__
 <script>
 (function(){
   var root=document.getElementById('ve-hero');if(!root)return;
@@ -269,7 +270,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
   })();
   function start(){
     var VE=window.VE;if(!VE)return setTimeout(start,50);
-    import(VE.url('js/scene.js')).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,onProgress:onP,onManifest:function(man){if(html.classList.contains('ve-no-loops'))return;var tall=window.innerHeight>window.innerWidth,f=tall&&man.loopTall?man.loopTall:man.loop;if(f)loopSrc=VE.url('media/scene/'+f)},onLoad:onLoad,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});
+    (window.VE_SCENE_MOD?Promise.resolve(window.VE_SCENE_MOD):import(VE.url('js/scene.js'))).then(function(m){VE.hero=m.mount(root,{base:VE.base,v:VE.v,url:function(n){return VE.url('media/scene/'+n)},manifest:window.VE_SCENE_MAN||null,onProgress:onP,onManifest:function(man){if(html.classList.contains('ve-no-loops'))return;var tall=window.innerHeight>window.innerWidth,f=tall&&man.loopTall?man.loopTall:man.loop;if(f)loopSrc=VE.url('media/scene/'+f)},onLoad:onLoad,reducedMotion:VE.rm,timeline:TL})}).catch(function(e){console.warn('[VE] сцена недоступна:',e&&e.message);root.classList.add('is-static','is-live')});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();

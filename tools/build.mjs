@@ -87,9 +87,28 @@ const legalFill = (s) => {
   if (!CD.INN) out = out.replace(/<span class="ve-ft__req"[^>]*>[\s\S]*?<\/span>/g, ''); // реквизиты в подвале — только когда есть ИНН
   return out;
 };
+// ---------- карта хранилища Тильды (tools/tilda-media.mjs --map → docs/media-map.json): путь → https://static.tildacdn.com/<код>/<плоское имя> ----------
+let MM = {}; try { MM = JSON.parse(await readFile(join(DOCS, 'media-map.json'), 'utf8')); delete MM.__sha; } catch {}
+const flatName = (p) => p.replace(/^media\//, '').replace(/\//g, '-'); // как в tilda-media.mjs и VE.url
+const tild = (paths) => { // компактные коды папок для адресов на лету: {h, c:{плоское имя: код}}
+  const c = {}; let h = 'https://static.tildacdn.com/';
+  for (const p of paths) { const u = MM[p]; if (!u) continue; const m = /^(https?:\/\/[^/]+\/)(.*?)\/?([^/]+)$/.exec(u); if (!m) continue; h = m[1]; c[flatName(p)] = m[2]; }
+  return { h, c };
+};
+const mapStatic = (s) => (Object.keys(MM).length ? s.replace(/__BASE__([\w.\/-]+?)(\?v=__V__)?(?=["')\s,])/g, (_, p, q) => (MM[p] ? MM[p] : '__BASE__' + p + (q || ''))) : s);
+const sceneMan = JSON.parse(await readFile(join(SITE, 'media/scene/manifest.json'), 'utf8').catch(() => 'null'));
+const loopsMan = JSON.parse(await readFile(join(SITE, 'media/loops/manifest.json'), 'utf8').catch(() => 'null'));
+const sceneFiles = sceneMan ? ['scene/manifest.json', ...sceneMan.sets.wide.frames, ...sceneMan.sets.tall.frames, ...sceneMan.sets.wide.after, ...sceneMan.sets.tall.after, sceneMan.poster.wide, sceneMan.poster.tall, sceneMan.loop, sceneMan.loopTall, ...Object.values(sceneMan.video || {}).flatMap((x) => [x.src, ...((x.parts || []).map((q) => q.src))])].filter(Boolean).map((f) => (f.startsWith('scene/') ? 'media/' + f : 'media/scene/' + f)) : [];
+const loopFiles = loopsMan ? [...Object.values(loopsMan.loops || {}), ...Object.values(loopsMan.once || {})].flatMap((L) => [L.mp4, L.poster].filter(Boolean)).map((f) => 'media/loops/' + f) : [];
+const sceneJs = await readFile(join(SITE, 'js/scene.js'), 'utf8');
+// для Тильды: скрипт сцены внутрь блока хиро классическим скриптом (import() отдельного файла с хостинга не нужен)
+const sceneInline = '<script>window.VE_SCENE_MOD=(function(){var exports={};' + sceneJs.replace(/^export function mount/m, 'function mount') + ';exports.mount=mount;return exports})();window.VE_SCENE_MAN=' + JSON.stringify(sceneMan) + ';window.VE_TILD=window.VE_TILD||{h:"",c:{}};Object.assign(window.VE_TILD.c,' + JSON.stringify(tild(sceneFiles).c) + ');</script>';
+const headTilda = '<script>window.VE_LOOPS_MAN=' + JSON.stringify(loopsMan) + ';window.VE_TILD=' + JSON.stringify(Object.keys(MM).length ? tild(loopFiles) : { h: '', c: {} }) + ';</script>'; // в HEAD только коды лупов (лимит 64 КБ), коды сцены — в блоке хиро
 const fill = (s, base) => legalFill(s).replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__OFFERS__/g, JSON.stringify(CD.offers || null)).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__ARC_MASK__/g, ARC_MASK).replace(/__ARC_CX__/g, ARC_CX).replace(/__ARC_CY__/g, ARC_CY).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
 
-const headDist = fill(headSrc, PAGES_BASE);
+const fillDist = (src) => fill(mapStatic(src), PAGES_BASE).replace('__TILDA_HEAD__', headTilda).replace('__SCENE_INLINE__', sceneInline);
+const fillPrev = (src, base) => fill(src, base).replace('__TILDA_HEAD__', '').replace('__SCENE_INLINE__', '');
+const headDist = fillDist(headSrc);
 await checkScripts(headDist, 'head'); checkCss(headDist, 'head');
 if (Buffer.byteLength(headDist) > LIMIT_HEAD) throw new Error(`HEAD ${kb(Buffer.byteLength(headDist))} > 64 КБ`);
 await writeFile(join(DIST, 'head.html'), headDist);
@@ -103,13 +122,13 @@ const blocksDist = [], blocksPreview = [];
 for (const f of files) {
   const n = f.slice(0, 2);
   const src = await readFile(join(SRC, f), 'utf8');
-  const dist = `<!-- VE · ${f} · сборка ${V} -->\n` + fill(src, PAGES_BASE);
+  const dist = `<!-- VE · ${f} · сборка ${V} -->\n` + fillDist(src);
   await checkScripts(dist, f); checkCss(dist, f);
   const size = Buffer.byteLength(dist);
   if (size > LIMIT_BLOCK) throw new Error(`[${f}] блок ${kb(size)} > 84 КБ`);
   await writeFile(join(DIST, `t123-${n}.html`), dist);
   blocksDist.push({ n, f, size, html: dist });
-  blocksPreview.push({ n, f, html: fill(src, 'site/') });
+  blocksPreview.push({ n, f, html: fillPrev(src, 'site/') });
   console.log(`t123-${n}.html  ${kb(size)} / 84 КБ  ← ${f}`);
 }
 
@@ -118,11 +137,11 @@ const legalStyle = await readFile(join(SRC, 'legal/_style.html'), 'utf8');
 const LEGAL = [['policy', 'Политика обработки персональных данных'], ['consent', 'Согласие на обработку персональных данных']];
 for (const [name, title] of LEGAL) {
   const src = legalStyle + (await readFile(join(SRC, `legal/${name}.html`), 'utf8'));
-  const dist = `<!-- VE · legal/${name}.html · сборка ${V} -->\n` + fill(src, PAGES_BASE);
+  const dist = `<!-- VE · legal/${name}.html · сборка ${V} -->\n` + fillDist(src);
   checkCss(dist, name);
   await writeFile(join(DIST, `t123-${name}.html`), dist);
   console.log(`t123-${name}.html  ${kb(Buffer.byteLength(dist))} / 84 КБ  ← legal/${name}.html`);
-  const prev = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title} — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>${fill(headSrc, 'site/')}<style>html,body{margin:0;background:#fff}</style></head><body>${fill(src, 'site/')}</body></html>`;
+  const prev = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title} — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>${fillPrev(headSrc, 'site/')}<style>html,body{margin:0;background:#fff}</style></head><body>${fillPrev(src, 'site/')}</body></html>`;
   await writeFile(join(DOCS, `${name}.html`), prev);
 }
 
@@ -152,7 +171,7 @@ const page = `<!doctype html>
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png">
 <meta name="theme-color" content="#1B462A">
 <script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>
-${fill(headSrc, 'site/')}
+${fillPrev(headSrc, 'site/')}
 <style>html,body{margin:0;padding:0;background:#FFFFFF}body{overflow-x:hidden}.ve-preview-note{font:11px/1.5 -apple-system,system-ui,sans-serif;color:#5E6E45;text-align:center;padding:18px 20px 28px;background:#FFFFFF}</style>
 </head>
 <body>
