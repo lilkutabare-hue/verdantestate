@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 6c1d36ba -->
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка b89c41e8 -->
 <link rel="preconnect" href="https://verdant-assets.lilkutabare.workers.dev" crossorigin>
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -18,10 +18,10 @@
 html{scroll-behavior:smooth;scroll-padding-top:84px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 /* база блока: всё наше живёт под .ve, стили Тильды .t-* не трогаем */
-.ve{font-family:var(--ve-sans);font-size:16px;line-height:1.5;color:var(--ve-ink);background:var(--ve-paper);
+.ve{font-family:var(--ve-sans);font-size:17px;line-height:1.5;color:var(--ve-ink);background:var(--ve-paper);
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;box-sizing:border-box}
 .ve *,.ve *::before,.ve *::after{box-sizing:inherit}
-@media(min-width:900px){.ve{font-size:17px}}
+@media(min-width:900px){.ve{font-size:18px}}
 :where(.ve) p{margin:0}
 :where(.ve) a{color:inherit;text-decoration:none}
 :where(.ve) img{display:block;max-width:100%;height:auto}
@@ -38,9 +38,9 @@ html{scroll-behavior:smooth;scroll-padding-top:84px}
 /* типографика: один гротеск, заголовки плотные, без курсива и росчерков */
 .ve-h1,.ve-h2,.ve-h3{font-family:var(--ve-sans);font-weight:600;margin:0;letter-spacing:-.022em;text-wrap:balance}
 .ve-h1{font-size:40px;line-height:1.02}
-.ve-h2{font-size:30px;line-height:1.08;letter-spacing:-.02em}
+.ve-h2{font-size:clamp(34px,9.3vw,40px);line-height:1.04;letter-spacing:-.025em} /* шкала A.2: 36–40 / 64–72 (план доводки §8) */
 .ve-h3{font-size:20px;line-height:1.2;letter-spacing:-.012em}
-@media(min-width:900px){.ve-h1{font-size:64px;line-height:1}.ve-h2{font-size:42px;line-height:1.04}.ve-h3{font-size:22px}}
+@media(min-width:900px){.ve-h1{font-size:64px;line-height:1}.ve-h2{font-size:clamp(56px,5vw,72px);line-height:1;letter-spacing:-.03em}.ve-h3{font-size:22px}}
 .ve-caps{font-family:var(--ve-sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ve-moss)}
 .ve-price,.ve-num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
 /* подпись к фото «что · где»: антиква курсивом (владелец, 21.10), бронзовая точка-разделитель */
@@ -137,6 +137,13 @@ html.ve-no-breathe .ve-px>img{animation:none}
 .ve-img>img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 1.3s var(--ve-ease);transition-delay:var(--d,0ms)}
 .ve-img.is-in{clip-path:inset(0 round var(--ve-r))}
 .ve-img.is-in>img{transform:scale(1)}
+/* .ve-lines — заголовок появляется строками из-под маски (A.2): VE.lines режет текст на строки по фактическому переносу, каждая строка — рамка .ve-ln с обрезкой,
+   внутренняя .ve-ln__in выезжает снизу за 600 мс лесенкой по 60 мс; затухание .ve-r у такого элемента не нужно */
+.ve-lines.ve-r{opacity:1;transform:none;transition:none}
+.ve-lines .ve-ln{display:inline-block;vertical-align:top;overflow:hidden;padding-bottom:.18em;margin-bottom:-.18em}
+.ve-lines .ve-ln__in{display:inline-block;transform:translateY(115%);transition:transform .6s var(--ve-ease);transition-delay:calc(var(--d,0ms) + var(--i,0)*60ms)}
+.ve-lines.is-in .ve-ln__in{transform:none}
+@media(prefers-reduced-motion:reduce){.ve-lines .ve-ln__in{transform:none;transition:none}}
 .ve-line{position:relative}
 .ve-line::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ve-line);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ve-ease);transition-delay:var(--d,0ms)}
 .ve-line.is-in::before{transform:scaleX(1)}
@@ -206,7 +213,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'6c1d36ba',base:base,
+  var VE={v:'b89c41e8',base:base,
     url:function(p){return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
@@ -214,8 +221,20 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     set:function(k,v){VE.state[k]=v;try{sessionStorage.setItem('ve-calc',JSON.stringify(VE.state))}catch(e){}VE.emit('state',VE.state)},
     goForm:function(patch){if(patch)for(var k in patch)VE.set(k,patch[k]);var f=document.getElementById('ve-form');if(f){f.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.emit('form:focus')}},
     rm:false,
+    /* строки из-под маски: режем текст на строки по фактическому переносу (слова → offsetTop), оборачиваем каждую в .ve-ln>.ve-ln__in; до появления пересчитываем на resize */
+    lines:function(el){
+      if(el.__src==null){if(el.children.length){var ok=true;for(var c=0;c<el.children.length;c++)if(el.children[c].tagName!=='BR')ok=false;if(!ok)return}el.__src=el.innerHTML}
+      var src=el.__src.replace(/<br\s*\/?>/gi,' \u2028 ').replace(/&nbsp;/g,'\u00a0'),tmp=document.createElement('div');tmp.innerHTML=src;var text=tmp.textContent;
+      var words=text.split(/[ \n\t]+/).filter(Boolean);
+      el.innerHTML=words.map(function(w){return w==='\u2028'?'<br>':'<span class="ve-wd">'+w.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>'}).join(' ');
+      var sp=el.querySelectorAll('.ve-wd'),lines=[],top=null;
+      for(var i=0;i<sp.length;i++){var t=sp[i].offsetTop;if(top===null||Math.abs(t-top)>2){lines.push([]);top=t}lines[lines.length-1].push(sp[i].textContent)}
+      el.innerHTML=lines.map(function(l,i){return '<span class="ve-ln" style="--i:'+i+'"><span class="ve-ln__in">'+l.join(' ').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span></span>'}).join(' ');
+    },
     reveal:function(root){
       root=root||document;
+      var lns=root.querySelectorAll('.ve-lines:not([data-lines])');for(var li=0;li<lns.length;li++){VE.lines(lns[li]);lns[li].setAttribute('data-lines','1')}
+      if(lns.length&&!VE._lnr){VE._lnr=true;var tm=0;window.addEventListener('resize',function(){clearTimeout(tm);tm=setTimeout(function(){var all=document.querySelectorAll('.ve-lines[data-lines]:not(.is-in)');for(var k=0;k<all.length;k++)VE.lines(all[k])},150)})}
       var els=root.querySelectorAll('.ve-r:not(.is-in),.ve-rg:not(.is-in),.ve-img:not(.is-in),.ve-line:not(.is-in),.ve-sil:not(.is-in)');
       for(var q=0;q<els.length;q++)if(els[q].classList.contains('ve-sil')){var pth=els[q].querySelector('path');if(pth&&pth.getTotalLength){var vb=els[q].viewBox&&els[q].viewBox.baseVal,sc=els[q].getBoundingClientRect().width/(vb&&vb.width||1000);pth.style.setProperty('--len',Math.ceil(pth.getTotalLength()*sc*1.25))}} /* штрих при non-scaling-stroke меряется в px: длина × масштаб, с запасом на рост окна */
       if(!('IntersectionObserver' in window)||VE.rm){for(var i=0;i<els.length;i++)els[i].classList.add('is-in');return}
@@ -297,8 +316,10 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     spectral:function(root){
       if(!VE._sp){VE._sp={vis:[],io:null};
         if('IntersectionObserver' in window)VE._sp.io=new IntersectionObserver(function(en){en.forEach(function(x){var v=VE._sp.vis,i=v.indexOf(x.target);if(x.isIntersecting){if(i<0)v.push(x.target)}else if(i>=0)v.splice(i,1)})},{rootMargin:'12%'});
-        if(!VE.rm&&!coarse&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=false,acc=0; // на тач свет стоит: каждая перерисовка конических градиентов дорога
-          (function spin(now){requestAnimationFrame(spin);var dt=(now-last)/1000;last=now;if(document.hidden||dt<=0||dt>.25)return;if(slow){acc+=dt;if(acc<.08)return;dt=acc;acc=0}
+        if(!VE.rm&&!coarse&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=false,acc=0,scrollT=0; // на тач свет стоит: каждая перерисовка конических градиентов дорога
+          /* 24.10: во время прокрутки спектр замирает (и 220 мс после) — перерисовка колец на каждом кадре съедала 2/3 кадров на компьютере (tools/scroll-bench.mjs: 10 → 26 к/с без спектра); в покое крутится не чаще 30 к/с */
+          window.addEventListener('scroll',function(){scrollT=performance.now()},{passive:true});
+          (function spin(now){requestAnimationFrame(spin);var dt=(now-last)/1000;last=now;if(document.hidden||dt<=0||dt>.25)return;if(now-scrollT<220){acc=0;return}acc+=dt;if(acc<(slow?.08:.033))return;dt=acc;acc=0;
             a=(a+SPEED*dt)%7200;t+=dt;var f=1+.045*Math.sin(t*1.8)+.03*Math.sin(t*4.7+1.4)+.018*Math.sin(t*11.3+3.1),A=a.toFixed(2)+'deg',F=f.toFixed(3),v=VE._sp.vis;
             for(var i=0;i<v.length;i++){var el=v[i];if(slow&&el.hasAttribute('data-spectral-heavy'))continue;el.style.setProperty('--ve-a',A);el.style.setProperty('--ve-f',F);var g=el.__grads;if(g)for(var k=0;k<g.length;k++)g[k].setAttribute('gradientTransform','rotate('+a.toFixed(1)+' '+g[k].getAttribute('data-spin')+')')}})(last)}}
       var els=(root||document).querySelectorAll('[data-spectral],.ve-btn,.ve-pill');
