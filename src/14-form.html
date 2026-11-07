@@ -128,9 +128,7 @@
     if(ep){btn.disabled=true;btn.textContent='Отправляем…';alt.hidden=true;
       var ac=window.AbortController?new AbortController():null,settled=false,to=setTimeout(function(){if(settled)return;settled=true;if(ac)ac.abort();fail(0)},8000);
       fetch(ep,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data),signal:ac?ac.signal:undefined}).then(function(r){if(settled)return;settled=true;clearTimeout(to);if(r.ok)done();else fail(r.status)},function(){if(settled)return;settled=true;clearTimeout(to);fail(0)})}
-    else{ // пока бэкенд не выбран (PLAN §9.2) — письмо
-      var body='Имя: '+data.name+'\nТелефон: '+data.phone+'\nПлощадь: '+(data.area||'—')+'\nУровень: '+(data.tariff||'не выбран')+'\nНа участке: '+((data.factors||[]).join(', ')||'—')+'\nКомментарий: '+(data.comment||'—');
-      location.href='mailto:hello@example.com?subject='+encodeURIComponent('Заявка с сайта Verdant Estate')+'&body='+encodeURIComponent(body);done()}
+    else{showAlt()} // сервера заявок нет — сразу WhatsApp с набранной заявкой и звонок (почты-заглушки больше нет)
   });
 })();
 </script>

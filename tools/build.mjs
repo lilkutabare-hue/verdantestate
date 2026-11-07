@@ -86,8 +86,19 @@ try { CD = JSON.parse(await readFile(join(DOCS, 'client-data.json'), 'utf8')); }
 const today = new Date().toLocaleDateString('ru-RU');
 const OPT = { METRICS_LINE: '', METRICS_COOKIE: '', TRANSFER_LINE: '', MAILING_LINE: 'Рекламные и информационные рассылки мы не делаем.', RETENTION: '12 месяцев', OGRN_LABEL: 'ОГРНИП', DATE: today, SITE: 'verdantestate.ru' };
 const legalFill = (s) => {
-  let out = s.replace(/\[\[([A-Z_]+)\]\]/g, (m, k) => (CD[k] != null && CD[k] !== '' ? String(CD[k]) : k in OPT ? OPT[k] : m));
-  if (CD.DRAFT === false) out = out.replace(/<p class="ve-legal__draft" data-ve-draft>[\s\S]*?<\/p>\s*/g, '');
+  // 24.10 (владелец: «никаких заметок на сайте»): пустые реквизиты не показываются вовсе; оператор без данных — «Verdant Estate»; отзыв согласия без почты — по телефону;
+  // служебная пометка «черновик» на сайт не идёт никогда
+  const has = (k) => CD[k] != null && CD[k] !== '';
+  let out = s.replace(/<span><b>[^<]*<\/b> \[\[([A-Z_]+)\]\]<\/span>\s*/g, (m, k) => (has(k) ? m : ''))
+    .replace(/<span><b>\[\[OGRN_LABEL\]\]:<\/b> \[\[OGRN\]\]<\/span>\s*/g, (m) => (has('OGRN') ? m : ''))
+    .replace(/<div class="ve-legal__req">\s*<\/div>\s*/g, '')
+    .replace(/письмом на \[\[PD_EMAIL\]\]/g, (m) => (has('PD_EMAIL') ? m : 'по телефону +7 980 400-94-48'))
+    .replace(/<p class="ve-legal__draft" data-ve-draft>[\s\S]*?<\/p>\s*/g, '');
+  // согласие: «(ИНН …, ОГРН …, адрес: …)» — только то, что заказчик дал; ничего не дал — скобки нет
+  out = out.replace(/ \(ИНН \[\[INN\]\], \[\[OGRN_LABEL\]\] \[\[OGRN\]\], адрес: \[\[ADDRESS\]\]\)/g, () => { const parts = [has('INN') && 'ИНН [[INN]]', has('OGRN') && '[[OGRN_LABEL]] [[OGRN]]', has('ADDRESS') && 'адрес: [[ADDRESS]]'].filter(Boolean); return parts.length ? ' (' + parts.join(', ') + ')' : ''; })
+    .replace(/написав на \[\[PD_EMAIL\]\]/g, (m) => (has('PD_EMAIL') ? m : 'позвонив по номеру +7 980 400-94-48'));
+  if (!has('NAME')) out = out.replace(/\[\[NAME\]\]/g, 'Verdant Estate');
+  out = out.replace(/\[\[([A-Z_]+)\]\]/g, (m, k) => (CD[k] != null && CD[k] !== '' ? String(CD[k]) : k in OPT ? OPT[k] : m));
   if (!CD.INN) out = out.replace(/<span class="ve-ft__req"[^>]*>[\s\S]*?<\/span>/g, ''); // реквизиты в подвале — только когда есть ИНН
   return out;
 };
