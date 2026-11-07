@@ -237,6 +237,7 @@ __TILDA_HEAD__
 <script>
 /* реестр VE: адреса с версией, появление, вкладки, смена текста, общий префилл формы */
 (function(){
+  try{if(!document.documentElement.lang)document.documentElement.lang='ru'}catch(e){} /* у страниц Тильды корень без lang: дикторам и переводчику — что страница русская */
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'__BASE__';
   /* диагностика с телефона: ?nofx=all | glass,dust,spectral,breathe,px,loops — выключает группу эффектов (класс ve-no-<имя> на html) */
