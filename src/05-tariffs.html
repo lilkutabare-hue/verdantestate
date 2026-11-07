@@ -70,7 +70,7 @@
 .ve-tar__offer{margin-top:28px;font-size:13px;color:rgba(255,255,255,.55);max-width:60ch}
 @media(min-width:900px){
   .ve-tar__wrap{margin-top:56px}
-  .ve-tar__strip{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;overflow:visible;margin:0;padding:0;scroll-snap-type:none}
+  .ve-tar__strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px; /* minmax(0,…): на 900–909 px цена без переноса раздвигала колонки и страница ехала вбок на 10 px */overflow:visible;margin:0;padding:0;scroll-snap-type:none}
   .ve-tar__card{width:auto;max-width:none}
   .ve-tar__price{font-size:clamp(36px,3.1vw,44px);white-space:nowrap} /* 56 ломало «от 110 000 ₽ / месяц» на три строки в колонке 360 px */
 }
