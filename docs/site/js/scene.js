@@ -62,9 +62,9 @@ export function mount(root, opts = {}) {
   // декодирует без рывков — HEVC аппаратный или гладкий, AV1 только аппаратный, H.264 всегда; lite — запасной лёгкий на медленной линии.
   // 07.11: HEVC впереди AV1 — при прокрутке пролёта за 8 с HEVC даёт 60 смен кадра/с, AV1 (random access) — 46 (flight-bench, Chrome, M4, видеокарта);
   // Средняя ступень — hevcm (тот же HEVC полегче, 1080p): её тянут все iPhone, AV1 — только 15 Pro и новее; AV1 — для устройств без HEVC.
-  // ?codec=av1|hevc|h264|lite — принудительно (замеры)
+  // ?codec=av1|hevc|hevcm|h264|lite — принудительно (замеры)
   let vidSel = null, vidQueue = [], vidLite = null, vidSwitched = false, vidWhy = ''; // vidWhy — почему ушли с основного варианта (для ?perf=1 и замеров)
-  const forced = (() => { try { return (/[?&]codec=(av1|hevc|h264|lite)\b/.exec(location.search) || [])[1] || ''; } catch { return ''; } })();
+  const forced = (() => { try { return (/[?&]codec=(av1|hevcm?|h264|lite)\b/.exec(location.search) || [])[1] || ''; } catch { return ''; } })(); // hevcm? — раньше ?codec=hevcm молча давал hevc (\b после «hevc» не срабатывал)
   async function score(vr) {
     try {
       const mc = navigator.mediaCapabilities;
