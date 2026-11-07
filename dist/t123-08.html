@@ -1,4 +1,4 @@
-<!-- VE · 08-pricelist.html · сборка f1e53bae -->
+<!-- VE · 08-pricelist.html · сборка 2957449a -->
 <section class="ve ve-sec ve-pr" id="ve-pricelist">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Без договора</p>
@@ -20,10 +20,10 @@
         <p class="ve-pr__note ve-muted">Индивидуальные работы — от 5&#8239;000&nbsp;₽ за выезд. Сложные работы — по смете. Цены — ориентир, не публичная оферта.</p>
       </div>
       <div class="ve-pr__pic ve-r ve-px" aria-hidden="true">
-        <img data-cat="lawn" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/price-lawn-l.webp?v=f1e53bae" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="plants" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/price-plants-l.webp?v=f1e53bae" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="trees" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/price-trees-l.webp?v=f1e53bae" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=f1e53bae" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="lawn" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/price-lawn-l.webp?v=2957449a" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/price-plants-l.webp?v=2957449a" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/price-trees-l.webp?v=2957449a" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=2957449a" alt="" loading="lazy" decoding="async" width="1000" height="1250">
       </div>
     </div>
   </div>
@@ -79,6 +79,9 @@
     var cn=root.querySelector('.ve-pr__cnote');if(cn){cn.textContent=NOTE[cat]||'';cn.hidden=!NOTE[cat]}
   }
   for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-cat'))});
-  show('lawn');var movePill=VE.pills(root.querySelector('.ve-pr__tabs'));var show0=show;show=function(c){show0(c);movePill()};
+  // жёлоб шире колонки (телефон и 900–1200 px на компьютере): выбранная вкладка встаёт в середину и открывает соседние — мышью без горизонтальной прокрутки до «Инженерии» и «Зимы» было не дойти
+  var tabsEl=root.querySelector('.ve-pr__tabs');
+  show('lawn');var movePill=VE.pills(tabsEl);var show0=show;show=function(c){show0(c);movePill();
+    var on=tabsEl.querySelector('.is-on');if(on&&tabsEl.scrollWidth>tabsEl.clientWidth+1){var x=on.offsetLeft-(tabsEl.clientWidth-on.offsetWidth)/2;try{tabsEl.scrollTo({left:x,behavior:VE.rm?'auto':'smooth'})}catch(e){tabsEl.scrollLeft=x}}};
 })();
 </script>

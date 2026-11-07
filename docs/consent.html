@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Согласие на обработку персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка f1e53bae -->
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Согласие на обработку персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 2957449a -->
 
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -237,6 +237,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
 <script>
 /* реестр VE: адреса с версией, появление, вкладки, смена текста, общий префилл формы */
 (function(){
+  try{if(!document.documentElement.lang)document.documentElement.lang='ru'}catch(e){} /* у страниц Тильды корень без lang: дикторам и переводчику — что страница русская */
   if(window.VE&&window.VE.v)return;
   var base=window.VE_BASE||'site/';
   /* диагностика с телефона: ?nofx=all | glass,dust,spectral,breathe,px,loops — выключает группу эффектов (класс ve-no-<имя> на html) */
@@ -250,7 +251,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'f1e53bae',base:base,
+  var VE={v:'2957449a',base:base,
     /* адрес файла: в хранилище Тильды (window.VE_TILD = {h, c:{плоское имя: код папки}}, ставит сборка по docs/media-map.json) или свой хостинг с версией */
     flat:function(p){return p.replace(/^media\//,'').replace(/\//g,'-')},
     url:function(p){var t=window.VE_TILD,f=t&&t.c&&t.c[VE.flat(p)];if(f!=null&&t.h)return t.h+(f?f+'/':'')+VE.flat(p);return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
@@ -258,7 +259,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
     state:{},
     set:function(k,v){VE.state[k]=v;try{sessionStorage.setItem('ve-calc',JSON.stringify(VE.state))}catch(e){}VE.emit('state',VE.state)},
-    goForm:function(patch){if(patch)for(var k in patch)VE.set(k,patch[k]);var f=document.getElementById('ve-form');if(f){f.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.emit('form:focus')}},
+    goForm:function(patch){if(patch)for(var k in patch)VE.set(k,patch[k]);var f=document.getElementById('ve-form');if(f){f.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.emit('form:focus')}else location.href=VE.legal.home+'#ve-form'}, /* формы на странице нет (шапка на /policy) — на главную к форме; выбор из конструктора уже в sessionStorage */
     rm:false,
     /* строки из-под маски: режем текст на строки по фактическому переносу (слова → offsetTop), оборачиваем каждую в .ve-ln>.ve-ln__in; до появления пересчитываем на resize */
     lines:function(el){
@@ -358,10 +359,14 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     spectral:function(root){
       if(!VE._sp){VE._sp={vis:[],io:null};
         if('IntersectionObserver' in window)VE._sp.io=new IntersectionObserver(function(en){en.forEach(function(x){var v=VE._sp.vis,i=v.indexOf(x.target);if(x.isIntersecting){if(i<0)v.push(x.target)}else if(i>=0)v.splice(i,1)})},{rootMargin:'12%'});
-        if(!VE.rm&&!coarse&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=false,acc=0,scrollT=0; // на тач свет стоит: каждая перерисовка конических градиентов дорога
+        if(!VE.rm&&!coarse&&!document.documentElement.classList.contains('ve-no-spectral')){var SPEED=19,a=0,t=0,last=performance.now(),slow=false,acc=0,scrollT=0,fq=0,fq0=0,calm=0; // на тач свет стоит: каждая перерисовка конических градиентов дорога
           /* 24.10: во время прокрутки спектр замирает (и 220 мс после) — перерисовка колец на каждом кадре съедала 2/3 кадров на компьютере (tools/scroll-bench.mjs: 10 → 26 к/с без спектра); в покое крутится не чаще 30 к/с */
           window.addEventListener('scroll',function(){scrollT=performance.now()},{passive:true});
-          (function spin(now){requestAnimationFrame(spin);var dt=(now-last)/1000;last=now;if(document.hidden||dt<=0||dt>.25)return;if(now-scrollT<220){acc=0;return}acc+=dt;if(acc<(slow?.08:.033))return;dt=acc;acc=0;
+          /* 08.11, предохранитель: страница в покое 2 с подряд держит меньше 40 к/с — кольца замирают на месте до конца визита (стекло видно, не вращается).
+             WebKit 2287 (движок Safari 26) после долгой загрузки по урезанной линии: с вращением 12–41 к/с, без него 61 (scratchpad lead/raf.mjs) */
+          (function spin(now){var dt=(now-last)/1000;last=now;
+            if(!document.hidden&&now-scrollT>=220&&!document.documentElement.classList.contains('ve-intro')){if(!calm)calm=now;if(now-calm>3000){if(!fq0)fq0=now;fq++;if(now-fq0>=2000){if(fq/((now-fq0)/1000)<40)return;fq=0;fq0=now}}}else{fq=0;fq0=0;if(document.documentElement.classList.contains('ve-intro'))calm=0}
+            requestAnimationFrame(spin);if(document.hidden||dt<=0||dt>.25)return;if(now-scrollT<220){acc=0;return}acc+=dt;if(acc<(slow?.08:.033))return;dt=acc;acc=0;
             a=(a+SPEED*dt)%7200;t+=dt;var f=1+.045*Math.sin(t*1.8)+.03*Math.sin(t*4.7+1.4)+.018*Math.sin(t*11.3+3.1),A=a.toFixed(2)+'deg',F=f.toFixed(3),v=VE._sp.vis;
             for(var i=0;i<v.length;i++){var el=v[i];if(slow&&el.hasAttribute('data-spectral-heavy'))continue;el.style.setProperty('--ve-a',A);el.style.setProperty('--ve-f',F);var g=el.__grads;if(g)for(var k=0;k<g.length;k++)g[k].setAttribute('gradientTransform','rotate('+a.toFixed(1)+' '+g[k].getAttribute('data-spin')+')')}})(last)}}
       var els=(root||document).querySelectorAll('[data-spectral],.ve-btn,.ve-pill');
@@ -411,6 +416,13 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
   var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();VE.strips();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
+  /* якорь главной на странице, где такого раздела нет (шапка на /policy и /consent): уходим на главную с тем же якорем; на главной — как раньше */
+  document.addEventListener('click',function(e){
+    if(e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+    var a=e.target.closest&&e.target.closest('a[href^="#"]'),id=a&&a.getAttribute('href').slice(1);if(!id)return;
+    try{id=decodeURIComponent(id)}catch(x){}if(document.getElementById(id))return;
+    e.preventDefault();location.href=VE.legal.home+'#'+encodeURIComponent(id);
+  });
 })();
 </script>
 <style>html,body{margin:0;background:#fff}</style></head><body><style>
@@ -428,6 +440,9 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
 .ve-legal__req{margin-top:12px;padding:14px 16px;border:1px solid var(--ve-line);border-radius:12px;display:grid;gap:4px;font-size:15px}
 .ve-legal__req b{font-weight:600}
 @media(min-width:900px){.ve-legal{padding-top:72px}}
+/* на странице стоит блок шапки (Тильда, /policy и /consent): белый док сверху (низ 66 px, на компьютере 74) — текст начинается под ним, а не под ним прячется */
+body:has(.ve-hd) .ve-legal{padding-top:calc(90px + env(safe-area-inset-top))}
+@media(min-width:900px){body:has(.ve-hd) .ve-legal{padding-top:100px}}
 </style>
 <section class="ve ve-legal" id="ve-consent">
   <div class="ve-legal__in">

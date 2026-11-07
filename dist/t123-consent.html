@@ -1,4 +1,4 @@
-<!-- VE · legal/consent.html · сборка f1e53bae -->
+<!-- VE · legal/consent.html · сборка 2957449a -->
 <style>
 .ve-legal{padding:calc(48px + env(safe-area-inset-top)) 0 72px;background:var(--ve-paper)}
 .ve-legal__in{max-width:760px;margin:0 auto;padding-left:max(var(--ve-pad),env(safe-area-inset-left,0px));padding-right:max(var(--ve-pad),env(safe-area-inset-right,0px))}
@@ -14,6 +14,9 @@
 .ve-legal__req{margin-top:12px;padding:14px 16px;border:1px solid var(--ve-line);border-radius:12px;display:grid;gap:4px;font-size:15px}
 .ve-legal__req b{font-weight:600}
 @media(min-width:900px){.ve-legal{padding-top:72px}}
+/* на странице стоит блок шапки (Тильда, /policy и /consent): белый док сверху (низ 66 px, на компьютере 74) — текст начинается под ним, а не под ним прячется */
+body:has(.ve-hd) .ve-legal{padding-top:calc(90px + env(safe-area-inset-top))}
+@media(min-width:900px){body:has(.ve-hd) .ve-legal{padding-top:100px}}
 </style>
 <section class="ve ve-legal" id="ve-consent">
   <div class="ve-legal__in">

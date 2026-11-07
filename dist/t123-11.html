@@ -1,14 +1,14 @@
-<!-- VE · 11-seasons.html · сборка f1e53bae -->
+<!-- VE · 11-seasons.html · сборка 2957449a -->
 <section class="ve ve-sec ve-sea" id="ve-seasons">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Круглый год</p>
     <h2 class="ve-h2 ve-r ve-lines ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-spring-l.webp?v=f1e53bae" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" data-loop="z1" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-summer-l.webp?v=f1e53bae" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-autumn-l.webp?v=f1e53bae" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=f1e53bae" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-spring-l.webp?v=2957449a" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" data-loop="z1" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-summer-l.webp?v=2957449a" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-autumn-l.webp?v=2957449a" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=2957449a" alt="" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
         <div class="ve-tabs ve-sea__tabs ve-r" role="tablist">
@@ -65,8 +65,11 @@
   VE.on('loops:ready',function(m){man=m.seasons||{};if(!Object.keys(man).length||VE.rm)return;
     cv=document.createElement('canvas');cv.className='ve-sea__cv';cv.setAttribute('aria-hidden','true');pic.appendChild(cv);ctx=cv.getContext('2d');
     if('IntersectionObserver' in window){var pio=new IntersectionObserver(function(en){if(en[0].isIntersecting){pio.disconnect();for(var k in man)load(k)}},{rootMargin:'40% 0px'});pio.observe(pic)}else for(var k in man)load(k)});
-  function load(name){if(SEQ[name])return SEQ[name];var m=man[name],S={imgs:[],ready:[],w:m.w,h:m.h};
-    m.frames.forEach(function(f,i){var im=new Image();im.decoding='async';im.src=VE.url('media/loops/'+f);S.imgs.push(im);S.ready.push(false);im.decode().then(function(){S.ready[i]=true}).catch(function(){})});
+  /* 08.11: на телефоне — кадры 800×500 (framesM; tools/loops.mjs): холст там 700×438, а 48 раскодированных кадров 1600×1000 в WebKit (Safari)
+     добавляли странице 151 МБ памяти — вкладка у владельца уже падала по памяти. Нужно больше 1,1× ширины телефонных — полные кадры */
+  function load(name){if(SEQ[name])return SEQ[name];var m=man[name],r=pic.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2),need=Math.max(r.width*dpr,r.height*dpr*m.w/m.h);
+    var small=m.framesM&&m.framesM.length===m.frames.length&&need>0&&need<=m.wM*1.1,fr=small?m.framesM:m.frames,S={imgs:[],ready:[],w:small?m.wM:m.w,h:small?m.hM:m.h};
+    fr.forEach(function(f,i){var im=new Image();im.decoding='async';im.src=VE.url('media/loops/'+f);S.imgs.push(im);S.ready.push(false);im.decode().then(function(){S.ready[i]=true}).catch(function(){})});
     return SEQ[name]=S}
   function clipFor(a,b){if(!man)return null;if(man[a+'-'+b])return{name:a+'-'+b,rev:false};if(man[b+'-'+a])return{name:b+'-'+a,rev:true};return null}
   function go(a,b){

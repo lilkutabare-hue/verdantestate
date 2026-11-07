@@ -1,4 +1,4 @@
-<!-- VE · 07-economics.html · сборка f1e53bae -->
+<!-- VE · 07-economics.html · сборка 2957449a -->
 <section class="ve ve-sec ve-eco" id="ve-economics">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Почему это выгодно</p>
@@ -35,6 +35,7 @@
 .ve-eco__count{font-size:14px;color:var(--ve-moss);white-space:nowrap}
 .ve-eco__count b{font-weight:600;font-size:clamp(32px,9vw,40px);letter-spacing:-.03em;color:var(--ve-ink);margin-right:4px;line-height:1} /* A.2: цифра крупно */
 .ve-eco__row--ve .ve-eco__count b{color:var(--ve-ink)}
+.ve-eco__row--one .ve-eco__count b{display:inline-block;min-width:2ch;text-align:right} /* место под «10» с самого начала: счёт 0 → 10 расширял строку, подпись слева переносилась на ходу и панель прыгала на 16 px (390 px) */
 .ve-eco__svg{display:block;width:100%;height:84px;margin-top:10px;overflow:visible}
 .ve-eco__svg text{font-family:var(--ve-sans);fill:var(--ve-ink);font-size:11px;font-weight:500}
 .ve-eco__svg .dot{fill:var(--ve-ink)}
