@@ -4,7 +4,7 @@
 лупы на сайте против сырых ≤ 4/255 (PSNR ≥ 38); видео пролёта против сырого клипа (кадр в середине К2) ≤ 4/255;
 «сцена без морфа» (A0, L-073): верх кадра К1/К2 держит рисунок — NCC к первому кадру ≥ .70, скачки резкости К2 ≤ 20 %, старт К2 против конца К1 ≥ .95.
 Печатает таблицу и итог OK/FAIL; код выхода 1 при провале."""
-import sys, os, subprocess, re, numpy as np
+import json, sys, os, subprocess, re, numpy as np
 sys.path.insert(0, os.path.dirname(__file__))
 from vcheck import frame_at, lowres_diff, blends, frames, vs_site, scene_morph
 from PIL import Image
@@ -41,17 +41,21 @@ for tag, clips, still, loop in (('16:9', ['k1','k2','k3'], 's4', 'k4'), ('9:16',
     ncc3, jump3, _ = scene_morph(paths[2]); print(f"  инфо {clips[2]}: 1−NCC {1-ncc3:.2f}, скачок резкости {jump3:.0f} % (камера уходит вверх — не гейт)")
     for p in paths:
         n, _ = blends(p); row(f"смесей в {os.path.basename(p)}", n, 0, '%d'); row(f"разброс скорости {os.path.basename(p)}, %", curve_spread(p), 15, '%.0f')
-    vid = os.path.join(SITE, 'scene', 'flight-tall.mp4' if tag == '9:16' else 'flight-wide.mp4')
-    if os.path.exists(vid):
-        # видео пролёта — тот же кадр по индексу: кадр 120 клипа К2 = кадр (кадров в К1) + 120 в видео; сравниваем на размере видео
-        import imageio_ffmpeg, tempfile
-        FF = imageio_ffmpeg.get_ffmpeg_exe()
-        def fidx(f, idx, size=None):
-            o = tempfile.mktemp(suffix='.png'); vf = f'select=eq(n\\,{idx})' + (f',scale={size[0]}:{size[1]}:force_original_aspect_ratio=increase:flags=lanczos,crop={size[0]}:{size[1]},format=yuv420p' if size else '')  # format=yuv420p: эталон через тот же шаг 4:2:0, что и видео — иначе lanczos отдаёт PNG с полной цветностью и на траве «разница» 5/255 даже у lossless
-            subprocess.run([FF, '-y', '-v', 'error', '-i', f, '-vf', vf, '-vsync', '0', '-frames:v', '1', o], check=True); im = Image.open(o).convert('RGB'); os.unlink(o); return im
-        n1 = len(frames(paths[0], scale=64)[0]); b = fidx(vid, n1 + 120); a = fidx(paths[1], 120, b.size)
-        A = np.asarray(a, np.float32); B = np.asarray(b, np.float32); mse = float(((A-B)**2).mean()); psnr = 10*np.log10(255*255/mse) if mse > 0 else 99
-        row(f"видео {os.path.basename(vid)} против сырого К2 (кадр 120), PSNR {psnr:.1f} дБ", float(np.abs(A-B).mean()), 4)
+    # видео пролёта: все варианты из манифеста (av1/hevc/h264/lite — tools/flight-variants.mjs), иначе цельный файл
+    try: _vm = json.load(open(os.path.join(SITE, 'scene', 'manifest.json'), encoding='utf-8'))['video']['tall' if tag == '9:16' else 'wide']
+    except Exception: _vm = {}
+    _vids = [v['src'] for v in _vm.get('variants', [])] or [_vm.get('src') or ('flight-tall.mp4' if tag == '9:16' else 'flight-wide.mp4')]
+    for vid in [os.path.join(SITE, 'scene', v) for v in _vids]:
+      if os.path.exists(vid):
+          # видео пролёта — тот же кадр по индексу: кадр 120 клипа К2 = кадр (кадров в К1) + 120 в видео; сравниваем на размере видео
+          import imageio_ffmpeg, tempfile
+          FF = imageio_ffmpeg.get_ffmpeg_exe()
+          def fidx(f, idx, size=None):
+              o = tempfile.mktemp(suffix='.png'); vf = f'select=eq(n\\,{idx})' + (f',scale={size[0]}:{size[1]}:force_original_aspect_ratio=increase:flags=lanczos,crop={size[0]}:{size[1]},format=yuv420p' if size else '')  # format=yuv420p: эталон через тот же шаг 4:2:0, что и видео — иначе lanczos отдаёт PNG с полной цветностью и на траве «разница» 5/255 даже у lossless
+              subprocess.run([FF, '-y', '-v', 'error', '-i', f, '-vf', vf, '-vsync', '0', '-frames:v', '1', o], check=True); im = Image.open(o).convert('RGB'); os.unlink(o); return im
+          n1 = len(frames(paths[0], scale=64)[0]); b = fidx(vid, n1 + 120); a = fidx(paths[1], 120, b.size)
+          A = np.asarray(a, np.float32); B = np.asarray(b, np.float32); mse = float(((A-B)**2).mean()); psnr = 10*np.log10(255*255/mse) if mse > 0 else 99
+          row(f"видео {os.path.basename(vid)} против сырого К2 (кадр 120), PSNR {psnr:.1f} дБ", float(np.abs(A-B).mean()), 4)
 print("лупы на сайте против сырых")
 for f in sorted(os.listdir(os.path.join(SITE, 'loops'))):
     if not f.endswith('.mp4'): continue

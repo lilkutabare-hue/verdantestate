@@ -231,20 +231,104 @@
   },
   "video": {
     "tall": {
-      "src": "flight-tall.mp4",
+      "src": "flight-tall-h264.mp4",
       "fps": 24,
       "dur": 30.2033,
       "w": 1080,
       "h": 1920,
-      "bytes": 84615577
+      "bytes": 63670984,
+      "variants": [
+        {
+          "id": "hevc",
+          "src": "flight-tall-hevc.mp4",
+          "bytes": 61210917,
+          "mime": "video/mp4; codecs=\"hvc1.1.6.L123.90\"",
+          "w": 1080,
+          "h": 1920,
+          "kbps": 16213,
+          "crf": 21
+        },
+        {
+          "id": "av1",
+          "src": "flight-tall-av1.mp4",
+          "bytes": 38502013,
+          "mime": "video/mp4; codecs=\"av01.0.08M.08\"",
+          "w": 1080,
+          "h": 1920,
+          "kbps": 10198,
+          "crf": 24
+        },
+        {
+          "id": "h264",
+          "src": "flight-tall-h264.mp4",
+          "bytes": 63670984,
+          "mime": "video/mp4; codecs=\"avc1.640028\"",
+          "w": 1080,
+          "h": 1920,
+          "kbps": 16865,
+          "crf": 20
+        },
+        {
+          "id": "lite",
+          "src": "flight-tall-lite.mp4",
+          "bytes": 25722573,
+          "mime": "video/mp4; codecs=\"avc1.64001F\"",
+          "w": 720,
+          "h": 1280,
+          "kbps": 6813,
+          "crf": 22
+        }
+      ]
     },
     "wide": {
-      "src": "flight-wide.mp4",
+      "src": "flight-wide-h264.mp4",
       "fps": 24,
       "dur": 30.2033,
       "w": 1920,
       "h": 1080,
-      "bytes": 68150378
+      "bytes": 50706823,
+      "variants": [
+        {
+          "id": "hevc",
+          "src": "flight-wide-hevc.mp4",
+          "bytes": 50983061,
+          "mime": "video/mp4; codecs=\"hvc1.1.6.L123.90\"",
+          "w": 1920,
+          "h": 1080,
+          "kbps": 13504,
+          "crf": 21
+        },
+        {
+          "id": "av1",
+          "src": "flight-wide-av1.mp4",
+          "bytes": 29587763,
+          "mime": "video/mp4; codecs=\"av01.0.08M.08\"",
+          "w": 1920,
+          "h": 1080,
+          "kbps": 7837,
+          "crf": 24
+        },
+        {
+          "id": "h264",
+          "src": "flight-wide-h264.mp4",
+          "bytes": 50706823,
+          "mime": "video/mp4; codecs=\"avc1.640028\"",
+          "w": 1920,
+          "h": 1080,
+          "kbps": 13431,
+          "crf": 20
+        },
+        {
+          "id": "lite",
+          "src": "flight-wide-lite.mp4",
+          "bytes": 20315813,
+          "mime": "video/mp4; codecs=\"avc1.64001F\"",
+          "w": 1280,
+          "h": 720,
+          "kbps": 5381,
+          "crf": 22
+        }
+      ]
     }
   }
 }

@@ -22,7 +22,9 @@ const URL0 = process.argv[2] || 'http://localhost:5181/';
 const SECS = +(process.argv[3] || 3);
 const FROM = +(process.argv[4] || 0), TO = +(process.argv[5] || 0.66); // доля высоты хиро: 0–0.66 пролёт, 0.66–0.92 покос и вечер (холст)
 // BENCH_GPU=1 — без программного рендера (swiftshader преувеличивает цену большого холста; с ним сравнивать только варианты между собой)
-const br = await chromium.launch({ executablePath: exe, args: process.env.BENCH_GPU ? ['--use-angle=metal', '--enable-gpu-rasterization', '--autoplay-policy=no-user-gesture-required'] : ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
+// BENCH_CHROME=1 — настоящий Google Chrome (выбор кодека и аппаратный декод как у посетителя; ?codec=av1|hevc|h264|lite в адресе — принудительно); BENCH_ONLY=video — без режима кадров
+const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const br = await chromium.launch({ executablePath: process.env.BENCH_CHROME && fs.existsSync(CHROME) ? CHROME : exe, args: process.env.BENCH_GPU ? ['--use-angle=metal', '--enable-gpu-rasterization', '--autoplay-policy=no-user-gesture-required'] : ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
 
 // прокрутка пролёта (0 → TL.flight = 0.66 высоты хиро) за SECS секунд; на каждом шаге — scrollTo без плавности
 const scrub = async (page, poll) => page.evaluate(async ({ SECS, poll, FROM, TO }) => {
@@ -36,7 +38,7 @@ const scrub = async (page, poll) => page.evaluate(async ({ SECS, poll, FROM, TO 
 }, { SECS, poll, FROM, TO });
 
 const out = {};
-for (const mode of ['frames', 'video']) {
+for (const mode of (process.env.BENCH_ONLY || 'frames,video').split(',')) {
   const ctx = await br.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
   const page = await ctx.newPage();
   const cdp = await ctx.newCDPSession(page);

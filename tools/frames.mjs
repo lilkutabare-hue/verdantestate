@@ -245,7 +245,7 @@ await writeFile(join(OUT, 'manifest.json'), JSON.stringify(man, null, 2) + '\n')
 
 // старые кадры, которых нет в манифесте, убираем
 const keep = new Set([...man.sets.wide.frames, ...man.sets.tall.frames, ...man.sets.wide.after, ...man.sets.tall.after, man.poster.wide, man.poster.tall, 'manifest.json', manLoop, manLoopTall, manVideo && manVideo.tall && manVideo.tall.src, manVideo && manVideo.wide && manVideo.wide.src, ...((manVideo && manVideo.tall && manVideo.tall.parts) || []).map((q) => q.src), ...((manVideo && manVideo.wide && manVideo.wide.parts) || []).map((q) => q.src)].filter(Boolean));
-for (const f of await readdir(OUT)) if (!keep.has(f)) await unlink(join(OUT, f));
+for (const f of await readdir(OUT)) if (!keep.has(f) && !/^flight-(tall|wide)-(av1|hevc|h264|lite)\.mp4$/.test(f)) await unlink(join(OUT, f)); // варианты пролёта по кодекам делает tools/flight-variants.mjs — запускать после этого скрипта
 const mb = (n) => (n / 1048576).toFixed(2) + ' МБ';
 console.log(`сцена: ${man.n} кадров пролёта + 2 превращения; wide ${mb(bySet.wide)} (бюджет 4.5), tall ${mb(bySet.tall)} (бюджет 2.2)`);
 if (bySet.wide > 4.5 * 1048576 || bySet.tall > 2.2 * 1048576) console.warn('⚠ серия тяжелее бюджета PLAN §5 — перегнать с --q ниже (например --q=60) или --per меньше');
