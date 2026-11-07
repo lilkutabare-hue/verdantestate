@@ -249,6 +249,16 @@
           "crf": 21
         },
         {
+          "id": "hevcm",
+          "src": "flight-tall-hevcm.mp4",
+          "bytes": 33708330,
+          "mime": "video/mp4; codecs=\"hvc1.1.6.L123.90\"",
+          "w": 1080,
+          "h": 1920,
+          "kbps": 8928,
+          "crf": 25
+        },
+        {
           "id": "av1",
           "src": "flight-tall-av1.mp4",
           "bytes": 38502013,
@@ -297,6 +307,16 @@
           "h": 1080,
           "kbps": 13504,
           "crf": 21
+        },
+        {
+          "id": "hevcm",
+          "src": "flight-wide-hevcm.mp4",
+          "bytes": 27851638,
+          "mime": "video/mp4; codecs=\"hvc1.1.6.L123.90\"",
+          "w": 1920,
+          "h": 1080,
+          "kbps": 7377,
+          "crf": 25
         },
         {
           "id": "av1",

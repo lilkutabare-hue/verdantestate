@@ -2,11 +2,13 @@
 // Варианты видео пролёта по кодекам (07.11; владелец: «загрузка до 30 с, качество моушна не терять»).
 // Из тех же клипов, что frames.mjs (k1..k3 + финальный стилл s4, k1v..k3v + s4v), в родном размере собирает:
 //   hevc — x265, тег hvc1 (Safari и iPhone все, Chrome на Mac/Windows с аппаратным декодом) — первый выбор: перемотка скроллом ровнее всех (60 смен кадра/с)
-//   av1  — SVT-AV1 crf 24 (аппаратный декод: Apple M3+/A17 Pro+, свежие ПК) — средняя ступень: в 1080p, но на треть легче HEVC, для линий ~15 Мбит/с
+//   hevcm — тот же HEVC, crf 25 (на 45 % легче): средняя ступень для линий ~15 Мбит/с, её декодируют все iPhone (AV1 — только 15 Pro и новее);
+//           1080p на 38,0 дБ лучше 720p-запасного, который растягивается на экран (замер на К2 — журнал 07.11, ночь)
+//   av1  — SVT-AV1 crf 24 (аппаратный декод: Apple M3+/A17 Pro+, свежие ПК) — для устройств без HEVC (Firefox с аппаратным AV1 и т. п.)
 //   h264 — x264 (декодирует всё)
 //   lite — x264 720p: запасной для медленной линии, сцена переходит на него сама, если основной не успевает к 27-й секунде
 // и пишет их в media/scene/manifest.json → video.<tall|wide>.variants (сцена выбирает лучший декодируемый, scene.js chooseVariants).
-// Запуск после frames.mjs (тот пересобирает манифест):  node tools/flight-variants.mjs [--only=tall|wide] [--clean] [--ids=hevc,av1,h264,lite] [--crf-av1=24] [--crf-hevc=21] [--crf-h264=20] [--crf-lite=22]
+// Запуск после frames.mjs (тот пересобирает манифест):  node tools/flight-variants.mjs [--only=tall|wide] [--clean] [--ids=hevc,hevcm,av1,h264,lite] [--crf-av1=24] [--crf-hevc=21] [--crf-hevcm=25] [--crf-h264=20] [--crf-lite=22]
 // Ключевой кадр: телефон каждые 12 кадров, компьютер — 24 (перемотка скроллом декодирует не больше GOP−1 кадров); B-кадров у x264/x265 нет.
 import { readFile, writeFile, stat, unlink, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -22,7 +24,7 @@ const opt = (k, d) => { const a = args.find((x) => x.startsWith('--' + k + '='))
 const FF = process.env.FFMPEG || (await run('python3', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())'])).stdout.trim();
 const FPS = 24;
 async function duration(f) { const r = await run(FF, ['-i', f]).catch((e) => e); const m = String(r.stderr || '').match(/Duration: (\d+):(\d+):([\d.]+)/); return +m[1] * 3600 + +m[2] * 60 + +m[3]; }
-const CRF = { av1: +opt('crf-av1', 24), hevc: +opt('crf-hevc', 21), h264: +opt('crf-h264', 20), lite: +opt('crf-lite', 22) };
+const CRF = { av1: +opt('crf-av1', 24), hevc: +opt('crf-hevc', 21), hevcm: +opt('crf-hevcm', 25), h264: +opt('crf-h264', 20), lite: +opt('crf-lite', 22) };
 const SETS = {
   tall: { clips: ['k1v', 'k2v', 'k3v'], fin: 's4v', w: 1080, h: 1920, lw: 720, lh: 1280, g: 12 },
   wide: { clips: ['k1', 'k2', 'k3'], fin: 's4', w: 1920, h: 1080, lw: 1280, lh: 720, g: 24 },
@@ -33,9 +35,9 @@ const enc = {
   h264: (g, crf) => ['-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-crf', String(crf), '-g', String(g), '-keyint_min', String(g), '-bf', '0', '-sc_threshold', '0'],
 };
 // строки кодеков для MediaCapabilities/canPlayType (профиль и уровень с запасом для 1080p24)
-const MIME = { av1: 'video/mp4; codecs="av01.0.08M.08"', hevc: 'video/mp4; codecs="hvc1.1.6.L123.90"', h264: 'video/mp4; codecs="avc1.640028"', lite: 'video/mp4; codecs="avc1.64001F"' };
+const MIME = { av1: 'video/mp4; codecs="av01.0.08M.08"', hevc: 'video/mp4; codecs="hvc1.1.6.L123.90"', hevcm: 'video/mp4; codecs="hvc1.1.6.L123.90"', h264: 'video/mp4; codecs="avc1.640028"', lite: 'video/mp4; codecs="avc1.64001F"' };
 const manPath = join(OUT, 'manifest.json'); const man = JSON.parse(await readFile(manPath, 'utf8'));
-const only = opt('only', ''), IDS = opt('ids', 'hevc,av1,h264,lite').split(','); // --ids=av1 — перекодировать только эти, остальные варианты в манифесте не трогать
+const only = opt('only', ''), IDS = opt('ids', 'hevc,hevcm,av1,h264,lite').split(','); // --ids=av1 — перекодировать только эти, остальные варианты в манифесте не трогать
 for (const [name, S] of Object.entries(SETS)) {
   if (only && only !== name) continue;
   const clips = S.clips.map((c) => join(SRC, c + '.mp4')), fin = ['png', 'jpg', 'webp'].map((e) => join(SRC, `${S.fin}.${e}`)).find(existsSync);
@@ -43,9 +45,9 @@ for (const [name, S] of Object.entries(SETS)) {
   const durs = []; for (const c of clips) durs.push(await duration(c));
   const hold = 2 / FPS, len = durs.reduce((a, b) => a + b, 0) + hold;
   const prev = (man.video[name] && man.video[name].variants) || [], variants = [];
-  for (const id of ['hevc', 'av1', 'h264', 'lite']) {
+  for (const id of ['hevc', 'hevcm', 'av1', 'h264', 'lite']) {
     if (!IDS.includes(id)) { const old = prev.find((x) => x.id === id); if (old) variants.push(old); continue; }
-    const W = id === 'lite' ? S.lw : S.w, H = id === 'lite' ? S.lh : S.h, codec = id === 'lite' ? 'h264' : id;
+    const W = id === 'lite' ? S.lw : S.w, H = id === 'lite' ? S.lh : S.h, codec = id === 'lite' ? 'h264' : id === 'hevcm' ? 'hevc' : id;
     const norm = `scale=${W}:${H}:force_original_aspect_ratio=increase:flags=lanczos,crop=${W}:${H}`;
     const graph = [...clips.map((_, i) => i), clips.length].map((i) => `[${i}:v]fps=${FPS},${norm},setsar=1,format=yuv420p,settb=AVTB[v${i}]`);
     graph.push(Array.from({ length: clips.length + 1 }, (_, i) => `[v${i}]`).join('') + `concat=n=${clips.length + 1}:v=1:a=0[x]`);
