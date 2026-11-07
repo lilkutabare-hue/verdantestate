@@ -34,6 +34,8 @@
 .ve-ssn__head{width:100%}
 .ve-ssn__bar{position:relative;height:1px;background:var(--ve-line)}
 .ve-ssn__bar i{position:absolute;left:0;top:0;height:1px;width:100%;background:var(--ve-acc);transform:scaleX(var(--p,0));transform-origin:left}
+/* одна полоса прогресса на режим: лента листается пальцем — общая бронзовая (VE.strips, как у остальных лент); закреплённая на компьютере — своя (общая там стояла на месте) */
+.ve-ssn:not(.is-pin) .ve-ssn__barw,.ve-ssn.is-pin .ve-strip__bar{display:none}
 /* компьютер: секция закрепляется, лента едет вбок вертикальным скроллом */
 @media(min-width:900px){
   .ve-ssn.is-pin .ve-ssn__stage{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
