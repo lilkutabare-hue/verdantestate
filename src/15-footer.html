@@ -78,6 +78,10 @@ html.ve-coarse .ve-ck{background:linear-gradient(180deg,rgba(255,255,255,.97),rg
 @media(hover:hover){.ve-ft__links a:hover{border-color:var(--ve-line)}}
 .ve-ft__legal{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-size:13px;color:var(--ve-moss)}
 .ve-ft__legal a{color:inherit}
+/* зоны нажатия ссылок подвала и cookie-строки (были 17–24 px в высоту) — до 40–44 px невидимым полем, вёрстка и вид те же */
+.ve-ft__links a,.ve-ft__legal a,.ve-ck__in p a{position:relative}
+.ve-ft__links a::after,.ve-ft__legal a::after{content:"";position:absolute;left:-6px;right:-6px;top:-10px;bottom:-10px}
+.ve-ck__in p a::after{content:"";position:absolute;left:-4px;right:-4px;top:-12px;bottom:-12px}
 @media(min-width:900px){
   .ve-ft__logo{width:320px}
   .ve-ft__cols{margin-top:64px;grid-template-columns:1fr auto 1fr;align-items:center;text-align:left}

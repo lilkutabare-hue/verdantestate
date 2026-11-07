@@ -62,7 +62,8 @@
 .ve-tar__more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ve-ease)}
 .ve-tar__more>div{overflow:hidden}
 .ve-tar__card.is-open .ve-tar__more{grid-template-rows:1fr}
-.ve-tar__toggle{margin-top:12px;padding:6px 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.6);transition:color .25s}
+.ve-tar__toggle{position:relative;margin-top:12px;padding:6px 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.6);transition:color .25s}
+.ve-tar__toggle::before{content:"";position:absolute;left:0;right:0;top:-8px;bottom:-8px} /* зона нажатия 29 → 45 px без сдвига вёрстки: поля 12 и 22 px сверху и снизу её вмещают */
 .ve-tar__toggle::after{content:"";display:inline-block;width:6px;height:6px;margin-left:10px;border-right:1px solid var(--ve-bronze);border-bottom:1px solid var(--ve-bronze);transform:translateY(-3px) rotate(45deg);transition:transform .3s var(--ve-ease)}
 .ve-tar__card.is-open .ve-tar__toggle::after{transform:translateY(1px) rotate(-135deg)}
 @media(hover:hover){.ve-tar__toggle:hover{color:var(--ve-paper)}}
