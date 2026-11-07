@@ -4,8 +4,21 @@
     {
       "name": "stand",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["tools/serve.mjs", "5181"],
+      "runtimeArgs": [
+        "tools/serve.mjs",
+        "5181"
+      ],
       "port": 5181
+    },
+    {
+      "name": "stand-slow",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "tools/serve.mjs",
+        "5182",
+        "--mbps=20"
+      ],
+      "port": 5182
     }
   ]
 }
