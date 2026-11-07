@@ -39,6 +39,8 @@
 </section>
 <style>
 /* пролёт ~ 3 экрана на клип + превращение и стоп-кадр с меню */
+html.ve-intro,html.ve-intro body{overflow:hidden!important;overscroll-behavior:none} /* заставка: страница стоит */
+html.ve-has-hero{scrollbar-gutter:stable} /* место под полосу прокрутки занято и в заставке — на Windows страница не прыгает вбок, когда полоса возвращается */
 .ve-hero{position:relative;height:560vh;height:560svh;background:#2B3A2E;color:var(--ve-paper);margin:0}
 .ve-hero__stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:#2B3A2E} /* lvh, не svh (24.10): при свёрнутой панели Safari видимая область выше svh, и под видео вылезала полоса фона секции */
 .ve-hero__poster,.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__shade,.ve-hero__intro,.ve-hero__dust{position:absolute;inset:0}
@@ -148,6 +150,14 @@ __SCENE_INLINE__
   var TL={flight:.66,groom:.8,light:.88,menu:.9};
   var VE_RM=false;try{VE_RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
   var html=document.documentElement;html.classList.add('ve-has-hero','ve-intro');
+  /* 07.11 (владелец: «сначала всё грузится, не проскролить вниз, пока анимация не готова»): пока идёт заставка, страница не прокручивается —
+     ни колесом, ни пальцем, ни клавишами; браузер не восстанавливает старую позицию (раньше после перезагрузки страница вставала посреди хиро,
+     и текст появлялся на первой фотке без пролёта); после заставки — всегда с самого верха */
+  try{if('scrollRestoration' in history)history.scrollRestoration='manual'}catch(e){}
+  var KEYS={32:1,33:1,34:1,35:1,36:1,38:1,40:1};
+  var blockScroll=function(e){if(!html.classList.contains('ve-intro'))return;if(e.type==='keydown'&&!KEYS[e.keyCode])return;if(e.cancelable)e.preventDefault()};
+  window.addEventListener('wheel',blockScroll,{passive:false});window.addEventListener('touchmove',blockScroll,{passive:false});window.addEventListener('keydown',blockScroll,{passive:false});
+  var toTop=function(){try{window.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)}};toTop();
 
   // ---- заставка: логотип рисуется, ждём первый кадр сцены, потом логотип улетает в знак шапки ----
   var logo=root.querySelector('.ve-hero__logo'),lm=root.querySelector('.ve-hero__lm'),lt=root.querySelector('.ve-hero__lt');
@@ -169,22 +179,26 @@ __SCENE_INLINE__
   }
   function fly(){
     if(introDone)return;introDone=true;
-    var g=measure();root.classList.add('is-fly');html.classList.remove('ve-intro');
+    var g=measure();toTop();root.classList.add('is-fly');html.classList.remove('ve-intro');
+    if(location.hash){var tg=document.getElementById(location.hash.slice(1));if(tg)setTimeout(function(){tg.scrollIntoView({behavior:VE_RM?'auto':'smooth',block:'start'})},450)} /* ссылка с якорем — к разделу после заставки */
     var end=function(){root.classList.add('is-docked');html.classList.add('ve-logo-docked')};
     if(VE_RM||!g){end();return}
     lt.style.opacity=0;
     VE.tween(0,1,1000,function(k){var e=1-Math.pow(1-k,3),s=1+(g.sc-1)*e;logo.style.transform='translate3d('+(g.tx*e).toFixed(1)+'px,'+(g.ty*e).toFixed(1)+'px,0) scale('+s.toFixed(4)+')';if(k>=1)end()});
   }
   // готово = логотип дорисован и серия пролёта загружена (линия под логотипом растёт по кадрам); потолок ожидания 15 с
-  var loadBar=root.querySelector('.ve-hero__load i'),pct=root.querySelector('.ve-hero__pct'),loaded=0,mediaReady=false,isVideo=false,lastGain=performance.now();
+  var loadBar=root.querySelector('.ve-hero__load i'),pct=root.querySelector('.ve-hero__pct'),loaded=0,shown=0,mediaReady=false,isVideo=false,lastGain=performance.now();
+  /* процент на экране не откатывается назад: при переходе на лёгкий вариант видео (медленная линия) он стоит, пока новый не догонит */
   function onLoad(n,total,st){var v=total?n/total:0; /* 0 из 0 — ещё ничего не известно, не «готово» */if(v>loaded+.001)lastGain=performance.now();loaded=v;if(st){mediaReady=!!st.ready&&total>0;isVideo=!!st.video}
-    if(introDone)return;loadBar.style.setProperty('--p',loaded.toFixed(3));if(pct)pct.textContent=Math.round(Math.min(1,loaded)*100)+' %'}
+    if(introDone)return;shown=Math.max(shown,Math.min(1,loaded));loadBar.style.setProperty('--p',shown.toFixed(3));if(pct)pct.textContent=Math.round(shown*100)+' %'}
   var coarseGate=false;try{coarseGate=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
   var NEED=1; // 24.10: заставка держит, пока медиа не загружены целиком (владелец: качество важнее, процент честный); раньше .5/.92 // телефон: отпускаем на 50 % (опорные кадры уже есть) — остальное догружается, пока камера дышит на первом кадре
-  // отпускаем, когда сцена живая и медиа готовы (видео перемоталось / все кадры), не раньше 2,2 с; если 8 с нет прироста — видео не идёт: откат на кадры и ждём их; жёсткий потолок 90 с
-  var gate=setInterval(function(){var t=performance.now()-t0,stall=performance.now()-lastGain>8000&&!mediaReady;
-    if(stall&&isVideo&&VE.hero&&VE.hero.fallback){VE.hero.fallback();lastGain=performance.now();isVideo=false;return}
-    if((root.classList.contains('is-live')&&mediaReady&&loaded>=NEED&&t>2200)||t>90000||(stall&&t>20000)){clearInterval(gate);loadBar.style.setProperty('--p','1');if(pct)pct.textContent='';fly()}},100);
+  // отпускаем, когда сцена живая и медиа готовы целиком (видео перемоталось + финальные кадры / все кадры), не раньше 1,8 с (логотип дорисован).
+  // Медленную линию сцена решает сама: через 2 с меряет скорость и переходит на лёгкий вариант, если основной не успевает к 27-й секунде.
+  // Если 10 с нет прироста — видео не идёт вовсе: откат на кадры и ждём их. Предохранитель от вечной заставки — 60 с (тогда отпускаем как есть)
+  var gate=setInterval(function(){var now=performance.now(),t=now-t0,stall=now-lastGain>10000&&!mediaReady;
+    if(stall&&isVideo&&VE.hero&&VE.hero.fallback){VE.hero.fallback();lastGain=now;isVideo=false;return}
+    if((root.classList.contains('is-live')&&mediaReady&&loaded>=NEED&&t>1800)||t>60000||(stall&&t>45000)){clearInterval(gate);loadBar.style.setProperty('--p','1');if(pct)pct.textContent='';fly()}},100);
 
   // ---- главы текста и луп по прогрессу ----
   var lastCh=-1,menu=false,loopSrc=null,loopOn=false;

@@ -24,7 +24,8 @@ export function mount(root, opts = {}) {
   // Держим ImageBitmap сами, окном вокруг текущего кадра (на компьютере — все), остальное закрываем.
   let bmps = [], bmpBusy = 0, bmpCenter = -1;
   // на тач битмапы не держим: пачки createImageBitmap роняли кадры (18 к/с при 4× замедлении), а WebP декодируется быстро; ?nofx=bmp — диагностика на компьютере
-  const canBmp = typeof createImageBitmap === 'function' && !slow && !document.documentElement.classList.contains('ve-no-bmp');
+  // 07.11: растровые копии кадров выключены везде — с ними вкладка падала по памяти (Chrome владельца: «Aw, Snap», код 11; замер режима кадров: 455 МБ и падение при прокрутке, без копий 230–400 МБ)
+  const canBmp = false;
   const WIN = slow ? 14 : 24; // окно битмапов: телефон ±14 (≈75 МБ), компьютер ±24 (≈230 МБ)
   function tend(center) {
     if (!canBmp || center === bmpCenter) return; bmpCenter = center;
@@ -44,10 +45,12 @@ export function mount(root, opts = {}) {
   const wantVid = (() => { try { return !(/[?&]hero=frames\b/.test(location.search) || document.documentElement.classList.contains('ve-hero-frames')); } catch { return true; } })();
   let vidProg = 0; // доля скачанного видео
   // полоса загрузки заставки: кадры — доля загруженных; видео — доля скачанных байт, но до готовности к перемотке не больше 49 % (заставка на телефоне ждёт 50 %)
+  const finalsReady = () => nFlight > 0 && ready.length > nFlight && ready.slice(nFlight - 1).every(Boolean); // последний кадр пролёта + «после» + «вечер»
   function report() {
     if (!opts.onLoad) return;
-    if (vidMeta()) { opts.onLoad(vidOk ? 1 : vidProg, 1, { video: true, ready: vidOk }); return; } // честный процент по байтам; готово — когда все куски перемотались
-    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight, { video: false, ready: nFlight > 0 && n >= nFlight });
+    const fin = finalsReady();
+    if (vidMeta()) { opts.onLoad(vidOk ? (fin ? 1 : 0.99) : vidProg * 0.99, 1, { video: true, ready: vidOk && fin, variant: vidSel ? vidSel.id : 'mp4' }); return; } // честный процент по байтам; готово — видео перемоталось и финальные кадры есть
+    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight, { video: false, ready: nFlight > 0 && n >= nFlight && fin });
   }
   // Видео пролёта: один файл (m.src) или куски по клипам (m.parts = [{src,dur},…], каждый ≤ 5 МБ — лимит файла в хранилище Тильды).
   // Все куски качаются целиком в память, у каждого свой <video>; виден тот, в чьём отрезке целевое время; стык кусков — тот же кадр (клипы цепочкой),
@@ -55,19 +58,50 @@ export function mount(root, opts = {}) {
   let vids = [], vidUrls = [], vidOk = false, vidBad = false, vidSeeking = false, vidTarget = 0, vidSeekAt = 0, vidFor = '', vidCur = -1, vidNext = -1, vidBehind = false;
   const flips = []; // моменты смены кадра пролёта на экране — для счётчика ?perf=1
   const vidMeta = () => (wantVid && !vidBad && man && man.video && set && man.video[set.name]) || null;
-  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off, bytes: q.bytes || 0 }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0, bytes: m.bytes || 0 }]; };
+  // варианты видео (manifest.video.<серия>.variants: [{id: av1|hevc|h264|lite, src, bytes, mime, w, h, kbps}]): берём лучший, который устройство
+  // декодирует без рывков — AV1 только аппаратный, HEVC аппаратный или гладкий, H.264 всегда; lite — запасной лёгкий на медленной линии.
+  // ?codec=av1|hevc|h264|lite — принудительно (замеры)
+  let vidSel = null, vidQueue = [], vidLite = null, vidSwitched = false;
+  const forced = (() => { try { return (/[?&]codec=(av1|hevc|h264|lite)\b/.exec(location.search) || [])[1] || ''; } catch { return ''; } })();
+  async function score(vr) {
+    try {
+      const mc = navigator.mediaCapabilities;
+      if (mc && mc.decodingInfo) { const r = await mc.decodingInfo({ type: 'file', video: { contentType: vr.mime, width: vr.w, height: vr.h, bitrate: (vr.kbps || 8000) * 1000, framerate: 24 } }); return r.supported ? (r.powerEfficient ? 2 : r.smooth ? 1 : 0) : -1; }
+    } catch {}
+    try { const c = document.createElement('video').canPlayType(vr.mime); return c === 'probably' ? 1 : c === 'maybe' ? 0 : -1; } catch { return -1; }
+  }
+  async function chooseVariants(m) {
+    const vs = (m && m.variants) || []; if (!vs.length) return [];
+    vidLite = vs.find((x) => x.id === 'lite') || null;
+    if (forced) { const f = vs.find((x) => x.id === forced); if (f) return [f]; }
+    const need = { av1: 2, hevc: 1, h264: 0 }, out = [];
+    for (const id of ['av1', 'hevc', 'h264']) { const vr = vs.find((x) => x.id === id); if (!vr) continue; const sc = await score(vr); if (sc >= need[id]) out.push(vr); }
+    if (vidLite && !out.length) out.push(vidLite);
+    return out;
+  }
+  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (vidSel) return [{ src: vidSel.src, dur: m.dur, off: 0, bytes: vidSel.bytes || 0 }]; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off, bytes: q.bytes || 0 }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0, bytes: m.bytes || 0 }]; };
   const vidTotal = () => vidParts().reduce((a, q) => a + q.dur, 0);
   const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
+  function vidNextOrFail(why) {
+    // вариант не декодировался/не перемотался — пробуем следующий (байты заново, но картинка остаётся видео), в конце — кадры
+    const nx = vidQueue.shift();
+    if (nx && !dead) { vidSel = nx; vidFor = ''; setupVideo(true); return; }
+    vidFail(why);
+  }
   function vidFail() {
-    if (vidBad) return; vidBad = true; vidOk = false;
+    if (vidBad) return; vidBad = true; vidOk = false; vidGen++;
     for (const x of vids) { x.classList.remove('is-on'); x.removeAttribute('src'); try { x.load(); } catch {} x.remove(); }
     for (const u of vidUrls) if (u) URL.revokeObjectURL(u);
     vids = []; vidUrls = []; vidCur = -1; vidNext = -1;
     lastKey = ''; if (set) load(set.frames.concat(set.after || [])); report(); wake(); // догрузить кадры, которые пропускали ради видео
   }
-  function setupVideo() {
+  let vidGen = 0, vidAbort = null; const BUDGET = opts.budget || 27000; // мс от начала загрузки страницы: к этому моменту видео должно быть целиком (владелец: загрузка до 30 с)
+  async function setupVideo(again) {
     const m = vidMeta(); if (!m || vidFor === set.name) { for (let i = 0; i < vids.length; i++) vids[i].classList.toggle('is-on', vidOn() && i === vidCur); return; }
-    vidFor = set.name; vidOk = false; vidCur = -1; vidNext = -1;
+    if (!again && m.variants && m.variants.length) { const list = await chooseVariants(m); if (dead) return; vidSel = list.shift() || null; vidQueue = list; if (!vidSel && !m.src) { vidFail('нет варианта'); return; } }
+    if (vidAbort) { try { vidAbort.abort(); } catch {} }
+    const gen = ++vidGen; vidAbort = window.AbortController ? new AbortController() : null;
+    vidFor = set.name; vidOk = false; vidCur = -1; vidNext = -1; vidProg = 0;
     for (const x of vids) x.remove(); for (const u of vidUrls) if (u) URL.revokeObjectURL(u); vids = []; vidUrls = [];
     const parts = vidParts(), got = parts.map(() => 0), tot = parts.map(() => 0); let readyN = 0, at = 0;
     const sum = (a) => a.reduce((x, y) => x + y, 0);
@@ -80,31 +114,40 @@ export function mount(root, opts = {}) {
         if (i === vidNext) { vidCur = i; vidNext = -1; for (let k = 0; k < vids.length; k++) vids[k].classList.toggle('is-on', k === i); }
         if (i !== vidCur) return; vidSeeking = false; vidBehind = false; flips.push(performance.now()); wake();
       });
-      x.addEventListener('error', vidFail);
+      x.addEventListener('error', () => { if (gen === vidGen) vidNextOrFail('ошибка декодера'); });
       // файл целиком в память (Blob): перемотка без сети и без Range-запросов; на iOS иначе видео грузится только по play()
-      fetch(urlOf(q.src)).then(async (r) => {
+      fetch(urlOf(q.src), vidAbort ? { signal: vidAbort.signal } : undefined).then(async (r) => {
         if (!r.ok) throw new Error(r.status);
         tot[i] = +r.headers.get('content-length') || q.bytes || 0; // длина из заголовка, иначе из манифеста (стенд и некоторые хосты отдают chunked)
         if (!r.body || !r.body.getReader) return r.blob();
         const rd = r.body.getReader(), chunks = [];
-        for (;;) { const { done, value } = await rd.read(); if (done) break; chunks.push(value); got[i] += value.length; vidProg = sum(tot) ? Math.min(0.99, sum(got) / sum(tot)) : 0; const now = performance.now(); if (now - at > 120) { at = now; report(); } }
-        return new Blob(chunks, { type: 'video/mp4' });
+        for (;;) { const { done, value } = await rd.read(); if (done) break; if (gen !== vidGen) { try { rd.cancel(); } catch {} return null; } chunks.push(value); got[i] += value.length; vidProg = sum(tot) ? Math.min(0.99, sum(got) / sum(tot)) : 0; const now = performance.now(); if (now - at > 120) { at = now; report(); } }
+        const blob = new Blob(chunks, { type: 'video/mp4' }); chunks.length = 0; return blob; // куски сразу отпускаем — в памяти одна копия видео
       }).then((b) => {
-        if (dead || vidBad) return;
+        if (dead || vidBad || gen !== vidGen || !b) return;
         const u = URL.createObjectURL(b); vidUrls[i] = u; x.src = u; x.load();
         const first = () => { try { x.currentTime = 0.001; } catch {} };
         x.addEventListener('loadedmetadata', first, { once: true });
-        const once = () => { x.removeEventListener('seeked', once); readyN++; if (readyN === parts.length && !vidBad) { vidOk = true; lastKey = ''; report(); wake(); } };
+        const once = () => { x.removeEventListener('seeked', once); if (gen !== vidGen) return; readyN++; if (readyN === parts.length && !vidBad) { vidOk = true; lastKey = ''; report(); wake(); } };
         x.addEventListener('seeked', once);
         // не перемоталось за 1,5 с — пнуть play/pause (немой инлайн можно без жеста); за 4 с — сдаёмся, остаёмся на кадрах (режим энергосбережения, старый браузер)
         setTimeout(() => { if (!vidOk && !vidBad && readyN < parts.length) { const pr = x.play && x.play(); if (pr && pr.then) pr.then(() => { x.pause(); first(); }, () => {}); } }, 1500);
-        setTimeout(() => { if (!vidOk && !vidBad) vidFail(); }, 4000);
-      }).catch(vidFail);
+        setTimeout(() => { if (!vidOk && !vidBad && gen === vidGen) vidNextOrFail('не перемоталось за 4 с'); }, 4000);
+      }).catch(() => { if (gen === vidGen) vidNextOrFail('сеть'); });
     });
     // обрезанная линия (Cloudflare в России режут поток после ~16 КБ без ошибки): новых байт нет 6 с подряд — видео не будет, сразу на кадры.
     // Раньше было «< 256 КБ за 3,5 с» — ложно срабатывало, когда видео вставало в очередь за шрифтами и кадрами (24.10)
-    let seen = 0, seenAt = performance.now();
-    const watch = setInterval(() => { if (dead || vidOk || vidBad) { clearInterval(watch); return; } const g = sum(got); if (g > seen) { seen = g; seenAt = performance.now(); } else if (performance.now() - seenAt > 6000) { clearInterval(watch); vidFail(); } }, 500);
+    // + бюджет: через 2 с от начала скачивания считаем скорость; если к BUDGET не успеваем, а лёгкий вариант успевает лучше — переходим на него (один раз)
+    let seen = 0, seenAt = performance.now(); const dl0 = performance.now();
+    const watch = setInterval(() => {
+      if (dead || vidOk || vidBad || gen !== vidGen) { clearInterval(watch); return; }
+      const g = sum(got), now = performance.now();
+      if (g > seen) { seen = g; seenAt = now; } else if (now - seenAt > 6000) { clearInterval(watch); if (vidLite && vidSel !== vidLite && !vidSwitched) { vidSwitched = true; vidQueue = []; vidSel = vidLite; vidFor = ''; setupVideo(true); } else vidFail('нет байт 6 с'); return; }
+      if (!vidSwitched && vidLite && vidSel && vidSel !== vidLite && now - dl0 > 2000 && g > 262144 && sum(tot)) {
+        const rate = g / (now - dl0), eta = (sum(tot) - g) / rate, etaLite = (vidLite.bytes || 0) / rate;
+        if (now + eta > BUDGET && now + etaLite < now + eta) { clearInterval(watch); vidSwitched = true; vidQueue = []; vidSel = vidLite; vidFor = ''; setupVideo(true); }
+      }
+    }, 500);
   }
   function pump() {
     if (!vids.length || vidSeeking) { if (vidSeeking && performance.now() - vidSeekAt > 2000) vidSeeking = false; return; }
@@ -162,11 +205,11 @@ export function mount(root, opts = {}) {
     for (let i = nFlight; i < list.length; i++) order.push(i);
     for (let i = 0; i < nFlight; i++) if (!order.includes(i)) order.push(i);
     let i = 0;
-    const anchors = new Set(order.slice(0, order.indexOf(nFlight) > 0 ? order.indexOf(nFlight) : 8));
+    const anchors = new Set([0, nFlight - 1]); // в видео-режиме из кадров пролёта нужны только первый (запас) и последний (на нём стоит покос)
     const worker = async () => {
       while (i < order.length && gen === loadGen && !dead) {
         const k = order[i++];
-        if (ready[k] || (k < nFlight && !anchors.has(k) && vidMeta() && !vidBad)) continue; // видео пролёта: кадры между опорными не нужны, пока видео не отказало
+        if (ready[k] || (k < nFlight && !anchors.has(k) && vidMeta() && !vidBad)) continue; // видео пролёта: остальные кадры не нужны, пока видео не отказало
         try {
           let img = new Image();
           img.crossOrigin = 'anonymous'; img.decoding = 'async';
@@ -309,8 +352,9 @@ export function mount(root, opts = {}) {
     // отладка: заморозить сцену на прогрессе p (null — вернуть скролл); рисует синхронно, без rAF
     hold(p) { held = p; if (p != null) { curP = p; onProgress(p); lastKey = ''; draw(p); } else wake(); },
     // 24.10: заставка исчерпала 15 с, а видео пролёта ещё не готово — не ждать его с пустым холстом, откатиться на кадры (на 4G видео 21–23 МБ качается ~45 с)
-    fallback() { if (wantVid && !vidOk && !vidBad) vidFail(); },
+    fallback() { if (wantVid && !vidOk && !vidBad) vidFail('заставка'); },
+    get variant() { return vidSel ? vidSel.id : null; },
     get progress() { return lastP; },
-    info() { const now = performance.now(); while (flips.length && now - flips[0] > 1000) flips.shift(); let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height + '\nпролёт: ' + (vidOn() ? 'видео ' + vidMeta().fps + ' к/с' : wantVid ? (vidBad ? 'видео отказало → кадры' : 'видео грузится') : 'кадры') + ' · смен кадра ' + flips.length + '/с'; },
+    info() { const now = performance.now(); while (flips.length && now - flips[0] > 1000) flips.shift(); let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height + '\nпролёт: ' + (vidOn() ? 'видео ' + (vidSel ? vidSel.id + ' ' : '') + vidMeta().fps + ' к/с' : wantVid ? (vidBad ? 'видео отказало → кадры' : 'видео грузится') : 'кадры') + ' · смен кадра ' + flips.length + '/с'; },
   };
 }
