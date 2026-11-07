@@ -94,10 +94,11 @@ export function mount(root, opts = {}) {
   const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
   const fam = (x) => (x && x.id === 'hevcm' ? 'hevc' : x && x.id === 'lite' ? 'h264' : x && x.id); // семейство декодера
   function vidNextOrFail(why) {
-    // вариант не декодировался/не перемотался — пробуем следующий другого кодека (тот же декодер упадёт так же), в конце — кадры
-    if (vidSel) { const f = fam(vidSel); vidQueue = vidQueue.filter((x) => fam(x) !== f); if (vidLite && fam(vidLite) === f) vidLite = null; }
+    // вариант не декодировался/не перемотался — пробуем следующий другого кодека (тот же декодер упадёт так же), в конце — кадры.
+    // Обрыв сети — не вина декодера: следующий по очереди, хоть того же семейства (08.11: iPhone без AV1 после обрыва HEVC уходил на H.264 → 720p, мимо hevcm)
+    if (vidSel && why !== 'сеть') { const f = fam(vidSel); vidQueue = vidQueue.filter((x) => fam(x) !== f); if (vidLite && fam(vidLite) === f) vidLite = null; }
     const nx = vidQueue.shift() || vidLite; if (nx === vidLite) vidLite = null;
-    if (nx && !dead) { vidSel = nx; vidFor = ''; setupVideo(true); return; }
+    if (nx && !dead) { vidWhy += (vidWhy ? '; ' : '') + nx.id + ': ' + (vidSel ? vidSel.id + ' — ' : '') + (why || '?') + ' на ' + (performance.now() / 1000).toFixed(1) + ' с'; vidSel = nx; vidFor = ''; setupVideo(true); return; } // причина в VE.hero.why — раньше смена кодека проходила молча
     vidFail(why);
   }
   function vidFail(why) {
