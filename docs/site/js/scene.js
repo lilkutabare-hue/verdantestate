@@ -115,7 +115,7 @@ export function mount(root, opts = {}) {
     const gen = ++vidGen; vidAbort = window.AbortController ? new AbortController() : null;
     vidFor = set.name; vidOk = false; vidCur = -1; vidNext = -1; vidProg = 0;
     for (const x of vids) x.remove(); for (const u of vidUrls) if (u) URL.revokeObjectURL(u); vids = []; vidUrls = [];
-    const parts = vidParts(), got = parts.map(() => 0), tot = parts.map(() => 0); let readyN = 0, at = 0;
+    const parts = vidParts(), got = parts.map(() => 0), tot = parts.map(() => 0); let readyN = 0, at = 0, fetched = 0; // fetched — сколько кусков скачано целиком
     const sum = (a) => a.reduce((x, y) => x + y, 0);
     parts.forEach((q, i) => {
       const x = document.createElement('video');
@@ -137,6 +137,7 @@ export function mount(root, opts = {}) {
         const blob = new Blob(chunks, { type: 'video/mp4' }); chunks.length = 0; return blob; // куски сразу отпускаем — в памяти одна копия видео
       }).then((b) => {
         if (dead || vidBad || gen !== vidGen || !b) return;
+        fetched++;
         const u = URL.createObjectURL(b); vidUrls[i] = u; x.src = u; x.load();
         const first = () => { try { x.currentTime = 0.001; } catch {} };
         x.addEventListener('loadedmetadata', first, { once: true });
@@ -144,8 +145,15 @@ export function mount(root, opts = {}) {
         x.addEventListener('seeked', once);
         // не перемоталось за 1,5 с — пнуть play/pause (немой инлайн можно без жеста); за 4 с — сдаёмся, остаёмся на кадрах (режим энергосбережения, старый браузер)
         let denied = false; // play() отклонён политикой (режим энергосбережения iPhone, запрет автовоспроизведения) — другой кодек не поможет
-        setTimeout(() => { if (!vidOk && !vidBad && readyN < parts.length) { const pr = x.play && x.play(); if (pr && pr.then) pr.then(() => { x.pause(); first(); }, (e) => { denied = !!e && e.name === 'NotAllowedError'; }); } }, 1500);
-        setTimeout(() => { if (!vidOk && !vidBad && gen === vidGen) { if (denied) vidFail('не перемоталось, воспроизведение запрещено'); else vidNextOrFail('не перемоталось за 4 с'); } }, 4000);
+        // 08.11: часы 1,5/4 с идут только на видимой вкладке. В скрытой (открыли в фоне, ушли на другую вкладку) Chrome не грузит у видео даже
+        // метаданные (readyState 0) — раньше за минуту в фоне перебирались HEVC → AV1 → H.264 → 720p (≈150 МБ) и оставались кадры
+        const arm = () => {
+          if (vidOk || vidBad || gen !== vidGen) return;
+          if (document.hidden) { document.addEventListener('visibilitychange', arm, { once: true }); return; }
+          setTimeout(() => { if (!vidOk && !vidBad && gen === vidGen && !document.hidden && readyN < parts.length) { const pr = x.play && x.play(); if (pr && pr.then) pr.then(() => { x.pause(); first(); }, (e) => { denied = !!e && e.name === 'NotAllowedError'; }); } }, 1500);
+          setTimeout(() => { if (!vidOk && !vidBad && gen === vidGen) { if (document.hidden) { arm(); return; } if (denied) vidFail('не перемоталось, воспроизведение запрещено'); else vidNextOrFail('не перемоталось за 4 с'); } }, 4000);
+        };
+        arm();
       }).catch(() => { if (gen === vidGen) vidNextOrFail('сеть'); });
     });
     // обрезанная линия (Cloudflare в России режут поток после ~16 КБ без ошибки): новых байт нет 6 с подряд — видео не будет, сразу на кадры.
@@ -153,7 +161,7 @@ export function mount(root, opts = {}) {
     // + бюджет: через 2 с от начала скачивания считаем скорость; если к BUDGET не успеваем, а лёгкий вариант успевает лучше — переходим на него (один раз)
     let seen = 0, seenAt = performance.now(); const dl0 = performance.now(), hist = [];
     const watch = setInterval(() => {
-      if (dead || vidOk || vidBad || gen !== vidGen) { clearInterval(watch); return; }
+      if (dead || vidOk || vidBad || gen !== vidGen || fetched === parts.length) { clearInterval(watch); return; } // скачано целиком — дальше дело декодера (часы 4 с), «нет байт» уже не обрыв (08.11: в скрытой вкладке ждали метаданных и уходили на 720p)
       const g = sum(got), now = performance.now();
       if (g > seen) { seen = g; seenAt = now; } else if (now - seenAt > 6000) { clearInterval(watch); if (vidLite && vidSel !== vidLite && !vidSwitched) { vidWhy += (vidWhy ? '; ' : '') + 'lite: нет байт 6 с'; vidSwitched = true; vidQueue = []; vidSel = vidLite; vidFor = ''; setupVideo(true); } else vidFail('нет байт 6 с'); return; }
       // 07.11: скорость — за последние ~3 с, а не средняя с начала: в первые секунды линию делят шрифты, кадры и разгон TCP,

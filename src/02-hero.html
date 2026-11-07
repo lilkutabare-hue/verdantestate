@@ -199,7 +199,9 @@ __SCENE_INLINE__
   // отпускаем, когда сцена живая и медиа готовы целиком (видео перемоталось + финальные кадры / все кадры), не раньше 1,8 с (логотип дорисован).
   // Медленную линию сцена решает сама: через 2 с меряет скорость и переходит на лёгкий вариант, если основной не успевает к 27-й секунде.
   // Если 10 с нет прироста — видео не идёт вовсе: откат на кадры и ждём их. Предохранитель от вечной заставки — 60 с (тогда отпускаем как есть)
-  var gate=setInterval(function(){var now=performance.now(),t=now-t0,stall=now-lastGain>10000&&!mediaReady;
+  /* 08.11: время в скрытой вкладке — не «нет прироста»: там видео докачано, но браузер не грузит метаданные до показа — раньше через 10 с откат на кадры */
+  document.addEventListener('visibilitychange',function(){lastGain=performance.now()});
+  var gate=setInterval(function(){var now=performance.now(),t=now-t0;if(document.hidden)lastGain=now;var stall=now-lastGain>10000&&!mediaReady;
     if(stall&&isVideo&&VE.hero&&VE.hero.fallback){VE.hero.fallback();lastGain=now;isVideo=false;return}
     if((root.classList.contains('is-live')&&mediaReady&&loaded>=NEED&&t>1800)||t>60000||(stall&&t>45000)){clearInterval(gate);loadBar.style.setProperty('--p','1');if(pct)pct.textContent='';fly()}},100);
 
