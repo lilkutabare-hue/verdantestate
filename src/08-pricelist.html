@@ -78,6 +78,9 @@
     var cn=root.querySelector('.ve-pr__cnote');if(cn){cn.textContent=NOTE[cat]||'';cn.hidden=!NOTE[cat]}
   }
   for(var t=0;t<tabs.length;t++)tabs[t].addEventListener('click',function(){show(this.getAttribute('data-cat'))});
-  show('lawn');var movePill=VE.pills(root.querySelector('.ve-pr__tabs'));var show0=show;show=function(c){show0(c);movePill()};
+  // жёлоб шире колонки (телефон и 900–1200 px на компьютере): выбранная вкладка встаёт в середину и открывает соседние — мышью без горизонтальной прокрутки до «Инженерии» и «Зимы» было не дойти
+  var tabsEl=root.querySelector('.ve-pr__tabs');
+  show('lawn');var movePill=VE.pills(tabsEl);var show0=show;show=function(c){show0(c);movePill();
+    var on=tabsEl.querySelector('.is-on');if(on&&tabsEl.scrollWidth>tabsEl.clientWidth+1){var x=on.offsetLeft-(tabsEl.clientWidth-on.offsetWidth)/2;try{tabsEl.scrollTo({left:x,behavior:VE.rm?'auto':'smooth'})}catch(e){tabsEl.scrollLeft=x}}};
 })();
 </script>
