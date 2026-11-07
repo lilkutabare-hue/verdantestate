@@ -26,7 +26,9 @@ delete P.ctx.defaultBrowserType;
 const origin = new URL(URL0).origin;
 const sp = await fetch(origin + '/__mbps?v=' + mbps).then((r) => r.text()).catch(() => '');
 if (sp !== String(+mbps)) console.log(`⚠ стенд ${origin} без полосы (нужен node tools/serve.mjs ${new URL(URL0).port} --mbps=${mbps}) — линия не урезана`);
-const br = P.engine === 'webkit' ? await pw.webkit.launch() : await pw.chromium.launch({ executablePath: fs.existsSync(CHROME) ? CHROME : undefined, args: ['--autoplay-policy=no-user-gesture-required'] });
+// WebKit: своя ревизия playwright-core, а если её нет — любая установленная (08.11: Python-playwright поставил webkit-2287 и удалил 2248)
+const wkExe = (() => { try { if (fs.existsSync(pw.webkit.executablePath())) return undefined; } catch {} const dir = path.join(os.homedir(), 'Library/Caches/ms-playwright'); const ws = fs.existsSync(dir) ? fs.readdirSync(dir).filter((d) => /^webkit-\d+$/.test(d)).sort((a, b) => +b.split('-')[1] - +a.split('-')[1]) : []; for (const w of ws) { const e = path.join(dir, w, 'pw_run.sh'); if (fs.existsSync(e)) return e; } return undefined; })();
+const br = P.engine === 'webkit' ? await pw.webkit.launch(wkExe ? { executablePath: wkExe } : {}) : await pw.chromium.launch({ executablePath: fs.existsSync(CHROME) ? CHROME : undefined, args: ['--autoplay-policy=no-user-gesture-required'] });
 const ctx = await br.newContext(P.ctx);
 if (P.mem || P.saveData) await ctx.addInitScript(({ mem, saveData }) => {
   if (mem) Object.defineProperty(Navigator.prototype, 'deviceMemory', { get: () => mem, configurable: true });
