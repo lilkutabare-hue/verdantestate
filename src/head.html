@@ -258,7 +258,7 @@ __TILDA_HEAD__
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
     state:{},
     set:function(k,v){VE.state[k]=v;try{sessionStorage.setItem('ve-calc',JSON.stringify(VE.state))}catch(e){}VE.emit('state',VE.state)},
-    goForm:function(patch){if(patch)for(var k in patch)VE.set(k,patch[k]);var f=document.getElementById('ve-form');if(f){f.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.emit('form:focus')}},
+    goForm:function(patch){if(patch)for(var k in patch)VE.set(k,patch[k]);var f=document.getElementById('ve-form');if(f){f.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.emit('form:focus')}else location.href=VE.legal.home+'#ve-form'}, /* формы на странице нет (шапка на /policy) — на главную к форме; выбор из конструктора уже в sessionStorage */
     rm:false,
     /* строки из-под маски: режем текст на строки по фактическому переносу (слова → offsetTop), оборачиваем каждую в .ve-ln>.ve-ln__in; до появления пересчитываем на resize */
     lines:function(el){
@@ -411,5 +411,12 @@ __TILDA_HEAD__
   var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();VE.strips();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
+  /* якорь главной на странице, где такого раздела нет (шапка на /policy и /consent): уходим на главную с тем же якорем; на главной — как раньше */
+  document.addEventListener('click',function(e){
+    if(e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+    var a=e.target.closest&&e.target.closest('a[href^="#"]'),id=a&&a.getAttribute('href').slice(1);if(!id)return;
+    try{id=decodeURIComponent(id)}catch(x){}if(document.getElementById(id))return;
+    e.preventDefault();location.href=VE.legal.home+'#'+encodeURIComponent(id);
+  });
 })();
 </script>

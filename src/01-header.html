@@ -66,13 +66,15 @@ html.ve-coarse .ve-hd.is-solid .ve-hd__in{background:linear-gradient(180deg,rgba
     var y=window.scrollY||0,d=y-y0;
     // над хиро шапка прозрачная и не прячется: в ней знак, в который садится логотип первого экрана
     var hero=document.getElementById('ve-hero'),inHero=hero&&hero.getBoundingClientRect().bottom>60;
-    hd.classList.toggle('is-solid',!inHero&&y>solidAt());
+    // страница без хиро (шапка на /policy, /consent): белая прозрачная шапка на белой бумаге не видна — сразу белый док; решаем после разбора страницы (на главной блок хиро идёт после шапки)
+    var noHero=!hero&&document.readyState!=='loading';
+    hd.classList.toggle('is-solid',noHero||(!inHero&&y>solidAt()));
     if(inHero){hd.classList.remove('is-hidden');up=0}
     else if(d>0){up=0;if(y>80)hd.classList.add('is-hidden')}
     else if(d<0){up+=-d;if(up>10)hd.classList.remove('is-hidden')}
     y0=y;
   }
-  window.addEventListener('scroll',tick,{passive:true});tick();
+  window.addEventListener('scroll',tick,{passive:true});tick();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tick);
   hd.querySelector('[data-ve-go-form]').addEventListener('click',function(){if(window.VE)VE.goForm()});
 })();
 </script>

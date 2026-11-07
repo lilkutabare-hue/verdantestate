@@ -13,4 +13,7 @@
 .ve-legal__req{margin-top:12px;padding:14px 16px;border:1px solid var(--ve-line);border-radius:12px;display:grid;gap:4px;font-size:15px}
 .ve-legal__req b{font-weight:600}
 @media(min-width:900px){.ve-legal{padding-top:72px}}
+/* на странице стоит блок шапки (Тильда, /policy и /consent): белый док сверху (низ 66 px, на компьютере 74) — текст начинается под ним, а не под ним прячется */
+body:has(.ve-hd) .ve-legal{padding-top:calc(90px + env(safe-area-inset-top))}
+@media(min-width:900px){body:has(.ve-hd) .ve-legal{padding-top:100px}}
 </style>
