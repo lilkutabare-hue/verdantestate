@@ -115,6 +115,8 @@
     if(s.offer){var cm=form.querySelector('textarea[name=comment]');if(cm&&!cm.value)cm.value=s.offer} // «Сад к празднику» (блок 13)
   }
   prefill(VE.state);VE.on('state',prefill);
+  // поле исправили — красная рамка уходит сразу, а не со следующей отправкой
+  var unbad=function(e){var t=e.target;if(t===consent)t=consent.parentNode;if(t&&t.classList)t.classList.remove('is-bad')};form.addEventListener('input',unbad);form.addEventListener('change',unbad);
   VE.on('form:focus',function(){setTimeout(function(){if(!name.value)name.focus({preventScroll:true})},600)});
   form.addEventListener('submit',function(e){
     e.preventDefault();err.hidden=true;var bad=[];
