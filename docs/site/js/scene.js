@@ -228,7 +228,7 @@ export function mount(root, opts = {}) {
   // --- загрузка: опорные кадры пролёта → кадры превращения → остальные ---
   let loadGen = 0;
   async function load(list) {
-    const gen = ++loadGen, order = [], step = Math.max(1, Math.round(nFlight / 6));
+    const gen = ++loadGen, order = [], tries = [], step = Math.max(1, Math.round(nFlight / 6));
     for (let i = 0; i < nFlight; i += step) order.push(i);
     if (!order.includes(nFlight - 1)) order.push(nFlight - 1);
     for (let i = nFlight; i < list.length; i++) order.push(i);
@@ -247,7 +247,10 @@ export function mount(root, opts = {}) {
           if (gen !== loadGen) return;
           imgs[k] = img; ready[k] = true; if (k >= nFlight - 1) warm(img); if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
           report();
-        } catch (e) { /* кадр не пришёл — рисуем ближайший загруженный */ }
+        } catch (e) { // кадр не пришёл — ещё две попытки через 1 и 2 с, потом рисуем ближайший загруженный.
+          // 08.11: без повтора один оборванный кадр «после покоса» держал заставку на 99 % до 45-й секунды, а покос и вечер не появлялись вовсе
+          if (gen === loadGen && !dead && (tries[k] = (tries[k] || 0) + 1) < 3) { await new Promise((r) => setTimeout(r, 1000 * tries[k])); order.push(k); }
+        }
       }
     };
     await Promise.all(Array.from({ length: 8 }, worker)); // 8 параллельных: на медленной сети (VPN, мобильный) серия ограничена задержкой запроса, а не полосой
