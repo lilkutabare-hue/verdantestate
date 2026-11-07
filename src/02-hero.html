@@ -158,6 +158,9 @@ __SCENE_INLINE__
   var blockScroll=function(e){if(!html.classList.contains('ve-intro'))return;if(e.type==='keydown'&&!KEYS[e.keyCode])return;if(e.cancelable)e.preventDefault()};
   window.addEventListener('wheel',blockScroll,{passive:false});window.addEventListener('touchmove',blockScroll,{passive:false});window.addEventListener('keydown',blockScroll,{passive:false});
   var toTop=function(){try{window.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)}};toTop();
+  /* 08.11: прокрутку двигает не только посетитель — якорь в адресе (/#ve-tariffs: браузер сам едет к разделу, когда тот разобран) и Tab (фокус на ссылке ниже):
+     страница вставала на раздел под заставкой и стояла там без прокрутки до конца заставки. Пока заставка — всегда наверху; к якорю едем после неё (fly) */
+  window.addEventListener('scroll',function(){if(html.classList.contains('ve-intro')&&(window.scrollY||window.scrollX))toTop()},{passive:true});
 
   // ---- заставка: логотип рисуется, ждём первый кадр сцены, потом логотип улетает в знак шапки ----
   var logo=root.querySelector('.ve-hero__logo'),lm=root.querySelector('.ve-hero__lm'),lt=root.querySelector('.ve-hero__lt');
@@ -179,7 +182,7 @@ __SCENE_INLINE__
   }
   function fly(){
     if(introDone)return;introDone=true;
-    var g=measure();toTop();root.classList.add('is-fly');html.classList.remove('ve-intro');
+    toTop();var g=measure();root.classList.add('is-fly'); /* сначала наверх, потом мерить: иначе путь логотипа считался от сдвинутой страницы */html.classList.remove('ve-intro');
     if(location.hash){var tg=document.getElementById(location.hash.slice(1));if(tg)setTimeout(function(){tg.scrollIntoView({behavior:VE_RM?'auto':'smooth',block:'start'})},450)} /* ссылка с якорем — к разделу после заставки */
     var end=function(){root.classList.add('is-docked');html.classList.add('ve-logo-docked')};
     if(VE_RM||!g){end();return}
