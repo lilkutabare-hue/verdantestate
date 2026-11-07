@@ -72,6 +72,7 @@
 .ve-fm__consent i::after{content:"";position:absolute;left:7px;top:3px;width:5px;height:10px;border-right:2px solid var(--ve-ink);border-bottom:2px solid var(--ve-ink);transform:rotate(45deg);opacity:0}
 .ve-fm__consent:has(input:checked) i::after{opacity:1}
 .ve-fm__consent.is-bad i{border-color:#B0553F}
+.ve-fm__consent:has(input:focus-visible) i{outline:2px solid var(--ve-moss);outline-offset:3px} /* сама галочка 0×0 — фокус с клавиатуры показываем на квадрате */
 .ve-fm__consent a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
 .ve-fm__err{margin-top:14px;font-size:14px;color:#B0553F}
 .ve-fm__alt{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
