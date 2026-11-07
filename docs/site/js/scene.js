@@ -61,7 +61,7 @@ export function mount(root, opts = {}) {
   // варианты видео (manifest.video.<серия>.variants: [{id: av1|hevc|h264|lite, src, bytes, mime, w, h, kbps}]): берём лучший, который устройство
   // декодирует без рывков — HEVC аппаратный или гладкий, AV1 только аппаратный, H.264 всегда; lite — запасной лёгкий на медленной линии.
   // 07.11: HEVC впереди AV1 — при прокрутке пролёта за 8 с HEVC даёт 60 смен кадра/с, AV1 (random access) — 46 (flight-bench, Chrome, M4, видеокарта);
-  // AV1 на четверть легче — средняя ступень, когда HEVC к бюджету не успевает.
+  // Средняя ступень — hevcm (тот же HEVC полегче, 1080p): её тянут все iPhone, AV1 — только 15 Pro и новее; AV1 — для устройств без HEVC.
   // ?codec=av1|hevc|h264|lite — принудительно (замеры)
   let vidSel = null, vidQueue = [], vidLite = null, vidSwitched = false, vidWhy = ''; // vidWhy — почему ушли с основного варианта (для ?perf=1 и замеров)
   const forced = (() => { try { return (/[?&]codec=(av1|hevc|h264|lite)\b/.exec(location.search) || [])[1] || ''; } catch { return ''; } })();
@@ -76,8 +76,8 @@ export function mount(root, opts = {}) {
     const vs = (m && m.variants) || []; if (!vs.length) return [];
     vidLite = vs.find((x) => x.id === 'lite') || null;
     if (forced) { const f = vs.find((x) => x.id === forced); if (f) return [f]; }
-    const need = { hevc: 1, av1: 2, h264: 0 }, out = [];
-    for (const id of ['hevc', 'av1', 'h264']) { const vr = vs.find((x) => x.id === id); if (!vr) continue; const sc = await score(vr); if (sc >= need[id]) out.push(vr); }
+    const need = { hevc: 1, hevcm: 1, av1: 2, h264: 0 }, out = [];
+    for (const id of ['hevc', 'hevcm', 'av1', 'h264']) { const vr = vs.find((x) => x.id === id); if (!vr) continue; const sc = await score(vr); if (sc >= need[id]) out.push(vr); }
     if (vidLite && !out.length) out.push(vidLite);
     // подсказки самого устройства (Chrome/Android; Safari их не даёт): экономия трафика, сеть 2G, память ≤ 2 ГБ (дешёвые Android:
     // 1080p-декодер и 60 МБ в памяти — риск падения вкладки) → сразу 720p. Оценке скорости navigator.connection.downlink не верим:
@@ -92,9 +92,11 @@ export function mount(root, opts = {}) {
   const vidParts = () => { const m = vidMeta(); if (!m) return []; if (vidSel) return [{ src: vidSel.src, dur: m.dur, off: 0, bytes: vidSel.bytes || 0 }]; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off, bytes: q.bytes || 0 }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0, bytes: m.bytes || 0 }]; };
   const vidTotal = () => vidParts().reduce((a, q) => a + q.dur, 0);
   const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
+  const fam = (x) => (x && x.id === 'hevcm' ? 'hevc' : x && x.id === 'lite' ? 'h264' : x && x.id); // семейство декодера
   function vidNextOrFail(why) {
-    // вариант не декодировался/не перемотался — пробуем следующий (байты заново, но картинка остаётся видео), в конце — кадры
-    const nx = vidQueue.shift();
+    // вариант не декодировался/не перемотался — пробуем следующий другого кодека (тот же декодер упадёт так же), в конце — кадры
+    if (vidSel) { const f = fam(vidSel); vidQueue = vidQueue.filter((x) => fam(x) !== f); if (vidLite && fam(vidLite) === f) vidLite = null; }
+    const nx = vidQueue.shift() || vidLite; if (nx === vidLite) vidLite = null;
     if (nx && !dead) { vidSel = nx; vidFor = ''; setupVideo(true); return; }
     vidFail(why);
   }
