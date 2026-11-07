@@ -79,6 +79,14 @@ export function mount(root, opts = {}) {
     const need = { hevc: 1, av1: 2, h264: 0 }, out = [];
     for (const id of ['hevc', 'av1', 'h264']) { const vr = vs.find((x) => x.id === id); if (!vr) continue; const sc = await score(vr); if (sc >= need[id]) out.push(vr); }
     if (vidLite && !out.length) out.push(vidLite);
+    // подсказки самого устройства (Chrome/Android; Safari их не даёт): экономия трафика, сеть 2G, память ≤ 2 ГБ (дешёвые Android:
+    // 1080p-декодер и 60 МБ в памяти — риск падения вкладки) → сразу 720p. Оценке скорости navigator.connection.downlink не верим:
+    // в начале загрузки Chrome сказал 1,55 Мбит/с на линии 20 (tools/device-bench.mjs, 07.11) — скорость меряем сами по байтам
+    try {
+      const cn = navigator.connection || {}, mem = navigator.deviceMemory || 0;
+      const slowNet = cn.saveData || /^(slow-2g|2g)$/.test(cn.effectiveType || '');
+      if (vidLite && !forced && (slowNet || (mem > 0 && mem <= 2))) { vidWhy = 'lite сразу: ' + (cn.saveData ? 'экономия трафика' : slowNet ? 'сеть ' + cn.effectiveType : 'память ' + mem + ' ГБ'); return [vidLite]; }
+    } catch {}
     return out;
   }
   const vidParts = () => { const m = vidMeta(); if (!m) return []; if (vidSel) return [{ src: vidSel.src, dur: m.dur, off: 0, bytes: vidSel.bytes || 0 }]; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off, bytes: q.bytes || 0 }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0, bytes: m.bytes || 0 }]; };
@@ -133,8 +141,9 @@ export function mount(root, opts = {}) {
         const once = () => { x.removeEventListener('seeked', once); if (gen !== vidGen) return; readyN++; if (readyN === parts.length && !vidBad) { vidOk = true; lastKey = ''; report(); wake(); } };
         x.addEventListener('seeked', once);
         // не перемоталось за 1,5 с — пнуть play/pause (немой инлайн можно без жеста); за 4 с — сдаёмся, остаёмся на кадрах (режим энергосбережения, старый браузер)
-        setTimeout(() => { if (!vidOk && !vidBad && readyN < parts.length) { const pr = x.play && x.play(); if (pr && pr.then) pr.then(() => { x.pause(); first(); }, () => {}); } }, 1500);
-        setTimeout(() => { if (!vidOk && !vidBad && gen === vidGen) vidNextOrFail('не перемоталось за 4 с'); }, 4000);
+        let denied = false; // play() отклонён политикой (режим энергосбережения iPhone, запрет автовоспроизведения) — другой кодек не поможет
+        setTimeout(() => { if (!vidOk && !vidBad && readyN < parts.length) { const pr = x.play && x.play(); if (pr && pr.then) pr.then(() => { x.pause(); first(); }, (e) => { denied = !!e && e.name === 'NotAllowedError'; }); } }, 1500);
+        setTimeout(() => { if (!vidOk && !vidBad && gen === vidGen) { if (denied) vidFail('не перемоталось, воспроизведение запрещено'); else vidNextOrFail('не перемоталось за 4 с'); } }, 4000);
       }).catch(() => { if (gen === vidGen) vidNextOrFail('сеть'); });
     });
     // обрезанная линия (Cloudflare в России режут поток после ~16 КБ без ошибки): новых байт нет 6 с подряд — видео не будет, сразу на кадры.
