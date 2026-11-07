@@ -136,7 +136,35 @@
     "season-summer-autumn-23.avif"
    ],
    "w": 1600,
-   "h": 1000
+   "h": 1000,
+   "framesM": [
+    "season-summer-autumn-00-m.avif",
+    "season-summer-autumn-01-m.avif",
+    "season-summer-autumn-02-m.avif",
+    "season-summer-autumn-03-m.avif",
+    "season-summer-autumn-04-m.avif",
+    "season-summer-autumn-05-m.avif",
+    "season-summer-autumn-06-m.avif",
+    "season-summer-autumn-07-m.avif",
+    "season-summer-autumn-08-m.avif",
+    "season-summer-autumn-09-m.avif",
+    "season-summer-autumn-10-m.avif",
+    "season-summer-autumn-11-m.avif",
+    "season-summer-autumn-12-m.avif",
+    "season-summer-autumn-13-m.avif",
+    "season-summer-autumn-14-m.avif",
+    "season-summer-autumn-15-m.avif",
+    "season-summer-autumn-16-m.avif",
+    "season-summer-autumn-17-m.avif",
+    "season-summer-autumn-18-m.avif",
+    "season-summer-autumn-19-m.avif",
+    "season-summer-autumn-20-m.avif",
+    "season-summer-autumn-21-m.avif",
+    "season-summer-autumn-22-m.avif",
+    "season-summer-autumn-23-m.avif"
+   ],
+   "wM": 800,
+   "hM": 500
   },
   "autumn-winter": {
    "frames": [
@@ -166,7 +194,35 @@
     "season-autumn-winter-23.avif"
    ],
    "w": 1600,
-   "h": 1000
+   "h": 1000,
+   "framesM": [
+    "season-autumn-winter-00-m.avif",
+    "season-autumn-winter-01-m.avif",
+    "season-autumn-winter-02-m.avif",
+    "season-autumn-winter-03-m.avif",
+    "season-autumn-winter-04-m.avif",
+    "season-autumn-winter-05-m.avif",
+    "season-autumn-winter-06-m.avif",
+    "season-autumn-winter-07-m.avif",
+    "season-autumn-winter-08-m.avif",
+    "season-autumn-winter-09-m.avif",
+    "season-autumn-winter-10-m.avif",
+    "season-autumn-winter-11-m.avif",
+    "season-autumn-winter-12-m.avif",
+    "season-autumn-winter-13-m.avif",
+    "season-autumn-winter-14-m.avif",
+    "season-autumn-winter-15-m.avif",
+    "season-autumn-winter-16-m.avif",
+    "season-autumn-winter-17-m.avif",
+    "season-autumn-winter-18-m.avif",
+    "season-autumn-winter-19-m.avif",
+    "season-autumn-winter-20-m.avif",
+    "season-autumn-winter-21-m.avif",
+    "season-autumn-winter-22-m.avif",
+    "season-autumn-winter-23-m.avif"
+   ],
+   "wM": 800,
+   "hM": 500
   }
  },
  "once": {

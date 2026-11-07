@@ -36,7 +36,7 @@ const CRF0 = +opt('crf', 18), CRFMAX = +opt('crfmax', 20), LIMIT = +opt('limit',
 const LOOPS = { t1: [4, 5], t2: [4, 5], t3: [4, 5], r01: [4, 5], r02: [4, 5], r03: [4, 5], r04: [4, 5], r05: [4, 5], r06: [4, 5], r07: [4, 5], r08: [4, 5], r09: [4, 5], r10: [4, 5], b2: [16, 10], z1: [16, 10], hw: [4, 5], ny: [4, 5] };
 const ONCE = { 'hw-on': [4, 5], 'ny-on': [4, 5] }; // тот же кроп и бюджет, что у лупов; на странице data-loop-mode="once"
 const SEASONS = { 'summer-autumn': [16, 10], 'autumn-winter': [16, 10] };
-const SEASON_FRAMES = 24, SEASON_W = 1600, SEASON_Q = 60; // §7.3 D.11: 2× экраны без блоков на листве
+const SEASON_FRAMES = 24, SEASON_W = 1600, SEASON_Q = 60, SEASON_WM = 800; // SEASON_WM — кадры для телефона (08.11: холст там 700×438; 48 кадров 1600×1000 в WebKit +151 МБ памяти) // §7.3 D.11: 2× экраны без блоков на листве
 
 async function findFfmpeg() {
   if (process.env.FFMPEG) return process.env.FFMPEG;
@@ -97,7 +97,7 @@ for (const [name, aspect] of Object.entries(SEASONS)) {
   const inFile = join(SRC, `season-${name}.mp4`);
   if (!files.includes(`season-${name}.mp4`) || (ONLY && !ONLY.includes(name))) continue;
   const src = await probe(ff, inFile), g = cropScale(src, aspect, SEASON_W);
-  const frames = []; let total = 0;
+  const frames = [], framesM = []; let total = 0, totalM = 0; const hM = Math.round((SEASON_WM * g.h) / g.w / 2) * 2;
   for (let i = 0; i < SEASON_FRAMES; i++) {
     const t = i === SEASON_FRAMES - 1 ? null : (src.dur * i) / (SEASON_FRAMES - 1);
     const png = join(TMP, `season-${name}-${i}.png`);
@@ -106,9 +106,11 @@ for (const [name, aspect] of Object.entries(SEASONS)) {
     const out = `season-${name}-${String(i).padStart(2, '0')}.avif`;
     const buf = await sharp(png).avif({ quality: SEASON_Q, effort: 4 }).toBuffer();
     await writeFile(join(OUT, out), buf); total += buf.length; frames.push(out);
+    const outM = out.replace(/\.avif$/, '-m.avif'), bufM = await sharp(png).resize(SEASON_WM, hM, { kernel: 'lanczos3' }).avif({ quality: SEASON_Q, effort: 4 }).toBuffer();
+    await writeFile(join(OUT, outM), bufM); totalM += bufM.length; framesM.push(outM);
   }
-  man.seasons[name] = { frames, w: g.w, h: g.h };
-  console.log(`сезон ${name}: ${frames.length} кадров ${g.w}×${g.h}, ${kb(total)}`);
+  man.seasons[name] = { frames, w: g.w, h: g.h, framesM, wM: SEASON_WM, hM };
+  console.log(`сезон ${name}: ${frames.length} кадров ${g.w}×${g.h}, ${kb(total)} · телефон ${SEASON_WM}×${hM}, ${kb(totalM)}`);
 }
 
 await writeFile(manPath, JSON.stringify(man, null, 1) + '\n');
