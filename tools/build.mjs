@@ -182,18 +182,18 @@ const page = `<!doctype html>
 <meta name="description" content="Постоянное управление садом: один договор, один ответственный, весь сад под контролем. Москва и Московская область.">
 <meta property="og:title" content="Verdant Estate — Private Garden Service">
 <meta property="og:description" content="Сад, за которым не нужно следить. Постоянный уход за частными садами в Москве и Московской области.">
-<meta property="og:image" content="site/media/scene/poster-wide.webp?v=${V}">
+<meta property="og:image" content="site/og-1200x630.jpg?v=${V}">
 <meta name="robots" content="noindex">
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png">
 <meta name="theme-color" content="#1B462A">
 <script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>
 ${fillPrev(headSrc, 'site/')}
-<style>html,body{margin:0;padding:0;background:#FFFFFF}body{overflow-x:hidden}.ve-preview-note{font:11px/1.5 -apple-system,system-ui,sans-serif;color:#5E6E45;text-align:center;padding:18px 20px 28px;background:#FFFFFF}</style>
+<style>html,body{margin:0;padding:0;background:#FFFFFF}body{overflow-x:hidden}</style>
 </head>
 <body>
 ${blocksPreview.map((b) => `<!-- ${b.f} -->\n${b.html}`).join('\n\n')}
-<div class="ve-preview-note">превью сборки ${V} · изображения временные, до генераций · контакты в подвале — заглушки</div>
+<!-- превью сборки ${V} (служебной строки на странице нет: владелец 07.11 — «чтоб не было всякой фигни на сайте») -->
 </body>
 </html>
 `;
