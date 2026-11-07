@@ -59,9 +59,11 @@ export function mount(root, opts = {}) {
   const flips = []; // моменты смены кадра пролёта на экране — для счётчика ?perf=1
   const vidMeta = () => (wantVid && !vidBad && man && man.video && set && man.video[set.name]) || null;
   // варианты видео (manifest.video.<серия>.variants: [{id: av1|hevc|h264|lite, src, bytes, mime, w, h, kbps}]): берём лучший, который устройство
-  // декодирует без рывков — AV1 только аппаратный, HEVC аппаратный или гладкий, H.264 всегда; lite — запасной лёгкий на медленной линии.
+  // декодирует без рывков — HEVC аппаратный или гладкий, AV1 только аппаратный, H.264 всегда; lite — запасной лёгкий на медленной линии.
+  // 07.11: HEVC впереди AV1 — при прокрутке пролёта за 8 с HEVC даёт 60 смен кадра/с, AV1 (random access) — 46 (flight-bench, Chrome, M4, видеокарта);
+  // AV1 на четверть легче — средняя ступень, когда HEVC к бюджету не успевает.
   // ?codec=av1|hevc|h264|lite — принудительно (замеры)
-  let vidSel = null, vidQueue = [], vidLite = null, vidSwitched = false;
+  let vidSel = null, vidQueue = [], vidLite = null, vidSwitched = false, vidWhy = ''; // vidWhy — почему ушли с основного варианта (для ?perf=1 и замеров)
   const forced = (() => { try { return (/[?&]codec=(av1|hevc|h264|lite)\b/.exec(location.search) || [])[1] || ''; } catch { return ''; } })();
   async function score(vr) {
     try {
@@ -74,8 +76,8 @@ export function mount(root, opts = {}) {
     const vs = (m && m.variants) || []; if (!vs.length) return [];
     vidLite = vs.find((x) => x.id === 'lite') || null;
     if (forced) { const f = vs.find((x) => x.id === forced); if (f) return [f]; }
-    const need = { av1: 2, hevc: 1, h264: 0 }, out = [];
-    for (const id of ['av1', 'hevc', 'h264']) { const vr = vs.find((x) => x.id === id); if (!vr) continue; const sc = await score(vr); if (sc >= need[id]) out.push(vr); }
+    const need = { hevc: 1, av1: 2, h264: 0 }, out = [];
+    for (const id of ['hevc', 'av1', 'h264']) { const vr = vs.find((x) => x.id === id); if (!vr) continue; const sc = await score(vr); if (sc >= need[id]) out.push(vr); }
     if (vidLite && !out.length) out.push(vidLite);
     return out;
   }
@@ -88,8 +90,8 @@ export function mount(root, opts = {}) {
     if (nx && !dead) { vidSel = nx; vidFor = ''; setupVideo(true); return; }
     vidFail(why);
   }
-  function vidFail() {
-    if (vidBad) return; vidBad = true; vidOk = false; vidGen++;
+  function vidFail(why) {
+    if (vidBad) return; vidWhy = 'кадры: ' + (why || '?') + ' на ' + (performance.now() / 1000).toFixed(1) + ' с'; vidBad = true; vidOk = false; vidGen++;
     for (const x of vids) { x.classList.remove('is-on'); x.removeAttribute('src'); try { x.load(); } catch {} x.remove(); }
     for (const u of vidUrls) if (u) URL.revokeObjectURL(u);
     vids = []; vidUrls = []; vidCur = -1; vidNext = -1;
@@ -138,14 +140,22 @@ export function mount(root, opts = {}) {
     // обрезанная линия (Cloudflare в России режут поток после ~16 КБ без ошибки): новых байт нет 6 с подряд — видео не будет, сразу на кадры.
     // Раньше было «< 256 КБ за 3,5 с» — ложно срабатывало, когда видео вставало в очередь за шрифтами и кадрами (24.10)
     // + бюджет: через 2 с от начала скачивания считаем скорость; если к BUDGET не успеваем, а лёгкий вариант успевает лучше — переходим на него (один раз)
-    let seen = 0, seenAt = performance.now(); const dl0 = performance.now();
+    let seen = 0, seenAt = performance.now(); const dl0 = performance.now(), hist = [];
     const watch = setInterval(() => {
       if (dead || vidOk || vidBad || gen !== vidGen) { clearInterval(watch); return; }
       const g = sum(got), now = performance.now();
-      if (g > seen) { seen = g; seenAt = now; } else if (now - seenAt > 6000) { clearInterval(watch); if (vidLite && vidSel !== vidLite && !vidSwitched) { vidSwitched = true; vidQueue = []; vidSel = vidLite; vidFor = ''; setupVideo(true); } else vidFail('нет байт 6 с'); return; }
-      if (!vidSwitched && vidLite && vidSel && vidSel !== vidLite && now - dl0 > 2000 && g > 262144 && sum(tot)) {
-        const rate = g / (now - dl0), eta = (sum(tot) - g) / rate, etaLite = (vidLite.bytes || 0) / rate;
-        if (now + eta > BUDGET && now + etaLite < now + eta) { clearInterval(watch); vidSwitched = true; vidQueue = []; vidSel = vidLite; vidFor = ''; setupVideo(true); }
+      if (g > seen) { seen = g; seenAt = now; } else if (now - seenAt > 6000) { clearInterval(watch); if (vidLite && vidSel !== vidLite && !vidSwitched) { vidWhy += (vidWhy ? '; ' : '') + 'lite: нет байт 6 с'; vidSwitched = true; vidQueue = []; vidSel = vidLite; vidFor = ''; setupVideo(true); } else vidFail('нет байт 6 с'); return; }
+      // 07.11: скорость — за последние ~3 с, а не средняя с начала: в первые секунды линию делят шрифты, кадры и разгон TCP,
+      // и средняя занижала её вдвое (AV1 44 МБ на 20 Мбит/с уходил на lite, хотя успевал к 20-й секунде). Решаем не раньше 4 с.
+      hist.push([now, g]); if (hist.length > 7) hist.shift();
+      // не успеваем к BUDGET — спускаемся по лесенке (HEVC → AV1 → H.264 → lite): лучший вариант, который с нуля успевает; не успевает никто — самый лёгкий
+      if (vidSel && vidSel !== vidLite && now - dl0 > 4000 && hist.length >= 7 && sum(tot)) {
+        const rate = (g - hist[0][1]) / (now - hist[0][0]), left = sum(tot) - g, eta = rate > 0 ? left / rate : Infinity;
+        if (rate > 0 && now + eta > BUDGET) {
+          const alts = vidQueue.concat(vidLite ? [vidLite] : []).filter((x) => x && x !== vidSel && x.bytes && x.bytes < left);
+          const nx = alts.find((x) => now + x.bytes / rate <= BUDGET) || alts.reduce((a, b) => (a && a.bytes <= b.bytes ? a : b), null);
+          if (nx) { clearInterval(watch); vidWhy += (vidWhy ? '; ' : '') + nx.id + ' на ' + (now / 1000).toFixed(1) + ' с: ' + (rate / 1000).toFixed(2) + ' МБ/с, ' + vidSel.id + ' успел бы к ' + ((now + eta) / 1000).toFixed(0) + ' с'; vidQueue = vidQueue.filter((x) => x !== nx && x.bytes < nx.bytes); vidSel = nx; vidFor = ''; setupVideo(true); }
+        }
       }
     }, 500);
   }
@@ -354,6 +364,7 @@ export function mount(root, opts = {}) {
     // 24.10: заставка исчерпала 15 с, а видео пролёта ещё не готово — не ждать его с пустым холстом, откатиться на кадры (на 4G видео 21–23 МБ качается ~45 с)
     fallback() { if (wantVid && !vidOk && !vidBad) vidFail('заставка'); },
     get variant() { return vidSel ? vidSel.id : null; },
+    get why() { return vidWhy; },
     get progress() { return lastP; },
     info() { const now = performance.now(); while (flips.length && now - flips[0] > 1000) flips.shift(); let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height + '\nпролёт: ' + (vidOn() ? 'видео ' + (vidSel ? vidSel.id + ' ' : '') + vidMeta().fps + ' к/с' : wantVid ? (vidBad ? 'видео отказало → кадры' : 'видео грузится') : 'кадры') + ' · смен кадра ' + flips.length + '/с'; },
   };
