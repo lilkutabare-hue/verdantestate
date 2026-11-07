@@ -33,6 +33,7 @@
 .ve-ba__range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;-webkit-appearance:none;appearance:none;touch-action:pan-y}
 .ve-ba__range::-webkit-slider-thumb{-webkit-appearance:none;width:60px;height:100%}
 .ve-ba__range::-moz-range-thumb{width:60px;height:100%;border:0;background:transparent}
+.ve-ba__box:has(.ve-ba__range:focus-visible) .ve-ba__bar i{outline:2px solid var(--ve-paper);outline-offset:3px} /* ползунок прозрачный — фокус с клавиатуры показываем на ручке */
 @media(min-width:900px){.ve-ba__box{margin-top:56px}.ve-ba__lab{top:20px}.ve-ba__lab--b{left:24px}.ve-ba__lab--a{right:24px}}
 </style>
 <script>
@@ -42,8 +43,17 @@
   var box=root.querySelector('.ve-ba__box'),r=root.querySelector('.ve-ba__range'),touched=false;
   var aw=root.querySelector('.ve-ba__after'),bar=root.querySelector('.ve-ba__bar');
   function setX(x){var v=(+x).toFixed(2);aw.style.transform='translate3d('+v+'%,0,0)';bar.style.transform='translate3d('+v+'%,0,0)';var inner=aw.querySelectorAll('.ve-ba__img--after');for(var i=0;i<inner.length;i++)inner[i].style.transform='translate3d(-'+v+'%,0,0)'}
-  r.addEventListener('input',function(){touched=true;setX(r.value)});
-  r.addEventListener('pointerdown',function(){touched=true});
+  /* ручка — под пальцем и курсором: у ползунка шириной 60 px центр бегунка ходит от 30 px до ширины − 30 px, и ручка по значению уезжала от пальца до 29 px к краям.
+     Пока тянут, положение считаем по самому указателю; значение ползунку возвращаем после — клавиши продолжают с того же места */
+  var px=null,dragged=false;
+  var atPx=function(x){var b=box.getBoundingClientRect();return Math.max(0,Math.min(100,(x-b.left)/(b.width||1)*100))};
+  r.addEventListener('input',function(){touched=true;dragged=px!==null;setX(px!==null?atPx(px):r.value)});
+  var move=function(e){if(px===null)return;if(e.pointerType==='mouse'&&!(e.buttons&1))return up();px=e.clientX;if(dragged)setX(atPx(px))},
+      up=function(){if(px!==null&&dragged)r.value=atPx(px);px=null;dragged=false;window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up)};
+  r.addEventListener('pointerdown',function(e){touched=true;px=e.clientX;dragged=false;window.addEventListener('pointermove',move,{passive:true});window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up)});
+  // клавиатура: шаг ползунка 0.1 (для плавности пальца) давал стрелке 0.1 % — 6 px за пять нажатий; стрелки — 2 %, с Shift и PageUp/PageDown — 10 %, Home/End — края
+  r.addEventListener('keydown',function(e){var k=e.key,v=+r.value,s=e.shiftKey?10:2,n=k==='ArrowRight'||k==='ArrowUp'?v+s:k==='ArrowLeft'||k==='ArrowDown'?v-s:k==='PageUp'?v+10:k==='PageDown'?v-10:k==='Home'?0:k==='End'?100:null;
+    if(n===null)return;e.preventDefault();touched=true;n=Math.max(0,Math.min(100,n));r.value=n;setX(n)});
   // подсказка: при появлении шторка сама проезжает к «после», к «до» и возвращается; прерывается первым касанием
   function demo(){
     if(VE.rm||touched)return;
