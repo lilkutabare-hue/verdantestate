@@ -56,6 +56,7 @@
 .ve-hol__tprice{flex:0 0 116px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
 .ve-hol__tier p:last-child{color:var(--ve-moss);font-size:15px;line-height:1.35}
 .ve-hol__card{width:84vw;max-width:420px;display:flex;flex-direction:column}
+.ve-hol__card[hidden]{display:none} /* display:flex перебивал hidden: карточка с прошедшей датой оставалась на странице */
 .ve-hol__img{aspect-ratio:4/5;overflow:hidden;border-radius:var(--ve-r);background:rgba(31,77,46,.06)}
 .ve-hol__name{margin-top:20px}
 .ve-hol__price{margin-top:6px;font-weight:600;letter-spacing:-.015em;font-size:28px;line-height:1.1}
