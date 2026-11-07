@@ -1,4 +1,4 @@
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 2034c2dc -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 90064c48 -->
 <link rel="preconnect" href="https://lilkutabare-hue.github.io" crossorigin>
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -17,6 +17,7 @@
 /* якоря едут плавно и встают под док шапки */
 html{scroll-behavior:smooth;scroll-padding-top:84px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+html,body,#allrecords{background-color:#FFFFFF} /* под секциями и под меткой Тильды внизу — та же белая бумага, без чужого фона из настроек сайта */
 /* база блока: всё наше живёт под .ve, стили Тильды .t-* не трогаем */
 .ve{font-family:var(--ve-sans);font-size:17px;line-height:1.5;color:var(--ve-ink);background:var(--ve-paper);
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;box-sizing:border-box}
@@ -29,9 +30,7 @@ html{scroll-behavior:smooth;scroll-padding-top:84px}
 :where(.ve) :focus{outline:none}
 :where(.ve) :focus-visible{outline:2px solid var(--ve-moss);outline-offset:3px;border-radius:4px}
 
-/* A.5 цвет (план доводки §8): бумага #FFFFFF и тёплая #F6F4EE чередуются по секциям для ритма; тёмная зелень — одна секция (тарифы); бронза — только точки и линии.
-   Классы секций явно (в Тильде каждый блок — свой контейнер, nth-of-type не сработает): сезон, экономика, способы, круглый год, спецусловия, подвал — тёплая */
-.ve-ssn,.ve-eco,.ve-ways,.ve-sea,.ve-bon,.ve-ft{--ve-paper:#F6F4EE;--ve-paper-2:#ECE9E0;background:var(--ve-paper)}
+/* фон: одна белая бумага на всех секциях, тёмная зелень — только тарифы (24.10: тёплая бумага через секцию снята по слову владельца) */
 .ve-wrap{max-width:1240px;margin:0 auto;padding-left:var(--ve-pad);padding-right:var(--ve-pad)}
 .ve-sec{padding-top:var(--ve-gap);padding-bottom:0}
 .ve-sec--last{padding-bottom:var(--ve-gap)}
@@ -251,7 +250,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'2034c2dc',base:base,
+  var VE={v:'90064c48',base:base,
     /* адрес файла: в хранилище Тильды (window.VE_TILD = {h, c:{плоское имя: код папки}}, ставит сборка по docs/media-map.json) или свой хостинг с версией */
     flat:function(p){return p.replace(/^media\//,'').replace(/\//g,'-')},
     url:function(p){var t=window.VE_TILD,f=t&&t.c&&t.c[VE.flat(p)];if(f!=null&&t.h)return t.h+(f?f+'/':'')+VE.flat(p);return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},

@@ -1,9 +1,9 @@
-<!-- VE · 02-hero.html · сборка 2034c2dc -->
+<!-- VE · 02-hero.html · сборка 90064c48 -->
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=2034c2dc">
-      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=2034c2dc" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=90064c48">
+      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=90064c48" alt="" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -40,6 +40,8 @@
 </section>
 <style>
 /* пролёт ~ 3 экрана на клип + превращение и стоп-кадр с меню */
+html.ve-intro,html.ve-intro body{overflow:hidden!important;overscroll-behavior:none} /* заставка: страница стоит */
+html.ve-has-hero{scrollbar-gutter:stable} /* место под полосу прокрутки занято и в заставке — на Windows страница не прыгает вбок, когда полоса возвращается */
 .ve-hero{position:relative;height:560vh;height:560svh;background:#2B3A2E;color:var(--ve-paper);margin:0}
 .ve-hero__stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:#2B3A2E} /* lvh, не svh (24.10): при свёрнутой панели Safari видимая область выше svh, и под видео вылезала полоса фона секции */
 .ve-hero__poster,.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__shade,.ve-hero__intro,.ve-hero__dust{position:absolute;inset:0}
@@ -140,323 +142,8 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
 @media(min-width:900px){.ve-hero__pct{top:calc(50% + 214px)}}
 @media(prefers-reduced-motion:reduce){.ve-hero__ch,.ve-hero__index a,.ve-hero__index,.ve-hero__lp,.ve-hero__intro,.ve-hero__loop{transition:none}.ve-hero__hint{display:none}.ve-hero__lp{opacity:1;transform:none}.ve-logo__band{animation:none}.ve-logo__halo::after{display:none}}
 </style>
-<script>window.VE_SCENE_MOD=(function(){var exports={};// Движок хиро v2 «Пролёт → превращение»: нативный скролл, canvas читает прогресс закреплённой секции.
-// Таймлайн по прогрессу p (0…1):
-//   [0, flight]        пролёт — видео (все кадры клипов, по умолчанию на обоих экранах) или кадры серии, один ближайший кадр без смешивания (§7.2: один кадр на экране)
-//   [flight, groom]    шторка-покос: S4 «до» → S5a «после» мягкой кромкой слева направо
-//   [groom, light]     включается свет: S5a → S5 (синий час, подсветка)
-//   [light, 1]         стоп-кадр S5 (над ним сферы меню, их ведёт сама секция)
-// Кадры и серии — в media/scene/manifest.json (v2, пишет tools/frames.mjs).
-// mount(root, { base, v, reducedMotion, onProgress, onManifest, onLoad(loaded, total), timeline }) → { destroy, hold(p), progress }
-function mount(root, opts = {}) {
-  const stage = root.querySelector('.ve-hero__stage');
-  const canvas = root.querySelector('canvas');
-  const ctx = canvas.getContext('2d', { alpha: true });
-  const base = opts.base || '', v = opts.v ? '?v=' + opts.v : '';
-  // адрес файла сцены: opts.url(имя) — карта хранилища Тильды (сборка для Тильды), иначе base + media/scene/ + имя + ?v=
-  const urlOf = (name) => (opts.url ? opts.url(name) : base + 'media/scene/' + name + v);
-  const alt = (u) => (/\/\/static\.tildacdn\.com\//.test(u) ? u.replace('//static.tildacdn.com/', '//static3.tildacdn.com/') : null); // запасной хост Тильды (план медиа §3.4)
-  const rm = !!opts.reducedMotion;
-  const onProgress = opts.onProgress || (() => {});
-  const TL = Object.assign({ flight: 0.66, groom: 0.8, light: 0.88 }, opts.timeline || {});
-
-  const slow = (() => { try { return matchMedia('(hover:none) and (pointer:coarse)').matches; } catch { return false; } })();
-  let man = null, set = null, imgs = [], ready = [], nFlight = 0, curP = 0, held = null, running = false, dead = false;
-  // декодированные битмапы: браузер на телефоне выкидывает декод картинок из кеша и декодирует заново при каждом drawImage — отсюда фризы.
-  // Держим ImageBitmap сами, окном вокруг текущего кадра (на компьютере — все), остальное закрываем.
-  let bmps = [], bmpBusy = 0, bmpCenter = -1;
-  // на тач битмапы не держим: пачки createImageBitmap роняли кадры (18 к/с при 4× замедлении), а WebP декодируется быстро; ?nofx=bmp — диагностика на компьютере
-  const canBmp = typeof createImageBitmap === 'function' && !slow && !document.documentElement.classList.contains('ve-no-bmp');
-  const WIN = slow ? 14 : 24; // окно битмапов: телефон ±14 (≈75 МБ), компьютер ±24 (≈230 МБ)
-  function tend(center) {
-    if (!canBmp || center === bmpCenter) return; bmpCenter = center;
-    const lo = Math.max(0, center - WIN), hi = Math.min(imgs.length - 1, center + WIN);
-    for (let k = 0; k < bmps.length; k++) if (bmps[k] && (k < lo - WIN || k > hi + WIN)) { try { bmps[k].close(); } catch {} bmps[k] = null; }
-    const want = [];
-    for (let d = 0; d <= Math.max(center - lo, hi - center); d++) { if (center + d <= hi) want.push(center + d); if (d && center - d >= lo) want.push(center - d); }
-    for (const k of want) { if (bmpBusy >= 3) break; if (bmps[k] || bmps[k] === 0 || !ready[k]) continue; bmps[k] = 0; bmpBusy++;
-      createImageBitmap(imgs[k]).then((b) => { if (dead || bmps[k] !== 0) { b.close(); return; } bmps[k] = b; if (Math.abs(k - bmpCenter) <= 1) { lastKey = ''; wake(); } }).catch(() => { bmps[k] = null; }).finally(() => { bmpBusy--; tend2(); }); }
-  }
-  function tend2() { const c = bmpCenter; bmpCenter = -1; tend(c); }
-  const pick = (k) => bmps[k] || imgs[k];
-  let W = 0, H = 0, dpr = 1, tick = 0, lastKey = '';
-  // ?hero=video (или класс ve-hero-video на html): пролёт из видео manifest.video[серия] — все кадры клипов 24 к/с одним H.264, аппаратный декод.
-  // Видео лежит под холстом; в пролёте холст прозрачный, после пролёта рисует шторку и свет как раньше. Не перематывается за 4 с — назад на кадры.
-  // по умолчанию видео на телефоне и на компьютере (план доводки §7.3 C); ?hero=frames или класс ve-hero-frames — только кадры (диагностика, старый путь)
-  const wantVid = (() => { try { return !(/[?&]hero=frames\b/.test(location.search) || document.documentElement.classList.contains('ve-hero-frames')); } catch { return true; } })();
-  let vidProg = 0; // доля скачанного видео
-  // полоса загрузки заставки: кадры — доля загруженных; видео — доля скачанных байт, но до готовности к перемотке не больше 49 % (заставка на телефоне ждёт 50 %)
-  function report() {
-    if (!opts.onLoad) return;
-    if (vidMeta()) { opts.onLoad(vidOk ? 1 : vidProg, 1, { video: true, ready: vidOk }); return; } // честный процент по байтам; готово — когда все куски перемотались
-    let n = 0; for (let q = 0; q < nFlight; q++) if (ready[q]) n++; opts.onLoad(n, nFlight, { video: false, ready: nFlight > 0 && n >= nFlight });
-  }
-  // Видео пролёта: один файл (m.src) или куски по клипам (m.parts = [{src,dur},…], каждый ≤ 5 МБ — лимит файла в хранилище Тильды).
-  // Все куски качаются целиком в память, у каждого свой <video>; виден тот, в чьём отрезке целевое время; стык кусков — тот же кадр (клипы цепочкой),
-  // переключение только после того, как новый кусок перемотался на своё место.
-  let vids = [], vidUrls = [], vidOk = false, vidBad = false, vidSeeking = false, vidTarget = 0, vidSeekAt = 0, vidFor = '', vidCur = -1, vidNext = -1, vidBehind = false;
-  const flips = []; // моменты смены кадра пролёта на экране — для счётчика ?perf=1
-  const vidMeta = () => (wantVid && !vidBad && man && man.video && set && man.video[set.name]) || null;
-  const vidParts = () => { const m = vidMeta(); if (!m) return []; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off, bytes: q.bytes || 0 }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0, bytes: m.bytes || 0 }]; };
-  const vidTotal = () => vidParts().reduce((a, q) => a + q.dur, 0);
-  const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
-  function vidFail() {
-    if (vidBad) return; vidBad = true; vidOk = false;
-    for (const x of vids) { x.classList.remove('is-on'); x.removeAttribute('src'); try { x.load(); } catch {} x.remove(); }
-    for (const u of vidUrls) if (u) URL.revokeObjectURL(u);
-    vids = []; vidUrls = []; vidCur = -1; vidNext = -1;
-    lastKey = ''; if (set) load(set.frames.concat(set.after || [])); report(); wake(); // догрузить кадры, которые пропускали ради видео
-  }
-  function setupVideo() {
-    const m = vidMeta(); if (!m || vidFor === set.name) { for (let i = 0; i < vids.length; i++) vids[i].classList.toggle('is-on', vidOn() && i === vidCur); return; }
-    vidFor = set.name; vidOk = false; vidCur = -1; vidNext = -1;
-    for (const x of vids) x.remove(); for (const u of vidUrls) if (u) URL.revokeObjectURL(u); vids = []; vidUrls = [];
-    const parts = vidParts(), got = parts.map(() => 0), tot = parts.map(() => 0); let readyN = 0, at = 0;
-    const sum = (a) => a.reduce((x, y) => x + y, 0);
-    parts.forEach((q, i) => {
-      const x = document.createElement('video');
-      x.className = 've-hero__vid'; x.muted = true; x.defaultMuted = true; x.playsInline = true; x.preload = 'auto'; x.disablePictureInPicture = true;
-      x.setAttribute('muted', ''); x.setAttribute('playsinline', ''); x.setAttribute('aria-hidden', 'true');
-      stage.insertBefore(x, canvas); vids[i] = x;
-      x.addEventListener('seeked', () => {
-        if (i === vidNext) { vidCur = i; vidNext = -1; for (let k = 0; k < vids.length; k++) vids[k].classList.toggle('is-on', k === i); }
-        if (i !== vidCur) return; vidSeeking = false; vidBehind = false; flips.push(performance.now()); wake();
-      });
-      x.addEventListener('error', vidFail);
-      // файл целиком в память (Blob): перемотка без сети и без Range-запросов; на iOS иначе видео грузится только по play()
-      fetch(urlOf(q.src)).then(async (r) => {
-        if (!r.ok) throw new Error(r.status);
-        tot[i] = +r.headers.get('content-length') || q.bytes || 0; // длина из заголовка, иначе из манифеста (стенд и некоторые хосты отдают chunked)
-        if (!r.body || !r.body.getReader) return r.blob();
-        const rd = r.body.getReader(), chunks = [];
-        for (;;) { const { done, value } = await rd.read(); if (done) break; chunks.push(value); got[i] += value.length; vidProg = sum(tot) ? Math.min(0.99, sum(got) / sum(tot)) : 0; const now = performance.now(); if (now - at > 120) { at = now; report(); } }
-        return new Blob(chunks, { type: 'video/mp4' });
-      }).then((b) => {
-        if (dead || vidBad) return;
-        const u = URL.createObjectURL(b); vidUrls[i] = u; x.src = u; x.load();
-        const first = () => { try { x.currentTime = 0.001; } catch {} };
-        x.addEventListener('loadedmetadata', first, { once: true });
-        const once = () => { x.removeEventListener('seeked', once); readyN++; if (readyN === parts.length && !vidBad) { vidOk = true; lastKey = ''; report(); wake(); } };
-        x.addEventListener('seeked', once);
-        // не перемоталось за 1,5 с — пнуть play/pause (немой инлайн можно без жеста); за 4 с — сдаёмся, остаёмся на кадрах (режим энергосбережения, старый браузер)
-        setTimeout(() => { if (!vidOk && !vidBad && readyN < parts.length) { const pr = x.play && x.play(); if (pr && pr.then) pr.then(() => { x.pause(); first(); }, () => {}); } }, 1500);
-        setTimeout(() => { if (!vidOk && !vidBad) vidFail(); }, 4000);
-      }).catch(vidFail);
-    });
-    // обрезанная линия (Cloudflare в России режут поток после ~16 КБ без ошибки): новых байт нет 6 с подряд — видео не будет, сразу на кадры.
-    // Раньше было «< 256 КБ за 3,5 с» — ложно срабатывало, когда видео вставало в очередь за шрифтами и кадрами (24.10)
-    let seen = 0, seenAt = performance.now();
-    const watch = setInterval(() => { if (dead || vidOk || vidBad) { clearInterval(watch); return; } const g = sum(got); if (g > seen) { seen = g; seenAt = performance.now(); } else if (performance.now() - seenAt > 6000) { clearInterval(watch); vidFail(); } }, 500);
-  }
-  function pump() {
-    if (!vids.length || vidSeeking) { if (vidSeeking && performance.now() - vidSeekAt > 2000) vidSeeking = false; return; }
-    const m = vidMeta(), parts = vidParts(); if (!m || !parts.length) return;
-    let i = 0; while (i < parts.length - 1 && vidTarget >= parts[i].off + parts[i].dur) i++;
-    const local = Math.min(parts[i].dur - 1 / m.fps, Math.max(0.001, vidTarget - parts[i].off)), x = vids[i];
-    if (!x) return;
-    if (i !== vidCur) {
-      // новый кусок: если он уже стоит на нужном кадре — показать сразу, иначе перемотать и показать по seeked
-      if (Math.abs(x.currentTime - local) <= 0.5 / m.fps) { vidCur = i; vidNext = -1; for (let k = 0; k < vids.length; k++) vids[k].classList.toggle('is-on', k === i); vidBehind = false; return; }
-      vidNext = i; vidSeeking = true; vidSeekAt = performance.now(); vidBehind = true; try { x.currentTime = local; } catch { vidSeeking = false; }
-      return;
-    }
-    if (Math.abs(x.currentTime - local) <= 0.5 / m.fps) { vidBehind = false; return; }
-    vidSeeking = true; vidSeekAt = performance.now(); vidBehind = true;
-    try { x.currentTime = local; } catch { vidSeeking = false; }
-  }
-
-  // --- размер и серия под ориентацию ---
-  function size() {
-    const r = stage.getBoundingClientRect();
-    const w = Math.round(r.width), h = Math.round(r.height);
-    // пикселей не больше, чем в исходном кадре серии (телефон: tall 720 px → холст не 3× ширины экрана), и не больше 1.5 на тач
-    // холст не крупнее финальных кадров серии (родной размер рендеров, 24.10 max quality) и не больше 3× экрана; раньше 480/1440 px и 1,5× на тач
-    const ss = man ? (h > w ? man.sets.tall : man.sets.wide) : null, srcW = ss ? (ss.hiw || ss.w) : 1440;
-    dpr = Math.min(window.devicePixelRatio || 1, 3, Math.max(1, srcW / w));
-    try { const cw = +(/[?&]canvasw=(\d+)/.exec(location.search) || [])[1]; if (cw) dpr = Math.min(dpr, Math.max(1, cw / w)); } catch {} // диагностика: ?canvasw=480 — потолок ширины холста (сравнение с прежним размером)
-    if (w === W && h === H && canvas.width === Math.round(w * dpr)) return false;
-    W = w; H = h;
-    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
-    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-    pickSet(); lastKey = '';
-    return true;
-  }
-  function pickSet() {
-    if (!man) return;
-    const want = H > W ? 'tall' : 'wide';
-    if (set && set.name === want) return;
-    set = { name: want, ...man.sets[want] };
-    const list = set.frames.concat(set.after || []);
-    nFlight = set.frames.length;
-    for (const b of bmps) if (b) { try { b.close(); } catch {} }
-    bmps = list.map(() => null); bmpCenter = -1;
-    imgs = list.map(() => null); ready = list.map(() => false);
-    load(list);
-    setupVideo();
-  }
-
-  // --- загрузка: опорные кадры пролёта → кадры превращения → остальные ---
-  let loadGen = 0;
-  async function load(list) {
-    const gen = ++loadGen, order = [], step = Math.max(1, Math.round(nFlight / 6));
-    for (let i = 0; i < nFlight; i += step) order.push(i);
-    if (!order.includes(nFlight - 1)) order.push(nFlight - 1);
-    for (let i = nFlight; i < list.length; i++) order.push(i);
-    for (let i = 0; i < nFlight; i++) if (!order.includes(i)) order.push(i);
-    let i = 0;
-    const anchors = new Set(order.slice(0, order.indexOf(nFlight) > 0 ? order.indexOf(nFlight) : 8));
-    const worker = async () => {
-      while (i < order.length && gen === loadGen && !dead) {
-        const k = order[i++];
-        if (ready[k] || (k < nFlight && !anchors.has(k) && vidMeta() && !vidBad)) continue; // видео пролёта: кадры между опорными не нужны, пока видео не отказало
-        try {
-          let img = new Image();
-          img.crossOrigin = 'anonymous'; img.decoding = 'async';
-          const u0 = urlOf(list[k]); img.src = u0;
-          try { await img.decode(); } catch (e1) { const u1 = alt(u0); if (!u1) throw e1; img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async'; img.src = u1; await img.decode(); }
-          if (gen !== loadGen) return;
-          imgs[k] = img; ready[k] = true; if (k >= nFlight - 1) warm(img); if (!root.classList.contains('is-live') || Math.abs(k - bmpCenter) <= 1 || k >= nFlight) { lastKey = ''; wake(); }
-          report();
-        } catch (e) { /* кадр не пришёл — рисуем ближайший загруженный */ }
-      }
-    };
-    await Promise.all(Array.from({ length: 8 }, worker)); // 8 параллельных: на медленной сети (VPN, мобильный) серия ограничена задержкой запроса, а не полосой
-  }
-  const nearest = (k) => {
-    if (ready[k]) return k;
-    for (let d = 1; d < nFlight; d++) { if (k - d >= 0 && ready[k - d]) return k - d; if (k + d < nFlight && ready[k + d]) return k + d; }
-    return -1;
-  };
-
-  // прогрев финальных кадров (последний кадр пролёта, «после», «вечер» — родной размер): один раз рисуем 1×1 с почти нулевой прозрачностью,
-  // чтобы текстура ушла на видеокарту заранее, а не в первом кадре покоса (иначе рывок ~0,3 с на эмуляции); следующий draw всё перерисует
-  const warmed = new Set();
-  function warm(img) {
-    if (warmed.has(img)) return; warmed.add(img);
-    const go = () => { if (dead) return; ctx.save(); ctx.globalAlpha = 0.01; ctx.drawImage(img, 0, 0, 1, 1); ctx.restore(); ctx.clearRect(0, 0, 1, 1); lastKey = ''; wake(); };
-    if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 1500 }); else setTimeout(go, 200);
-  }
-  // --- cover-кроп: tall-серия уже в 9:16 с ведением фокуса, тут только вписать ---
-  function cover(img, alpha, x0 = 0, x1 = W) {
-    if (!img) return;
-    const fw = set.w, fh = set.h, s = Math.max(W / fw, H / fh), dw = fw * s, dh = fh * s;
-    const dx = (W - dw) / 2, dy = (H - dh) / 2;
-    ctx.save();
-    if (x0 > 0 || x1 < W) { ctx.beginPath(); ctx.rect(x0 * dpr, 0, (x1 - x0) * dpr, H * dpr); ctx.clip(); }
-    ctx.globalAlpha = alpha;
-    ctx.drawImage(img, dx * dpr, dy * dpr, dw * dpr, dh * dpr);
-    ctx.restore();
-  }
-  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-  const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
-
-  function draw(p) {
-    if (!set || !imgs.length) return;
-    const A = nFlight, last = nFlight - 1;
-    let key;
-    if (p <= TL.flight && vidOn()) {
-      const m = vidMeta(); vidTarget = seg(p, 0, TL.flight) * Math.max(0, vidTotal() - 1 / m.fps); pump();
-      if (lastKey !== 'v') ctx.clearRect(0, 0, canvas.width, canvas.height);
-      lastKey = 'v'; if (!root.classList.contains('is-live')) root.classList.add('is-live');
-      return;
-    }
-    if (p <= TL.flight) {
-      let t = seg(p, 0, TL.flight) * last, a = Math.floor(t), b = Math.min(last, a + 1), al = t - a;
-      a = Math.round(t); b = a; al = 0; // один ближайший кадр, без смешивания соседних: смесь двух кадров на движении камеры = двойная крона (§7.1)
-      const ia = nearest(a), ib = nearest(b);
-      tend(a);
-      key = 'f' + ia + ':' + ib + ':' + al.toFixed(3) + ':' + (bmps[ia] ? 1 : 0) + (bmps[ib] ? 1 : 0);
-      if (key === lastKey || (ia < 0 && ib < 0)) return;
-      if (!lastKey.startsWith('f' + ia + ':' + ib + ':')) flips.push(performance.now());
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (ia >= 0) cover(pick(ia), 1);
-      if (ib >= 0 && ib !== ia && al > 0.002) cover(pick(ib), al);
-    } else if (p <= TL.groom) {
-      const k = ease(seg(p, TL.flight, TL.groom)), ib = ready[last] ? last : nearest(last);
-      key = 'g' + ib + ':' + ready[A] + ':' + k.toFixed(4);
-      if (key === lastKey || ib < 0) return;
-      tend(last);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      cover(pick(ib), 1);
-      if (ready[A] && k > 0) {
-        // кромка покоса: мягкая (F px), впереди неё — светлая полоса свежего среза
-        const F = Math.max(40, W * 0.07), edge = -F + k * (W + 2 * F);
-        cover(pick(A), 1, 0, Math.max(0, edge - F));
-        const S = 10;
-        for (let j = 0; j < S; j++) { const x0 = edge - F + (F * j) / S; cover(pick(A), 1 - (j + 0.5) / S, Math.max(0, x0), Math.max(0, x0 + F / S)); }
-        if (k < 1) {
-          const g = ctx.createLinearGradient((edge - F * 1.2) * dpr, 0, (edge + F * 0.2) * dpr, 0);
-          g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.75, 'rgba(255,255,255,.14)'); g.addColorStop(1, 'rgba(255,255,255,0)');
-          ctx.fillStyle = g; ctx.fillRect((edge - F * 1.2) * dpr, 0, F * 1.4 * dpr, H * dpr);
-        }
-      }
-    } else {
-      const k = ease(seg(p, TL.groom, TL.light));
-      key = 'l' + ready[A] + ':' + ready[A + 1] + ':' + k.toFixed(4);
-      if (key === lastKey) return;
-      if (!ready[A]) { lastKey = ''; return draw(TL.flight); }
-      tend(last);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      cover(pick(A), 1);
-      if (ready[A + 1] && k > 0) cover(pick(A + 1), k);
-    }
-    lastKey = key;
-    if (!root.classList.contains('is-live')) root.classList.add('is-live');
-  }
-
-  // --- прогресс и цикл ---
-  function progress() {
-    const r = root.getBoundingClientRect(), travel = r.height - (window.innerHeight || 1);
-    return travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0;
-  }
-  let lastP = -1;
-  // дыхание на покое: пока страница стоит наверху, камера едва дышит по первым кадрам пролёта (период ~9 с) — главная живая без скролла
-  // 24.10: дыхание на покое — только CSS-масштабом (.ve-hero.is-idle в 02-hero), кадрами/перемоткой больше не дышим: в видео-режиме это была перемотка туда-сюда по первым кадрам травы — 2–3 смены кадра в секунду, читалось как 5 к/с (владелец)
-  const idleOk = () => false;
-  // инерция картинки за скроллом: на компьютере 0.16 (≈ 90 мс отставания), на тач 0.4 — у iOS своя инерция, лишнее сглаживание читалось как «отбрасывает» при развороте (владелец, 24.10)
-  const EASE_K = (() => { try { return window.matchMedia('(hover:none) and (pointer:coarse)').matches ? 0.4 : 0.16; } catch { return 0.16; } })();
-  function loop(now) {
-    if (dead) return;
-    running = true;
-    if ((++tick % 20) === 0) size();
-    const p = held != null ? held : progress();
-    if (p !== lastP) { lastP = p; onProgress(p); }
-    let idle = false;
-    if (rm || held != null) curP = p;
-    else if (p < 0.002 && idleOk()) { idle = true; if (!slow || tick % 2 === 0) { const ph = (1 - Math.cos(((now || performance.now()) / 9000) * Math.PI * 2)) / 2; curP = (ph * 1.9 * TL.flight) / (nFlight - 1); } }
-    else { curP += (p - curP) * EASE_K; if (Math.abs(p - curP) < 0.0004) curP = p; }
-    draw(curP);
-    const loading = !ready.every(Boolean);
-    const vlag = vidOn() && curP <= TL.flight && (vidSeeking || vidBehind);
-    if (idle || vlag || Math.abs(p - curP) > 0.0002 || (loading && tick % 10 !== 0 && !vidOn())) requestAnimationFrame(loop);
-    else running = false;
-  }
-  function wake() { if (!running && !dead && !document.hidden) requestAnimationFrame(loop); }
-
-  (opts.manifest ? Promise.resolve(opts.manifest) : fetch(urlOf('manifest.json')).then((r) => r.json())).then((m) => {
-    if (dead) return;
-    man = m; if (opts.onManifest) opts.onManifest(m); size(); pickSet(); wake();
-  }).catch(() => { root.classList.add('is-static'); });
-
-  const onScroll = () => wake();
-  setInterval(() => { if (!running && idleOk() && progress() < 0.002) wake(); }, 500); // покой: если цикл уснул, а мы наверху — разбудить дыхание
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
-  document.addEventListener('visibilitychange', onScroll);
-  let ro = null;
-  if ('ResizeObserver' in window) { ro = new ResizeObserver(() => { if (size()) wake(); }); ro.observe(stage); }
-
-  return {
-    destroy() { dead = true; for (const u of vidUrls) if (u) URL.revokeObjectURL(u); for (const x of vids) x.remove(); for (const b of bmps) if (b) { try { b.close(); } catch {} } bmps = []; window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); document.removeEventListener('visibilitychange', onScroll); if (ro) ro.disconnect(); },
-    // отладка: заморозить сцену на прогрессе p (null — вернуть скролл); рисует синхронно, без rAF
-    hold(p) { held = p; if (p != null) { curP = p; onProgress(p); lastKey = ''; draw(p); } else wake(); },
-    // 24.10: заставка исчерпала 15 с, а видео пролёта ещё не готово — не ждать его с пустым холстом, откатиться на кадры (на 4G видео 21–23 МБ качается ~45 с)
-    fallback() { if (wantVid && !vidOk && !vidBad) vidFail(); },
-    get progress() { return lastP; },
-    info() { const now = performance.now(); while (flips.length && now - flips[0] > 1000) flips.shift(); let r = 0, b = 0; for (let k = 0; k < ready.length; k++) { if (ready[k]) r++; if (bmps[k]) b++; } return (set ? set.name + ' ' + set.w + '×' + set.h + ' ' + (set.frames[0] || '').split('.').pop() : '') + ' · кадров ' + r + '/' + ready.length + (canBmp ? ' · битмапов ' + b : ' · без битмапов') + ' · холст ' + canvas.width + '×' + canvas.height + '\nпролёт: ' + (vidOn() ? 'видео ' + vidMeta().fps + ' к/с' : wantVid ? (vidBad ? 'видео отказало → кадры' : 'видео грузится') : 'кадры') + ' · смен кадра ' + flips.length + '/с'; },
-  };
-}
-;exports.mount=mount;return exports})();window.VE_SCENE_MAN={"v":2,"n":97,"placeholder":false,"source":"clips","loop":"loop.mp4","loopTall":"loop-tall.mp4","sets":{"wide":{"w":1440,"h":810,"hiw":1920,"hih":1080,"frames":["wide-00.webp","wide-01.webp","wide-02.webp","wide-03.webp","wide-04.webp","wide-05.webp","wide-06.webp","wide-07.webp","wide-08.webp","wide-09.webp","wide-10.webp","wide-11.webp","wide-12.webp","wide-13.webp","wide-14.webp","wide-15.webp","wide-16.webp","wide-17.webp","wide-18.webp","wide-19.webp","wide-20.webp","wide-21.webp","wide-22.webp","wide-23.webp","wide-24.webp","wide-25.webp","wide-26.webp","wide-27.webp","wide-28.webp","wide-29.webp","wide-30.webp","wide-31.webp","wide-32.webp","wide-33.webp","wide-34.webp","wide-35.webp","wide-36.webp","wide-37.webp","wide-38.webp","wide-39.webp","wide-40.webp","wide-41.webp","wide-42.webp","wide-43.webp","wide-44.webp","wide-45.webp","wide-46.webp","wide-47.webp","wide-48.webp","wide-49.webp","wide-50.webp","wide-51.webp","wide-52.webp","wide-53.webp","wide-54.webp","wide-55.webp","wide-56.webp","wide-57.webp","wide-58.webp","wide-59.webp","wide-60.webp","wide-61.webp","wide-62.webp","wide-63.webp","wide-64.webp","wide-65.webp","wide-66.webp","wide-67.webp","wide-68.webp","wide-69.webp","wide-70.webp","wide-71.webp","wide-72.webp","wide-73.webp","wide-74.webp","wide-75.webp","wide-76.webp","wide-77.webp","wide-78.webp","wide-79.webp","wide-80.webp","wide-81.webp","wide-82.webp","wide-83.webp","wide-84.webp","wide-85.webp","wide-86.webp","wide-87.webp","wide-88.webp","wide-89.webp","wide-90.webp","wide-91.webp","wide-92.webp","wide-93.webp","wide-94.webp","wide-95.webp","wide-96.webp"],"after":["after-a-wide.webp","after-b-wide.webp"]},"tall":{"w":720,"h":1280,"hiw":1080,"hih":1920,"frames":["tall-00.jpg","tall-01.jpg","tall-02.jpg","tall-03.jpg","tall-04.jpg","tall-05.jpg","tall-06.jpg","tall-07.jpg","tall-08.jpg","tall-09.jpg","tall-10.jpg","tall-11.jpg","tall-12.jpg","tall-13.jpg","tall-14.jpg","tall-15.jpg","tall-16.jpg","tall-17.jpg","tall-18.jpg","tall-19.jpg","tall-20.jpg","tall-21.jpg","tall-22.jpg","tall-23.jpg","tall-24.jpg","tall-25.jpg","tall-26.jpg","tall-27.jpg","tall-28.jpg","tall-29.jpg","tall-30.jpg","tall-31.jpg","tall-32.jpg","tall-33.jpg","tall-34.jpg","tall-35.jpg","tall-36.jpg","tall-37.jpg","tall-38.jpg","tall-39.jpg","tall-40.jpg","tall-41.jpg","tall-42.jpg","tall-43.jpg","tall-44.jpg","tall-45.jpg","tall-46.jpg","tall-47.jpg","tall-48.jpg","tall-49.jpg","tall-50.jpg","tall-51.jpg","tall-52.jpg","tall-53.jpg","tall-54.jpg","tall-55.jpg","tall-56.jpg","tall-57.jpg","tall-58.jpg","tall-59.jpg","tall-60.jpg","tall-61.jpg","tall-62.jpg","tall-63.jpg","tall-64.jpg","tall-65.jpg","tall-66.jpg","tall-67.jpg","tall-68.jpg","tall-69.jpg","tall-70.jpg","tall-71.jpg","tall-72.jpg","tall-73.jpg","tall-74.jpg","tall-75.jpg","tall-76.jpg","tall-77.jpg","tall-78.jpg","tall-79.jpg","tall-80.jpg","tall-81.jpg","tall-82.jpg","tall-83.jpg","tall-84.jpg","tall-85.jpg","tall-86.jpg","tall-87.jpg","tall-88.jpg","tall-89.jpg","tall-90.jpg","tall-91.jpg","tall-92.jpg","tall-93.jpg","tall-94.jpg","tall-95.jpg","tall-96.jpg"],"after":["after-a-tall.jpg","after-b-tall.jpg"]}},"poster":{"wide":"poster-wide.webp","tall":"poster-tall.webp"},"video":{"tall":{"src":"flight-tall.mp4","fps":24,"dur":30.2033,"w":1080,"h":1920,"bytes":84615577},"wide":{"src":"flight-wide.mp4","fps":24,"dur":30.2033,"w":1920,"h":1080,"bytes":68150378}}};window.VE_TILD=window.VE_TILD||{h:"",c:{}};Object.assign(window.VE_TILD.c,{});</script>
+<script>var VE_SCENE_MOD=(()=>{var Te=Object.defineProperty;var at=Object.getOwnPropertyDescriptor;var ot=Object.getOwnPropertyNames;var ct=Object.prototype.hasOwnProperty;var lt=(k,l)=>{for(var _ in l)Te(k,_,{get:l[_],enumerable:!0})},ft=(k,l,_,w)=>{if(l&&typeof l=="object"||typeof l=="function")for(let f of ot(l))!ct.call(k,f)&&f!==_&&Te(k,f,{get:()=>l[f],enumerable:!(w=at(l,f))||w.enumerable});return k};var dt=k=>ft(Te({},"__esModule",{value:!0}),k);var ht={};lt(ht,{mount:()=>ut});function ut(k,l={}){const _=k.querySelector(".ve-hero__stage"),w=k.querySelector("canvas"),f=w.getContext("2d",{alpha:!0}),Qe=l.base||"",Je=l.v?"?v="+l.v:"",ye=e=>l.url?l.url(e):Qe+"media/scene/"+e+Je,Xe=e=>/\/\/static\.tildacdn\.com\//.test(e)?e.replace("//static.tildacdn.com/","//static3.tildacdn.com/"):null,Ye=!!l.reducedMotion,Ce=l.onProgress||(()=>{}),I=Object.assign({flight:.66,groom:.8,light:.88},l.timeline||{}),Be=(()=>{try{return matchMedia("(hover:none) and (pointer:coarse)").matches}catch{return!1}})();let C=null,g=null,J=[],v=[],u=0,F=0,ce=null,le=!1,A=!1,M=[],be=0,V=-1;const Ue=!1,fe=Be?14:24;function de(e){if(!Ue||e===V)return;V=e;const t=Math.max(0,e-fe),n=Math.min(J.length-1,e+fe);for(let r=0;r<M.length;r++)if(M[r]&&(r<t-fe||r>n+fe)){try{M[r].close()}catch{}M[r]=null}const i=[];for(let r=0;r<=Math.max(e-t,n-e);r++)e+r<=n&&i.push(e+r),r&&e-r>=t&&i.push(e-r);for(const r of i){if(be>=3)break;M[r]||M[r]===0||!v[r]||(M[r]=0,be++,createImageBitmap(J[r]).then(a=>{if(A||M[r]!==0){a.close();return}M[r]=a,Math.abs(r-V)<=1&&(R="",P())}).catch(()=>{M[r]=null}).finally(()=>{be--,Ze()}))}}function Ze(){const e=V;V=-1,de(e)}const H=e=>M[e]||J[e];let B=0,K=0,L=1,pe=0,R="";const Me=(()=>{try{return!(/[?&]hero=frames\b/.test(location.search)||document.documentElement.classList.contains("ve-hero-frames"))}catch{return!0}})();let Le=0;const $e=()=>u>0&&v.length>u&&v.slice(u-1).every(Boolean);function ue(){if(!l.onLoad)return;const e=$e();if(G()){l.onLoad(O?e?1:.99:Le*.99,1,{video:!0,ready:O&&e,variant:b?b.id:"mp4"});return}let t=0;for(let n=0;n<u;n++)v[n]&&t++;l.onLoad(t,u,{video:!1,ready:u>0&&t>=u&&e})}let E=[],X=[],O=!1,S=!1,U=!1,xe=0,ke=0,Y="",D=-1,Z=-1,$=!1;const ee=[],G=()=>Me&&!S&&C&&C.video&&g&&C.video[g.name]||null;let b=null,te=[],j=null,je=!1,ne="";const ze=(()=>{try{return(/[?&]codec=(av1|hevc|h264|lite)\b/.exec(location.search)||[])[1]||""}catch{return""}})();async function et(e){try{const t=navigator.mediaCapabilities;if(t&&t.decodingInfo){const n=await t.decodingInfo({type:"file",video:{contentType:e.mime,width:e.w,height:e.h,bitrate:(e.kbps||8e3)*1e3,framerate:24}});return n.supported?n.powerEfficient?2:n.smooth?1:0:-1}}catch{}try{const t=document.createElement("video").canPlayType(e.mime);return t==="probably"?1:t==="maybe"?0:-1}catch{return-1}}async function tt(e){const t=e&&e.variants||[];if(!t.length)return[];if(j=t.find(r=>r.id==="lite")||null,ze){const r=t.find(a=>a.id===ze);if(r)return[r]}const n={hevc:1,av1:2,h264:0},i=[];for(const r of["hevc","av1","h264"]){const a=t.find(s=>s.id===r);if(!a)continue;await et(a)>=n[r]&&i.push(a)}return j&&!i.length&&i.push(j),i}const Re=()=>{const e=G();if(!e)return[];if(b)return[{src:b.src,dur:e.dur,off:0,bytes:b.bytes||0}];if(e.parts&&e.parts.length&&(l.preferParts||!e.src)){let t=0;return e.parts.map(n=>{const i={src:n.src,dur:n.dur,off:t,bytes:n.bytes||0};return t+=n.dur,i})}return[{src:e.src,dur:e.dur,off:0,bytes:e.bytes||0}]},nt=()=>Re().reduce((e,t)=>e+t.dur,0),se=()=>O&&!!G()&&Y===g.name;function Ee(e){const t=te.shift();if(t&&!A){b=t,Y="",me(!0);return}he(e)}function he(e){if(!S){ne="\u043A\u0430\u0434\u0440\u044B: "+(e||"?")+" \u043D\u0430 "+(performance.now()/1e3).toFixed(1)+" \u0441",S=!0,O=!1,z++;for(const t of E){t.classList.remove("is-on"),t.removeAttribute("src");try{t.load()}catch{}t.remove()}for(const t of X)t&&URL.revokeObjectURL(t);E=[],X=[],D=-1,Z=-1,R="",g&&_e(g.frames.concat(g.after||[])),ue(),P()}}let z=0,ae=null;const Ne=l.budget||27e3;async function me(e){const t=G();if(!t||Y===g.name){for(let m=0;m<E.length;m++)E[m].classList.toggle("is-on",se()&&m===D);return}if(!e&&t.variants&&t.variants.length){const m=await tt(t);if(A)return;if(b=m.shift()||null,te=m,!b&&!t.src){he("\u043D\u0435\u0442 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u0430");return}}if(ae)try{ae.abort()}catch{}const n=++z;ae=window.AbortController?new AbortController:null,Y=g.name,O=!1,D=-1,Z=-1,Le=0;for(const m of E)m.remove();for(const m of X)m&&URL.revokeObjectURL(m);E=[],X=[];const i=Re(),r=i.map(()=>0),a=i.map(()=>0);let h=0,s=0;const o=m=>m.reduce((y,c)=>y+c,0);i.forEach((m,y)=>{const c=document.createElement("video");c.className="ve-hero__vid",c.muted=!0,c.defaultMuted=!0,c.playsInline=!0,c.preload="auto",c.disablePictureInPicture=!0,c.setAttribute("muted",""),c.setAttribute("playsinline",""),c.setAttribute("aria-hidden","true"),_.insertBefore(c,w),E[y]=c,c.addEventListener("seeked",()=>{if(y===Z){D=y,Z=-1;for(let x=0;x<E.length;x++)E[x].classList.toggle("is-on",x===y)}y===D&&(U=!1,$=!1,ee.push(performance.now()),P())}),c.addEventListener("error",()=>{n===z&&Ee("\u043E\u0448\u0438\u0431\u043A\u0430 \u0434\u0435\u043A\u043E\u0434\u0435\u0440\u0430")}),fetch(ye(m.src),ae?{signal:ae.signal}:void 0).then(async x=>{if(!x.ok)throw new Error(x.status);if(a[y]=+x.headers.get("content-length")||m.bytes||0,!x.body||!x.body.getReader)return x.blob();const q=x.body.getReader(),W=[];for(;;){const{done:p,value:oe}=await q.read();if(p)break;if(n!==z){try{q.cancel()}catch{}return null}W.push(oe),r[y]+=oe.length,Le=o(a)?Math.min(.99,o(r)/o(a)):0;const De=performance.now();De-s>120&&(s=De,ue())}const T=new Blob(W,{type:"video/mp4"});return W.length=0,T}).then(x=>{if(A||S||n!==z||!x)return;const q=URL.createObjectURL(x);X[y]=q,c.src=q,c.load();const W=()=>{try{c.currentTime=.001}catch{}};c.addEventListener("loadedmetadata",W,{once:!0});const T=()=>{c.removeEventListener("seeked",T),n===z&&(h++,h===i.length&&!S&&(O=!0,R="",ue(),P()))};c.addEventListener("seeked",T),setTimeout(()=>{if(!O&&!S&&h<i.length){const p=c.play&&c.play();p&&p.then&&p.then(()=>{c.pause(),W()},()=>{})}},1500),setTimeout(()=>{!O&&!S&&n===z&&Ee("\u043D\u0435 \u043F\u0435\u0440\u0435\u043C\u043E\u0442\u0430\u043B\u043E\u0441\u044C \u0437\u0430 4 \u0441")},4e3)}).catch(()=>{n===z&&Ee("\u0441\u0435\u0442\u044C")})});let d=0,N=performance.now();const we=performance.now(),ie=[],Oe=setInterval(()=>{if(A||O||S||n!==z){clearInterval(Oe);return}const m=o(r),y=performance.now();if(m>d)d=m,N=y;else if(y-N>6e3){clearInterval(Oe),j&&b!==j&&!je?(ne+=(ne?"; ":"")+"lite: \u043D\u0435\u0442 \u0431\u0430\u0439\u0442 6 \u0441",je=!0,te=[],b=j,Y="",me(!0)):he("\u043D\u0435\u0442 \u0431\u0430\u0439\u0442 6 \u0441");return}if(ie.push([y,m]),ie.length>7&&ie.shift(),b&&b!==j&&y-we>4e3&&ie.length>=7&&o(a)){const c=(m-ie[0][1])/(y-ie[0][0]),x=o(a)-m,q=c>0?x/c:1/0;if(c>0&&y+q>Ne){const W=te.concat(j?[j]:[]).filter(p=>p&&p!==b&&p.bytes&&p.bytes<x),T=W.find(p=>y+p.bytes/c<=Ne)||W.reduce((p,oe)=>p&&p.bytes<=oe.bytes?p:oe,null);T&&(clearInterval(Oe),ne+=(ne?"; ":"")+T.id+" \u043D\u0430 "+(y/1e3).toFixed(1)+" \u0441: "+(c/1e3).toFixed(2)+" \u041C\u0411/\u0441, "+b.id+" \u0443\u0441\u043F\u0435\u043B \u0431\u044B \u043A "+((y+q)/1e3).toFixed(0)+" \u0441",te=te.filter(p=>p!==T&&p.bytes<T.bytes),b=T,Y="",me(!0))}}},500)}function rt(){if(!E.length||U){U&&performance.now()-ke>2e3&&(U=!1);return}const e=G(),t=Re();if(!e||!t.length)return;let n=0;for(;n<t.length-1&&xe>=t[n].off+t[n].dur;)n++;const i=Math.min(t[n].dur-1/e.fps,Math.max(.001,xe-t[n].off)),r=E[n];if(r){if(n!==D){if(Math.abs(r.currentTime-i)<=.5/e.fps){D=n,Z=-1;for(let a=0;a<E.length;a++)E[a].classList.toggle("is-on",a===n);$=!1;return}Z=n,U=!0,ke=performance.now(),$=!0;try{r.currentTime=i}catch{U=!1}return}if(Math.abs(r.currentTime-i)<=.5/e.fps){$=!1;return}U=!0,ke=performance.now(),$=!0;try{r.currentTime=i}catch{U=!1}}}function Ie(){const e=_.getBoundingClientRect(),t=Math.round(e.width),n=Math.round(e.height),i=C?n>t?C.sets.tall:C.sets.wide:null,r=i?i.hiw||i.w:1440;L=Math.min(window.devicePixelRatio||1,3,Math.max(1,r/t));try{const a=+(/[?&]canvasw=(\d+)/.exec(location.search)||[])[1];a&&(L=Math.min(L,Math.max(1,a/t)))}catch{}return t===B&&n===K&&w.width===Math.round(t*L)?!1:(B=t,K=n,w.width=Math.round(t*L),w.height=Math.round(n*L),w.style.width=t+"px",w.style.height=n+"px",We(),R="",!0)}function We(){if(!C)return;const e=K>B?"tall":"wide";if(g&&g.name===e)return;g={name:e,...C.sets[e]};const t=g.frames.concat(g.after||[]);u=g.frames.length;for(const n of M)if(n)try{n.close()}catch{}M=t.map(()=>null),V=-1,J=t.map(()=>null),v=t.map(()=>!1),_e(t),me()}let Ae=0;async function _e(e){const t=++Ae,n=[],i=Math.max(1,Math.round(u/6));for(let s=0;s<u;s+=i)n.push(s);n.includes(u-1)||n.push(u-1);for(let s=u;s<e.length;s++)n.push(s);for(let s=0;s<u;s++)n.includes(s)||n.push(s);let r=0;const a=new Set([0,u-1]),h=async()=>{for(;r<n.length&&t===Ae&&!A;){const s=n[r++];if(!(v[s]||s<u&&!a.has(s)&&G()&&!S))try{let o=new Image;o.crossOrigin="anonymous",o.decoding="async";const d=ye(e[s]);o.src=d;try{await o.decode()}catch(N){const we=Xe(d);if(!we)throw N;o=new Image,o.crossOrigin="anonymous",o.decoding="async",o.src=we,await o.decode()}if(t!==Ae)return;J[s]=o,v[s]=!0,s>=u-1&&it(o),(!k.classList.contains("is-live")||Math.abs(s-V)<=1||s>=u)&&(R="",P()),ue()}catch{}}};await Promise.all(Array.from({length:8},h))}const Se=e=>{if(v[e])return e;for(let t=1;t<u;t++){if(e-t>=0&&v[e-t])return e-t;if(e+t<u&&v[e+t])return e+t}return-1},Ge=new Set;function it(e){if(Ge.has(e))return;Ge.add(e);const t=()=>{A||(f.save(),f.globalAlpha=.01,f.drawImage(e,0,0,1,1),f.restore(),f.clearRect(0,0,1,1),R="",P())};"requestIdleCallback"in window?requestIdleCallback(t,{timeout:1500}):setTimeout(t,200)}function Q(e,t,n=0,i=B){if(!e)return;const r=g.w,a=g.h,h=Math.max(B/r,K/a),s=r*h,o=a*h,d=(B-s)/2,N=(K-o)/2;f.save(),(n>0||i<B)&&(f.beginPath(),f.rect(n*L,0,(i-n)*L,K*L),f.clip()),f.globalAlpha=t,f.drawImage(e,d*L,N*L,s*L,o*L),f.restore()}const qe=e=>e<.5?4*e*e*e:1-Math.pow(-2*e+2,3)/2,ge=(e,t,n)=>Math.min(1,Math.max(0,(e-t)/(n-t)));function Pe(e){if(!g||!J.length)return;const t=u,n=u-1;let i;if(e<=I.flight&&se()){const r=G();xe=ge(e,0,I.flight)*Math.max(0,nt()-1/r.fps),rt(),R!=="v"&&f.clearRect(0,0,w.width,w.height),R="v",k.classList.contains("is-live")||k.classList.add("is-live");return}if(e<=I.flight){let r=ge(e,0,I.flight)*n,a=Math.floor(r),h=Math.min(n,a+1),s=r-a;a=Math.round(r),h=a,s=0;const o=Se(a),d=Se(h);if(de(a),i="f"+o+":"+d+":"+s.toFixed(3)+":"+(M[o]?1:0)+(M[d]?1:0),i===R||o<0&&d<0)return;R.startsWith("f"+o+":"+d+":")||ee.push(performance.now()),f.clearRect(0,0,w.width,w.height),o>=0&&Q(H(o),1),d>=0&&d!==o&&s>.002&&Q(H(d),s)}else if(e<=I.groom){const r=qe(ge(e,I.flight,I.groom)),a=v[n]?n:Se(n);if(i="g"+a+":"+v[t]+":"+r.toFixed(4),i===R||a<0)return;if(de(n),f.clearRect(0,0,w.width,w.height),Q(H(a),1),v[t]&&r>0){const h=Math.max(40,B*.07),s=-h+r*(B+2*h);Q(H(t),1,0,Math.max(0,s-h));const o=10;for(let d=0;d<o;d++){const N=s-h+h*d/o;Q(H(t),1-(d+.5)/o,Math.max(0,N),Math.max(0,N+h/o))}if(r<1){const d=f.createLinearGradient((s-h*1.2)*L,0,(s+h*.2)*L,0);d.addColorStop(0,"rgba(255,255,255,0)"),d.addColorStop(.75,"rgba(255,255,255,.14)"),d.addColorStop(1,"rgba(255,255,255,0)"),f.fillStyle=d,f.fillRect((s-h*1.2)*L,0,h*1.4*L,K*L)}}}else{const r=qe(ge(e,I.groom,I.light));if(i="l"+v[t]+":"+v[t+1]+":"+r.toFixed(4),i===R)return;if(!v[t])return R="",Pe(I.flight);de(n),f.clearRect(0,0,w.width,w.height),Q(H(t),1),v[t+1]&&r>0&&Q(H(t+1),r)}R=i,k.classList.contains("is-live")||k.classList.add("is-live")}function Ve(){const e=k.getBoundingClientRect(),t=e.height-(window.innerHeight||1);return t>0?Math.min(1,Math.max(0,-e.top/t)):0}let Fe=-1;const He=()=>!1,st=(()=>{try{return window.matchMedia("(hover:none) and (pointer:coarse)").matches?.4:.16}catch{return .16}})();function Ke(e){if(A)return;le=!0,++pe%20===0&&Ie();const t=ce??Ve();t!==Fe&&(Fe=t,Ce(t));let n=!1;Ye||ce!=null?F=t:t<.002&&He()?(n=!0,(!Be||pe%2===0)&&(F=(1-Math.cos((e||performance.now())/9e3*Math.PI*2))/2*1.9*I.flight/(u-1))):(F+=(t-F)*st,Math.abs(t-F)<4e-4&&(F=t)),Pe(F);const i=!v.every(Boolean),r=se()&&F<=I.flight&&(U||$);n||r||Math.abs(t-F)>2e-4||i&&pe%10!==0&&!se()?requestAnimationFrame(Ke):le=!1}function P(){!le&&!A&&!document.hidden&&requestAnimationFrame(Ke)}(l.manifest?Promise.resolve(l.manifest):fetch(ye("manifest.json")).then(e=>e.json())).then(e=>{A||(C=e,l.onManifest&&l.onManifest(e),Ie(),We(),P())}).catch(()=>{k.classList.add("is-static")});const re=()=>P();setInterval(()=>{!le&&He()&&Ve()<.002&&P()},500),window.addEventListener("scroll",re,{passive:!0}),window.addEventListener("resize",re,{passive:!0}),document.addEventListener("visibilitychange",re);let ve=null;return"ResizeObserver"in window&&(ve=new ResizeObserver(()=>{Ie()&&P()}),ve.observe(_)),{destroy(){A=!0;for(const e of X)e&&URL.revokeObjectURL(e);for(const e of E)e.remove();for(const e of M)if(e)try{e.close()}catch{}M=[],window.removeEventListener("scroll",re),window.removeEventListener("resize",re),document.removeEventListener("visibilitychange",re),ve&&ve.disconnect()},hold(e){ce=e,e!=null?(F=e,Ce(e),R="",Pe(e)):P()},fallback(){Me&&!O&&!S&&he("\u0437\u0430\u0441\u0442\u0430\u0432\u043A\u0430")},get variant(){return b?b.id:null},get why(){return ne},get progress(){return Fe},info(){const e=performance.now();for(;ee.length&&e-ee[0]>1e3;)ee.shift();let t=0,n=0;for(let i=0;i<v.length;i++)v[i]&&t++,M[i]&&n++;return(g?g.name+" "+g.w+"\xD7"+g.h+" "+(g.frames[0]||"").split(".").pop():"")+" \xB7 \u043A\u0430\u0434\u0440\u043E\u0432 "+t+"/"+v.length+(Ue?" \xB7 \u0431\u0438\u0442\u043C\u0430\u043F\u043E\u0432 "+n:" \xB7 \u0431\u0435\u0437 \u0431\u0438\u0442\u043C\u0430\u043F\u043E\u0432")+" \xB7 \u0445\u043E\u043B\u0441\u0442 "+w.width+"\xD7"+w.height+`
+\u043F\u0440\u043E\u043B\u0451\u0442: `+(se()?"\u0432\u0438\u0434\u0435\u043E "+(b?b.id+" ":"")+G().fps+" \u043A/\u0441":Me?S?"\u0432\u0438\u0434\u0435\u043E \u043E\u0442\u043A\u0430\u0437\u0430\u043B\u043E \u2192 \u043A\u0430\u0434\u0440\u044B":"\u0432\u0438\u0434\u0435\u043E \u0433\u0440\u0443\u0437\u0438\u0442\u0441\u044F":"\u043A\u0430\u0434\u0440\u044B")+" \xB7 \u0441\u043C\u0435\u043D \u043A\u0430\u0434\u0440\u0430 "+ee.length+"/\u0441"}}}return dt(ht);})();window.VE_SCENE_MOD=VE_SCENE_MOD;window.VE_SCENE_MAN={"v":2,"n":97,"placeholder":false,"source":"clips","loop":"loop.mp4","loopTall":"loop-tall.mp4","sets":{"wide":{"w":1440,"h":810,"hiw":1920,"hih":1080,"frames":["wide-00.webp","wide-01.webp","wide-02.webp","wide-03.webp","wide-04.webp","wide-05.webp","wide-06.webp","wide-07.webp","wide-08.webp","wide-09.webp","wide-10.webp","wide-11.webp","wide-12.webp","wide-13.webp","wide-14.webp","wide-15.webp","wide-16.webp","wide-17.webp","wide-18.webp","wide-19.webp","wide-20.webp","wide-21.webp","wide-22.webp","wide-23.webp","wide-24.webp","wide-25.webp","wide-26.webp","wide-27.webp","wide-28.webp","wide-29.webp","wide-30.webp","wide-31.webp","wide-32.webp","wide-33.webp","wide-34.webp","wide-35.webp","wide-36.webp","wide-37.webp","wide-38.webp","wide-39.webp","wide-40.webp","wide-41.webp","wide-42.webp","wide-43.webp","wide-44.webp","wide-45.webp","wide-46.webp","wide-47.webp","wide-48.webp","wide-49.webp","wide-50.webp","wide-51.webp","wide-52.webp","wide-53.webp","wide-54.webp","wide-55.webp","wide-56.webp","wide-57.webp","wide-58.webp","wide-59.webp","wide-60.webp","wide-61.webp","wide-62.webp","wide-63.webp","wide-64.webp","wide-65.webp","wide-66.webp","wide-67.webp","wide-68.webp","wide-69.webp","wide-70.webp","wide-71.webp","wide-72.webp","wide-73.webp","wide-74.webp","wide-75.webp","wide-76.webp","wide-77.webp","wide-78.webp","wide-79.webp","wide-80.webp","wide-81.webp","wide-82.webp","wide-83.webp","wide-84.webp","wide-85.webp","wide-86.webp","wide-87.webp","wide-88.webp","wide-89.webp","wide-90.webp","wide-91.webp","wide-92.webp","wide-93.webp","wide-94.webp","wide-95.webp","wide-96.webp"],"after":["after-a-wide.webp","after-b-wide.webp"]},"tall":{"w":720,"h":1280,"hiw":1080,"hih":1920,"frames":["tall-00.jpg","tall-01.jpg","tall-02.jpg","tall-03.jpg","tall-04.jpg","tall-05.jpg","tall-06.jpg","tall-07.jpg","tall-08.jpg","tall-09.jpg","tall-10.jpg","tall-11.jpg","tall-12.jpg","tall-13.jpg","tall-14.jpg","tall-15.jpg","tall-16.jpg","tall-17.jpg","tall-18.jpg","tall-19.jpg","tall-20.jpg","tall-21.jpg","tall-22.jpg","tall-23.jpg","tall-24.jpg","tall-25.jpg","tall-26.jpg","tall-27.jpg","tall-28.jpg","tall-29.jpg","tall-30.jpg","tall-31.jpg","tall-32.jpg","tall-33.jpg","tall-34.jpg","tall-35.jpg","tall-36.jpg","tall-37.jpg","tall-38.jpg","tall-39.jpg","tall-40.jpg","tall-41.jpg","tall-42.jpg","tall-43.jpg","tall-44.jpg","tall-45.jpg","tall-46.jpg","tall-47.jpg","tall-48.jpg","tall-49.jpg","tall-50.jpg","tall-51.jpg","tall-52.jpg","tall-53.jpg","tall-54.jpg","tall-55.jpg","tall-56.jpg","tall-57.jpg","tall-58.jpg","tall-59.jpg","tall-60.jpg","tall-61.jpg","tall-62.jpg","tall-63.jpg","tall-64.jpg","tall-65.jpg","tall-66.jpg","tall-67.jpg","tall-68.jpg","tall-69.jpg","tall-70.jpg","tall-71.jpg","tall-72.jpg","tall-73.jpg","tall-74.jpg","tall-75.jpg","tall-76.jpg","tall-77.jpg","tall-78.jpg","tall-79.jpg","tall-80.jpg","tall-81.jpg","tall-82.jpg","tall-83.jpg","tall-84.jpg","tall-85.jpg","tall-86.jpg","tall-87.jpg","tall-88.jpg","tall-89.jpg","tall-90.jpg","tall-91.jpg","tall-92.jpg","tall-93.jpg","tall-94.jpg","tall-95.jpg","tall-96.jpg"],"after":["after-a-tall.jpg","after-b-tall.jpg"]}},"poster":{"wide":"poster-wide.webp","tall":"poster-tall.webp"},"video":{"tall":{"src":"flight-tall-h264.mp4","fps":24,"dur":30.2033,"w":1080,"h":1920,"bytes":63670984,"variants":[{"id":"hevc","src":"flight-tall-hevc.mp4","bytes":61210917,"mime":"video/mp4; codecs=\"hvc1.1.6.L123.90\"","w":1080,"h":1920,"kbps":16213,"crf":21},{"id":"av1","src":"flight-tall-av1.mp4","bytes":38502013,"mime":"video/mp4; codecs=\"av01.0.08M.08\"","w":1080,"h":1920,"kbps":10198,"crf":24},{"id":"h264","src":"flight-tall-h264.mp4","bytes":63670984,"mime":"video/mp4; codecs=\"avc1.640028\"","w":1080,"h":1920,"kbps":16865,"crf":20},{"id":"lite","src":"flight-tall-lite.mp4","bytes":25722573,"mime":"video/mp4; codecs=\"avc1.64001F\"","w":720,"h":1280,"kbps":6813,"crf":22}]},"wide":{"src":"flight-wide-h264.mp4","fps":24,"dur":30.2033,"w":1920,"h":1080,"bytes":50706823,"variants":[{"id":"hevc","src":"flight-wide-hevc.mp4","bytes":50983061,"mime":"video/mp4; codecs=\"hvc1.1.6.L123.90\"","w":1920,"h":1080,"kbps":13504,"crf":21},{"id":"av1","src":"flight-wide-av1.mp4","bytes":29587763,"mime":"video/mp4; codecs=\"av01.0.08M.08\"","w":1920,"h":1080,"kbps":7837,"crf":24},{"id":"h264","src":"flight-wide-h264.mp4","bytes":50706823,"mime":"video/mp4; codecs=\"avc1.640028\"","w":1920,"h":1080,"kbps":13431,"crf":20},{"id":"lite","src":"flight-wide-lite.mp4","bytes":20315813,"mime":"video/mp4; codecs=\"avc1.64001F\"","w":1280,"h":720,"kbps":5381,"crf":22}]}}};window.VE_TILD=window.VE_TILD||{h:"",c:{}};Object.assign(window.VE_TILD.c,{});</script>
 <script>
 (function(){
   var root=document.getElementById('ve-hero');if(!root)return;
@@ -465,6 +152,14 @@ function mount(root, opts = {}) {
   var TL={flight:.66,groom:.8,light:.88,menu:.9};
   var VE_RM=false;try{VE_RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
   var html=document.documentElement;html.classList.add('ve-has-hero','ve-intro');
+  /* 07.11 (владелец: «сначала всё грузится, не проскролить вниз, пока анимация не готова»): пока идёт заставка, страница не прокручивается —
+     ни колесом, ни пальцем, ни клавишами; браузер не восстанавливает старую позицию (раньше после перезагрузки страница вставала посреди хиро,
+     и текст появлялся на первой фотке без пролёта); после заставки — всегда с самого верха */
+  try{if('scrollRestoration' in history)history.scrollRestoration='manual'}catch(e){}
+  var KEYS={32:1,33:1,34:1,35:1,36:1,38:1,40:1};
+  var blockScroll=function(e){if(!html.classList.contains('ve-intro'))return;if(e.type==='keydown'&&!KEYS[e.keyCode])return;if(e.cancelable)e.preventDefault()};
+  window.addEventListener('wheel',blockScroll,{passive:false});window.addEventListener('touchmove',blockScroll,{passive:false});window.addEventListener('keydown',blockScroll,{passive:false});
+  var toTop=function(){try{window.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)}};toTop();
 
   // ---- заставка: логотип рисуется, ждём первый кадр сцены, потом логотип улетает в знак шапки ----
   var logo=root.querySelector('.ve-hero__logo'),lm=root.querySelector('.ve-hero__lm'),lt=root.querySelector('.ve-hero__lt');
@@ -486,22 +181,26 @@ function mount(root, opts = {}) {
   }
   function fly(){
     if(introDone)return;introDone=true;
-    var g=measure();root.classList.add('is-fly');html.classList.remove('ve-intro');
+    var g=measure();toTop();root.classList.add('is-fly');html.classList.remove('ve-intro');
+    if(location.hash){var tg=document.getElementById(location.hash.slice(1));if(tg)setTimeout(function(){tg.scrollIntoView({behavior:VE_RM?'auto':'smooth',block:'start'})},450)} /* ссылка с якорем — к разделу после заставки */
     var end=function(){root.classList.add('is-docked');html.classList.add('ve-logo-docked')};
     if(VE_RM||!g){end();return}
     lt.style.opacity=0;
     VE.tween(0,1,1000,function(k){var e=1-Math.pow(1-k,3),s=1+(g.sc-1)*e;logo.style.transform='translate3d('+(g.tx*e).toFixed(1)+'px,'+(g.ty*e).toFixed(1)+'px,0) scale('+s.toFixed(4)+')';if(k>=1)end()});
   }
   // готово = логотип дорисован и серия пролёта загружена (линия под логотипом растёт по кадрам); потолок ожидания 15 с
-  var loadBar=root.querySelector('.ve-hero__load i'),pct=root.querySelector('.ve-hero__pct'),loaded=0,mediaReady=false,isVideo=false,lastGain=performance.now();
+  var loadBar=root.querySelector('.ve-hero__load i'),pct=root.querySelector('.ve-hero__pct'),loaded=0,shown=0,mediaReady=false,isVideo=false,lastGain=performance.now();
+  /* процент на экране не откатывается назад: при переходе на лёгкий вариант видео (медленная линия) он стоит, пока новый не догонит */
   function onLoad(n,total,st){var v=total?n/total:0; /* 0 из 0 — ещё ничего не известно, не «готово» */if(v>loaded+.001)lastGain=performance.now();loaded=v;if(st){mediaReady=!!st.ready&&total>0;isVideo=!!st.video}
-    if(introDone)return;loadBar.style.setProperty('--p',loaded.toFixed(3));if(pct)pct.textContent=Math.round(Math.min(1,loaded)*100)+' %'}
+    if(introDone)return;shown=Math.max(shown,Math.min(1,loaded));loadBar.style.setProperty('--p',shown.toFixed(3));if(pct)pct.textContent=Math.round(shown*100)+' %'}
   var coarseGate=false;try{coarseGate=window.matchMedia('(hover:none) and (pointer:coarse)').matches}catch(e){}
   var NEED=1; // 24.10: заставка держит, пока медиа не загружены целиком (владелец: качество важнее, процент честный); раньше .5/.92 // телефон: отпускаем на 50 % (опорные кадры уже есть) — остальное догружается, пока камера дышит на первом кадре
-  // отпускаем, когда сцена живая и медиа готовы (видео перемоталось / все кадры), не раньше 2,2 с; если 8 с нет прироста — видео не идёт: откат на кадры и ждём их; жёсткий потолок 90 с
-  var gate=setInterval(function(){var t=performance.now()-t0,stall=performance.now()-lastGain>8000&&!mediaReady;
-    if(stall&&isVideo&&VE.hero&&VE.hero.fallback){VE.hero.fallback();lastGain=performance.now();isVideo=false;return}
-    if((root.classList.contains('is-live')&&mediaReady&&loaded>=NEED&&t>2200)||t>90000||(stall&&t>20000)){clearInterval(gate);loadBar.style.setProperty('--p','1');if(pct)pct.textContent='';fly()}},100);
+  // отпускаем, когда сцена живая и медиа готовы целиком (видео перемоталось + финальные кадры / все кадры), не раньше 1,8 с (логотип дорисован).
+  // Медленную линию сцена решает сама: через 2 с меряет скорость и переходит на лёгкий вариант, если основной не успевает к 27-й секунде.
+  // Если 10 с нет прироста — видео не идёт вовсе: откат на кадры и ждём их. Предохранитель от вечной заставки — 60 с (тогда отпускаем как есть)
+  var gate=setInterval(function(){var now=performance.now(),t=now-t0,stall=now-lastGain>10000&&!mediaReady;
+    if(stall&&isVideo&&VE.hero&&VE.hero.fallback){VE.hero.fallback();lastGain=now;isVideo=false;return}
+    if((root.classList.contains('is-live')&&mediaReady&&loaded>=NEED&&t>1800)||t>60000||(stall&&t>45000)){clearInterval(gate);loadBar.style.setProperty('--p','1');if(pct)pct.textContent='';fly()}},100);
 
   // ---- главы текста и луп по прогрессу ----
   var lastCh=-1,menu=false,loopSrc=null,loopOn=false;
