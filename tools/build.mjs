@@ -123,7 +123,7 @@ const sceneInline = '<script>' + (sceneMin || 'window.VE_SCENE_MOD=(function(){v
 const headTilda = '<script>window.VE_LOOPS_MAN=' + JSON.stringify(loopsMan) + ';window.VE_TILD=' + JSON.stringify(Object.keys(MM).length ? tild(loopFiles) : { h: '', c: {} }) + ';</script>'; // в HEAD только коды лупов (лимит 64 КБ), коды сцены — в блоке хиро
 const fill = (s, base) => legalFill(s).replace(/__PRECONNECT__/g, /^https?:\/\//.test(base) ? '<link rel="preconnect" href="' + new URL(base).origin + '" crossorigin>' : '') /* preconnect к хосту медиа из сборки; в превью не нужен */.replace(/__V__/g, V).replace(/__BASE__/g, base).replace(/__OFFERS__/g, JSON.stringify(CD.offers || null)).replace(/__LOGO_SPRITE__/g, LOGO_SPRITE).replace(/__VB_MARK__/g, LP.vbMark).replace(/__VB_FULL__/g, LP.vbFull).replace(/__MARK__/g, MARK).replace(/__ARC_MASK__/g, ARC_MASK).replace(/__ARC_CX__/g, ARC_CX).replace(/__ARC_CY__/g, ARC_CY).replace(/__SIL:(\w+)__/g, (_, k) => SIL[k].d).replace(/__SILH:(\w+)__/g, (_, k) => SIL[k].h);
 
-const fillDist = (src) => fill(mapStatic(src), PAGES_BASE).replace('__TILDA_HEAD__', headTilda).replace('__SCENE_INLINE__', sceneInline);
+const fillDist = (src) => fill(mapStatic(src), PAGES_BASE).replace('__TILDA_HEAD__', () => headTilda).replace('__SCENE_INLINE__', () => sceneInline); // функцией: в сжатом коде бывают $' и $& — строкой replace понял бы их как «вставь хвост/совпадение» (07.11)
 const fillPrev = (src, base) => fill(src, base).replace('__TILDA_HEAD__', '').replace('__SCENE_INLINE__', '');
 const headDist = fillDist(headSrc);
 await checkScripts(headDist, 'head'); checkCss(headDist, 'head');
@@ -204,3 +204,8 @@ await writeFile(join(DOCS, 'index.html'), page);
   await writeFile(join(SITE, 'apple-touch-icon.png'), await sharp(Buffer.from(svg)).resize(180, 180).png().toBuffer()); }
 await writeFile(join(SITE, 'version.txt'), V + '\n');
 console.log(`docs/index.html  ${kb(Buffer.byteLength(page))}   сборка ${V}`);
+// сторож: в готовых файлах не должно остаться служебных меток __ИМЯ__ (07.11: сжатая сцена с «$&» внутри строковой замены
+// продублировала страницу и оставила __SCENE_INLINE__ — на стенде сцена ломалась молча)
+{ const outs = [...(await readdir(join(ROOT, 'dist'))).filter((f) => /\.html$/.test(f) && f !== 'ЗАЛИТЬ.html').map((f) => join(ROOT, 'dist', f)), join(DOCS, 'index.html'), join(DOCS, 'policy.html'), join(DOCS, 'consent.html')];
+  const bad = []; for (const f of outs) { const s = await readFile(f, 'utf8').catch(() => ''); const m = s.match(/__[A-Z][A-Z_]*__/g); if (m) bad.push(f.replace(ROOT + '/', '') + ': ' + [...new Set(m)].join(' ')); }
+  if (bad.length) { console.error('⚠ в сборке остались служебные метки:\n  ' + bad.join('\n  ')); process.exit(1); } }
