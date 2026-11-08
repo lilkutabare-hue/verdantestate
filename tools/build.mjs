@@ -61,6 +61,7 @@ async function checkScripts(html, name) {
   while ((m = re.exec(html))) {
     const code = m[1];
     if (!code.trim()) continue;
+    if (/\btype=["']application\/ld\+json/i.test(m[0])) { try { JSON.parse(code); } catch (e) { throw new Error(`[${name}] JSON-LD не разбирается: ${e.message}`); } continue; } // микроразметка — данные, не код
     const tmp = join(tmpdir(), `ve-${name}-${i++}.mjs`);
     await writeFile(tmp, code);
     try { await run('node', ['--check', tmp]); } catch (e) { throw new Error(`[${name}] скрипт #${i} не прошёл node --check:\n${e.stderr || e.message}`); }
