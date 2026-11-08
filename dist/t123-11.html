@@ -1,14 +1,14 @@
-<!-- VE · 11-seasons.html · сборка fc799600 -->
+<!-- VE · 11-seasons.html · сборка 30eea002 -->
 <section class="ve ve-sec ve-sea" id="ve-seasons">
   <div class="ve-wrap ve-sec__top ve-line">
     <p class="ve-caps ve-r">Круглый год</p>
     <h2 class="ve-h2 ve-r ve-lines ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-spring-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" data-loop="z1" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-summer-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-autumn-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-spring-l.webp?v=30eea002" alt="Сад весной: газон, дорожка и цветник" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" data-loop="z1" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-summer-l.webp?v=30eea002" alt="Сад летом: газон, дорожка и цветник" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-autumn-l.webp?v=30eea002" alt="Сад осенью: жёлтая листва, газон и дорожка" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="https://lilkutabare-hue.github.io/verdantestate/site/media/stills/season-winter-l.webp?v=30eea002" alt="Сад зимой: снег на дорожке и кустарниках" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
         <div class="ve-tabs ve-sea__tabs ve-r" role="tablist">
@@ -17,7 +17,9 @@
           <button class="ve-tab ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="autumn">Осень</button>
           <button class="ve-tab ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="winter">Зима</button>
         </div>
-        <ul class="ve-sea__list" role="tabpanel"></ul>
+        <ul class="ve-sea__list" role="tabpanel"><li class="ve-r">сезонная уборка участка</li><li class="ve-r">аэрация и подсев газона</li><li class="ve-r">санитарная обрезка</li><li class="ve-r">обработки и подкормки</li><li class="ve-r">запуск и контроль системы полива</li></ul>
+        <!-- 08.11 SEO: работы всех сезонов — в разметке (исходный HTML); видимый список вкладка собирает отсюда -->
+        <div class="ve-sea__data" hidden><ul data-s="spring" aria-label="Весна"><li>сезонная уборка участка</li><li>аэрация и подсев газона</li><li>санитарная обрезка</li><li>обработки и подкормки</li><li>запуск и контроль системы полива</li></ul><ul data-s="summer" aria-label="Лето"><li>регулярный покос газона</li><li>стрижка живых изгородей</li><li>формировка кустарников</li><li>прополка и мульчирование</li><li>контроль полива и состояния растений</li></ul><ul data-s="autumn" aria-label="Осень"><li>уборка листвы</li><li>обрезка деревьев и кустарников</li><li>осенние подкормки</li><li>посадки</li><li>подготовка сада к зиме</li></ul><ul data-s="winter" aria-label="Зима"><li>контроль состояния участка</li><li>сезонное планирование работ</li><li>организация специализированных работ</li><li>график на новый сезон</li></ul></div>
       </div>
     </div>
   </div>
@@ -47,12 +49,7 @@
 (function(){
   var root=document.getElementById('ve-seasons');if(!root||!window.VE)return;
   VE.reveal(root);
-  var DATA={
-    spring:['сезонная уборка участка','аэрация и подсев газона','санитарная обрезка','обработки и подкормки','запуск и контроль системы полива'],
-    summer:['регулярный покос газона','стрижка живых изгородей','формировка кустарников','прополка и мульчирование','контроль полива и состояния растений'],
-    autumn:['уборка листвы','обрезка деревьев и кустарников','осенние подкормки','посадки','подготовка сада к зиме'],
-    winter:['контроль состояния участка','сезонное планирование работ','организация специализированных работ','график на новый сезон']
-  };
+  var DATA={};[].forEach.call(root.querySelectorAll('.ve-sea__data ul[data-s]'),function(u){DATA[u.getAttribute('data-s')]=[].map.call(u.querySelectorAll('li'),function(li){return li.textContent})});
   var list=root.querySelector('.ve-sea__list'),tabs=root.querySelectorAll('.ve-sea__tab'),pic=root.querySelector('.ve-sea__pic');
   // стиллы и луп лета (video вставляет VE.loops): видно то, что с data-s текущего сезона
   function setPic(s){

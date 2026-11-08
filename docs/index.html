@@ -7,13 +7,13 @@
 <meta name="description" content="Постоянное управление садом: один договор, один ответственный, весь сад под контролем. Москва и Московская область.">
 <meta property="og:title" content="Verdant Estate — Private Garden Service">
 <meta property="og:description" content="Сад, за которым не нужно следить. Постоянный уход за частными садами в Москве и Московской области.">
-<meta property="og:image" content="site/og-1200x630.jpg?v=fc799600">
+<meta property="og:image" content="site/og-1200x630.jpg?v=30eea002">
 <meta name="robots" content="noindex">
 <link rel="icon" href="site/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png">
 <meta name="theme-color" content="#1B462A">
 <script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>
-<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка fc799600 -->
+<!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 30eea002 -->
 
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -266,7 +266,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'fc799600',base:base,
+  var VE={v:'30eea002',base:base,
     /* адрес файла: в хранилище Тильды (window.VE_TILD = {h, c:{плоское имя: код папки}}, ставит сборка по docs/media-map.json) или свой хостинг с версией */
     flat:function(p){return p.replace(/^media\//,'').replace(/\//g,'-')},
     url:function(p){var t=window.VE_TILD,f=t&&t.c&&t.c[VE.flat(p)];if(f!=null&&t.h)return t.h+(f?f+'/':'')+VE.flat(p);return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
@@ -539,11 +539,13 @@ html.ve-coarse .ve-hd.is-solid .ve-hd__in{background:linear-gradient(180deg,rgba
 
 
 <!-- 02-hero.html -->
+<!-- 08.11 SEO (скилл xtc-seo, schema.md): организация и сайт в исходном HTML главной; только то, что видно на сайте — название, телефон (шапка, подвал), регион (подвал «Москва и Московская область», бриф); адреса нет — не выдумываем -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://verdantestate.ru/#org","name":"Verdant Estate","url":"https://verdantestate.ru/","logo":"site/favicon-512.png","description":"Профессиональный уход за частными садами и территориями в Москве и Московской области.","telephone":"+7-980-400-94-48","areaServed":[{"@type":"City","name":"Москва"},{"@type":"AdministrativeArea","name":"Московская область"}],"contactPoint":{"@type":"ContactPoint","telephone":"+7-980-400-94-48","contactType":"customer service","areaServed":"RU","availableLanguage":"ru"}},{"@type":"WebSite","@id":"https://verdantestate.ru/#website","url":"https://verdantestate.ru/","name":"Verdant Estate","inLanguage":"ru","publisher":{"@id":"https://verdantestate.ru/#org"}}]}</script>
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=fc799600">
-      <img src="site/media/scene/poster-wide.webp?v=fc799600" alt="" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="site/media/scene/poster-tall.webp?v=30eea002">
+      <img src="site/media/scene/poster-wide.webp?v=30eea002" alt="Загородный дом и сад в сосновом лесу" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
@@ -899,13 +901,13 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
       </div>
       <div class="ve-ssn__view">
         <ol class="ve-strip ve-ssn__track ve-rg">
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=fc799600" srcset="site/media/stills/process-1-s.webp?v=fc799600 560w, site/media/stills/process-1-l.webp?v=fc799600 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-1-l.webp?v=30eea002" srcset="site/media/stills/process-1-s.webp?v=30eea002 560w, site/media/stills/process-1-l.webp?v=30eea002 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="План участка на садовом столе" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>01</b><i></i><span>до сезона</span></p><h3 class="ve-ssn__t">Осмотр и план</h3><p class="ve-ssn__d">Осмотр участка и план работ на сезон.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=fc799600" srcset="site/media/stills/process-2-s.webp?v=fc799600 560w, site/media/stills/process-2-l.webp?v=fc799600 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-2-l.webp?v=30eea002" srcset="site/media/stills/process-2-s.webp?v=30eea002 560w, site/media/stills/process-2-l.webp?v=30eea002 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="Садовый инвентарь и тачка у цветника" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>02</b><i></i><span>в начале</span></p><h3 class="ve-ssn__t">График и команда</h3><p class="ve-ssn__d">Визиты по месяцам, специалисты под ваш сад.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=fc799600" srcset="site/media/stills/process-3-s.webp?v=fc799600 560w, site/media/stills/process-3-l.webp?v=fc799600 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-3-l.webp?v=30eea002" srcset="site/media/stills/process-3-s.webp?v=30eea002 560w, site/media/stills/process-3-l.webp?v=30eea002 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="Свежескошенный газон и стриженые кустарники" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>03</b><i></i><span>весь сезон</span></p><h3 class="ve-ssn__t">Работы</h3><p class="ve-ssn__d">По графику, без ваших напоминаний.</p></li>
-          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=fc799600" srcset="site/media/stills/process-4-s.webp?v=fc799600 560w, site/media/stills/process-4-l.webp?v=fc799600 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="site/media/stills/process-4-l.webp?v=30eea002" srcset="site/media/stills/process-4-s.webp?v=30eea002 560w, site/media/stills/process-4-l.webp?v=30eea002 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="Вечерняя подсветка дорожки в саду" loading="lazy" decoding="async" width="1000" height="1250"></div>
             <p class="ve-cap ve-ssn__n ve-num"><b>04</b><i></i><span>после каждого визита</span></p><h3 class="ve-ssn__t">Контроль и отчёт</h3><p class="ve-ssn__d">Проверяем результат, коротко сообщаем.</p></li>
         </ol>
       </div>
@@ -977,7 +979,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
   <div class="ve-wrap ve-tar__wrap">
     <div class="ve-strip ve-tar__strip ve-rg">
       <article class="ve-tar__card" data-tariff="BASIC">
-        <div class="ve-tar__img ve-px" data-loop="t1"><img src="site/media/stills/tariff-basic-l.webp?v=fc799600" srcset="site/media/stills/tariff-basic-s.webp?v=fc799600 560w, site/media/stills/tariff-basic-l.webp?v=fc799600 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px" data-loop="t1"><img src="site/media/stills/tariff-basic-l.webp?v=30eea002" srcset="site/media/stills/tariff-basic-s.webp?v=30eea002 560w, site/media/stills/tariff-basic-l.webp?v=30eea002 1000w" sizes="(min-width:900px) 380px, 84vw" alt="Стриженый газон и дорожка у современного дома" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-cap ve-tar__name"><b>Basic</b><i></i><span>до 10 соток</span></p>
         <p class="ve-tar__price ve-price">от 60&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Небольшие и простые участки.</p>
@@ -987,7 +989,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="PREMIUM">
-        <div class="ve-tar__img ve-px" data-loop="t2"><img src="site/media/stills/tariff-premium-l.webp?v=fc799600" srcset="site/media/stills/tariff-premium-s.webp?v=fc799600 560w, site/media/stills/tariff-premium-l.webp?v=fc799600 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px" data-loop="t2"><img src="site/media/stills/tariff-premium-l.webp?v=30eea002" srcset="site/media/stills/tariff-premium-s.webp?v=30eea002 560w, site/media/stills/tariff-premium-l.webp?v=30eea002 1000w" sizes="(min-width:900px) 380px, 84vw" alt="Газон, гортензии и живая изгородь у дома" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-cap ve-tar__name"><b>Premium</b><i></i><span>10–25 соток</span></p>
         <p class="ve-tar__price ve-price">от 110&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Полноценный частный сад.</p>
@@ -997,7 +999,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
         <button class="ve-btn ve-btn--ghost ve-tar__btn" type="button">Рассчитать</button>
       </article>
       <article class="ve-tar__card" data-tariff="ESTATE">
-        <div class="ve-tar__img ve-px" data-loop="t3"><img src="site/media/stills/tariff-estate-l.webp?v=fc799600" srcset="site/media/stills/tariff-estate-s.webp?v=fc799600 560w, site/media/stills/tariff-estate-l.webp?v=fc799600 1000w" sizes="(min-width:900px) 380px, 84vw" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <div class="ve-tar__img ve-px" data-loop="t3"><img src="site/media/stills/tariff-estate-l.webp?v=30eea002" srcset="site/media/stills/tariff-estate-s.webp?v=30eea002 560w, site/media/stills/tariff-estate-l.webp?v=30eea002 1000w" sizes="(min-width:900px) 380px, 84vw" alt="Большой сад с водоёмом и формованными туями" loading="lazy" decoding="async" width="1000" height="1250"></div>
         <p class="ve-cap ve-tar__name"><b>Estate</b><i></i><span>от 25 соток</span></p>
         <p class="ve-tar__price ve-price">от 190&#8239;000&nbsp;₽ <span>/ месяц</span></p>
         <p class="ve-tar__for">Большие и сложные территории.</p>
@@ -1286,15 +1288,24 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
           <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="eng" type="button">Инженерия</button>
           <button class="ve-tab ve-pr__tab" role="tab" aria-selected="false" data-cat="winter" type="button">Зима</button>
         </div>
-        <div class="ve-pr__table" role="tabpanel"></div>
+        <div class="ve-pr__table" role="tabpanel">
+          <!-- 08.11 SEO: прайс всех вкладок — в разметке (исходный HTML); вкладка показывает свою группу -->
+          <div class="ve-pr__grp" data-cat="lawn"><div class="ve-pr__row ve-r"><span>посевной газон</span><i class="ve-pr__lead"></i><b>от 500&nbsp;₽ <i>/ м²</i></b></div><div class="ve-pr__row ve-r"><span>рулонный газон</span><i class="ve-pr__lead"></i><b>от 700&nbsp;₽ <i>/ м²</i></b></div><div class="ve-pr__row ve-r"><span>мульчирование</span><i class="ve-pr__lead"></i><b>от 350&nbsp;₽ <i>/ м²</i></b></div><div class="ve-pr__row ve-r"><span>покос травы</span><i class="ve-pr__lead"></i><b>от 1 500&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>покос камыша</span><i class="ve-pr__lead"></i><b>от 2 500&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>покос борщевика</span><i class="ve-pr__lead"></i><b>от 3 000&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>уборка листвы</span><i class="ve-pr__lead"></i><b>от 1 500&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>вывоз растительных отходов</span><i class="ve-pr__lead"></i><b>от 2 000&nbsp;₽ <i>/ м³</i></b></div></div>
+          <div class="ve-pr__grp" data-cat="plants" hidden><div class="ve-pr__row ve-r"><span>устройство цветника</span><i class="ve-pr__lead"></i><b>от 1 800&nbsp;₽ <i>/ м²</i></b></div><div class="ve-pr__row ve-r"><span>отсыпка</span><i class="ve-pr__lead"></i><b>от 900&nbsp;₽ <i>/ м²</i></b></div><div class="ve-pr__row ve-r"><span>обработка растений</span><i class="ve-pr__lead"></i><b>от 2 500&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>услуги садовника</span><i class="ve-pr__lead"></i><b>от 5 000&nbsp;₽ <i>/ выезд</i></b></div><div class="ve-pr__row ve-r"><span>топиар: формирование куста «Maybach»</span><i class="ve-pr__lead"></i><b>от 50 000&nbsp;₽ <i>/ работа</i></b></div><div class="ve-pr__row ve-r"><span>топиар: сложная форма</span><i class="ve-pr__lead"></i><b>от 80 000&nbsp;₽ <i>/ работа</i></b></div><div class="ve-pr__row ve-r"><span>топиар: VIP-проект</span><i class="ve-pr__lead"></i><b>от 200 000&nbsp;₽ <i>/ работа</i></b></div><div class="ve-pr__row ve-r"><span>поддержание формы</span><i class="ve-pr__lead"></i><b>от 15 000&nbsp;₽ <i>/ месяц</i></b></div></div>
+          <div class="ve-pr__grp" data-cat="trees" hidden><div class="ve-pr__row ve-r"><span>спил дерева</span><i class="ve-pr__lead"></i><b>от 3 500&nbsp;₽ <i>/ шт.</i></b></div><div class="ve-pr__row ve-r"><span>кронирование</span><i class="ve-pr__lead"></i><b>от 4 000&nbsp;₽ <i>/ шт.</i></b></div><div class="ve-pr__row ve-r"><span>посадка лиственного дерева</span><i class="ve-pr__lead"></i><b>от 2 500&nbsp;₽ <i>/ шт.</i></b></div><div class="ve-pr__row ve-r"><span>посадка хвойного дерева</span><i class="ve-pr__lead"></i><b>от 3 500&nbsp;₽ <i>/ шт.</i></b></div><div class="ve-pr__row ve-r"><span>посадка кустарника, в т. ч. плодового</span><i class="ve-pr__lead"></i><b>от 800&nbsp;₽ <i>/ шт.</i></b></div><div class="ve-pr__row ve-r"><span>живая изгородь</span><i class="ve-pr__lead"></i><b>от 700&nbsp;₽ <i>/ пог. м</i></b></div><div class="ve-pr__row ve-r"><span>корчевание</span><i class="ve-pr__lead"></i><b>от 4 000&nbsp;₽ <i>/ шт.</i></b></div><div class="ve-pr__row ve-r"><span>измельчение веток</span><i class="ve-pr__lead"></i><b>от 3 500&nbsp;₽ <i>/ м³</i></b></div><div class="ve-pr__row ve-r"><span>удаление кустарника</span><i class="ve-pr__lead"></i><b>от 150&nbsp;₽ <i>/ м²</i></b></div></div>
+          <div class="ve-pr__grp" data-cat="land" hidden><div class="ve-pr__row ve-r"><span>культивация</span><i class="ve-pr__lead"></i><b>от 3 000&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>удаление сорняков</span><i class="ve-pr__lead"></i><b>от 1 500&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>перекапывание земли</span><i class="ve-pr__lead"></i><b>от 3 500&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>мелиорация участка</span><i class="ve-pr__lead"></i><b>от 15 000&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>перегной</span><i class="ve-pr__lead"></i><b>от 3 000&nbsp;₽ <i>/ м³</i></b></div><div class="ve-pr__row ve-r"><span>доставка навоза</span><i class="ve-pr__lead"></i><b>от 8 000&nbsp;₽ <i>/ машина</i></b></div><div class="ve-pr__row ve-r"><span>благоустройство участка</span><i class="ve-pr__lead"></i><b>от 2 500&nbsp;₽ <i>/ м²</i></b></div><div class="ve-pr__row ve-r"><span>озеленение участка под ключ</span><i class="ve-pr__lead"></i><b>от 450 000&nbsp;₽ <i>/ участок</i></b></div><div class="ve-pr__row ve-r"><span>комплексное благоустройство</span><i class="ve-pr__lead"></i><b>от 1 500 000&nbsp;₽ <i>/ участок</i></b></div></div>
+          <div class="ve-pr__grp" data-cat="design" hidden><div class="ve-pr__row ve-r"><span>проект озеленения</span><i class="ve-pr__lead"></i><b>от 30 000&nbsp;₽ <i>/ проект</i></b></div><div class="ve-pr__row ve-r"><span>ландшафтный проект</span><i class="ve-pr__lead"></i><b>от 70 000&nbsp;₽ <i>/ проект</i></b></div><div class="ve-pr__row ve-r"><span>проект среднего участка</span><i class="ve-pr__lead"></i><b>от 120 000&nbsp;₽ <i>/ проект</i></b></div><div class="ve-pr__row ve-r"><span>премиальный проект</span><i class="ve-pr__lead"></i><b>от 200 000&nbsp;₽ <i>/ проект</i></b></div><div class="ve-pr__row ve-r"><span>посадки по проекту</span><i class="ve-pr__lead"></i><b>от 80 000&nbsp;₽ <i>/ проект</i></b></div><div class="ve-pr__row ve-r"><span>водоёмы</span><i class="ve-pr__lead"></i><b>от 350 000&nbsp;₽ <i>/ проект</i></b></div><div class="ve-pr__row ve-r"><span>автополив под ключ</span><i class="ve-pr__lead"></i><b>от 150 000&nbsp;₽ <i>/ проект</i></b></div><div class="ve-pr__row ve-r"><span>освещение участка под ключ</span><i class="ve-pr__lead"></i><b>от 100 000&nbsp;₽ <i>/ проект</i></b></div></div>
+          <div class="ve-pr__grp" data-cat="eng" hidden><div class="ve-pr__row ve-r"><span>автоматический полив</span><i class="ve-pr__lead"></i><b>от 15 000&nbsp;₽ <i>/ сотка</i></b></div><div class="ve-pr__row ve-r"><span>ландшафтное освещение</span><i class="ve-pr__lead"></i><b>от 15 000&nbsp;₽ <i>/ проект</i></b></div><div class="ve-pr__row ve-r"><span>подсветка дерева</span><i class="ve-pr__lead"></i><b>от 15 000&nbsp;₽ <i>/ шт.</i></b></div><div class="ve-pr__row ve-r"><span>монтаж светильника</span><i class="ve-pr__lead"></i><b>от 8 000&nbsp;₽ <i>/ шт.</i></b></div></div>
+          <div class="ve-pr__grp" data-cat="winter" hidden><div class="ve-pr__row ve-r"><span>уборка снега</span><i class="ve-pr__lead"></i><b>от 8 000&nbsp;₽ <i>/ выезд</i></b></div><div class="ve-pr__row ve-r"><span>зимний абонемент</span><i class="ve-pr__lead"></i><b>от 35 000&nbsp;₽ <i>/ месяц</i></b></div><div class="ve-pr__row ve-r"><span>зимний декор</span><i class="ve-pr__lead"></i><b>от 80 000&nbsp;₽ <i>/ работа</i></b></div><div class="ve-pr__row ve-r"><span>ледовые фигуры</span><i class="ve-pr__lead"></i><b>от 50 000&nbsp;₽ <i>/ работа</i></b></div></div>
+        </div>
         <p class="ve-pr__cnote ve-muted" hidden></p>
         <p class="ve-pr__note ve-muted">Индивидуальные работы — от 5&#8239;000&nbsp;₽ за выезд. Сложные работы — по смете. Цены — ориентир, не публичная оферта.</p>
       </div>
       <div class="ve-pr__pic ve-r ve-px" aria-hidden="true">
-        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1000" height="1250">
-        <img data-cat="winter" src="site/media/stills/season-winter-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="lawn" class="is-on" src="site/media/stills/price-lawn-l.webp?v=30eea002" alt="Газон с ровной кромкой вдоль дорожки" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="plants" src="site/media/stills/price-plants-l.webp?v=30eea002" alt="Цветник с гортензиями и самшитом" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="trees" src="site/media/stills/price-trees-l.webp?v=30eea002" alt="Сосны и газон на участке" loading="lazy" decoding="async" width="1000" height="1250">
+        <img data-cat="winter" src="site/media/stills/season-winter-l.webp?v=30eea002" alt="Сад зимой под снегом" loading="lazy" decoding="async" width="1000" height="1250">
       </div>
     </div>
   </div>
@@ -1329,21 +1340,12 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
   var root=document.getElementById('ve-pricelist');if(!root||!window.VE)return;
   VE.reveal(root);
   // прайс заказчика, 24.10.2026 (docs/state: «вот цены от заказчика»); вкладка — категория, строка: название, «от» цена, единица; цена null — текст единицы вместо цены
-  var DATA={
-    lawn:[['посевной газон','500','м²'],['рулонный газон','700','м²'],['мульчирование','350','м²'],['покос травы','1 500','сотка'],['покос камыша','2 500','сотка'],['покос борщевика','3 000','сотка'],['уборка листвы','1 500','сотка'],['вывоз растительных отходов','2 000','м³']],
-    plants:[['устройство цветника','1 800','м²'],['отсыпка','900','м²'],['обработка растений','2 500','сотка'],['услуги садовника','5 000','выезд'],['топиар: формирование куста «Maybach»','50 000','работа'],['топиар: сложная форма','80 000','работа'],['топиар: VIP-проект','200 000','работа'],['поддержание формы','15 000','месяц']],
-    trees:[['спил дерева','3 500','шт.'],['кронирование','4 000','шт.'],['посадка лиственного дерева','2 500','шт.'],['посадка хвойного дерева','3 500','шт.'],['посадка кустарника, в т. ч. плодового','800','шт.'],['живая изгородь','700','пог. м'],['корчевание','4 000','шт.'],['измельчение веток','3 500','м³'],['удаление кустарника','150','м²']],
-    land:[['культивация','3 000','сотка'],['удаление сорняков','1 500','сотка'],['перекапывание земли','3 500','сотка'],['мелиорация участка','15 000','сотка'],['перегной','3 000','м³'],['доставка навоза','8 000','машина'],['благоустройство участка','2 500','м²'],['озеленение участка под ключ','450 000','участок'],['комплексное благоустройство','1 500 000','участок']],
-    design:[['проект озеленения','30 000','проект'],['ландшафтный проект','70 000','проект'],['проект среднего участка','120 000','проект'],['премиальный проект','200 000','проект'],['посадки по проекту','80 000','проект'],['водоёмы','350 000','проект'],['автополив под ключ','150 000','проект'],['освещение участка под ключ','100 000','проект']],
-    eng:[['автоматический полив','15 000','сотка'],['ландшафтное освещение','15 000','проект'],['подсветка дерева','15 000','шт.'],['монтаж светильника','8 000','шт.']],
-    winter:[['уборка снега','8 000','выезд'],['зимний абонемент','35 000','месяц'],['зимний декор','80 000','работа'],['ледовые фигуры','50 000','работа']]
-  };
   var NOTE={eng:'Оборудование и светильники рассчитываются отдельно.',design:'Стоимость проекта зависит от площади участка и состава разделов.',land:'Комплексное благоустройство — по смете: инженерия, мощение, рельеф, растения и материалы.'};
   var PIC={lawn:'lawn',plants:'plants',trees:'trees',land:'lawn',design:'plants',eng:'trees',winter:'winter'}; // фото вкладки: своих стиллов у новых категорий нет — ближайшее
-  var table=root.querySelector('.ve-pr__table'),tabs=root.querySelectorAll('.ve-pr__tab'),pics=root.querySelectorAll('.ve-pr__pic img');
+  var table=root.querySelector('.ve-pr__table'),grps=table.querySelectorAll('.ve-pr__grp'),tabs=root.querySelectorAll('.ve-pr__tab'),pics=root.querySelectorAll('.ve-pr__pic img');
   function show(cat){
-    table.innerHTML=DATA[cat].map(function(r){var price=r[1]?'от '+r[1].replace(' ',' ')+'&nbsp;₽ <i>/ '+r[2]+'</i>':'<i>'+r[2]+'</i>';return '<div class="ve-pr__row ve-r"><span>'+r[0]+'</span><i class="ve-pr__lead"></i><b>'+price+'</b></div>'}).join('');
-    var rows=table.querySelectorAll('.ve-pr__row');for(var i=0;i<rows.length;i++)rows[i].style.transitionDelay=Math.min(i,10)*45+'ms';
+    for(var g=0;g<grps.length;g++)grps[g].hidden=grps[g].getAttribute('data-cat')!==cat;
+    var rows=table.querySelectorAll('.ve-pr__grp[data-cat="'+cat+'"] .ve-pr__row');for(var i=0;i<rows.length;i++){rows[i].classList.remove('is-in');rows[i].style.transitionDelay=Math.min(i,10)*45+'ms'}
     requestAnimationFrame(function(){requestAnimationFrame(function(){for(var i=0;i<rows.length;i++)rows[i].classList.add('is-in')})});
     for(var j=0;j<tabs.length;j++){var on=tabs[j].getAttribute('data-cat')===cat;tabs[j].classList.toggle('is-on',on);tabs[j].setAttribute('aria-selected',on)}
     for(var k=0;k<pics.length;k++)pics[k].classList.toggle('is-on',pics[k].getAttribute('data-cat')===(PIC[cat]||cat));
@@ -1365,7 +1367,19 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
     <h2 class="ve-h2 ve-r ve-lines ve-ways__h">Десять способов: красивее, удобнее, дороже</h2>
   </div>
   <div class="ve-wrap ve-ways__wrap">
-    <div class="ve-strip ve-ways__strip ve-rg"></div>
+    <div class="ve-strip ve-ways__strip ve-rg">
+        <!-- 08.11 SEO: карточки способов — в разметке (исходный HTML), картинке подпись по названию -->
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r01" data-loop-mode="hover"><img src="site/media/stills/way-01-l.webp?v=30eea002" srcset="site/media/stills/way-01-s.webp?v=30eea002 560w, site/media/stills/way-01-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Обновление газона" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">01</b><i></i><span>Обновление газона</span></h3><p class="ve-ways__d">подсев, выравнивание, аэрация, удобрение</p></article>
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r02" data-loop-mode="hover"><img src="site/media/stills/way-02-l.webp?v=30eea002" srcset="site/media/stills/way-02-s.webp?v=30eea002 560w, site/media/stills/way-02-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Декоративные дорожки" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">02</b><i></i><span>Декоративные дорожки</span></h3><p class="ve-ways__d">галька, отсев, плитняк, спилы дерева</p></article>
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r03" data-loop-mode="hover"><img src="site/media/stills/way-03-l.webp?v=30eea002" srcset="site/media/stills/way-03-s.webp?v=30eea002 560w, site/media/stills/way-03-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Декоративные клумбы" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">03</b><i></i><span>Декоративные клумбы</span></h3><p class="ve-ways__d">многолетники, кустарники, мульча, камень</p></article>
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r04" data-loop-mode="hover"><img src="site/media/stills/way-04-l.webp?v=30eea002" srcset="site/media/stills/way-04-s.webp?v=30eea002 560w, site/media/stills/way-04-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Подсветка" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">04</b><i></i><span>Подсветка</span></h3><p class="ve-ways__d">светильники, подсветка деревьев, кустов и дорожек</p></article>
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r05" data-loop-mode="hover"><img src="site/media/stills/way-05-l.webp?v=30eea002" srcset="site/media/stills/way-05-s.webp?v=30eea002 560w, site/media/stills/way-05-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Живая изгородь" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">05</b><i></i><span>Живая изгородь</span></h3><p class="ve-ways__d">туи, можжевельники, дерен, пузыреплодник</p></article>
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r06" data-loop-mode="hover"><img src="site/media/stills/way-06-l.webp?v=30eea002" srcset="site/media/stills/way-06-s.webp?v=30eea002 560w, site/media/stills/way-06-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Каменные композиции" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">06</b><i></i><span>Каменные композиции</span></h3><p class="ve-ways__d">рокарии, валуны, щебень, хвойные</p></article>
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r07" data-loop-mode="hover"><img src="site/media/stills/way-07-l.webp?v=30eea002" srcset="site/media/stills/way-07-s.webp?v=30eea002 560w, site/media/stills/way-07-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Автополив" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">07</b><i></i><span>Автополив</span></h3><p class="ve-ways__d">автоматическая система полива</p></article>
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r08" data-loop-mode="hover"><img src="site/media/stills/way-08-l.webp?v=30eea002" srcset="site/media/stills/way-08-s.webp?v=30eea002 560w, site/media/stills/way-08-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Зона отдыха" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">08</b><i></i><span>Зона отдыха</span></h3><p class="ve-ways__d">костровые зоны, настилы, перголы, качели, гамаки</p></article>
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r09" data-loop-mode="hover"><img src="site/media/stills/way-09-l.webp?v=30eea002" srcset="site/media/stills/way-09-s.webp?v=30eea002 560w, site/media/stills/way-09-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Сезонное обслуживание" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">09</b><i></i><span>Сезонное обслуживание</span></h3><p class="ve-ways__d">стрижка, обрезка, обработка, прополка, удобрение, подготовка к зиме</p></article>
+        <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r10" data-loop-mode="hover"><img src="site/media/stills/way-10-l.webp?v=30eea002" srcset="site/media/stills/way-10-s.webp?v=30eea002 560w, site/media/stills/way-10-l.webp?v=30eea002 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Премиальное обновление" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">10</b><i></i><span>Премиальное обновление</span></h3><p class="ve-ways__d">комплексное преображение: дизайн, растения, дорожки, подсветка, детали</p></article>
+      </div>
   </div>
 </section>
 <style>
@@ -1388,20 +1402,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
 <script>
 (function(){
   var root=document.getElementById('ve-ways');if(!root||!window.VE)return;
-  var WAYS=[
-    ['Обновление газона','подсев, выравнивание, аэрация, удобрение'],
-    ['Декоративные дорожки','галька, отсев, плитняк, спилы дерева'],
-    ['Декоративные клумбы','многолетники, кустарники, мульча, камень'],
-    ['Подсветка','светильники, подсветка деревьев, кустов и дорожек'],
-    ['Живая изгородь','туи, можжевельники, дерен, пузыреплодник'],
-    ['Каменные композиции','рокарии, валуны, щебень, хвойные'],
-    ['Автополив','автоматическая система полива'],
-    ['Зона отдыха','костровые зоны, настилы, перголы, качели, гамаки'],
-    ['Сезонное обслуживание','стрижка, обрезка, обработка, прополка, удобрение, подготовка к зиме'],
-    ['Премиальное обновление','комплексное преображение: дизайн, растения, дорожки, подсветка, детали']
-  ];
   var strip=root.querySelector('.ve-ways__strip');
-  strip.innerHTML=WAYS.map(function(w,i){var n=('0'+(i+1)).slice(-2);var lp='r'+n;/* лупы на все десять способов: нет клипа в манифесте — остаётся стилл */return '<article class="ve-ways__card"><div class="ve-ways__img ve-px"'+(lp?' data-loop="'+lp+'" data-loop-mode="hover"':'')+'><img src="'+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+'" srcset="'+VE.base+'media/stills/way-'+n+'-s.webp?v='+VE.v+' 560w, '+VE.base+'media/stills/way-'+n+'-l.webp?v='+VE.v+' 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">'+n+'</b><i></i><span>'+w[0]+'</span></h3><p class="ve-ways__d">'+w[1]+'</p></article>'}).join('');
   VE.reveal(root);VE.emit('px:refresh');
   // на телефоне с мышью (узкое окно) — тянуть мышью, без перехвата колеса; на компьютере лента стала сеткой
   if(window.matchMedia('(pointer:fine) and (max-width:899px)').matches){
@@ -1422,8 +1423,8 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
     <p class="ve-caps ve-r">До и после</p>
     <h2 class="ve-h2 ve-r ve-lines ve-ba__h">До обслуживания и через один сезон</h2>
     <div class="ve-ba__box ve-r" data-loop-root>
-      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=fc799600" srcset="site/media/stills/ba-before-s.webp?v=fc799600 960w, site/media/stills/ba-before-l.webp?v=fc799600 2400w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
-      <div class="ve-ba__after"><img class="ve-ba__img ve-ba__img--after" data-loop="b2" src="site/media/stills/ba-after-l.webp?v=fc799600" srcset="site/media/stills/ba-after-s.webp?v=fc799600 960w, site/media/stills/ba-after-l.webp?v=fc799600 2400w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900"></div>
+      <img class="ve-ba__img ve-ba__img--before" src="site/media/stills/ba-before-l.webp?v=30eea002" srcset="site/media/stills/ba-before-s.webp?v=30eea002 960w, site/media/stills/ba-before-l.webp?v=30eea002 2400w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад до обслуживания" loading="lazy" decoding="async" width="1440" height="900">
+      <div class="ve-ba__after"><img class="ve-ba__img ve-ba__img--after" data-loop="b2" src="site/media/stills/ba-after-l.webp?v=30eea002" srcset="site/media/stills/ba-after-s.webp?v=30eea002 960w, site/media/stills/ba-after-l.webp?v=30eea002 2400w" sizes="(min-width:900px) 1160px, 100vw" alt="Сад через один сезон обслуживания" loading="lazy" decoding="async" width="1440" height="900"></div>
       <span class="ve-ba__lab ve-ba__lab--b">до</span>
       <span class="ve-ba__lab ve-ba__lab--a">после</span>
       <div class="ve-ba__bar" aria-hidden="true"><i class="ve-ring" data-spectral><b></b></i></div>
@@ -1491,10 +1492,10 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
     <h2 class="ve-h2 ve-r ve-lines ve-sea__h">Один сад — четыре сезона работ</h2>
     <div class="ve-sea__grid">
       <div class="ve-sea__pic ve-r" aria-hidden="true">
-        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="summer" data-loop="z1" src="site/media/stills/season-summer-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1440" height="900">
-        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="spring" class="is-on" src="site/media/stills/season-spring-l.webp?v=30eea002" alt="Сад весной: газон, дорожка и цветник" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="summer" data-loop="z1" src="site/media/stills/season-summer-l.webp?v=30eea002" alt="Сад летом: газон, дорожка и цветник" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="autumn" src="site/media/stills/season-autumn-l.webp?v=30eea002" alt="Сад осенью: жёлтая листва, газон и дорожка" loading="lazy" decoding="async" width="1440" height="900">
+        <img data-s="winter" src="site/media/stills/season-winter-l.webp?v=30eea002" alt="Сад зимой: снег на дорожке и кустарниках" loading="lazy" decoding="async" width="1440" height="900">
       </div>
       <div class="ve-sea__side">
         <div class="ve-tabs ve-sea__tabs ve-r" role="tablist">
@@ -1503,7 +1504,9 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
           <button class="ve-tab ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="autumn">Осень</button>
           <button class="ve-tab ve-sea__tab" type="button" role="tab" aria-selected="false" data-s="winter">Зима</button>
         </div>
-        <ul class="ve-sea__list" role="tabpanel"></ul>
+        <ul class="ve-sea__list" role="tabpanel"><li class="ve-r">сезонная уборка участка</li><li class="ve-r">аэрация и подсев газона</li><li class="ve-r">санитарная обрезка</li><li class="ve-r">обработки и подкормки</li><li class="ve-r">запуск и контроль системы полива</li></ul>
+        <!-- 08.11 SEO: работы всех сезонов — в разметке (исходный HTML); видимый список вкладка собирает отсюда -->
+        <div class="ve-sea__data" hidden><ul data-s="spring" aria-label="Весна"><li>сезонная уборка участка</li><li>аэрация и подсев газона</li><li>санитарная обрезка</li><li>обработки и подкормки</li><li>запуск и контроль системы полива</li></ul><ul data-s="summer" aria-label="Лето"><li>регулярный покос газона</li><li>стрижка живых изгородей</li><li>формировка кустарников</li><li>прополка и мульчирование</li><li>контроль полива и состояния растений</li></ul><ul data-s="autumn" aria-label="Осень"><li>уборка листвы</li><li>обрезка деревьев и кустарников</li><li>осенние подкормки</li><li>посадки</li><li>подготовка сада к зиме</li></ul><ul data-s="winter" aria-label="Зима"><li>контроль состояния участка</li><li>сезонное планирование работ</li><li>организация специализированных работ</li><li>график на новый сезон</li></ul></div>
       </div>
     </div>
   </div>
@@ -1533,12 +1536,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
 (function(){
   var root=document.getElementById('ve-seasons');if(!root||!window.VE)return;
   VE.reveal(root);
-  var DATA={
-    spring:['сезонная уборка участка','аэрация и подсев газона','санитарная обрезка','обработки и подкормки','запуск и контроль системы полива'],
-    summer:['регулярный покос газона','стрижка живых изгородей','формировка кустарников','прополка и мульчирование','контроль полива и состояния растений'],
-    autumn:['уборка листвы','обрезка деревьев и кустарников','осенние подкормки','посадки','подготовка сада к зиме'],
-    winter:['контроль состояния участка','сезонное планирование работ','организация специализированных работ','график на новый сезон']
-  };
+  var DATA={};[].forEach.call(root.querySelectorAll('.ve-sea__data ul[data-s]'),function(u){DATA[u.getAttribute('data-s')]=[].map.call(u.querySelectorAll('li'),function(li){return li.textContent})});
   var list=root.querySelector('.ve-sea__list'),tabs=root.querySelectorAll('.ve-sea__tab'),pic=root.querySelector('.ve-sea__pic');
   // стиллы и луп лета (video вставляет VE.loops): видно то, что с data-s текущего сезона
   function setPic(s){
@@ -1599,7 +1597,20 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
       <p class="ve-caps ve-r">Вопросы</p>
       <h2 class="ve-h2 ve-r ve-lines ve-faq__h">Что обычно спрашивают</h2>
     </div>
-    <div class="ve-faq__list ve-rg"></div>
+    <div class="ve-faq__list ve-rg">
+      <!-- 08.11 SEO: вопросы и ответы — в разметке (исходный HTML для Яндекса и ИИ-ботов), скрипт только раскрывает -->
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-0" id="ve-faq-q0">Какой договор и на какой срок?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-0" role="region" aria-labelledby="ve-faq-q0"><div><p>Договор на сезон обслуживания. К нему прилагаются план работ и график визитов — их мы составляем после осмотра участка.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-1" id="ve-faq-q1">Что входит в один визит?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-1" role="region" aria-labelledby="ve-faq-q1"><div><p>Работы по графику этого месяца: покос, стрижка, уход за растениями, уборка. Состав зависит от уровня обслуживания и времени года.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-2" id="ve-faq-q2">Кто к нам приезжает?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-2" role="region" aria-labelledby="ve-faq-q2"><div><p>Специалисты под задачу: садовник, арборист, специалист по газону или поливу. Отвечает за сад один человек с нашей стороны — все вопросы к нему.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-3" id="ve-faq-q3">Как считается цена?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-3" role="region" aria-labelledby="ve-faq-q3"><div><p>По вашему саду: площадь, газоны, деревья, кустарники, цветники, изгороди, инженерные системы, рельеф, состояние и нужная частота визитов. Цифра в тарифе — порог, от которого начинается уровень.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-4" id="ve-faq-q4">Почему фиксированная сумма в месяц, а не оплата по факту?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-4" role="region" aria-labelledby="ve-faq-q4"><div><p>Сад требует работ каждую неделю, а не раз в сезон. Фиксированная сумма покрывает весь график: визиты, нужных специалистов и контроль между визитами. Разовый вызов за ту же работу выходит дороже, а между вызовами сад остаётся без присмотра — и мелкие проблемы становятся дорогими.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-5" id="ve-faq-q5">Что происходит зимой?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-5" role="region" aria-labelledby="ve-faq-q5"><div><p>Сезон заканчивается подготовкой сада к зиме: обрезка, укрытие растений, уборка. Что делаем зимой и как меняется оплата — обсуждаем при расчёте.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-6" id="ve-faq-q6">А если идёт дождь?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-6" role="region" aria-labelledby="ve-faq-q6"><div><p>Работы, которым погода мешает, переносим на ближайший подходящий день и предупреждаем заранее. Остальное — по графику.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-7" id="ve-faq-q7">Можно вызвать вас срочно?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-7" role="region" aria-labelledby="ve-faq-q7"><div><p>Да, если что-то случилось между визитами: упало дерево, сломался полив. На уровне Estate такой выезд — приоритетный.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-8" id="ve-faq-q8">Как оплачивать?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-8" role="region" aria-labelledby="ve-faq-q8"><div><p>Постоянное обслуживание — ежемесячно, по договору. Разовые работы — по прайсу, сложные — по смете.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-9" id="ve-faq-q9">Можно заказать одну работу без договора?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-9" role="region" aria-labelledby="ve-faq-q9"><div><p>Да. Покос, обрезку, посадку и другие отдельные работы делаем по прайсу разовых работ.</p></div></div></div>
+      <div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-10" id="ve-faq-q10">С чего начать?<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-10" role="region" aria-labelledby="ve-faq-q10"><div><p>Оставьте заявку. Приедем на осмотр, составим план и назовём точную стоимость. Первый аудит сада — в подарок при заключении договора.</p></div></div></div>
+    </div>
   </div>
 </section>
 <style>
@@ -1627,21 +1638,7 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
 <script>
 (function(){
   var root=document.getElementById('ve-faq');if(!root||!window.VE)return;
-  var QA=[
-    ['Какой договор и на какой срок?','Договор на сезон обслуживания. К нему прилагаются план работ и график визитов — их мы составляем после осмотра участка.'],
-    ['Что входит в один визит?','Работы по графику этого месяца: покос, стрижка, уход за растениями, уборка. Состав зависит от уровня обслуживания и времени года.'],
-    ['Кто к нам приезжает?','Специалисты под задачу: садовник, арборист, специалист по газону или поливу. Отвечает за сад один человек с нашей стороны — все вопросы к нему.'],
-    ['Как считается цена?','По вашему саду: площадь, газоны, деревья, кустарники, цветники, изгороди, инженерные системы, рельеф, состояние и нужная частота визитов. Цифра в тарифе — порог, от которого начинается уровень.'],
-    ['Почему фиксированная сумма в месяц, а не оплата по факту?','Сад требует работ каждую неделю, а не раз в сезон. Фиксированная сумма покрывает весь график: визиты, нужных специалистов и контроль между визитами. Разовый вызов за ту же работу выходит дороже, а между вызовами сад остаётся без присмотра — и мелкие проблемы становятся дорогими.'],
-    ['Что происходит зимой?','Сезон заканчивается подготовкой сада к зиме: обрезка, укрытие растений, уборка. Что делаем зимой и как меняется оплата — обсуждаем при расчёте.'],
-    ['А если идёт дождь?','Работы, которым погода мешает, переносим на ближайший подходящий день и предупреждаем заранее. Остальное — по графику.'],
-    ['Можно вызвать вас срочно?','Да, если что-то случилось между визитами: упало дерево, сломался полив. На уровне Estate такой выезд — приоритетный.'],
-    ['Как оплачивать?','Постоянное обслуживание — ежемесячно, по договору. Разовые работы — по прайсу, сложные — по смете.'],
-    ['Можно заказать одну работу без договора?','Да. Покос, обрезку, посадку и другие отдельные работы делаем по прайсу разовых работ.'],
-    ['С чего начать?','Оставьте заявку. Приедем на осмотр, составим план и назовём точную стоимость. Первый аудит сада — в подарок при заключении договора.']
-  ];
   var list=root.querySelector('.ve-faq__list');
-  list.innerHTML=QA.map(function(q,i){return '<div class="ve-faq__item"><button class="ve-faq__q" type="button" aria-expanded="false" aria-controls="ve-faq-'+i+'" id="ve-faq-q'+i+'">'+q[0]+'<i aria-hidden="true"></i></button><div class="ve-faq__a" id="ve-faq-'+i+'" role="region" aria-labelledby="ve-faq-q'+i+'"><div><p>'+q[1]+'</p></div></div></div>'}).join('');
   list.addEventListener('click',function(e){
     var b=e.target.closest('.ve-faq__q');if(!b)return;
     var it=b.parentNode,open=!it.classList.contains('is-open');
@@ -1673,15 +1670,15 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
     </div>
     <div class="ve-wrap ve-hol__wrap">
       <div class="ve-strip ve-hol__strip ve-rg">
-        <article class="ve-hol__card" data-offer="hw" data-until="2026-10-31">
-          <div class="ve-hol__img ve-px" data-loop="hw-on" data-loop-mode="once" data-loop-then="hw"><img src="site/media/stills/holiday-hw-dark-l.webp?v=fc799600" srcset="site/media/stills/holiday-hw-dark-s.webp?v=fc799600 560w, site/media/stills/holiday-hw-dark-l.webp?v=fc799600 1000w" sizes="(min-width:900px) 420px, 84vw" data-loop-lit="site/media/stills/holiday-hw-lit-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+        <article class="ve-hol__card" data-offer="hw" data-until="2026-10-31" hidden>
+          <div class="ve-hol__img ve-px" data-loop="hw-on" data-loop-mode="once" data-loop-then="hw"><img src="site/media/stills/holiday-hw-dark-l.webp?v=30eea002" srcset="site/media/stills/holiday-hw-dark-s.webp?v=30eea002 560w, site/media/stills/holiday-hw-dark-l.webp?v=30eea002 1000w" sizes="(min-width:900px) 420px, 84vw" data-loop-lit="site/media/stills/holiday-hw-lit-l.webp?v=30eea002" alt="Сад, украшенный тыквами к Хеллоуину" loading="lazy" decoding="async" width="1000" height="1250"></div>
           <p class="ve-cap ve-hol__name"><b>Хеллоуин</b><i></i><span>до 31 октября</span></p>
           <p class="ve-hol__price ve-price">от 39 900&nbsp;₽</p>
           <p class="ve-hol__for">тыквы и фонари вдоль дорожек, свечи, сухоцветы — ставим, обслуживаем, убираем после праздника</p>
           <button class="ve-btn ve-btn--ghost ve-hol__btn" type="button">Рассчитать</button>
         </article>
         <article class="ve-hol__card" data-offer="ny" data-until="2027-01-10">
-          <div class="ve-hol__img ve-px" data-loop="ny-on" data-loop-mode="once" data-loop-then="ny"><img src="site/media/stills/holiday-ny-dark-l.webp?v=fc799600" srcset="site/media/stills/holiday-ny-dark-s.webp?v=fc799600 560w, site/media/stills/holiday-ny-dark-l.webp?v=fc799600 1000w" sizes="(min-width:900px) 420px, 84vw" data-loop-lit="site/media/stills/holiday-ny-lit-l.webp?v=fc799600" alt="" loading="lazy" decoding="async" width="1000" height="1250"></div>
+          <div class="ve-hol__img ve-px" data-loop="ny-on" data-loop-mode="once" data-loop-then="ny"><img src="site/media/stills/holiday-ny-dark-l.webp?v=30eea002" srcset="site/media/stills/holiday-ny-dark-s.webp?v=30eea002 560w, site/media/stills/holiday-ny-dark-l.webp?v=30eea002 1000w" sizes="(min-width:900px) 420px, 84vw" data-loop-lit="site/media/stills/holiday-ny-lit-l.webp?v=30eea002" alt="Сад и дом, украшенные к Новому году" loading="lazy" decoding="async" width="1000" height="1250"></div>
           <p class="ve-cap ve-hol__name"><b>Новый год</b><i></i><span>до 10 января</span></p>
           <p class="ve-hol__price ve-price">от 39 900&nbsp;₽</p>
           <p class="ve-hol__for">гирлянды на туях и грядах, живая ель на террасе — ставим, обслуживаем, убираем после праздника</p>
@@ -2019,6 +2016,6 @@ html.ve-coarse .ve-ck{background:linear-gradient(180deg,rgba(255,255,255,.97),rg
 })();
 </script>
 
-<!-- превью сборки fc799600 (служебной строки на странице нет: владелец 07.11 — «чтоб не было всякой фигни на сайте») -->
+<!-- превью сборки 30eea002 (служебной строки на странице нет: владелец 07.11 — «чтоб не было всякой фигни на сайте») -->
 </body>
 </html>
