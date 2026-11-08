@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 2957449a -->
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка fc799600 -->
 
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -251,7 +251,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'2957449a',base:base,
+  var VE={v:'fc799600',base:base,
     /* адрес файла: в хранилище Тильды (window.VE_TILD = {h, c:{плоское имя: код папки}}, ставит сборка по docs/media-map.json) или свой хостинг с версией */
     flat:function(p){return p.replace(/^media\//,'').replace(/\//g,'-')},
     url:function(p){var t=window.VE_TILD,f=t&&t.c&&t.c[VE.flat(p)];if(f!=null&&t.h)return t.h+(f?f+'/':'')+VE.flat(p);return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
@@ -416,12 +416,17 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
   var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();VE.strips();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
-  /* якорь главной на странице, где такого раздела нет (шапка на /policy и /consent): уходим на главную с тем же якорем; на главной — как раньше */
+  /* якоря без хвоста в адресе (владелец 08.11: «почему страница так называется, а не просто verdantestate» — в адресе было /#ve-hero):
+     раздел на этой странице — плавно едем к нему (scroll-padding-top шапки учитывается), адрес не меняем; логотип (#ve-hero) — наверх,
+     а со страницы без хиро — на главную без якоря; раздела нет (шапка на /policy, /consent) — на главную с якорем, там он доедет и сотрётся (02-hero, fly) */
+  VE.cleanHash=function(){try{if(location.hash)history.replaceState(history.state,'',location.pathname+location.search)}catch(x){}};
   document.addEventListener('click',function(e){
     if(e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
     var a=e.target.closest&&e.target.closest('a[href^="#"]'),id=a&&a.getAttribute('href').slice(1);if(!id)return;
-    try{id=decodeURIComponent(id)}catch(x){}if(document.getElementById(id))return;
-    e.preventDefault();location.href=VE.legal.home+'#'+encodeURIComponent(id);
+    try{id=decodeURIComponent(id)}catch(x){}var tg=document.getElementById(id);
+    if(id==='ve-hero'&&!tg){e.preventDefault();location.href=VE.legal.home;return}
+    if(!tg){e.preventDefault();location.href=VE.legal.home+'#'+encodeURIComponent(id);return}
+    e.preventDefault();if(id==='ve-hero')window.scrollTo({top:0,behavior:VE.rm?'auto':'smooth'});else tg.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.cleanHash();
   });
 })();
 </script>
