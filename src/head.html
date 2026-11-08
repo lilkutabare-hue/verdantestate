@@ -416,12 +416,17 @@ __TILDA_HEAD__
   var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();VE.strips();document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
-  /* якорь главной на странице, где такого раздела нет (шапка на /policy и /consent): уходим на главную с тем же якорем; на главной — как раньше */
+  /* якоря без хвоста в адресе (владелец 08.11: «почему страница так называется, а не просто verdantestate» — в адресе было /#ve-hero):
+     раздел на этой странице — плавно едем к нему (scroll-padding-top шапки учитывается), адрес не меняем; логотип (#ve-hero) — наверх,
+     а со страницы без хиро — на главную без якоря; раздела нет (шапка на /policy, /consent) — на главную с якорем, там он доедет и сотрётся (02-hero, fly) */
+  VE.cleanHash=function(){try{if(location.hash)history.replaceState(history.state,'',location.pathname+location.search)}catch(x){}};
   document.addEventListener('click',function(e){
     if(e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
     var a=e.target.closest&&e.target.closest('a[href^="#"]'),id=a&&a.getAttribute('href').slice(1);if(!id)return;
-    try{id=decodeURIComponent(id)}catch(x){}if(document.getElementById(id))return;
-    e.preventDefault();location.href=VE.legal.home+'#'+encodeURIComponent(id);
+    try{id=decodeURIComponent(id)}catch(x){}var tg=document.getElementById(id);
+    if(id==='ve-hero'&&!tg){e.preventDefault();location.href=VE.legal.home;return}
+    if(!tg){e.preventDefault();location.href=VE.legal.home+'#'+encodeURIComponent(id);return}
+    e.preventDefault();if(id==='ve-hero')window.scrollTo({top:0,behavior:VE.rm?'auto':'smooth'});else tg.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.cleanHash();
   });
 })();
 </script>

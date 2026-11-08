@@ -183,7 +183,7 @@ __SCENE_INLINE__
   function fly(){
     if(introDone)return;introDone=true;
     toTop();var g=measure();root.classList.add('is-fly'); /* сначала наверх, потом мерить: иначе путь логотипа считался от сдвинутой страницы */html.classList.remove('ve-intro');
-    if(location.hash){var tg=document.getElementById(location.hash.slice(1));if(tg)setTimeout(function(){tg.scrollIntoView({behavior:VE_RM?'auto':'smooth',block:'start'})},450)} /* ссылка с якорем — к разделу после заставки */
+    if(location.hash){var hid=location.hash.slice(1);try{hid=decodeURIComponent(hid)}catch(x){}var tg=hid==='ve-hero'?null:document.getElementById(hid);if(tg)setTimeout(function(){tg.scrollIntoView({behavior:VE_RM?'auto':'smooth',block:'start'});setTimeout(function(){VE.cleanHash&&VE.cleanHash()},1200)},450);else VE.cleanHash&&VE.cleanHash()} /* доехали — хвост из адреса убираем (08.11) */ /* ссылка с якорем — к разделу после заставки */
     var end=function(){root.classList.add('is-docked');html.classList.add('ve-logo-docked')};
     if(VE_RM||!g){end();return}
     lt.style.opacity=0;
