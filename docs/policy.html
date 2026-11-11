@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 30eea002 -->
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 8f6281fa -->
 
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -152,7 +152,7 @@ html.ve-no-breathe .ve-px>img{animation:none}
 /* A.3 органика «чертёж сада» (план доводки §8): разделитель секции — полоса скошенного газона: две близких зелени узкими полосами, рисуется слева направо тем же scaleX */
 :root{--ve-lawn-a:#DCE6D6;--ve-lawn-b:#CBD9C3}
 .ve-tar{--ve-lawn-a:rgba(255,255,255,.16);--ve-lawn-b:rgba(255,255,255,.07)}
-.ve-sec__top.ve-line::before{height:6px;background:repeating-linear-gradient(90deg,var(--ve-lawn-a) 0 22px,var(--ve-lawn-b) 22px 44px);border-radius:3px}
+/* на телефоне полосы нет: разделитель — базовая линия 1px (.ve-line::before) */
 @media(min-width:900px){.ve-sec__top.ve-line::before{height:8px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--ve-lawn-a) 0 32px,var(--ve-lawn-b) 32px 64px)}}
 /* лист у подписи секции: раскрывается из точки роста, когда подпись появилась */
 .ve-leaf{display:inline-block;width:14px;height:14px;margin:0 8px -2px 0;vertical-align:baseline;color:var(--ve-acc);transform:scale(0) rotate(-30deg);transform-origin:0 100%;transition:transform .9s var(--ve-ease) .25s}
@@ -171,6 +171,8 @@ html.ve-hero-done .ve-vine{opacity:.9}
 html.ve-sda-vine .ve-vine path.ve-vine__stem{animation:ve-vine linear both;animation-timeline:scroll(root)}
 @keyframes ve-vine{from{stroke-dashoffset:var(--len,2400)}to{stroke-dashoffset:0}}
 @media(min-width:900px){.ve-vine{width:40px}}
+/* на телефоне лианы нет: поле страницы уже её ширины, листья ложились на первые буквы текста */
+@media(max-width:899px){.ve-vine{display:none}}
 @media(prefers-reduced-motion:reduce){.ve-vine{display:none}}
 html.ve-no-vine .ve-vine{display:none}
 /* телефон: фото в лентах почти во всю ширину и почти без скругления — этикетки ботанического сада, не маленькие карточки */
@@ -251,7 +253,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'30eea002',base:base,
+  var VE={v:'8f6281fa',base:base,
     /* адрес файла: в хранилище Тильды (window.VE_TILD = {h, c:{плоское имя: код папки}}, ставит сборка по docs/media-map.json) или свой хостинг с версией */
     flat:function(p){return p.replace(/^media\//,'').replace(/\//g,'-')},
     url:function(p){var t=window.VE_TILD,f=t&&t.c&&t.c[VE.flat(p)];if(f!=null&&t.h)return t.h+(f?f+'/':'')+VE.flat(p);return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
@@ -453,7 +455,7 @@ body:has(.ve-hd) .ve-legal{padding-top:calc(90px + env(safe-area-inset-top))}
   <div class="ve-legal__in">
     <a class="ve-legal__back" href="/" data-ve-home>← Verdant Estate</a>
     <h1>Политика обработки персональных данных</h1>
-    <p class="ve-legal__meta">редакция от 08.11.2026</p>
+    <p class="ve-legal__meta">редакция от 11.11.2026</p>
     <h2>1. Кто обрабатывает данные</h2>
     <p>Оператор персональных данных — Verdant Estate (далее — «мы»).</p>
     <p>Политика действует для сайта verdantestate.ru и описывает, какие данные мы получаем, зачем, как храним и как вы можете ими управлять. Она составлена по Федеральному закону от 27.07.2006 № 152-ФЗ «О персональных данных».</p>

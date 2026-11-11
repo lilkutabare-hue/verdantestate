@@ -152,7 +152,7 @@ html.ve-no-breathe .ve-px>img{animation:none}
 /* A.3 органика «чертёж сада» (план доводки §8): разделитель секции — полоса скошенного газона: две близких зелени узкими полосами, рисуется слева направо тем же scaleX */
 :root{--ve-lawn-a:#DCE6D6;--ve-lawn-b:#CBD9C3}
 .ve-tar{--ve-lawn-a:rgba(255,255,255,.16);--ve-lawn-b:rgba(255,255,255,.07)}
-.ve-sec__top.ve-line::before{height:6px;background:repeating-linear-gradient(90deg,var(--ve-lawn-a) 0 22px,var(--ve-lawn-b) 22px 44px);border-radius:3px}
+/* на телефоне полосы нет: разделитель — базовая линия 1px (.ve-line::before) */
 @media(min-width:900px){.ve-sec__top.ve-line::before{height:8px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--ve-lawn-a) 0 32px,var(--ve-lawn-b) 32px 64px)}}
 /* лист у подписи секции: раскрывается из точки роста, когда подпись появилась */
 .ve-leaf{display:inline-block;width:14px;height:14px;margin:0 8px -2px 0;vertical-align:baseline;color:var(--ve-acc);transform:scale(0) rotate(-30deg);transform-origin:0 100%;transition:transform .9s var(--ve-ease) .25s}
@@ -171,6 +171,8 @@ html.ve-hero-done .ve-vine{opacity:.9}
 html.ve-sda-vine .ve-vine path.ve-vine__stem{animation:ve-vine linear both;animation-timeline:scroll(root)}
 @keyframes ve-vine{from{stroke-dashoffset:var(--len,2400)}to{stroke-dashoffset:0}}
 @media(min-width:900px){.ve-vine{width:40px}}
+/* на телефоне лианы нет: поле страницы уже её ширины, листья ложились на первые буквы текста */
+@media(max-width:899px){.ve-vine{display:none}}
 @media(prefers-reduced-motion:reduce){.ve-vine{display:none}}
 html.ve-no-vine .ve-vine{display:none}
 /* телефон: фото в лентах почти во всю ширину и почти без скругления — этикетки ботанического сада, не маленькие карточки */
