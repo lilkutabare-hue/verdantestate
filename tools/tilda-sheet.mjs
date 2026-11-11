@@ -12,10 +12,12 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist'), OUT = join(DIST, 'ЗАЛИТЬ.html');
 const read = (f) => readFileSync(join(DIST, f), 'utf8');
 const build = (read('head.html').match(/сборка (\w+)/) || [])[1] || '?';
-const NAMES = { '01': 'Шапка', '02': 'Хиро — пролёт и превращение', '03': 'Что мы берём на себя', '04': 'Как проходит сезон', '05': 'Тарифы', '06': 'Конструктор', '07': 'Экономика', '08': 'Разовые работы', '09': 'Сад под ключ', '10': 'До и после', '11': 'Круглый год', '12': 'Вопросы', '13': 'Специальные условия', '14': 'Форма', '15': 'Подвал' };
+// имя блока — по исходнику из первой строки («VE · 05-tariffs.html · сборка …»): номер t123-NN теперь место на странице, а не номер исходника (ORDER в build.mjs)
+const NAMES = { '01-header': 'Шапка', '02-hero': 'Хиро — пролёт и превращение', '03-manifest': 'Что мы берём на себя', '04-season': 'Как проходит сезон', '05-tariffs': 'Тарифы', '06-builder': 'Конструктор', '07-economics': 'Экономика', '08-pricelist': 'Разовые работы', '09-ways': 'Сад под ключ', '10-before-after': 'До и после', '11-seasons': 'Круглый год', '12-faq': 'Вопросы', '13-bonuses': 'Специальные условия', '14-form': 'Форма', '15-footer': 'Подвал' };
+const srcOf = (f) => (read(f).match(/VE · (\S+?)\.html · /) || [])[1];
 const blocks = readdirSync(DIST).filter((f) => /^t123-\d\d\.html$/.test(f)).sort();
 const items = [{ f: 'head.html', n: 'H', name: 'HEAD сайта', where: 'Настройки сайта → Ещё → «HTML-код для вставки внутрь head». Заменить целиком.' }]
-  .concat(blocks.map((f) => { const n = f.slice(5, 7); return { f, n, name: NAMES[n] || f, where: 'Блок T123 «HTML-код»' }; }))
+  .concat(blocks.map((f) => { const n = f.slice(5, 7); return { f, n, name: NAMES[srcOf(f)] || f, where: 'Блок T123 «HTML-код»' }; }))
   .concat([['policy', 'П', 'Политика обработки персональных данных', '/policy'], ['consent', 'С', 'Согласие на обработку персональных данных', '/consent']]
     .filter(([n]) => readdirSync(DIST).includes(`t123-${n}.html`))
     .map(([n, mark, name, path]) => ({ f: `t123-${n}.html`, n: mark, name, where: `Отдельная страница, адрес ${path}, один блок T123; шапку можно поставить блоком 01` })));

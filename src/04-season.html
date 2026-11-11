@@ -1,9 +1,8 @@
-<section class="ve ve-sec ve-ssn" id="ve-season">
+<section class="ve ve-sec ve-ssn ve-fold ve-fold--first" id="ve-season">
+  <div class="ve-wrap"><h2 class="ve-fold__h"><button class="ve-fold__btn" type="button" aria-expanded="false" aria-controls="ve-season-fold"><span class="ve-fold__t">Как проходит сезон с&nbsp;нами</span><span class="ve-fold__sub">Четыре шага: осмотр, график, работы, отчёт</span><i class="ve-fold__ic" aria-hidden="true"></i></button></h2></div>
+  <div class="ve-fold__body" id="ve-season-fold"><div class="ve-fold__in"><div class="ve-fold__pad">
   <div class="ve-ssn__pin">
     <div class="ve-ssn__stage">
-      <div class="ve-wrap ve-sec__top ve-line ve-ssn__head">
-        <h2 class="ve-h2 ve-r ve-lines ve-ssn__h">Как проходит сезон с&nbsp;нами</h2>
-      </div>
       <div class="ve-ssn__view">
         <ol class="ve-strip ve-ssn__track ve-rg">
           <li class="ve-ssn__card"><div class="ve-ssn__img ve-px"><img src="__BASE__media/stills/process-1-l.webp?v=__V__" srcset="__BASE__media/stills/process-1-s.webp?v=__V__ 560w, __BASE__media/stills/process-1-l.webp?v=__V__ 1000w" sizes="(min-width:900px) 40vw, 72vw" alt="План участка на садовом столе" loading="lazy" decoding="async" width="1000" height="1250"></div>
@@ -19,6 +18,7 @@
       <div class="ve-wrap ve-ssn__barw" aria-hidden="true"><div class="ve-ssn__bar"><i></i></div></div>
     </div>
   </div>
+  </div></div></div>
 </section>
 <style>
 .ve-ssn__h{margin-top:0}
@@ -47,6 +47,9 @@
   .ve-ssn__t{font-size:24px}
 }
 @media(prefers-reduced-motion:reduce){.ve-ssn__bar i{transform:none}}
+/* в свёртке: лента в полях страницы, без закрепления */
+.ve-ssn.ve-fold .ve-ssn__view{margin-top:0}
+@media(min-width:900px){.ve-ssn.ve-fold .ve-ssn__view{max-width:1240px;margin-left:auto;margin-right:auto;padding-left:var(--ve-pad);padding-right:var(--ve-pad)}.ve-ssn.ve-fold .ve-ssn__card{width:calc((min(100vw,1240px) - 2 * var(--ve-pad) - 96px) / 4);min-width:0}} /* четыре шага видны сразу, без прокрутки вбок */
 </style>
 <script>
 (function(){
@@ -55,7 +58,7 @@
   var pin=root.querySelector('.ve-ssn__pin'),track=root.querySelector('.ve-ssn__track'),bar=root.querySelector('.ve-ssn__bar');
   var mq=window.matchMedia('(min-width:900px)'),dist=0,on=false,raf=0;
   function measure(){
-    on=mq.matches&&!VE.rm;root.classList.toggle('is-pin',on);
+    on=mq.matches&&!VE.rm&&!root.classList.contains('ve-fold');root.classList.toggle('is-pin',on); // в свёртке закрепления нет: лента листается вбок, как на телефоне
     if(!on){pin.style.height='';track.style.removeProperty('--x');return}
     var last=track.lastElementChild,tr=track.getBoundingClientRect();dist=Math.max(0,last.getBoundingClientRect().right-tr.left+parseFloat(getComputedStyle(track).paddingRight)-document.documentElement.clientWidth); // до последней карточки плюс правое поле: лента кончается с тем же отступом, с каким началась
     pin.style.height=(window.innerHeight+dist)+'px';update();

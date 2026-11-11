@@ -1,8 +1,6 @@
-<section class="ve ve-sec ve-ways" id="ve-ways">
-  <div class="ve-wrap ve-sec__top ve-line">
-    <p class="ve-caps ve-r">Сад под ключ</p>
-    <h2 class="ve-h2 ve-r ve-lines ve-ways__h">Десять способов: красивее, удобнее, дороже</h2>
-  </div>
+<section class="ve ve-sec ve-ways ve-fold" id="ve-ways">
+  <div class="ve-wrap"><h2 class="ve-fold__h"><button class="ve-fold__btn" type="button" aria-expanded="false" aria-controls="ve-ways-fold"><span class="ve-fold__t">Сад под ключ</span><span class="ve-fold__sub">Десять способов: красивее, удобнее, дороже</span><i class="ve-fold__ic" aria-hidden="true"></i></button></h2></div>
+  <div class="ve-fold__body" id="ve-ways-fold"><div class="ve-fold__in"><div class="ve-fold__pad">
   <div class="ve-wrap ve-ways__wrap">
     <div class="ve-strip ve-ways__strip ve-rg">
         <!-- 08.11 SEO: карточки способов — в разметке (исходный HTML), картинке подпись по названию -->
@@ -18,6 +16,7 @@
         <article class="ve-ways__card"><div class="ve-ways__img ve-px" data-loop="r10" data-loop-mode="hover"><img src="__BASE__media/stills/way-10-l.webp?v=__V__" srcset="__BASE__media/stills/way-10-s.webp?v=__V__ 560w, __BASE__media/stills/way-10-l.webp?v=__V__ 1000w" sizes="(max-width:416px) 72vw, (max-width:899px) 300px, (max-width:1239px) calc((100vw - 160px) / 3), 360px" alt="Премиальное обновление" loading="lazy" decoding="async" width="1000" height="1250"></div><h3 class="ve-cap ve-ways__n"><b class="ve-num">10</b><i></i><span>Премиальное обновление</span></h3><p class="ve-ways__d">комплексное преображение: дизайн, растения, дорожки, подсветка, детали</p></article>
       </div>
   </div>
+  </div></div></div>
 </section>
 <style>
 .ve-ways__h{margin-top:14px;max-width:24ch}
@@ -34,6 +33,9 @@
   .ve-ways__wrap{margin-top:56px}
   .ve-ways__strip{display:grid;grid-template-columns:repeat(3,1fr);gap:48px 40px;overflow:visible;scroll-snap-type:none;margin:0;padding:0;cursor:auto}
   .ve-ways__card{width:auto;max-width:none}
+  /* в свёртке — все десять на одном экране: пять колонок в два ряда, фото квадратом */
+  .ve-ways.ve-fold .ve-ways__strip{grid-template-columns:repeat(5,1fr);gap:36px 24px}
+  .ve-ways.ve-fold .ve-ways__img{aspect-ratio:1/1}
 }
 </style>
 <script>

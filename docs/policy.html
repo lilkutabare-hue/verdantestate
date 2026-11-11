@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка c88d1628 -->
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Политика обработки персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 8a4e89cc -->
 
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -100,9 +100,9 @@ html.ve-no-breathe .ve-px>img{animation:none}
 .ve .ve-btn--sm{height:42px;padding:0 18px;font-size:14.5px}
 @media(max-width:599px){.ve .ve-btn{height:auto;min-height:50px;padding:12px 22px;font-size:15.5px;white-space:normal;text-align:center;line-height:1.2}.ve .ve-btn--sm{min-height:40px;padding:9px 16px}}
 @media(hover:hover){
-  .ve .ve-btn:hover{transform:translateY(-2px) scale(1.03);background:linear-gradient(180deg,rgba(31,77,46,.15),rgba(31,77,46,.08));box-shadow:0 16px 36px rgba(21,52,32,.16),inset 0 1px 0 #fff;--ve-bloom-on:.45}
-  .ve .ve-btn--ghost:hover{background:linear-gradient(180deg,rgba(31,77,46,.1),rgba(31,77,46,.05))}
-  .ve .ve-btn--light:hover{background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.14));box-shadow:0 18px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.65);--ve-bloom-on:.55}
+  /* наведение без заливки (владелец 11.11: «какое-то заполнение начинается» — не нравится): кнопка приподнимается, по кромке разгорается кольцо «садового света», фон не меняется */
+  .ve .ve-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 18px 40px rgba(21,52,32,.18),inset 0 1px 0 #fff;--ve-bloom-on:.85;--ve-ring-w:1.2px}
+  .ve .ve-btn--light:hover{box-shadow:0 18px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.65);--ve-bloom-on:.9;--ve-ring-w:1.2px}
 }
 .ve .ve-btn:active{transform:scale(.97)}
 .ve-chip{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(31,77,46,.14);background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.5));font-size:15px;font-weight:500;color:var(--ve-ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
@@ -181,6 +181,30 @@ html.ve-no-vine .ve-vine{display:none}
 /* «линия Dan Pearson»: верх каждой секции — хэйрлайн, который рисуется при появлении; у ключевых — силуэт из рендера (tools/outline.mjs) */
 .ve-sec__top{padding-top:28px}
 @media(min-width:900px){.ve-sec__top{padding-top:36px}}
+/* свёртка секции (владелец 11.11: «выпадающие списки… листаю три года и читаю одно и то же»): справочная секция — строка с заголовком, раскрывается на месте.
+   Тело сжато сеткой 0fr → 1fr и обрезано, но разложено в полную ширину: вкладки и ленты меряют себя как обычно; пока закрыто, картинки и ролики внутри не грузятся (они ждут появления в кадре) */
+.ve-fold{padding-top:0;margin-top:-1px}
+.ve-fold--first{margin-top:var(--ve-gap)}
+.ve-fold__h{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit}
+.ve-fold__btn{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:20px;width:100%;padding:22px 0;text-align:left;border-top:1px solid var(--ve-line);border-bottom:1px solid var(--ve-line)}
+.ve-fold__t{display:block;font-weight:600;font-size:24px;line-height:1.15;letter-spacing:-.02em;transition:transform .45s var(--ve-ease)}
+.ve-fold__sub{display:block;grid-column:1;margin-top:6px;font-size:15px;line-height:1.4;font-weight:400;color:var(--ve-moss);transition:transform .45s var(--ve-ease)}
+.ve-fold__ic{grid-column:2;grid-row:1 / span 2;position:relative;width:16px;height:16px;color:var(--ve-bronze)}
+.ve-fold__ic::before,.ve-fold__ic::after{content:"";position:absolute;left:0;right:0;top:7px;height:2px;border-radius:1px;background:currentColor;transition:transform .45s var(--ve-ease)}
+.ve-fold__ic::after{transform:rotate(90deg)}
+.ve-fold.is-open .ve-fold__ic::before{transform:rotate(180deg)}
+.ve-fold.is-open .ve-fold__ic::after{transform:rotate(180deg)}
+@media(hover:hover){.ve-fold__btn:hover .ve-fold__t,.ve-fold__btn:hover .ve-fold__sub{transform:translateX(8px)}.ve-fold__btn:hover .ve-fold__ic::after{transform:rotate(180deg)}}
+.ve-fold__body{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:0fr;transition:grid-template-rows .5s var(--ve-ease)}
+.ve-fold__in{min-width:0;min-height:0;overflow:hidden;visibility:hidden;transition:visibility 0s .5s}
+.ve-fold.is-open .ve-fold__body{grid-template-rows:1fr}
+.ve-fold.is-open .ve-fold__in{visibility:visible;transition-delay:0s}
+.ve-fold.is-opened .ve-fold__in{overflow:visible} /* после раскрытия обрезка снята: липкие колонки и тени внутри работают как в обычной секции */
+.ve-fold__pad{padding:26px 0 48px}
+.ve-fold .ve-sec__top{padding-top:0}
+.ve-fold__pad>:first-child,.ve-fold__pad>.ve-wrap:first-child>:first-child{margin-top:0}
+@media(min-width:900px){.ve-fold__btn{padding:30px 0}.ve-fold__t{font-size:34px}.ve-fold__sub{font-size:16px;margin-top:8px}.ve-fold__ic{width:20px;height:20px}.ve-fold__ic::before,.ve-fold__ic::after{top:9px}.ve-fold__pad{padding:36px 0 72px}}
+@media(prefers-reduced-motion:reduce){.ve-fold__body,.ve-fold__t,.ve-fold__sub,.ve-fold__ic::before,.ve-fold__ic::after{transition:none}.ve-fold__in{transition:none}}
 .ve-sil{display:block;width:100%;height:auto;overflow:visible;margin-bottom:22px}
 .ve-sil path{fill:none;stroke:var(--ve-ink);stroke-opacity:.55;stroke-width:1;stroke-dasharray:var(--len,1400);stroke-dashoffset:var(--len,1400);transition:stroke-dashoffset 1.8s var(--ve-ease)}
 .ve-sil.is-in path{stroke-dashoffset:0}
@@ -250,12 +274,17 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'c88d1628',base:base,
+  var VE={v:'8a4e89cc',base:base,
     /* адрес файла: в хранилище Тильды (window.VE_TILD = {h, c:{плоское имя: код папки}}, ставит сборка по docs/media-map.json) или свой хостинг с версией */
     flat:function(p){return p.replace(/^media\//,'').replace(/\//g,'-')},
     url:function(p){var t=window.VE_TILD,f=t&&t.c&&t.c[VE.flat(p)];if(f!=null&&t.h)return t.h+(f?f+'/':'')+VE.flat(p);return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
     fmt:function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')},
     _h:{},on:function(e,f){(VE._h[e]=VE._h[e]||[]).push(f)},emit:function(e,d){(VE._h[e]||[]).forEach(function(f){f(d)})},
+    /* свёртки секций: кнопка-заголовок раскрывает тело; foldSet зовут и якоря (пункт меню ведёт в свёрнутую секцию — она раскрывается) */
+    fold:function(root){var bs=(root||document).querySelectorAll('.ve-fold__btn:not([data-fold])');for(var i=0;i<bs.length;i++){bs[i].setAttribute('data-fold','1');bs[i].addEventListener('click',function(){var s=this.closest('.ve-fold');VE.foldSet(s,!s.classList.contains('is-open'))})}},
+    foldSet:function(s,on){on=!!on;if(!s||s.classList.contains('is-open')===on)return;clearTimeout(s._ft);
+      if(on){s.classList.add('is-open');s._ft=setTimeout(function(){s.classList.add('is-opened')},VE.rm?0:560)}else{s.classList.remove('is-opened');s.classList.remove('is-open')}
+      var b=s.querySelector('.ve-fold__btn');if(b)b.setAttribute('aria-expanded',on?'true':'false');VE.emit('fold',{el:s,open:on})},
     state:{},
     set:function(k,v){VE.state[k]=v;try{sessionStorage.setItem('ve-calc',JSON.stringify(VE.state))}catch(e){}VE.emit('state',VE.state)},
     goForm:function(patch){if(patch)for(var k in patch)VE.set(k,patch[k]);var f=document.getElementById('ve-form');if(f){f.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.emit('form:focus')}else location.href=VE.legal.home+'#ve-form'}, /* формы на странице нет (шапка на /policy) — на главную к форме; выбор из конструктора уже в sessionStorage */
@@ -412,7 +441,9 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
       st.addEventListener('scroll',ask,{passive:true});window.addEventListener('resize',ask);paint();
     })(list[i]);
   };
-  var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();VE.strips();document.documentElement.classList.add('ve-ready')};
+  var boot=function(){links();VE.reveal();VE.parallax();VE.loops();VE.spectral();VE.vine();VE.strips();VE.fold();
+    try{var hs=location.hash&&document.getElementById(decodeURIComponent(location.hash.slice(1)));if(hs&&hs.classList.contains('ve-fold'))VE.foldSet(hs,true)}catch(x){} /* пришли с якорем в свёрнутую секцию — раскрыть до того, как страница к ней поедет */
+    document.documentElement.classList.add('ve-ready')};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('keydown',function(e){if(e.key==='Tab')document.documentElement.classList.add('ve-kb')});
   /* якоря без хвоста в адресе (владелец 08.11: «почему страница так называется, а не просто verdantestate» — в адресе было /#ve-hero):
@@ -425,7 +456,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     try{id=decodeURIComponent(id)}catch(x){}var tg=document.getElementById(id);
     if(id==='ve-hero'&&!tg){e.preventDefault();location.href=VE.legal.home;return}
     if(!tg){e.preventDefault();location.href=VE.legal.home+'#'+encodeURIComponent(id);return}
-    e.preventDefault();if(id==='ve-hero')window.scrollTo({top:0,behavior:VE.rm?'auto':'smooth'});else tg.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.cleanHash();
+    e.preventDefault();if(tg.classList.contains('ve-fold'))VE.foldSet(tg,true);if(id==='ve-hero')window.scrollTo({top:0,behavior:VE.rm?'auto':'smooth'});else tg.scrollIntoView({behavior:VE.rm?'auto':'smooth',block:'start'});VE.cleanHash();
   });
 })();
 </script>

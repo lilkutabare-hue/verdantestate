@@ -79,7 +79,12 @@ function checkCss(html, name) {
 const kb = (n) => (n / 1024).toFixed(1) + ' КБ';
 
 // ---------- сборка ----------
-const files = (await readdir(SRC)).filter((f) => /^\d\d-.*\.html$/.test(f)).sort();
+// Порядок блоков на странице. Номер t123-NN — место блока в этом порядке (так его вставляют в Тильду); имена исходников не меняются.
+// 11.11 (владелец: цена раньше процесса, справочное — в раскрывающиеся строки): тарифы и конструктор сразу под пролётом, свёртки идут подряд.
+const ORDER = ['01-header', '02-hero', '05-tariffs', '06-builder', '03-manifest', '04-season', '11-seasons', '10-before-after', '07-economics', '08-pricelist', '09-ways', '13-bonuses', '12-faq', '14-form', '15-footer'];
+const pos = (f) => { const i = ORDER.indexOf(f.replace(/\.html$/, '')); if (i < 0) throw new Error(`[${f}] блока нет в ORDER (tools/build.mjs)`); return i; };
+const num = (f) => String(pos(f) + 1).padStart(2, '0');
+const files = (await readdir(SRC)).filter((f) => /^\d\d-.*\.html$/.test(f)).sort((a, b) => pos(a) - pos(b));
 const headSrc = await readFile(join(SRC, 'head.html'), 'utf8');
 // данные заказчика для политики, согласия и подвала: docs/client-data.json (образец — client-data.example.json)
 let CD = {};
@@ -136,12 +141,12 @@ await writeFile(join(DIST, 'head.html'), headDist);
 console.log(`head.html  ${kb(Buffer.byteLength(headDist))} / 64 КБ`);
 
 // блоки, которых больше нет в src (после перенумерации), из dist убираем
-const keep = new Set(files.map((f) => `t123-${f.slice(0, 2)}.html`));
+const keep = new Set(files.map((f) => `t123-${num(f)}.html`));
 for (const f of await readdir(DIST)) if (/^t123-\d\d\.html$/.test(f) && !keep.has(f)) await unlink(join(DIST, f));
 
 const blocksDist = [], blocksPreview = [];
 for (const f of files) {
-  const n = f.slice(0, 2);
+  const n = num(f);
   const src = await readFile(join(SRC, f), 'utf8');
   const dist = `<!-- VE · ${f} · сборка ${V} -->\n` + fillDist(src);
   await checkScripts(dist, f); checkCss(dist, f);
