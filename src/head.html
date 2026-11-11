@@ -100,9 +100,9 @@ html.ve-no-breathe .ve-px>img{animation:none}
 .ve .ve-btn--sm{height:42px;padding:0 18px;font-size:14.5px}
 @media(max-width:599px){.ve .ve-btn{height:auto;min-height:50px;padding:12px 22px;font-size:15.5px;white-space:normal;text-align:center;line-height:1.2}.ve .ve-btn--sm{min-height:40px;padding:9px 16px}}
 @media(hover:hover){
-  /* наведение без заливки (владелец 11.11: «какое-то заполнение начинается» — не нравится): кнопка приподнимается, по кромке разгорается кольцо «садового света», фон не меняется */
-  .ve .ve-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 18px 40px rgba(21,52,32,.18),inset 0 1px 0 #fff;--ve-bloom-on:.85;--ve-ring-w:1.2px}
-  .ve .ve-btn--light:hover{box-shadow:0 18px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.65);--ve-bloom-on:.9;--ve-ring-w:1.2px}
+  /* наведение (владелец 11.11): без заливки и без ободков — кнопка только приподнимается, тень под ней глубже */
+  .ve .ve-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 18px 40px rgba(21,52,32,.18),inset 0 1px 0 #fff}
+  .ve .ve-btn--light:hover{box-shadow:0 18px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.65)}
 }
 .ve .ve-btn:active{transform:scale(.97)}
 .ve-chip{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(31,77,46,.14);background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.5));font-size:15px;font-weight:500;color:var(--ve-ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
