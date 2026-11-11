@@ -149,11 +149,8 @@ html.ve-no-breathe .ve-px>img{animation:none}
 .ve-line{position:relative}
 .ve-line::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ve-line);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ve-ease);transition-delay:var(--d,0ms)}
 .ve-line.is-in::before{transform:scaleX(1)}
-/* A.3 органика «чертёж сада» (план доводки §8): разделитель секции — полоса скошенного газона: две близких зелени узкими полосами, рисуется слева направо тем же scaleX */
-:root{--ve-lawn-a:#DCE6D6;--ve-lawn-b:#CBD9C3}
-.ve-tar{--ve-lawn-a:rgba(255,255,255,.16);--ve-lawn-b:rgba(255,255,255,.07)}
-/* на телефоне полосы нет: разделитель — базовая линия 1px (.ve-line::before) */
-@media(min-width:900px){.ve-sec__top.ve-line::before{height:8px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--ve-lawn-a) 0 32px,var(--ve-lawn-b) 32px 64px)}}
+/* разделителя у секций нет (слова владельца 11.11: «разделители очень лишние»): секции разделяет отступ. Линии внутри списков и строк манифеста остаются */
+.ve-sec__top.ve-line::before{content:none}
 /* лист у подписи секции: раскрывается из точки роста, когда подпись появилась */
 .ve-leaf{display:inline-block;width:14px;height:14px;margin:0 8px -2px 0;vertical-align:baseline;color:var(--ve-acc);transform:scale(0) rotate(-30deg);transform-origin:0 100%;transition:transform .9s var(--ve-ease) .25s}
 .ve-leaf path{fill:currentColor;opacity:.85}.ve-leaf line{stroke:var(--ve-paper);stroke-width:1;opacity:.9}
