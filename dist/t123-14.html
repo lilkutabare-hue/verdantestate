@@ -1,4 +1,4 @@
-<!-- VE · 14-form.html · сборка 31564c27 -->
+<!-- VE · 14-form.html · сборка 86ad739a -->
 <section class="ve ve-sec ve-sec--last ve-fm" id="ve-form">
   <div class="ve-wrap ve-sec__top ve-line">
     <div class="ve-fm__grid">
@@ -38,7 +38,9 @@
           </div>
         </div>
         <label class="ve-fm__field"><span>Комментарий</span><textarea name="comment" rows="3" maxlength="1000" placeholder="Где участок, что беспокоит, когда удобно позвонить"></textarea></label>
-        <label class="ve-fm__consent"><input type="checkbox" name="consent" required><i></i><span>Даю <a href="/consent" data-ve-consent target="_blank" rel="noopener">согласие на обработку персональных данных</a> и принимаю <a href="/policy" data-ve-policy target="_blank" rel="noopener">политику</a></span></label>
+        <label class="ve-fm__consent"><input type="checkbox" name="consent" required><i></i><span>Даю <a href="/consent" data-ve-consent target="_blank" rel="noopener">согласие на обработку персональных данных</a></span></label>
+        <!-- 11.11: галочка подтверждает только согласие (ч. 1 ст. 9 152-ФЗ: согласие отдельно от иных документов); политика — справочной строкой, её не «принимают» -->
+        <p class="ve-fm__pol">Как мы обрабатываем данные — в <a href="/policy" data-ve-policy target="_blank" rel="noopener">политике обработки персональных данных</a>.</p>
         <p class="ve-fm__err" role="alert" hidden></p>
         <div class="ve-fm__alt" hidden><a class="ve-btn ve-btn--sm" data-ve-alt-wa href="https://wa.me/79804009448" target="_blank" rel="noopener">Отправить в WhatsApp</a><a class="ve-btn ve-btn--sm" data-ve-alt-tel href="tel:+79804009448">Позвонить</a></div>
         <div class="ve-fm__actions">
@@ -73,13 +75,14 @@
 .ve-fm__consent:has(input:checked) i::after{opacity:1}
 .ve-fm__consent.is-bad i{border-color:#B0553F}
 .ve-fm__consent:has(input:focus-visible) i{outline:2px solid var(--ve-moss);outline-offset:3px} /* сама галочка 0×0 — фокус с клавиатуры показываем на квадрате */
-.ve-fm__consent a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
+.ve-fm__consent a,.ve-fm__pol a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
+.ve-fm__pol{margin:10px 0 0 34px;font-size:13px;line-height:1.45;color:var(--ve-moss)}
 .ve-fm__err{margin-top:14px;font-size:14px;color:#B0553F}
 .ve-fm__alt{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .ve-fm__alt[hidden]{display:none}
 .ve-fm__actions{margin-top:24px}
 .ve-fm__done{margin-top:24px;font-weight:600;letter-spacing:-.015em;font-size:24px;line-height:1.25}
-.ve-fm__form.is-sent .ve-fm__actions,.ve-fm__form.is-sent .ve-fm__row,.ve-fm__form.is-sent .ve-fm__field,.ve-fm__form.is-sent .ve-fm__consent{display:none}
+.ve-fm__form.is-sent .ve-fm__actions,.ve-fm__form.is-sent .ve-fm__row,.ve-fm__form.is-sent .ve-fm__field,.ve-fm__form.is-sent .ve-fm__consent,.ve-fm__form.is-sent .ve-fm__pol{display:none}
 @media(min-width:900px){
   .ve-fm__grid{display:grid;grid-template-columns:1fr 1.3fr;gap:72px;align-items:start}
   .ve-fm__form{margin-top:0}

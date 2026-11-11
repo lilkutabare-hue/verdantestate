@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Согласие на обработку персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 31564c27 -->
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Согласие на обработку персональных данных — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script><!-- VE · head · общий код HEAD сайта Verdant Estate · сборка 86ad739a -->
 
 <style>
 /* антиква курсивом — только подписи к фото (Jinny Blom): Cormorant Garamond 500 italic, кириллица + латиница */
@@ -274,7 +274,7 @@ html.ve-coarse.ve-sda .ve-px>img,html.ve-coarse.ve-sda .ve-px>video{animation:ve
     (function f(now){requestAnimationFrame(f);var dt=now-last;last=now;n++;if(dt>worst)worst=dt;if(dt>34)longs.push(now);while(longs.length&&now-longs[0]>5000)longs.shift();
       if(now-t0>=1000){var fps=Math.round(n*1000/(now-t0));n=0;t0=now;var fr=window.VE&&VE.hero&&VE.hero.info?VE.hero.info():'';box.textContent=fps+' к/с · длинных '+longs.length+'/5с · худший '+Math.round(worst)+' мс\n'+eng+' · dpr '+(window.devicePixelRatio||1)+' · '+innerWidth+'×'+innerHeight+(coarse?' · тач':'')+'\n'+fr;worst=0}})(last);
   });
-  var VE={v:'31564c27',base:base,
+  var VE={v:'86ad739a',base:base,
     /* адрес файла: в хранилище Тильды (window.VE_TILD = {h, c:{плоское имя: код папки}}, ставит сборка по docs/media-map.json) или свой хостинг с версией */
     flat:function(p){return p.replace(/^media\//,'').replace(/\//g,'-')},
     url:function(p){var t=window.VE_TILD,f=t&&t.c&&t.c[VE.flat(p)];if(f!=null&&t.h)return t.h+(f?f+'/':'')+VE.flat(p);return base+p+(p.indexOf('?')<0?'?v=':'&v=')+VE.v},
@@ -487,13 +487,13 @@ body:has(.ve-hd) .ve-legal{padding-top:calc(90px + env(safe-area-inset-top))}
     <p>Отправляя заявку на сайте verdantestate.ru и отмечая галочку «Даю согласие на обработку персональных данных», я свободно, своей волей и в своём интересе даю согласие Verdant Estate на обработку моих персональных данных на следующих условиях.</p>
 
     <h2>Какие данные</h2>
-    <p>Имя, номер телефона, площадь участка, выбранный уровень обслуживания, сведения об участке, которые я отметил, и текст комментария.</p>
+    <p>Имя, номер телефона, площадь участка, выбранный уровень обслуживания, сведения об участке, которые я отметил, текст комментария, а также адрес страницы сайта, с которой отправлена заявка, и уровень обслуживания, подсказанный конструктором.</p>
 
     <h2>Для чего</h2>
     <p>Чтобы со мной связались по заявке, ответили на вопросы и рассчитали стоимость обслуживания сада, а при моём желании — подготовили и заключили договор.</p>
 
     <h2>Что можно делать с данными</h2>
-    <p>Сбор, запись, систематизация, хранение, уточнение, использование, передача ответственному сотруднику через мессенджер Telegram для связи со мной, блокирование, удаление и уничтожение — с использованием средств автоматизации и без них.</p>
+    <p>Сбор, запись, систематизация, хранение, уточнение, использование для связи со мной по телефону, в WhatsApp или Telegram, передача ответственному сотруднику через мессенджер Telegram, блокирование, удаление и уничтожение — с использованием средств автоматизации и без них.</p>
 
     <h2>Срок и отзыв</h2>
     <p>Согласие действует до достижения целей обработки, но не дольше 12 месяцев после последнего контакта, если договор не заключён. Я могу отозвать согласие в любой момент, позвонив по номеру +7 980 400-94-48.</p>
