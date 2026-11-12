@@ -77,7 +77,10 @@ export function mount(root, opts = {}) {
     vidLite = vs.find((x) => x.id === 'lite') || null;
     if (forced) { const f = vs.find((x) => x.id === forced); if (f) return [f]; }
     const need = { hevc: 1, hevcm: 1, av1: 2, h264: 0 }, out = [];
-    for (const id of ['hevc', 'hevcm', 'av1', 'h264']) { const vr = vs.find((x) => x.id === id); if (!vr) continue; const sc = await score(vr); if (sc >= need[id]) out.push(vr); }
+    // 12.11 (владелец: «поч так долго грузится сайт, это не норм»): первым идёт средний HEVC (hevcm, вдвое легче), а не полный.
+    // Полный HEVC начинали качать всегда и на линии 20 Мбит/с бросали на 5-й секунде (заставка 20,1 с против 16,0 с у hevcm сразу, tools/device-bench.mjs);
+    // на линии, которая после быстрого старта проседает, с него уже не уйти — остаток файла меньше любой замены (Pages 12.11: 39,8 с). Полный остаётся по ?codec=hevc
+    for (const id of ['hevcm', 'hevc', 'av1', 'h264']) { const vr = vs.find((x) => x.id === id); if (!vr) continue; const sc = await score(vr); if (sc >= need[id]) out.push(vr); }
     if (vidLite && !out.length) out.push(vidLite);
     // подсказки самого устройства (Chrome/Android; Safari их не даёт): экономия трафика, сеть 2G, память ≤ 2 ГБ (дешёвые Android:
     // 1080p-декодер и 60 МБ в памяти — риск падения вкладки) → сразу 720p. Оценке скорости navigator.connection.downlink не верим:
