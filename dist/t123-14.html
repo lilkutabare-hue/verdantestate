@@ -1,4 +1,4 @@
-<!-- VE · 14-form.html · сборка 86ad739a -->
+<!-- VE · 14-form.html · сборка 93a876c4 -->
 <section class="ve ve-sec ve-sec--last ve-fm" id="ve-form">
   <div class="ve-wrap ve-sec__top ve-line">
     <div class="ve-fm__grid">
@@ -76,7 +76,10 @@
 .ve-fm__consent.is-bad i{border-color:#B0553F}
 .ve-fm__consent:has(input:focus-visible) i{outline:2px solid var(--ve-moss);outline-offset:3px} /* сама галочка 0×0 — фокус с клавиатуры показываем на квадрате */
 .ve-fm__consent a,.ve-fm__pol a{color:var(--ve-ink);border-bottom:1px solid var(--ve-line)}
-.ve-fm__pol{margin:10px 0 0 34px;font-size:13px;line-height:1.45;color:var(--ve-moss)}
+.ve-fm__pol{margin:14px 0 0 34px;font-size:13px;line-height:1.45;color:var(--ve-moss)}
+/* зона нажатия ссылок в тексте — не ниже 32 px (матрица 11.11) */
+.ve-fm__consent a,.ve-fm__pol a{position:relative}
+.ve-fm__consent a::after,.ve-fm__pol a::after{content:"";position:absolute;left:0;right:0;top:-7px;bottom:-7px}
 .ve-fm__err{margin-top:14px;font-size:14px;color:#B0553F}
 .ve-fm__alt{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .ve-fm__alt[hidden]{display:none}

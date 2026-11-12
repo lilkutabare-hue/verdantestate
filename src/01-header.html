@@ -44,15 +44,17 @@ html.ve-has-hero:not(.ve-hero-done) .ve-hd__cta{opacity:0;visibility:hidden;tran
 .ve-hd__cta{transition:opacity .4s var(--ve-ease),visibility .4s,transform .4s var(--ve-ease),background .3s var(--ve-ease-2),color .3s var(--ve-ease-2),border-color .3s var(--ve-ease-2)}
 /* меню: над хиро его нет, как и кнопки (владелец 24.10: на первом экране ни кнопок, ни указателя разделов) — приходит вместе с белым доком */
 .ve-hd__nav,.ve-hd__burger{transition:opacity .4s var(--ve-ease),visibility .4s,transform .3s var(--ve-ease)}
-html.ve-has-hero:not(.ve-hero-done) .ve-hd__nav,html.ve-has-hero:not(.ve-hero-done) .ve-hd__burger{opacity:0;visibility:hidden;pointer-events:none}
+/* 11.11 (владелец о пунктах голым текстом поверх пролёта: «мне не очень нравится»): меню живёт только в стеклянном доке; пока шапка прозрачная, пунктов и кнопки «Меню» нет */
+.ve-hd:not(.is-solid) .ve-hd__nav,.ve-hd:not(.is-solid) .ve-hd__burger{opacity:0;visibility:hidden;pointer-events:none}
 .ve-hd__nav a{white-space:nowrap}
 .ve-hd__burger{display:none}
 /* компьютер: три ссылки в доке между знаком и телефоном; под курсором и на текущей странице — дымка, как у кнопок на бумаге */
 @media(min-width:900px){
   .ve-hd__nav{display:flex;align-items:center;gap:2px}
-  .ve-hd__nav a{position:relative;padding:10px 14px;font-size:15px;letter-spacing:-.005em}
+  /* набор как у подписей секций и девиза на хиро: мелкий капс с разрядкой */
+  .ve-hd__nav a{position:relative;padding:13px 14px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
   /* наведение — тонкая линия под словом: выезжает слева, уходит вправо. Ни заливки, ни ободков (владелец 11.11: «заполнение по форме» и «ободки прозрачные» — убрать); текущая страница держит линию */
-  .ve-hd__nav a::after{content:"";position:absolute;left:14px;right:14px;bottom:6px;height:1px;background:currentColor;opacity:.6;transform:scaleX(0);transform-origin:right;transition:transform .45s var(--ve-ease)}
+  .ve-hd__nav a::after{content:"";position:absolute;left:14px;right:calc(14px + .12em);bottom:8px;height:1px;background:currentColor;opacity:.6;transform:scaleX(0);transform-origin:right;transition:transform .45s var(--ve-ease)}
   .ve-hd__nav a[aria-current]::after{transform:scaleX(1)}
 }
 @media(min-width:900px) and (hover:hover){.ve-hd__nav a:hover::after{transform:scaleX(1);transform-origin:left}}
@@ -86,13 +88,14 @@ html.ve-coarse .ve-hd.is-solid .ve-hd__in{background:linear-gradient(180deg,rgba
   .ve-hd.is-menu .ve-hd__burger i::before{transform:translateY(3.75px) rotate(45deg)}
   .ve-hd.is-menu .ve-hd__burger i::after{transform:translateY(-3.75px) rotate(-45deg)}
   .ve-hd__nav{position:absolute;left:0;right:0;top:calc(100% + 8px);display:flex;flex-direction:column;padding:8px;border-radius:26px;color:var(--ve-ink);
-    background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.95));border:1px solid rgba(255,255,255,.9);box-shadow:0 18px 48px rgba(21,52,32,.2),inset 0 1px 0 #fff;
+    background:#fff;border:1px solid rgba(255,255,255,.9);box-shadow:0 18px 48px rgba(21,52,32,.2),inset 0 1px 0 #fff;
     opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px)}
   .ve-hd.is-menu .ve-hd__nav{opacity:1;visibility:visible;pointer-events:auto;transform:none}
-  html.ve-has-hero:not(.ve-hero-done) .ve-hd.is-menu .ve-hd__nav{opacity:0;visibility:hidden;pointer-events:none}
   .ve-hd__nav a{display:block;padding:15px 16px;border-radius:18px;font-size:20px;font-weight:600;letter-spacing:-.015em;line-height:1.2}
   .ve-hd__nav a:active,.ve-hd__nav a[aria-current]{background:rgba(31,77,46,.08)}
 }
+/* планшеты и телефон в альбоме (матрица 11.11): панель не во всю ширину дока, а компактная под кнопкой «Меню» */
+@media(min-width:600px) and (max-width:899px){.ve-hd__nav{right:auto;width:340px}}
 @media(prefers-reduced-motion:reduce){.ve-hd__nav,.ve-hd__burger,.ve-hd__burger i::before,.ve-hd__burger i::after{transition:none}}
 </style>
 <script>
