@@ -10,7 +10,7 @@
 //   mini — x264 540p (12.11; владелец: «поч так долго грузится сайт, это не норм»): лёгкая копия всего пролёта для быстрого входа — сцена открывает страницу
 //          на ней и на фоне подменяет её качественным вариантом (scene.js upgrade); ключевой кадр каждые 24: на 540p декод дешёвый
 // и пишет их в media/scene/manifest.json → video.<tall|wide>.variants (сцена выбирает лучший декодируемый, scene.js chooseVariants).
-// Запуск после frames.mjs (тот пересобирает манифест):  node tools/flight-variants.mjs [--only=tall|wide] [--clean] [--ids=hevc,hevcm,av1,h264,lite,mini] [--crf-av1=24] [--crf-hevc=21] [--crf-hevcm=25] [--crf-h264=20] [--crf-lite=22]
+// Запуск после frames.mjs (тот пересобирает манифест):  node tools/flight-variants.mjs [--only=tall|wide] [--clean] [--ids=hevc,hevcm,av1,h264,lite,mini] [--crf-av1=24] [--crf-hevc=21] [--crf-hevcm=25] [--crf-h264=20] [--crf-lite=22] [--crf-mini=26]
 // Ключевой кадр: телефон каждые 12 кадров, компьютер — 24 (перемотка скроллом декодирует не больше GOP−1 кадров); B-кадров у x264/x265 нет.
 import { readFile, writeFile, stat, unlink, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -26,7 +26,7 @@ const opt = (k, d) => { const a = args.find((x) => x.startsWith('--' + k + '='))
 const FF = process.env.FFMPEG || (await run('python3', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())'])).stdout.trim();
 const FPS = 24;
 async function duration(f) { const r = await run(FF, ['-i', f]).catch((e) => e); const m = String(r.stderr || '').match(/Duration: (\d+):(\d+):([\d.]+)/); return +m[1] * 3600 + +m[2] * 60 + +m[3]; }
-const CRF = { av1: +opt('crf-av1', 24), hevc: +opt('crf-hevc', 21), hevcm: +opt('crf-hevcm', 25), h264: +opt('crf-h264', 20), lite: +opt('crf-lite', 22), mini: +opt('crf-mini', 25) };
+const CRF = { av1: +opt('crf-av1', 24), hevc: +opt('crf-hevc', 21), hevcm: +opt('crf-hevcm', 25), h264: +opt('crf-h264', 20), lite: +opt('crf-lite', 22), mini: +opt('crf-mini', 26) }; // mini 26 (12.11): на новых клипах подъёма crf 25 давал 10,4 МБ вместо 9,0 — вход дольше; 27 не проходил accept.py в альбоме (4,08 при допуске 4)
 const SETS = {
   tall: { clips: ['k1v', 'k2v', 'k3v'], fin: 's4v', w: 1080, h: 1920, lw: 720, lh: 1280, mw: 540, mh: 960, g: 12 },
   wide: { clips: ['k1', 'k2', 'k3'], fin: 's4', w: 1920, h: 1080, lw: 1280, lh: 720, mw: 960, mh: 540, g: 24 },

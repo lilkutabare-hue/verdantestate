@@ -347,19 +347,22 @@ export function mount(root, opts = {}) {
   }
   const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
+  // 12.11: карта «прокрутка → время» (manifest.video.<серия>.map и manifest.sets.<серия>.map, пишет tools/flight-map.py): клипы пролёта идут с разной
+  // скоростью, таблица долей на равных шагах прокрутки делает видимое движение ровным на всём пролёте. Нет карты — прямая, как раньше.
+  const warp = (u, mp) => { if (!mp || mp.length < 2) return u; const x = Math.min(1, Math.max(0, u)) * (mp.length - 1), i = Math.min(mp.length - 2, Math.floor(x)); return mp[i] + (mp[i + 1] - mp[i]) * (x - i); };
 
   function draw(p) {
     if (!set || !imgs.length) return;
     const A = nFlight, last = nFlight - 1;
     let key;
     if (p <= TL.flight && vidOn()) {
-      const m = vidMeta(); vidTarget = seg(p, 0, TL.flight) * Math.max(0, vidTotal() - 1 / m.fps); pump();
+      const m = vidMeta(); vidTarget = warp(seg(p, 0, TL.flight), m.map) * Math.max(0, vidTotal() - 1 / m.fps); pump();
       if (lastKey !== 'v') ctx.clearRect(0, 0, canvas.width, canvas.height);
       lastKey = 'v'; if (!root.classList.contains('is-live')) root.classList.add('is-live');
       return;
     }
     if (p <= TL.flight) {
-      let t = seg(p, 0, TL.flight) * last, a = Math.floor(t), b = Math.min(last, a + 1), al = t - a;
+      let t = warp(seg(p, 0, TL.flight), set.map) * last, a = Math.floor(t), b = Math.min(last, a + 1), al = t - a;
       a = Math.round(t); b = a; al = 0; // один ближайший кадр, без смешивания соседних: смесь двух кадров на движении камеры = двойная крона (§7.1)
       const ia = nearest(a), ib = nearest(b);
       tend(a);
@@ -371,11 +374,15 @@ export function mount(root, opts = {}) {
       if (ib >= 0 && ib !== ia && al > 0.002) cover(pick(ib), al);
     } else if (p <= TL.groom) {
       const k = ease(seg(p, TL.flight, TL.groom)), ib = ready[last] ? last : nearest(last);
-      key = 'g' + ib + ':' + ready[A] + ':' + k.toFixed(4);
+      // 12.11: конец видео и стилл S4 — разные кадры (новые клипы подъёма кончаются своим кадром, стилл и покос остались прежними):
+      // первые 3 % прогресса после пролёта стилл проявляется поверх последнего кадра видео, а не встаёт скачком
+      const fade = vidOn() ? seg(p, TL.flight, TL.flight + 0.03) : 1;
+      if (fade < 1) { const m = vidMeta(); vidTarget = Math.max(0, vidTotal() - 1 / m.fps); pump(); }
+      key = 'g' + ib + ':' + ready[A] + ':' + k.toFixed(4) + ':' + fade.toFixed(3);
       if (key === lastKey || ib < 0) return;
       tend(last);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      cover(pick(ib), 1);
+      cover(pick(ib), fade);
       if (ready[A] && k > 0) {
         // кромка покоса: мягкая (F px), впереди неё — светлая полоса свежего среза
         const F = Math.max(40, W * 0.07), edge = -F + k * (W + 2 * F);
