@@ -63,7 +63,10 @@ export function mount(root, opts = {}) {
   // 07.11: HEVC впереди AV1 — при прокрутке пролёта за 8 с HEVC даёт 60 смен кадра/с, AV1 (random access) — 46 (flight-bench, Chrome, M4, видеокарта);
   // Средняя ступень — hevcm (тот же HEVC полегче, 1080p): её тянут все iPhone, AV1 — только 15 Pro и новее; AV1 — для устройств без HEVC.
   // ?codec=av1|hevc|hevcm|h264|lite — принудительно (замеры)
-  let vidSel = null, vidQueue = [], vidLite = null, vidSwitched = false, vidWhy = ''; // vidWhy — почему ушли с основного варианта (для ?perf=1 и замеров)
+  let vidSel = null, vidQueue = [], vidLite = null, vidSwitched = false, vidWhy = '';
+  // 12.11 (владелец: «поч так долго грузится сайт, это не норм»): страница открывается на лёгкой копии всего пролёта (mini, 540p, ≈ 9 МБ),
+  // а качественный вариант качается на фоне и подменяет её на ходу (upgrade). vidHq — очередь качественных, miniRate — скорость линии в байтах/мс по mini
+  let vidMini = null, vidHq = [], vidNoUp = false, upState = '', upAbort = null, miniRate = 0; // vidWhy — почему ушли с основного варианта (для ?perf=1 и замеров)
   const forced = (() => { try { return (/[?&]codec=(av1|hevcm?|h264|lite)\b/.exec(location.search) || [])[1] || ''; } catch { return ''; } })(); // hevcm? — раньше ?codec=hevcm молча давал hevc (\b после «hevc» не срабатывал)
   async function score(vr) {
     try {
@@ -74,7 +77,7 @@ export function mount(root, opts = {}) {
   }
   async function chooseVariants(m) {
     const vs = (m && m.variants) || []; if (!vs.length) return [];
-    vidLite = vs.find((x) => x.id === 'lite') || null;
+    vidLite = vs.find((x) => x.id === 'lite') || null; vidMini = vs.find((x) => x.id === 'mini') || null;
     if (forced) { const f = vs.find((x) => x.id === forced); if (f) return [f]; }
     const need = { hevc: 1, hevcm: 1, av1: 2, h264: 0 }, out = [];
     // 12.11 (владелец: «поч так долго грузится сайт, это не норм»): первым идёт средний HEVC (hevcm, вдвое легче), а не полный.
@@ -88,14 +91,15 @@ export function mount(root, opts = {}) {
     try {
       const cn = navigator.connection || {}, mem = navigator.deviceMemory || 0;
       const slowNet = cn.saveData || /^(slow-2g|2g)$/.test(cn.effectiveType || '');
-      if (vidLite && !forced && (slowNet || (mem > 0 && mem <= 2))) { vidWhy = 'lite сразу: ' + (cn.saveData ? 'экономия трафика' : slowNet ? 'сеть ' + cn.effectiveType : 'память ' + mem + ' ГБ'); return [vidLite]; }
+      const eco = vidMini || vidLite; // экономия трафика, 2G, мало памяти: лёгкая копия без подмены (раньше — 720p на 25 МБ)
+      if (eco && !forced && (slowNet || (mem > 0 && mem <= 2))) { vidWhy = eco.id + ' сразу: ' + (cn.saveData ? 'экономия трафика' : slowNet ? 'сеть ' + cn.effectiveType : 'память ' + mem + ' ГБ'); vidNoUp = true; return [eco]; }
     } catch {}
     return out;
   }
   const vidParts = () => { const m = vidMeta(); if (!m) return []; if (vidSel) return [{ src: vidSel.src, dur: m.dur, off: 0, bytes: vidSel.bytes || 0 }]; if (m.parts && m.parts.length && (opts.preferParts || !m.src)) { let off = 0; return m.parts.map((q) => { const r = { src: q.src, dur: q.dur, off, bytes: q.bytes || 0 }; off += q.dur; return r; }); } return [{ src: m.src, dur: m.dur, off: 0, bytes: m.bytes || 0 }]; };
   const vidTotal = () => vidParts().reduce((a, q) => a + q.dur, 0);
   const vidOn = () => vidOk && !!vidMeta() && vidFor === set.name;
-  const fam = (x) => (x && x.id === 'hevcm' ? 'hevc' : x && x.id === 'lite' ? 'h264' : x && x.id); // семейство декодера
+  const fam = (x) => (x && x.id === 'hevcm' ? 'hevc' : x && (x.id === 'lite' || x.id === 'mini') ? 'h264' : x && x.id); // семейство декодера
   function vidNextOrFail(why) {
     // вариант не декодировался/не перемотался — пробуем следующий другого кодека (тот же декодер упадёт так же), в конце — кадры.
     // Обрыв сети — не вина декодера: следующий по очереди, хоть того же семейства (08.11: iPhone без AV1 после обрыва HEVC уходил на H.264 → 720p, мимо hevcm)
@@ -114,7 +118,12 @@ export function mount(root, opts = {}) {
   let vidGen = 0, vidAbort = null; const BUDGET = opts.budget || 27000; // мс от начала загрузки страницы: к этому моменту видео должно быть целиком (владелец: загрузка до 30 с)
   async function setupVideo(again) {
     const m = vidMeta(); if (!m || vidFor === set.name) { for (let i = 0; i < vids.length; i++) vids[i].classList.toggle('is-on', vidOn() && i === vidCur); return; }
-    if (!again && m.variants && m.variants.length) { const list = await chooseVariants(m); if (dead) return; vidSel = list.shift() || null; vidQueue = list; if (!vidSel && !m.src) { vidFail('нет варианта'); return; } }
+    if (!again && m.variants && m.variants.length) {
+      const list = await chooseVariants(m); if (dead) return; vidSel = list.shift() || null; vidQueue = list; if (!vidSel && !m.src) { vidFail('нет варианта'); return; }
+      // вход на mini: качественные варианты уходят в очередь подмены (и остаются запасом, если mini не пошла)
+      vidHq = []; if (vidMini && !forced && !vidNoUp && vidSel && vidSel !== vidMini) { vidHq = [vidSel].concat(vidQueue); vidSel = vidMini; vidQueue = vidHq.slice(); }
+    }
+    if (upAbort) { try { upAbort.abort(); } catch {} upAbort = null; } upState = '';
     if (vidAbort) { try { vidAbort.abort(); } catch {} }
     const gen = ++vidGen; vidAbort = window.AbortController ? new AbortController() : null;
     vidFor = set.name; vidOk = false; vidCur = -1; vidNext = -1; vidProg = 0;
@@ -135,9 +144,11 @@ export function mount(root, opts = {}) {
       fetch(urlOf(q.src), vidAbort ? { signal: vidAbort.signal } : undefined).then(async (r) => {
         if (!r.ok) throw new Error(r.status);
         tot[i] = +r.headers.get('content-length') || q.bytes || 0; // длина из заголовка, иначе из манифеста (стенд и некоторые хосты отдают chunked)
+        const f0 = performance.now(); // f0 — начало тела ответа: по нему считаем скорость линии на mini
         if (!r.body || !r.body.getReader) return r.blob();
         const rd = r.body.getReader(), chunks = [];
         for (;;) { const { done, value } = await rd.read(); if (done) break; if (gen !== vidGen) { try { rd.cancel(); } catch {} return null; } chunks.push(value); got[i] += value.length; vidProg = sum(tot) ? Math.min(0.99, sum(got) / sum(tot)) : 0; const now = performance.now(); if (now - at > 120) { at = now; report(); } }
+        if (vidSel === vidMini && got[i] > 0) miniRate = got[i] / Math.max(1, performance.now() - f0);
         const blob = new Blob(chunks, { type: 'video/mp4' }); chunks.length = 0; return blob; // куски сразу отпускаем — в памяти одна копия видео
       }).then((b) => {
         if (dead || vidBad || gen !== vidGen || !b) return;
@@ -145,7 +156,7 @@ export function mount(root, opts = {}) {
         const u = URL.createObjectURL(b); vidUrls[i] = u; x.src = u; x.load();
         const first = () => { try { x.currentTime = 0.001; } catch {} };
         x.addEventListener('loadedmetadata', first, { once: true });
-        const once = () => { x.removeEventListener('seeked', once); if (gen !== vidGen) return; readyN++; if (readyN === parts.length && !vidBad) { vidOk = true; lastKey = ''; report(); wake(); } };
+        const once = () => { x.removeEventListener('seeked', once); if (gen !== vidGen) return; readyN++; if (readyN === parts.length && !vidBad) { vidOk = true; lastKey = ''; report(); wake(); if (vidSel === vidMini) upgrade(); } };
         x.addEventListener('seeked', once);
         // не перемоталось за 1,5 с — пнуть play/pause (немой инлайн можно без жеста); за 4 с — сдаёмся, остаёмся на кадрах (режим энергосбережения, старый браузер)
         let denied = false; // play() отклонён политикой (режим энергосбережения iPhone, запрет автовоспроизведения) — другой кодек не поможет
@@ -167,12 +178,12 @@ export function mount(root, opts = {}) {
     const watch = setInterval(() => {
       if (dead || vidOk || vidBad || gen !== vidGen || fetched === parts.length) { clearInterval(watch); return; } // скачано целиком — дальше дело декодера (часы 4 с), «нет байт» уже не обрыв (08.11: в скрытой вкладке ждали метаданных и уходили на 720p)
       const g = sum(got), now = performance.now();
-      if (g > seen) { seen = g; seenAt = now; } else if (now - seenAt > 6000) { clearInterval(watch); if (vidLite && vidSel !== vidLite && !vidSwitched) { vidWhy += (vidWhy ? '; ' : '') + 'lite: нет байт 6 с'; vidSwitched = true; vidQueue = []; vidSel = vidLite; vidFor = ''; setupVideo(true); } else vidFail('нет байт 6 с'); return; }
+      if (g > seen) { seen = g; seenAt = now; } else if (now - seenAt > 6000) { clearInterval(watch); if (vidLite && vidSel !== vidLite && vidSel !== vidMini && !vidSwitched) { vidWhy += (vidWhy ? '; ' : '') + 'lite: нет байт 6 с'; vidSwitched = true; vidQueue = []; vidSel = vidLite; vidFor = ''; setupVideo(true); } else vidFail('нет байт 6 с'); return; }
       // 07.11: скорость — за последние ~3 с, а не средняя с начала: в первые секунды линию делят шрифты, кадры и разгон TCP,
       // и средняя занижала её вдвое (AV1 44 МБ на 20 Мбит/с уходил на lite, хотя успевал к 20-й секунде). Решаем не раньше 4 с.
       hist.push([now, g]); if (hist.length > 7) hist.shift();
       // не успеваем к BUDGET — спускаемся по лесенке (HEVC → AV1 → H.264 → lite): лучший вариант, который с нуля успевает; не успевает никто — самый лёгкий
-      if (vidSel && vidSel !== vidLite && now - dl0 > 4000 && hist.length >= 7 && sum(tot)) {
+      if (vidSel && vidSel !== vidLite && vidSel !== vidMini && now - dl0 > 4000 && hist.length >= 7 && sum(tot)) {
         const rate = (g - hist[0][1]) / (now - hist[0][0]), left = sum(tot) - g, eta = rate > 0 ? left / rate : Infinity;
         if (rate > 0 && now + eta > BUDGET) {
           const alts = vidQueue.concat(vidLite ? [vidLite] : []).filter((x) => x && x !== vidSel && x.bytes && x.bytes < left);
@@ -181,6 +192,56 @@ export function mount(root, opts = {}) {
         }
       }
     }, 500);
+  }
+  // 12.11: фоновая подмена лёгкой копии качественным вариантом. Страница уже открыта на mini; качественный файл качается целиком,
+  // новый <video> перематывается на текущий кадр и только после seeked встаёт на место старого — пустого кадра нет.
+  // Линию оцениваем по скорости, с которой пришла mini: ≥ 6 МБ/с — полный HEVC (он не держит заставку, только качество), < 0,4 МБ/с — без подмены
+  async function upgrade() {
+    if (upState || dead || vidBad || !vidHq.length || vidSel !== vidMini) return;
+    const note = (t) => { vidWhy += (vidWhy ? '; ' : '') + t; };
+    if (miniRate > 0 && miniRate < 400) { upState = 'off'; note('без подмены: линия ' + (miniRate / 1000).toFixed(2) + ' МБ/с'); return; }
+    const gen = vidGen, m = vidMeta(), cands = vidHq.slice(), full = cands.find((x) => x.id === 'hevc');
+    if (full && cands[0].id === 'hevcm' && miniRate >= 6000) { cands.splice(cands.indexOf(full), 1); cands.unshift(full); }
+    upState = 'load';
+    const stale = () => dead || vidBad || gen !== vidGen || vidSel !== vidMini;
+    for (const pick of cands) {
+      if (stale()) return;
+      upAbort = window.AbortController ? new AbortController() : null;
+      let x2 = null, u2 = '';
+      try {
+        const r = await fetch(urlOf(pick.src), upAbort ? { signal: upAbort.signal } : undefined); if (!r.ok) throw new Error(r.status);
+        const b = await r.blob(); if (stale()) return;
+        u2 = URL.createObjectURL(b);
+        x2 = document.createElement('video');
+        x2.className = 've-hero__vid'; x2.muted = true; x2.defaultMuted = true; x2.playsInline = true; x2.preload = 'auto'; x2.disablePictureInPicture = true;
+        x2.setAttribute('muted', ''); x2.setAttribute('playsinline', ''); x2.setAttribute('aria-hidden', 'true');
+        stage.insertBefore(x2, canvas);
+        const at = () => Math.max(0.001, Math.min(vidTotal() - 1 / m.fps, vidTarget));
+        await new Promise((res, rej) => {
+          let done = false; const end = (e) => { if (done) return; done = true; clearTimeout(t1); clearTimeout(t2); e ? rej(e) : res(); };
+          const t1 = setTimeout(() => { if (!done && !document.hidden) { const pr = x2.play && x2.play(); if (pr && pr.then) pr.then(() => { x2.pause(); try { x2.currentTime = at(); } catch {} }, () => {}); } }, 1500); // как у основного: немой инлайн можно пнуть без жеста
+          const t2 = setTimeout(() => end(new Error('не перемоталось за 6 с')), 6000);
+          x2.addEventListener('error', () => end(new Error('ошибка декодера')), { once: true });
+          x2.addEventListener('loadedmetadata', () => { try { x2.currentTime = at(); } catch {} }, { once: true });
+          x2.addEventListener('seeked', () => end(), { once: true });
+          x2.src = u2; x2.load();
+        });
+        if (stale()) { x2.remove(); URL.revokeObjectURL(u2); return; }
+        const old = vids[0], oldUrl = vidUrls[0], x = x2;
+        x.addEventListener('seeked', () => { if (vids[0] !== x) return; if (vidNext === 0) { vidCur = 0; vidNext = -1; } vidSeeking = false; vidBehind = false; flips.push(performance.now()); wake(); });
+        x.addEventListener('error', () => { if (vids[0] === x && gen === vidGen) vidNextOrFail('ошибка декодера'); });
+        x.classList.toggle('is-on', old ? old.classList.contains('is-on') : vidOn());
+        vids[0] = x; vidUrls[0] = u2; vidSel = pick; vidQueue = vidQueue.filter((q) => q !== pick); vidCur = 0; vidNext = -1; vidSeeking = false;
+        if (old) { old.classList.remove('is-on'); old.removeAttribute('src'); try { old.load(); } catch {} old.remove(); } if (oldUrl) URL.revokeObjectURL(oldUrl);
+        upState = 'done'; note('подмена mini → ' + pick.id + ' на ' + (performance.now() / 1000).toFixed(1) + ' с');
+        lastKey = ''; report(); wake(); return;
+      } catch (e) {
+        if (x2) x2.remove(); if (u2) URL.revokeObjectURL(u2);
+        if (e && e.name === 'AbortError') return;
+        note('подмена на ' + pick.id + ' не вышла: ' + ((e && e.message) || '?'));
+      }
+    }
+    upState = 'off';
   }
   function pump() {
     if (!vids.length || vidSeeking) { if (vidSeeking && performance.now() - vidSeekAt > 2000) vidSeeking = false; return; }

@@ -287,6 +287,16 @@
           "h": 1280,
           "kbps": 6813,
           "crf": 22
+        },
+        {
+          "id": "mini",
+          "src": "flight-tall-mini.mp4",
+          "bytes": 9473855,
+          "mime": "video/mp4; codecs=\"avc1.64001F\"",
+          "w": 540,
+          "h": 960,
+          "kbps": 2509,
+          "crf": 25
         }
       ]
     },
@@ -347,6 +357,16 @@
           "h": 720,
           "kbps": 5381,
           "crf": 22
+        },
+        {
+          "id": "mini",
+          "src": "flight-wide-mini.mp4",
+          "bytes": 8815668,
+          "mime": "video/mp4; codecs=\"avc1.64001F\"",
+          "w": 960,
+          "h": 540,
+          "kbps": 2335,
+          "crf": 25
         }
       ]
     }
