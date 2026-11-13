@@ -82,6 +82,9 @@ const kb = (n) => (n / 1024).toFixed(1) + ' КБ';
 // Порядок блоков на странице. Номер t123-NN — место блока в этом порядке (так его вставляют в Тильду); имена исходников не меняются.
 // 11.11 (владелец: цена раньше процесса, справочное — в раскрывающиеся строки): тарифы и конструктор сразу под пролётом, свёртки идут подряд.
 const ORDER = ['01-header', '02-hero', '05-tariffs', '06-builder', '03-manifest', '04-season', '11-seasons', '10-before-after', '07-economics', '08-pricelist', '09-ways', '13-bonuses', '12-faq', '14-form', '15-footer'];
+// название блока для первой строки кода и листа заливки. В первой строке — место на странице и название, без имени исходника:
+// исходники сохранили старые номера (05-tariffs стоит третьим), и владелец при вставке читал их как номер блока (13.11)
+const BLOCK_NAMES = { '01-header': 'Шапка', '02-hero': 'Хиро — пролёт и превращение', '03-manifest': 'Что мы берём на себя', '04-season': 'Как проходит сезон', '05-tariffs': 'Тарифы', '06-builder': 'Конструктор', '07-economics': 'Экономика', '08-pricelist': 'Разовые работы', '09-ways': 'Сад под ключ', '10-before-after': 'До и после', '11-seasons': 'Круглый год', '12-faq': 'Вопросы', '13-bonuses': 'Специальные условия', '14-form': 'Форма', '15-footer': 'Подвал' };
 const pos = (f) => { const i = ORDER.indexOf(f.replace(/\.html$/, '')); if (i < 0) throw new Error(`[${f}] блока нет в ORDER (tools/build.mjs)`); return i; };
 const num = (f) => String(pos(f) + 1).padStart(2, '0');
 const files = (await readdir(SRC)).filter((f) => /^\d\d-.*\.html$/.test(f)).sort((a, b) => pos(a) - pos(b));
@@ -148,7 +151,7 @@ const blocksDist = [], blocksPreview = [];
 for (const f of files) {
   const n = num(f);
   const src = await readFile(join(SRC, f), 'utf8');
-  const dist = `<!-- VE · ${f} · сборка ${V} -->\n` + fillDist(src);
+  const dist = `<!-- VE · блок ${n} · ${BLOCK_NAMES[f.replace(/\.html$/, '')] || f} · сборка ${V} -->\n` + fillDist(src);
   await checkScripts(dist, f); checkCss(dist, f);
   const size = Buffer.byteLength(dist);
   if (size > LIMIT_BLOCK) throw new Error(`[${f}] блок ${kb(size)} > 84 КБ`);
@@ -163,7 +166,7 @@ const legalStyle = await readFile(join(SRC, 'legal/_style.html'), 'utf8');
 const LEGAL = [['policy', 'Политика обработки персональных данных'], ['consent', 'Согласие на обработку персональных данных']];
 for (const [name, title] of LEGAL) {
   const src = legalStyle + (await readFile(join(SRC, `legal/${name}.html`), 'utf8'));
-  const dist = `<!-- VE · legal/${name}.html · сборка ${V} -->\n` + fillDist(src);
+  const dist = `<!-- VE · страница /${name} · сборка ${V} -->\n` + fillDist(src);
   checkCss(dist, name);
   await writeFile(join(DIST, `t123-${name}.html`), dist);
   console.log(`t123-${name}.html  ${kb(Buffer.byteLength(dist))} / 84 КБ  ← legal/${name}.html`);

@@ -3,7 +3,7 @@
 //
 // Одна самодостаточная страница (открывается двойным щелчком): HEAD сайта и блоки 01–15 по порядку, на каждый —
 // кнопка «Копировать», файл из dist байт в байт. Номер сборки сверху; отметки «залито» помнит, пока сборка та же.
-// Запускать после node tools/build.mjs. Медиа для блоков — node tools/deploy.mjs --assets.
+// Запускать после node tools/build.mjs. Медиа блоки берут с GitHub Pages (docs/site), отдельно заливать не нужно.
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,12 +12,11 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist'), OUT = join(DIST, 'ЗАЛИТЬ.html');
 const read = (f) => readFileSync(join(DIST, f), 'utf8');
 const build = (read('head.html').match(/сборка (\w+)/) || [])[1] || '?';
-// имя блока — по исходнику из первой строки («VE · 05-tariffs.html · сборка …»): номер t123-NN теперь место на странице, а не номер исходника (ORDER в build.mjs)
-const NAMES = { '01-header': 'Шапка', '02-hero': 'Хиро — пролёт и превращение', '03-manifest': 'Что мы берём на себя', '04-season': 'Как проходит сезон', '05-tariffs': 'Тарифы', '06-builder': 'Конструктор', '07-economics': 'Экономика', '08-pricelist': 'Разовые работы', '09-ways': 'Сад под ключ', '10-before-after': 'До и после', '11-seasons': 'Круглый год', '12-faq': 'Вопросы', '13-bonuses': 'Специальные условия', '14-form': 'Форма', '15-footer': 'Подвал' };
-const srcOf = (f) => (read(f).match(/VE · (\S+?)\.html · /) || [])[1];
+// имя блока — из первой строки файла («VE · блок 03 · Тарифы · сборка …», пишет build.mjs): номер t123-NN — место на странице
+const nameOf = (f) => (read(f).match(/VE · блок \d\d · (.+?) · сборка /) || [])[1];
 const blocks = readdirSync(DIST).filter((f) => /^t123-\d\d\.html$/.test(f)).sort();
 const items = [{ f: 'head.html', n: 'H', name: 'HEAD сайта', where: 'Настройки сайта → Ещё → «HTML-код для вставки внутрь head». Заменить целиком.' }]
-  .concat(blocks.map((f) => { const n = f.slice(5, 7); return { f, n, name: NAMES[srcOf(f)] || f, where: 'Блок T123 «HTML-код»' }; }))
+  .concat(blocks.map((f) => { const n = f.slice(5, 7); return { f, n, name: nameOf(f) || f, where: 'Блок T123 «HTML-код»' }; }))
   .concat([['policy', 'П', 'Политика обработки персональных данных', '/policy'], ['consent', 'С', 'Согласие на обработку персональных данных', '/consent']]
     .filter(([n]) => readdirSync(DIST).includes(`t123-${n}.html`))
     .map(([n, mark, name, path]) => ({ f: `t123-${n}.html`, n: mark, name, where: `Отдельная страница, адрес ${path}, один блок T123; шапку можно поставить блоком 01` })));
@@ -39,10 +38,10 @@ button{flex:none;font:600 14px -apple-system,sans-serif;border:1px solid var(--i
 .tip{margin-top:22px;padding:12px 14px;border-radius:12px;background:#F2EFE6;font-size:14px;color:var(--txt)}
 </style></head><body>
 <h1>Залить в Тильду</h1>
-<p class="sub">Сборка ${esc(build)} · ${items.length} вставок · медиа: verdant-assets.lilkutabare.workers.dev</p>
+<p class="sub">Сборка ${esc(build)} · ${items.length} вставок · медиа уже лежат на GitHub Pages, отдельно заливать не нужно</p>
 <ol>
-<li>Новая страница → в настройках страницы <b>выключить шапку и подвал Тильды</b>, фон белый.</li>
-<li><b>Сначала медиа:</b> хранилище Яндекса по <code>docs/tilda-upload-2026-10-24.md</code> (шаг 1: бакет, ключ в <code>deploy/.s3env</code>, <code>zsh tools/media-sync.sh</code>, пересборка). Без этого блоки ниже берут медиа с Cloudflare, который в России режут.</li>
+<li>Страница уже есть: код в блоках <b>заменять целиком</b>. У новой страницы в настройках <b>выключить шапку и подвал Тильды</b>, фон белый.</li>
+<li>Первая строка каждого кода называет блок: «VE · блок 03 · Тарифы». Номер в ней совпадает с номером в этом листе.</li>
 <li><b>H</b> — вставить в «Настройки сайта → Ещё → HTML-код для вставки внутрь head» (один раз на весь сайт).</li>
 <li>Добавить <b>15 блоков T123 «HTML-код»</b> подряд, в каждый — свой код по порядку 01 → 15. Отступы блоков сверху и снизу — 0.</li>
 <li>Ещё две страницы: адрес <b>/policy</b> — блок <b>П</b>, адрес <b>/consent</b> — блок <b>С</b> (по одному T123, шапка и подвал Тильды выключены).</li>
