@@ -1,16 +1,17 @@
-<!-- VE · блок 02 · Хиро — пролёт и превращение · сборка 2d06251b · © 2026 Verdant Estate. Все права защищены: копирование кода, текстов и изображений без письменного разрешения запрещено -->
+<!-- VE · блок 02 · Хиро — пролёт и превращение · сборка 03baa990 · © 2026 Verdant Estate. Все права защищены: копирование кода, текстов и изображений без письменного разрешения запрещено -->
 <!-- 08.11 SEO (скилл xtc-seo, schema.md): организация и сайт в исходном HTML главной; только то, что видно на сайте — название, телефон (шапка, подвал), регион (подвал «Москва и Московская область», бриф); адреса нет — не выдумываем -->
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://verdantestate.ru/#org","name":"Verdant Estate","url":"https://verdantestate.ru/","logo":"https://lilkutabare-hue.github.io/verdantestate/site/favicon-512.png","description":"Профессиональный уход за частными садами и территориями в Москве и Московской области.","telephone":"+7-980-400-94-48","areaServed":[{"@type":"City","name":"Москва"},{"@type":"AdministrativeArea","name":"Московская область"}],"contactPoint":{"@type":"ContactPoint","telephone":"+7-980-400-94-48","contactType":"customer service","areaServed":"RU","availableLanguage":"ru"}},{"@type":"WebSite","@id":"https://verdantestate.ru/#website","url":"https://verdantestate.ru/","name":"Verdant Estate","inLanguage":"ru","publisher":{"@id":"https://verdantestate.ru/#org"}}]}</script>
 <section class="ve ve-hero" id="ve-hero" data-ch="0">
   <div class="ve-hero__stage">
     <picture class="ve-hero__poster">
-      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=2d06251b">
-      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=2d06251b" alt="Загородный дом и сад в сосновом лесу" decoding="async" fetchpriority="high" width="960" height="540">
+      <source media="(orientation: portrait)" srcset="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-tall.webp?v=03baa990">
+      <img src="https://lilkutabare-hue.github.io/verdantestate/site/media/scene/poster-wide.webp?v=03baa990" alt="Загородный дом и сад в сосновом лесу" decoding="async" fetchpriority="high" width="960" height="540">
     </picture>
     <canvas class="ve-hero__canvas" aria-hidden="true"></canvas>
     <video class="ve-hero__loop" muted loop playsinline preload="none" aria-hidden="true"></video>
     <canvas class="ve-hero__dust" aria-hidden="true"></canvas>
     <div class="ve-hero__shade" aria-hidden="true"></div>
+    <div class="ve-hero__end" aria-hidden="true"></div>
 
     <div class="ve-hero__text">
       <!-- строки из-под маски (план финала A.1): каждая строка обрезана своей рамкой .ve-ln и выезжает снизу по прогрессу скролла; заголовок в две строки на любой ширине; 11.11 (владелец: «слабенько… более лаконично уместить») — заголовок заметно меньше, девиз одной строкой капсом -->
@@ -70,6 +71,9 @@ html.ve-no-dust .ve-hero__dust{display:none}
 .ve-hero__loop{width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:0;transition:opacity .9s var(--ve-ease);pointer-events:none}
 .ve-hero.is-loop .ve-hero__loop{opacity:1}
 /* тень только снизу и только когда есть текст — пролёт чистый */
+/* 13.11: конец хиро. Низ кадра растворяется в цвет следующего блока (тарифы, --ve-ink), жёсткой границы «картинка | заливка» нет.
+   Сила — переменная --ve-end, её ведёт скрипт по прокрутке: 0 до 92 % пути, 1 к моменту, когда сцена отлипает. Слой лежит под текстом. */
+.ve-hero__end{position:absolute;left:0;right:0;bottom:0;height:62%;pointer-events:none;opacity:var(--ve-end,0);background:linear-gradient(to bottom,rgba(27,70,42,0) 0%,rgba(27,70,42,.07) 16%,rgba(27,70,42,.24) 34%,rgba(27,70,42,.5) 54%,rgba(27,70,42,.78) 74%,rgba(27,70,42,.94) 90%,#1B462A 100%)}
 .ve-hero__shade{background:linear-gradient(to top,rgba(17,38,24,.62) 0%,rgba(17,38,24,.28) 34%,rgba(17,38,24,0) 62%);opacity:0;transition:opacity .8s var(--ve-ease)}
 .ve-hero:not([data-ch="0"]) .ve-hero__shade{opacity:1}
 .ve-hero__text{position:absolute;left:0;right:0;bottom:var(--ve-under,0px);padding:0 var(--ve-pad) calc(30px + env(safe-area-inset-bottom));max-width:1240px;margin:0 auto}
@@ -239,7 +243,9 @@ html.ve-coarse .ve-logo__halo{mix-blend-mode:normal;opacity:calc(.55*var(--ve-f)
       else st.transform=k===1?'none':'translateY('+((1-k)*115).toFixed(1)+'%)'} /* строка выезжает из-под маски снизу */
   }
   var IDX=null;
+  var stageEl=root.querySelector('.ve-hero__stage'),endV=-1;
   function onP(p){
+    if(p>.9||endV>0){var vh=window.innerHeight||1,tr=root.offsetHeight-vh,pe=tr>0?1-Math.max(0,stageEl.offsetHeight-vh)/tr:1,e=Math.min(1,Math.max(0,(p-.92)/Math.max(.01,pe-.92)));e=e*e*(3-2*e);if(Math.abs(e-endV)>.004){endV=e;root.style.setProperty('--ve-end',e.toFixed(3))}}
     var ch=p<TL.groom?0:p<TL.light?1:2;
     if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
     if(!VE_RM){seq(W1,p,.76,.86,'h1');seq(W2,p,.85,.9,'sub');if(IDX)seq(IDX,p,.91,.98,'idx',24)}
