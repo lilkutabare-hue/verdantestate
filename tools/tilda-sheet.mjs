@@ -26,9 +26,13 @@ const sha = (t) => createHash('sha1').update(t).digest('hex').slice(0, 8);
 // суть вставки: без первой строки (в ней номер сборки и копирайт) и с номером сборки, заменённым на метку — «?v=…» у картинок работу кода не меняет
 const core = (t) => { const b = (t.match(/сборка (\w+)/) || [])[1]; const body = t.slice(t.indexOf('\n') + 1); return sha(b ? body.split(b).join('V') : body); };
 for (const it of items) {
-  it.t = read(it.f); it.kb = (Buffer.byteLength(it.t) / 1024).toFixed(1); it.h = core(it.t); it.prev = '';
-  // прошлый лист ставил отметку по отпечатку полного текста: если суть вставки в последнем коммите та же, такую отметку принимаем
-  try { const old = execFileSync('git', ['show', 'HEAD:dist/' + it.f], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 1e8 }); if (core(old) === it.h) it.prev = sha(old); } catch {}
+  it.t = read(it.f); it.kb = (Buffer.byteLength(it.t) / 1024).toFixed(1); it.h = core(it.t); it.prev = [];
+  // прошлые листы ставили отметку по отпечатку полного текста: принимаем такие отметки для версий файла из последних коммитов,
+  // если суть вставки там та же, что сейчас
+  try {
+    const git = (a) => execFileSync('git', a, { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 1e8 });
+    for (const c of git(['log', '-6', '--format=%H', '--', 'dist/' + it.f]).split('\n').filter(Boolean)) { const old = git(['show', c + ':dist/' + it.f]); if (core(old) === it.h && !it.prev.includes(sha(old))) it.prev.push(sha(old)); }
+  } catch {}
 }
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 // содержимое блоков — строками JS: закрывающие теги и начало комментария экранируем, иначе оборвут скрипт
@@ -62,7 +66,7 @@ ${rows}
 var D=[${items.map((it) => js(it.t)).join(',')}],H=${JSON.stringify(items.map((it) => it.h))},P=${JSON.stringify(items.map((it) => it.prev))},K='ve-sheet-${esc(build)}',done={},was={};
 try{was=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
 function mark(i){var r=document.getElementById('b'+i);if(r)r.classList.add('done');done[i]=H[i];try{localStorage.setItem(K,JSON.stringify(done))}catch(e){}}
-Object.keys(was).forEach(function(i){if(was[i]===H[i]||(P[i]&&was[i]===P[i]))mark(i)});try{localStorage.setItem(K,JSON.stringify(done))}catch(e){}
+Object.keys(was).forEach(function(i){if(was[i]===H[i]||(P[i]&&P[i].indexOf(was[i])>=0))mark(i)});try{localStorage.setItem(K,JSON.stringify(done))}catch(e){}
 document.addEventListener('click',function(e){var b=e.target.closest('button[data-i]');if(!b)return;var i=+b.dataset.i,t=D[i];
   var ok=function(){mark(i);b.textContent='Скопировано';setTimeout(function(){b.textContent='Копировать'},1600)};
   var fb=function(){var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()};
