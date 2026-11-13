@@ -39,12 +39,13 @@
       </svg>
     </div>
   </div>
+  <div class="ve-hero__hold" aria-hidden="true"></div>
 </section>
 <style>
 /* пролёт ~ 3 экрана на клип + превращение и стоп-кадр с меню */
 html.ve-intro,html.ve-intro body{overflow:hidden!important;overscroll-behavior:none} /* заставка: страница стоит */
 html.ve-has-hero{scrollbar-gutter:stable} /* место под полосу прокрутки занято и в заставке — на Windows страница не прыгает вбок, когда полоса возвращается */
-.ve-hero{position:relative;height:560vh;height:560svh;background:#2B3A2E;color:var(--ve-paper);margin:0}
+.ve-hero{position:relative;height:calc(560vh + var(--ve-hold));height:calc(560svh + var(--ve-hold));background:#2B3A2E;color:var(--ve-paper);margin:0}
 .ve-hero__stage{position:sticky;top:0;height:100vh;height:100lvh;height:calc(100lvh + var(--ve-under,0px));overflow:hidden;background:#2B3A2E} /* --ve-under (13.11): на iOS 26 плавающая панель Safari лежит вне области просмотра — vh, dvh и lvh до низа экрана не доходят, под панелью был виден фон секции («зелёная полоса»); сцену дотягивает скрипт ниже, текст остаётся над панелью */ /* lvh, не svh (24.10): при свёрнутой панели Safari видимая область выше svh, и под видео вылезала полоса фона секции */
 .ve-hero__poster,.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__shade,.ve-hero__intro,.ve-hero__dust{position:absolute;inset:0}
 /* ?hero=video: пролёт на телефоне — видео под холстом (все 24 к/с клипов), холст в пролёте прозрачный; после пролёта холст снова рисует шторку и свет */
@@ -61,7 +62,7 @@ html.ve-has-hero{scrollbar-gutter:stable} /* место под полосу пр
 .ve-hero.is-idle :is(.ve-hero__canvas,.ve-hero__vid,.ve-hero__poster),html.ve-coarse .ve-hero.is-docked :is(.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__poster){animation:ve-hero-breathe 9s ease-in-out infinite alternate}
 @keyframes ve-hero-breathe{from{scale:1}to{scale:1.03}}
 /* телефон: пролёт короче — меньше свайпов, кадры идут быстрее */
-html.ve-coarse .ve-hero{height:440vh;height:440svh}
+html.ve-coarse .ve-hero{height:calc(440vh + var(--ve-hold));height:calc(440svh + var(--ve-hold))}
 html.ve-no-breathe .ve-hero__canvas,html.ve-no-breathe .ve-hero__vid,html.ve-no-breathe .ve-hero__loop,html.ve-no-breathe .ve-hero__poster{animation:none!important}
 @media(prefers-reduced-motion:reduce){.ve-hero__canvas,.ve-hero__vid,.ve-hero__loop,.ve-hero__poster{animation:none!important}}
 html.ve-no-dust .ve-hero__dust{display:none}
@@ -70,9 +71,17 @@ html.ve-no-dust .ve-hero__dust{display:none}
 .ve-hero__loop{width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:0;transition:opacity .9s var(--ve-ease);pointer-events:none}
 .ve-hero.is-loop .ve-hero__loop{opacity:1}
 /* тень только снизу и только когда есть текст — пролёт чистый */
-/* 13.11: конец хиро. Низ кадра растворяется в цвет следующего блока (тарифы, --ve-ink), жёсткой границы «картинка | заливка» нет.
-   Сила — переменная --ve-end, её ведёт скрипт по прокрутке: 0 до 92 % пути, 1 к моменту, когда сцена отлипает. Слой лежит под текстом. */
-.ve-hero__end{position:absolute;left:0;right:0;bottom:0;height:62%;pointer-events:none;opacity:var(--ve-end,0);background:linear-gradient(to bottom,rgba(27,70,42,0) 0%,rgba(27,70,42,.07) 16%,rgba(27,70,42,.24) 34%,rgba(27,70,42,.5) 54%,rgba(27,70,42,.78) 74%,rgba(27,70,42,.94) 90%,#1B462A 100%)}
+/* 13.11: конец хиро → тарифы. Сцена держится ещё --ve-hold прокрутки после конца таймлайна; блок тарифов (свой отрицательный отступ той же длины)
+   поднимается ПОВЕРХ неё. Следом снизу поднимается мягкий фронт цвета тарифов (.ve-hero__end, сдвиг transform по --ve-veil 0…1) и к концу
+   задержки закрывает кадр целиком — сцена отлипает уже сплошной, границы «картинка | заливка» нет. Текст хиро гаснет в первой трети (--ve-out).
+   Длина задержки должна совпадать с --ve-hold в блоке тарифов (src/05-tariffs.html). */
+.ve-hero{--ve-hold:70vh;--ve-hold:70lvh}
+.ve-hero__hold{position:absolute;left:0;bottom:0;width:1px;height:var(--ve-hold);visibility:hidden;pointer-events:none}
+.ve-hero__end{position:absolute;left:0;right:0;top:0;height:200%;pointer-events:none;background:linear-gradient(to bottom,rgba(27,70,42,0) 0%,rgba(27,70,42,.08) 5%,rgba(27,70,42,.28) 11%,rgba(27,70,42,.56) 18%,rgba(27,70,42,.82) 25%,rgba(27,70,42,.96) 31%,#1B462A 35%,#1B462A 100%);transform:translate3d(0,calc(50% - var(--ve-veil,0)*85%),0)}
+.ve-hero__text{opacity:calc(1 - var(--ve-out,0))}
+/* «свет» в конце тарифов (html.ve-day ставит блок тарифов): если сцена ещё видна у верха экрана, она белеет вместе с ним */
+.ve-hero__stage::after{content:'';position:absolute;inset:0;background:var(--ve-paper);opacity:0;transition:opacity .5s var(--ve-ease);pointer-events:none;z-index:8}
+html.ve-day .ve-hero__stage::after{opacity:1}
 .ve-hero__shade{background:linear-gradient(to top,rgba(17,38,24,.62) 0%,rgba(17,38,24,.28) 34%,rgba(17,38,24,0) 62%);opacity:0;transition:opacity .8s var(--ve-ease)}
 .ve-hero:not([data-ch="0"]) .ve-hero__shade{opacity:1}
 .ve-hero__text{position:absolute;left:0;right:0;bottom:var(--ve-under,0px);padding:0 var(--ve-pad) calc(30px + env(safe-area-inset-bottom));max-width:1240px;margin:0 auto}
@@ -241,9 +250,12 @@ __SCENE_INLINE__
       else st.transform=k===1?'none':'translateY('+((1-k)*115).toFixed(1)+'%)'} /* строка выезжает из-под маски снизу */
   }
   var IDX=null;
-  var stageEl=root.querySelector('.ve-hero__stage'),endV=-1;
+  // задержка в конце хиро: насколько тарифы уже поднялись над сценой (0…1) → фронт цвета и гашение текста
+  var stageEl=root.querySelector('.ve-hero__stage'),holdEl=root.querySelector('.ve-hero__hold'),veilV=-1,veilRaf=0;
+  function veil(){veilRaf=0;var hold=holdEl.offsetHeight||1,hp=1-Math.min(1,Math.max(0,(root.getBoundingClientRect().bottom-stageEl.offsetHeight)/hold));
+    if(Math.abs(hp-veilV)>.002||(hp!==veilV&&(hp===0||hp===1))){veilV=hp;root.style.setProperty('--ve-veil',hp.toFixed(3));root.style.setProperty('--ve-out',Math.min(1,hp/.3).toFixed(3))}}
+  window.addEventListener('scroll',function(){if(!veilRaf)veilRaf=requestAnimationFrame(veil)},{passive:true});window.addEventListener('resize',veil);veil();
   function onP(p){
-    if(p>.9||endV>0){var vh=window.innerHeight||1,tr=root.offsetHeight-vh,pe=tr>0?1-Math.max(0,stageEl.offsetHeight-vh)/tr:1,e=Math.min(1,Math.max(0,(p-.92)/Math.max(.01,pe-.92)));e=e*e*(3-2*e);if(Math.abs(e-endV)>.004){endV=e;root.style.setProperty('--ve-end',e.toFixed(3))}}
     var ch=p<TL.groom?0:p<TL.light?1:2;
     if(ch!==lastCh){lastCh=ch;root.setAttribute('data-ch',ch)}
     if(!VE_RM){seq(W1,p,.76,.86,'h1');seq(W2,p,.85,.9,'sub');if(IDX)seq(IDX,p,.91,.98,'idx',24)}

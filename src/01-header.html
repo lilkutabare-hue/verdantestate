@@ -116,7 +116,7 @@ html.ve-coarse .ve-hd.is-solid .ve-hd__in{background:linear-gradient(180deg,rgba
     var y=window.scrollY||0,d=y-y0;
     if((d>6||d<-6)&&hd.classList.contains('is-menu'))menu(false); // страница поехала — панель закрывается, шапка прячется как обычно
     // над хиро шапка прозрачная и не прячется: в ней знак, в который садится логотип первого экрана
-    var hero=document.getElementById('ve-hero'),inHero=hero&&hero.getBoundingClientRect().bottom>60;
+    var hero=document.getElementById('ve-hero'),inHero=hero&&hero.getBoundingClientRect().bottom>(hero.querySelector('.ve-hero__hold')?(window.innerHeight||600):60); // 13.11: у хиро в конце задержка, поверх сцены поднимаются тарифы — док включается, когда сцена отлипла, а не когда секция ушла целиком
     // страница без хиро (шапка на /policy, /consent): белая прозрачная шапка на белой бумаге не видна — сразу белый док; решаем после разбора страницы (на главной блок хиро идёт после шапки)
     var noHero=!hero&&document.readyState!=='loading';
     setSolid(noHero||(!inHero&&y>solidAt()));

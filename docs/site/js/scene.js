@@ -410,8 +410,11 @@ export function mount(root, opts = {}) {
   }
 
   // --- прогресс и цикл ---
+  const holdEl = root.querySelector('.ve-hero__hold');
   function progress() {
-    const r = root.getBoundingClientRect(), travel = r.height - (window.innerHeight || 1);
+    // 13.11: в конце секции есть задержка (.ve-hero__hold, высота --ve-hold): сцена стоит в финальном виде, поверх поднимается следующий блок.
+    // Таймлайн идёт по пути без задержки, дальше прогресс держится на 1
+    const r = root.getBoundingClientRect(), travel = r.height - (window.innerHeight || 1) - (holdEl ? holdEl.offsetHeight : 0);
     return travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0;
   }
   let lastP = -1;

@@ -28,7 +28,7 @@ const br = await chromium.launch({ executablePath: process.env.BENCH_CHROME && f
 
 // прокрутка пролёта (0 → TL.flight = 0.66 высоты хиро) за SECS секунд; на каждом шаге — scrollTo без плавности
 const scrub = async (page, poll) => page.evaluate(async ({ SECS, poll, FROM, TO }) => {
-  const hero = document.querySelector('.ve-hero'), top0 = hero.getBoundingClientRect().top + scrollY, travel = hero.offsetHeight - innerHeight, top = top0 + travel * FROM, end = top0 + travel * TO;
+  const hero = document.querySelector('.ve-hero'), top0 = hero.getBoundingClientRect().top + scrollY, travel = hero.offsetHeight - innerHeight - ((hero.querySelector('.ve-hero__hold') || {}).offsetHeight || 0), top = top0 + travel * FROM, end = top0 + travel * TO;
   const frames = [], vals = []; let last = performance.now(); const t0 = performance.now();
   const timer = poll ? setInterval(() => { const m = /смен кадра (\d+)\/с/.exec(VE.hero.info()); if (m) vals.push(+m[1]); }, 250) : null;
   await new Promise((res) => { (function step(now) { frames.push(now - last); last = now; const k = Math.min(1, (now - t0) / (SECS * 1000)); window.scrollTo({ top: top + (end - top) * k, behavior: 'instant' }); if (k < 1) requestAnimationFrame(step); else res(); })(performance.now()); });

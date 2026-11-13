@@ -59,7 +59,7 @@ const after = await st();
 await nudge(); await page.waitForTimeout(1200); const ctl = await st(); // контроль: после заставки тот же жест двигает
 // пролёт за 8 с: прокрутка в rAF без плавности, «смен кадра/с» из VE.hero.info() каждые 250 мс
 const scrub = await page.evaluate(async () => {
-  const h = document.querySelector('.ve-hero'), top = h.getBoundingClientRect().top + scrollY, travel = h.offsetHeight - innerHeight;
+  const h = document.querySelector('.ve-hero'), top = h.getBoundingClientRect().top + scrollY, travel = h.offsetHeight - innerHeight - ((h.querySelector('.ve-hero__hold') || {}).offsetHeight || 0); // без задержки в конце секции (13.11)
   scrollTo({ top, behavior: 'instant' }); await new Promise((r) => setTimeout(r, 800));
   const vals = [], frames = []; let lastT = performance.now(); const t0 = performance.now();
   const tm = setInterval(() => { const m = /смен кадра (\d+)\/с/.exec(VE.hero.info()); if (m) vals.push(+m[1]); }, 250);
