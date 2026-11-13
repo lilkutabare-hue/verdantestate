@@ -174,7 +174,7 @@ for (const [name, title] of LEGAL) {
   checkCss(dist, name);
   await writeFile(join(DIST, `t123-${name}.html`), dist);
   console.log(`t123-${name}.html  ${kb(Buffer.byteLength(dist))} / 84 КБ  ← legal/${name}.html`);
-  const prev = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title} — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>${fillPrev(headSrc, 'site/')}${PROTECT}<style>html,body{margin:0;background:#fff}</style></head><body>${fillPrev(src, 'site/')}</body></html>`;
+  const prev = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title} — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon-32.png" sizes="32x32"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>${fillPrev(headSrc, 'site/')}${PROTECT}<style>html,body{margin:0;background:#fff}</style></head><body>${fillPrev(src, 'site/')}</body></html>`;
   await writeFile(join(DOCS, `${name}.html`), prev);
 }
 
@@ -200,7 +200,7 @@ const page = `<!doctype html>
 <meta property="og:description" content="Сад, за которым не нужно следить. Постоянный уход за частными садами в Москве и Московской области.">
 <meta property="og:image" content="site/og-1200x630.jpg?v=${V}">
 <meta name="robots" content="noindex">
-<link rel="icon" href="site/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="site/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png">
 <meta name="theme-color" content="#1B462A">
 <script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>
@@ -214,9 +214,9 @@ ${blocksPreview.map((b) => `<!-- ${b.f} -->\n${b.html}`).join('\n\n')}
 </html>
 `;
 await writeFile(join(DOCS, 'index.html'), page);
-// иконка для «на экран Домой»: знак на бумаге, 180×180
+// иконка для «на экран Домой»: светлый знак на тёмно-зелёном, 180×180, без скругления (iOS скругляет сам); тот же вид, что у favicon.ico (tools/favicon.mjs)
 { const sharp = (await import('sharp')).default;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700"><rect width="700" height="700" fill="#FFFFFF"/><g transform="translate(45 70) translate(-300 -220)" fill="#1B462A"><path d="${LP.ring}"/><path d="${LP.branch}"/><path d="${LP.letters}"/></g></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="205 100 800 800"><rect x="205" y="100" width="800" height="800" fill="#1B462A"/><g fill="#FBFAF6"><path d="${LP.ring}"/><path d="${LP.branch}"/><path d="${LP.letters}"/></g></svg>`;
   await writeFile(join(SITE, 'apple-touch-icon.png'), await sharp(Buffer.from(svg)).resize(180, 180).png().toBuffer()); }
 await writeFile(join(SITE, 'version.txt'), V + '\n');
 console.log(`docs/index.html  ${kb(Buffer.byteLength(page))}   сборка ${V}`);
