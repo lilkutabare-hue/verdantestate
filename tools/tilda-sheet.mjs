@@ -2,9 +2,10 @@
 // Лист заливки в Тильду: node tools/tilda-sheet.mjs → dist/ЗАЛИТЬ.html (в git не идёт)
 //
 // Одна самодостаточная страница (открывается двойным щелчком): HEAD сайта и блоки 01–15 по порядку, на каждый —
-// кнопка «Копировать», файл из dist байт в байт. Номер сборки сверху; отметки «залито» помнит, пока сборка та же.
+// кнопка «Копировать», файл из dist байт в байт. Номер сборки сверху; отметку «залито» помнит по отпечатку кода вставки: код изменился — отметка снята.
 // Запускать после node tools/build.mjs. Медиа блоки берут с GitHub Pages (docs/site), отдельно заливать не нужно.
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -20,7 +21,7 @@ const items = [{ f: 'head.html', n: 'H', name: 'HEAD сайта', where: 'Нас
   .concat([['policy', 'П', 'Политика обработки персональных данных', '/policy'], ['consent', 'С', 'Согласие на обработку персональных данных', '/consent']]
     .filter(([n]) => readdirSync(DIST).includes(`t123-${n}.html`))
     .map(([n, mark, name, path]) => ({ f: `t123-${n}.html`, n: mark, name, where: `Отдельная страница, адрес ${path}, один блок T123; шапку можно поставить блоком 01` })));
-for (const it of items) { it.t = read(it.f); it.kb = (Buffer.byteLength(it.t) / 1024).toFixed(1); }
+for (const it of items) { it.t = read(it.f); it.kb = (Buffer.byteLength(it.t) / 1024).toFixed(1); it.h = createHash('sha1').update(it.t).digest('hex').slice(0, 8); } // h — отпечаток кода: галочка «залито» держится, пока код вставки тот же
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 // содержимое блоков — строками JS: закрывающие теги и начало комментария экранируем, иначе оборвут скрипт
 const js = (s) => JSON.stringify(s).replace(/<\//g, '<\\/').replace(/<!--/g, '<\\!--').split('\u2028').join('\\u2028').split('\u2029').join('\\u2029');
@@ -48,12 +49,12 @@ button{flex:none;font:600 14px -apple-system,sans-serif;border:1px solid var(--i
 <li>Опубликовать все три страницы. Открыть с телефона, пролистать до конца, нажать ссылки в форме и подвале.</li>
 </ol>
 ${rows}
-<p class="tip">Кнопка копирует код целиком, вставлять в пустой блок через Cmd+V. Отметка «✓» запоминается, пока сборка та же. После новой сборки лист пересобирается командой <b>node tools/tilda-sheet.mjs</b>.</p>
+<p class="tip">Кнопка копирует код целиком, вставлять в пустой блок через Cmd+V. Отметка «✓» держится, пока код этой вставки не изменился: пропала — вставку нужно залить заново. После новой сборки лист пересобирается командой <b>node tools/tilda-sheet.mjs</b>.</p>
 <script>
-var D=[${items.map((it) => js(it.t)).join(',')}],K='ve-sheet-${esc(build)}',done={};
-try{done=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
-function mark(i){var r=document.getElementById('b'+i);if(r)r.classList.add('done');done[i]=1;try{localStorage.setItem(K,JSON.stringify(done))}catch(e){}}
-Object.keys(done).forEach(mark);
+var D=[${items.map((it) => js(it.t)).join(',')}],H=${JSON.stringify(items.map((it) => it.h))},K='ve-sheet-${esc(build)}',done={},was={};
+try{was=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
+function mark(i){var r=document.getElementById('b'+i);if(r)r.classList.add('done');done[i]=H[i];try{localStorage.setItem(K,JSON.stringify(done))}catch(e){}}
+Object.keys(was).forEach(function(i){if(was[i]===H[i])mark(i)});try{localStorage.setItem(K,JSON.stringify(done))}catch(e){}
 document.addEventListener('click',function(e){var b=e.target.closest('button[data-i]');if(!b)return;var i=+b.dataset.i,t=D[i];
   var ok=function(){mark(i);b.textContent='Скопировано';setTimeout(function(){b.textContent='Копировать'},1600)};
   var fb=function(){var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()};

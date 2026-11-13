@@ -137,7 +137,11 @@ const fill = (s, base) => hidePast(legalFill(s)).replace(/__PRECONNECT__/g, /^ht
 
 const fillDist = (src) => fill(mapStatic(src), PAGES_BASE).replace('__TILDA_HEAD__', () => headTilda).replace('__SCENE_INLINE__', () => sceneInline); // функцией: в сжатом коде бывают $' и $& — строкой replace понял бы их как «вставь хвост/совпадение» (07.11)
 const fillPrev = (src, base) => fill(src, base).replace('__TILDA_HEAD__', '').replace('__SCENE_INLINE__', '');
-const headDist = fillDist(headSrc);
+// копирайт и защита от копирования: tools/protect.html (первый комментарий — описание, в сборку не идёт), дописывается в конец HEAD
+const YEAR = String(new Date().getFullYear());
+const COPY = `© ${YEAR} Verdant Estate. Все права защищены: копирование кода, текстов и изображений без письменного разрешения запрещено`;
+const PROTECT = (await readFile(join(ROOT, 'tools/protect.html'), 'utf8')).replace(/^<!--[\s\S]*?-->\s*/, '').replace(/__YEAR__/g, YEAR).replace(/\n\s*/g, '');
+const headDist = fillDist(headSrc) + PROTECT;
 await checkScripts(headDist, 'head'); checkCss(headDist, 'head');
 if (Buffer.byteLength(headDist) > LIMIT_HEAD) throw new Error(`HEAD ${kb(Buffer.byteLength(headDist))} > 64 КБ`);
 await writeFile(join(DIST, 'head.html'), headDist);
@@ -151,7 +155,7 @@ const blocksDist = [], blocksPreview = [];
 for (const f of files) {
   const n = num(f);
   const src = await readFile(join(SRC, f), 'utf8');
-  const dist = `<!-- VE · блок ${n} · ${BLOCK_NAMES[f.replace(/\.html$/, '')] || f} · сборка ${V} -->\n` + fillDist(src);
+  const dist = `<!-- VE · блок ${n} · ${BLOCK_NAMES[f.replace(/\.html$/, '')] || f} · сборка ${V} · ${COPY} -->\n` + fillDist(src);
   await checkScripts(dist, f); checkCss(dist, f);
   const size = Buffer.byteLength(dist);
   if (size > LIMIT_BLOCK) throw new Error(`[${f}] блок ${kb(size)} > 84 КБ`);
@@ -166,11 +170,11 @@ const legalStyle = await readFile(join(SRC, 'legal/_style.html'), 'utf8');
 const LEGAL = [['policy', 'Политика обработки персональных данных'], ['consent', 'Согласие на обработку персональных данных']];
 for (const [name, title] of LEGAL) {
   const src = legalStyle + (await readFile(join(SRC, `legal/${name}.html`), 'utf8'));
-  const dist = `<!-- VE · страница /${name} · сборка ${V} -->\n` + fillDist(src);
+  const dist = `<!-- VE · страница /${name} · сборка ${V} · ${COPY} -->\n` + fillDist(src);
   checkCss(dist, name);
   await writeFile(join(DIST, `t123-${name}.html`), dist);
   console.log(`t123-${name}.html  ${kb(Buffer.byteLength(dist))} / 84 КБ  ← legal/${name}.html`);
-  const prev = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title} — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>${fillPrev(headSrc, 'site/')}<style>html,body{margin:0;background:#fff}</style></head><body>${fillPrev(src, 'site/')}</body></html>`;
+  const prev = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title} — Verdant Estate</title><meta name="robots" content="noindex"><link rel="icon" href="site/favicon.svg" type="image/svg+xml"><script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>${fillPrev(headSrc, 'site/')}${PROTECT}<style>html,body{margin:0;background:#fff}</style></head><body>${fillPrev(src, 'site/')}</body></html>`;
   await writeFile(join(DOCS, `${name}.html`), prev);
 }
 
@@ -200,7 +204,7 @@ const page = `<!doctype html>
 <link rel="apple-touch-icon" href="site/apple-touch-icon.png">
 <meta name="theme-color" content="#1B462A">
 <script>window.VE_BASE=new URL('site/',location.href).href;window.VE_LEGAL={policy:'policy.html',consent:'consent.html',home:'./'}</script>
-${fillPrev(headSrc, 'site/')}
+${fillPrev(headSrc, 'site/')}${PROTECT}
 <style>html,body{margin:0;padding:0;background:#FFFFFF}body{overflow-x:hidden}</style>
 </head>
 <body>

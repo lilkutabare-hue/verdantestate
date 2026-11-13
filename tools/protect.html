@@ -1,0 +1,20 @@
+<!--
+  Копирайт и защита от копирования (владелец 13.11.2026: «копирайт на блоки и защиту от копирования»).
+  Сборка (tools/build.mjs) сжимает этот файл и дописывает в конец HEAD: dist/head.html, превью, docs/index.html.
+  Лежит в tools/, а не в src/: содержимое src входит в номер сборки, а менять номер посреди заливки нельзя.
+  Что делает: текст секций не выделяется (кроме полей формы, подвала с контактами, страниц политики и согласия);
+  правая кнопка и долгое нажатие не дают «Сохранить картинку»; картинки и видео не перетаскиваются.
+  Ссылки и поля ввода работают как обычно. Это заслон от случайного копирования: код страницы и файлы всё равно видны в инструментах браузера.
+  __YEAR__ подставляет сборка. В HEAD 64 КБ, запас около 1 КБ: держать коротким.
+-->
+<!-- © __YEAR__ Verdant Estate. Все права защищены. -->
+<meta name="copyright" content="© __YEAR__ Verdant Estate">
+<style>
+.ve{-webkit-user-select:none;user-select:none}
+.ve input,.ve textarea,.ve-ft,.ve-ft *,.ve-legal,.ve-legal *{-webkit-user-select:text;user-select:text}
+.ve img,.ve video,.ve canvas{-webkit-touch-callout:none;-webkit-user-drag:none}
+</style>
+<script>
+document.addEventListener('contextmenu',function(e){var t=e.target;t.closest&&!t.closest('a,input,textarea,.ve-ft,.ve-legal')&&e.preventDefault()});
+document.addEventListener('dragstart',function(e){/^(IMG|VIDEO|CANVAS)$/.test(e.target.nodeName)&&e.preventDefault()});
+</script>
