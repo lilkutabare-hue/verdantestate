@@ -5,7 +5,7 @@
 // Владелец 08.11: «на картинке превью соц сетей надо чтоб лого тоже пиздато было показано»; «давай по русски под лого».
 // Подпись под логотипом по-русски — «УХОД ЗА ЧАСТНЫМИ САДАМИ» (бриф: «уход за частными садами»): тот же Montserrat 400, та же высота и ширина,
 // что у английской строки в tools/logo.mjs (x 295…969, заглавная 21); разбивка выходит +7,3 против +5,9 у оригинала — длинные фразы уходили в минус.
-// Заодно пишет brand/logo/verdant-logo-ru.svg (зелёный) и verdant-logo-ru-light.svg (светлый). Другая подпись: node tools/og-image.mjs --tag='…'
+// Заодно пишет brand/logo/verdant-logo-ru.svg (зелёный) и verdant-logo-ru-light.svg (светлый). Другая подпись и файл (превью другой страницы): node tools/og-image.mjs --tag='…' --out=brand/og/имя.jpg
 import sharp from 'sharp';
 import opentype from 'opentype.js';
 import { writeFileSync } from 'node:fs';
@@ -37,8 +37,9 @@ function lineMixed(text, x0, x1, top, capH) { // как lineAt в tools/logo.mjs
 const TAG = lineMixed(TAG_RU, 295, 969, 968, 21);
 const logoBody = P.ring + P.branch + P.letters + P.word + P.rules + P.leaf + TAG.d;
 const wrap = (fill) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${P.vbFull}" fill="${fill}" role="img" aria-label="Verdant Estate — ${TAG_RU.toLowerCase()}"><path d="${logoBody}" fill-rule="nonzero"/></svg>\n`;
-writeFileSync(join(ROOT, 'brand/logo/verdant-logo-ru.svg'), wrap('#1B462A'));
-writeFileSync(join(ROOT, 'brand/logo/verdant-logo-ru-light.svg'), wrap('#F4F0E6'));
+// --out=путь от корня проекта: превью другой страницы со своей подписью (--tag); логотипы бренда в этом случае не переписываем
+const OUT_ARG = (process.argv.find((a) => a.startsWith('--out=')) || '').slice(6);
+if (!OUT_ARG) { writeFileSync(join(ROOT, 'brand/logo/verdant-logo-ru.svg'), wrap('#1B462A')); writeFileSync(join(ROOT, 'brand/logo/verdant-logo-ru-light.svg'), wrap('#F4F0E6')); }
 const logoSvg = Buffer.from(wrap('#F4F0E6'));
 const logo = await sharp(logoSvg, { density: 600 }).resize({ height: LOGO_H }).png().toBuffer();
 const lm = await sharp(logo).metadata();
@@ -47,6 +48,6 @@ const shadow = await sharp(logo).ensureAlpha().extractChannel(3).toColourspace('
   .then((a) => sharp({ create: { width: lm.width, height: lm.height, channels: 3, background: '#06100A' } }).joinChannel(a).png().toBuffer())
   .then((b) => sharp(b).extend({ top: 30, bottom: 30, left: 30, right: 30, background: { r: 0, g: 0, b: 0, alpha: 0 } }).blur(14).linear(0.55, 0).png().toBuffer());
 const x = Math.round((W - lm.width) / 2), y = Math.round((H - lm.height) / 2);
-const out = join(ROOT, 'docs/site/og-1200x630.jpg');
+const out = join(ROOT, OUT_ARG || 'docs/site/og-1200x630.jpg');
 await sharp(photo).composite([{ input: shade }, { input: shadow, left: x - 30, top: y - 30 + 4 }, { input: logo, left: x, top: y }]).jpeg({ quality: 88, mozjpeg: true }).toFile(out);
-console.log(`подпись «${TAG_RU}», разбивка ${TAG.track.toFixed(1)} · og-1200x630.jpg: ${W}×${H}, логотип ${lm.width}×${lm.height}, ${Math.round(statSync(out).size / 1024)} КБ`);
+console.log(`подпись «${TAG_RU}», разбивка ${TAG.track.toFixed(1)} · ${OUT_ARG || 'docs/site/og-1200x630.jpg'}: ${W}×${H}, логотип ${lm.width}×${lm.height}, ${Math.round(statSync(out).size / 1024)} КБ`);

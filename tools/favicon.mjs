@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 // Фавикон Verdant Estate из вектора знака: node tools/favicon.mjs → brand/favicon/ и docs/site/
 //
-// Два вида (13.11.2026, владелец: «fav-icon на светлой теме выглядит очень блекло… давай и чёрную, и белую, чтобы от темы браузера зависело»):
-//   favicon.svg          знак без фона, цвет меняется по теме браузера (prefers-color-scheme): тёмно-зелёный на светлой вкладке,
-//                        светлый на тёмной. Его понимают Chrome, Edge, Firefox и Safari с версии 26; подключается ссылкой в HEAD (src/head.html)
-//   favicon.ico          16 + 32 + 48: светлый знак на тёмно-зелёной плашке — виден на любой теме. Запасной для браузеров без SVG-иконок
-//                        и для поиска (в выдаче фон белый). Его грузить в Тильду: «Настройки сайта → Главное → Favicon»
-//   favicon-512.png      тот же знак на плашке, 512×512 (логотип организации в JSON-LD, запас для Тильды)
-//   favicon-32.png       на плашке, 32×32 — запасная ссылка в HEAD
-//   apple-touch-icon.png 180×180, плашка без скругления (iOS скругляет сам) — «на экран Домой»
-//   preview.png          как оба вида выглядят на светлой и тёмной вкладке
+// Знак без фона, цвет под тему браузера (13.11.2026, владелец: «fav-icon на светлой теме выглядит очень блекло… давай и чёрную, и белую,
+// чтобы от темы браузера зависело»; про вариант на зелёной плашке: «иконка должна быть прозрачная, просто под цвет подходить браузера»):
+//   favicon.svg          цвет меняется сам (prefers-color-scheme): тёмно-зелёный на светлой вкладке, светлый на тёмной — Chrome, Edge, Firefox
+//   favicon-d.png        тёмно-зелёный знак, 64×64, прозрачный фон — светлая тема в Safari и браузерах на iPhone (WebKit тему внутри SVG не применяет)
+//   favicon-l.png        светлый знак, 64×64, прозрачный фон — тёмная тема там же. Какой из двух брать, решает скрипт в HEAD (src/head.html)
+//   favicon.ico          16 + 32 + 48, тёмно-зелёный, прозрачный фон
+//   favicon-512.png      тёмно-зелёный, прозрачный фон: его грузить в Тильду («Настройки сайта → Главное → Favicon») — он же для поиска
+//                        (в выдаче фон белый) и логотип организации в JSON-LD
+//   favicon-32.png       то же, 32×32 (на него ссылалась сборка 1520a785)
+//   apple-touch-icon.png 180×180, светлый знак на тёмно-зелёном: единственный с фоном — iOS заливает прозрачность чёрным
+//   preview.png          как знак выглядит на светлой и тёмной вкладке
 //
 // Прежний вид (бронза без фона, 22.10) на светлой вкладке читался бледно. Мелкие размеры утолщены оптически; на 16 — только кольцо и VE.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -55,24 +57,22 @@ function ico(frames) {
 
 const SITE = join(ROOT, 'docs/site');
 const frames = [];
-for (const sz of [16, 32, 48]) frames.push({ sz, buf: await png(badge(sz)) });
-const icoBuf = ico(frames), b512 = await png(badge(512)), svgA = adaptive();
+for (const sz of [16, 32, 48]) frames.push({ sz, buf: await png(svg(sz, GREEN)) });
+const icoBuf = ico(frames), g512 = await png(svg(512, GREEN)), svgA = adaptive();
 writeFileSync(join(OUT, 'favicon.ico'), icoBuf); writeFileSync(join(SITE, 'favicon.ico'), icoBuf);
 writeFileSync(join(OUT, 'favicon.png'), frames[1].buf); writeFileSync(join(SITE, 'favicon-32.png'), frames[1].buf);
-writeFileSync(join(OUT, 'favicon-512.png'), b512); writeFileSync(join(SITE, 'favicon-512.png'), b512);
+writeFileSync(join(OUT, 'favicon-512.png'), g512); writeFileSync(join(SITE, 'favicon-512.png'), g512);
 writeFileSync(join(OUT, 'favicon.svg'), svgA); writeFileSync(join(SITE, 'favicon.svg'), svgA);
+writeFileSync(join(SITE, 'favicon-d.png'), await png(svg(64, GREEN))); writeFileSync(join(SITE, 'favicon-l.png'), await png(svg(64, CREAM)));
 writeFileSync(join(OUT, 'apple-touch-icon.png'), await png(badge(180, 0)));
 
-// лист проверки: светлая вкладка, серая вкладка, тёмная (Chrome), тёмная (Safari). Верхние три ряда — знак по теме (16/32/48),
-// нижние три — плашка. В каждой плитке слева ×6, справа в натуральную величину
+// лист проверки: светлая вкладка, серая вкладка, тёмная (Chrome), тёмная (Safari); знак 16/32/48, слева ×6, справа в натуральную величину
 const bgs = ['#FFFFFF', '#DEE1E6', '#35363A', '#1C1C1E'];
 const tiles = []; let x = 16;
 for (const [bi, bg] of bgs.entries()) {
   let y = 16;
-  const rows = [];
-  for (const sz of [16, 32, 48]) rows.push({ sz, buf: await png(svg(sz, bi < 2 ? GREEN : CREAM)) });
-  for (const f of frames) rows.push(f);
-  for (const { sz, buf } of rows) {
+  for (const sz of [16, 32, 48]) {
+    const buf = await png(svg(sz, bi < 2 ? GREEN : CREAM));
     const big = await sharp(buf).resize(sz * 6, sz * 6, { kernel: 'nearest' }).png().toBuffer();
     tiles.push({ input: { create: { width: 48 * 6 + 24, height: sz * 6 + 24, channels: 4, background: bg } }, left: x, top: y });
     tiles.push({ input: big, left: x + 12, top: y + 12 });
@@ -81,5 +81,5 @@ for (const [bi, bg] of bgs.entries()) {
   }
   x += 48 * 6 + 40;
 }
-await sharp({ create: { width: x, height: 16 + (16 + 32 + 48) * 6 * 2 + 36 * 6 + 16, channels: 4, background: '#F2EFE6' } }).composite(tiles).png().toFile(join(OUT, 'preview.png'));
-console.log('brand/favicon и docs/site: favicon.svg (по теме браузера), favicon.ico (16/32/48, плашка), favicon-32.png, favicon-512.png; brand/favicon: apple-touch-icon.png, preview.png');
+await sharp({ create: { width: x, height: 16 + (16 + 32 + 48) * 6 + 36 * 3 + 16, channels: 4, background: '#F2EFE6' } }).composite(tiles).png().toFile(join(OUT, 'preview.png'));
+console.log('docs/site: favicon.svg (цвет по теме), favicon-d.png и favicon-l.png (тёмный и светлый, 64), favicon.ico, favicon-32.png, favicon-512.png — все без фона; brand/favicon: копии, apple-touch-icon.png, preview.png');
