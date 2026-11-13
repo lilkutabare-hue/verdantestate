@@ -1,10 +1,12 @@
 // Заявки с сайта Verdant Estate → Telegram заказчику (решение владельца 22.10.2026).
 // POST /lead  — JSON формы: проверка, защита от спама, сообщение в Telegram на сохранённый chat_id.
 // POST /tg    — вебхук бота: /start от разрешённого username сохраняет chat_id (заказчик жмёт «Start» один раз).
-// GET  /setup — включить вебхук бота на этот воркер. GET /health — бот и чат подключены ли.
+// GET  /setup — включить вебхук бота на этот воркер (после привязки чата — только с ключом SETUP_KEY). GET /health — бот и чат подключены ли.
 // Секрет BOT_TOKEN владелец ставит сам: npx wrangler secret put BOT_TOKEN (в коде и в git токена нет).
 // Риск, о котором владелец знает: Telegram — иностранный сервис (152-ФЗ, локализация с 1.07.2025). Заявки здесь не хранятся.
-const ORIGIN_OK = /^https:\/\/([a-z0-9-]+\.)*(tilda\.ws|tilda\.cc|lilkutabare\.workers\.dev)$|^http:\/\/localhost(:\d+)?$/;
+// 13.11.2026: раньше подходил любой проект на tilda.ws и любой воркер аккаунта — чужая страница на Тильде могла слать сюда заявки
+// от имени своих посетителей. Теперь только адрес этого сайта на Тильде и localhost; свой домен и доп. адреса — в ORIGINS (wrangler.toml).
+const ORIGIN_OK = /^https:\/\/verdantestate\.tilda\.ws$|^http:\/\/localhost(:\d+)?$/;
 
 const json = (o, status, cors) => new Response(JSON.stringify(o), { status: status || 200, headers: Object.assign({ 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }, cors || {}) });
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
@@ -19,19 +21,20 @@ function corsFor(req, env) {
 }
 
 const TARIFF = { BASIC: 'Basic', PREMIUM: 'Premium', ESTATE: 'Estate' };
+const HOUR_CAP = 40; // заявок в час со всех адресов; сверх — 429, сайт покажет «напишите в WhatsApp»
 const msk = (d, o) => new Intl.DateTimeFormat('ru-RU', Object.assign({ timeZone: 'Europe/Moscow' }, o)).format(d || new Date());
 const day = (d) => msk(d, { year: 'numeric', month: '2-digit', day: '2-digit' }).split('.').reverse().join('-');
 async function bump(env) { const k = 'n:' + day(); await env.KV.put(k, String((+(await env.KV.get(k)) || 0) + 1), { expirationTtl: 60 * 60 * 24 * 40 }); await env.KV.put('last', String(Date.now())); }
 // кнопки под заявкой: WhatsApp и Telegram по номеру, «Взял в работу» — отметка прямо в сообщении
 const kb = (phone) => ({ inline_keyboard: [[{ text: 'WhatsApp', url: 'https://wa.me/' + phone }, { text: 'Telegram', url: 'https://t.me/+' + phone }], [{ text: '✓ Взял в работу', callback_data: 'take' }]] });
 function leadText(d, phone, test) {
-  const f = Array.isArray(d.factors) ? d.factors.slice(0, 12).join(', ') : '';
+  const f = Array.isArray(d.factors) ? d.factors.slice(0, 12).map((x) => String(x).slice(0, 40)).join(', ') : '';
   return [
     (test ? '<b>ТЕСТ · </b>' : '') + '<b>Заявка с сайта Verdant Estate</b>',
     `Имя: ${esc(d.name)}`,
     `Телефон: +${phone[0]} ${phone.slice(1, 4)} ${phone.slice(4, 7)}-${phone.slice(7, 9)}-${phone.slice(9)}`,
     d.area ? `Площадь: ${esc(String(d.area).slice(0, 6))} сот.` : '',
-    `Уровень: ${esc(TARIFF[d.tariff] || 'не выбран')}${d.estimate && !d.tariff ? ' (конструктор: ' + esc(TARIFF[d.estimate] || d.estimate) + ')' : ''}`,
+    `Уровень: ${esc(TARIFF[d.tariff] || 'не выбран')}${d.estimate && !d.tariff ? ' (конструктор: ' + esc(TARIFF[d.estimate] || String(d.estimate).slice(0, 20)) + ')' : ''}`,
     f ? `На участке: ${esc(f)}` : '',
     d.comment ? `Комментарий: ${esc(String(d.comment).slice(0, 1000))}` : '',
     `<i>${msk(new Date(), { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</i>`,
@@ -42,14 +45,21 @@ async function lead(req, env, cors) {
   if (!env.BOT_TOKEN) return json({ ok: false, error: 'bot' }, 503, cors);
   const chat = await env.KV.get('chat');
   if (!chat) return json({ ok: false, error: 'chat' }, 503, cors);
-  let d; try { d = await req.json(); } catch { return json({ ok: false, error: 'json' }, 400, cors); }
+  if (+(req.headers.get('content-length') || 0) > 8192) return json({ ok: false, error: 'size' }, 413, cors);
+  let d; try { const raw = await req.text(); if (raw.length > 8192) return json({ ok: false, error: 'size' }, 413, cors); d = JSON.parse(raw); } catch { return json({ ok: false, error: 'json' }, 400, cors); }
+  if (!d || typeof d !== 'object') return json({ ok: false, error: 'json' }, 400, cors);
   if (d.website) return json({ ok: true }, 200, cors); // ловушка для ботов: поле скрыто от людей
   const name = String(d.name || '').trim().slice(0, 80), phone = String(d.phone || '').replace(/\D/g, '');
   if (!name || phone.length !== 11 || !d.consent) return json({ ok: false, error: 'fields' }, 400, cors);
-  const ip = req.headers.get('cf-connecting-ip') || 'x', rk = 'rl:' + (await hex(ip)).slice(0, 16);
+  // отпечаток адреса с солью: без неё IPv4 восстанавливается перебором
+  const ip = req.headers.get('cf-connecting-ip') || 'x', rk = 'rl:' + (await hex(ip + ':' + env.BOT_TOKEN)).slice(0, 16);
   const n = +(await env.KV.get(rk)) || 0;
   if (n >= 3) return json({ ok: false, error: 'rate' }, 429, cors);
   await env.KV.put(rk, String(n + 1), { expirationTtl: 600 });
+  // общий потолок на час: если заявки пойдут потоком с разных адресов, чат заказчика не завалит
+  const gk = 'g:' + new Date().toISOString().slice(0, 13), g = +(await env.KV.get(gk)) || 0;
+  if (g >= HOUR_CAP) return json({ ok: false, error: 'rate' }, 429, cors);
+  await env.KV.put(gk, String(g + 1), { expirationTtl: 7200 });
   d.name = name;
   const r = await tg(env, 'sendMessage', { chat_id: chat, text: leadText(d, phone), parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: kb(phone) });
   if (!r.ok) return json({ ok: false, error: 'tg' }, 502, cors);
@@ -89,6 +99,11 @@ async function webhook(req, env) {
   const cmd = String(m.text || '').trim().split(/[\s@]/)[0];
   const say = (text, extra) => tg(env, 'sendMessage', Object.assign({ chat_id: m.chat.id, text, parse_mode: 'HTML', disable_web_page_preview: true }, extra || {}));
   if (cmd === '/start' && who && who === allow) {
+    // 13.11.2026: имя пользователя в Telegram можно освободить и занять другим человеком. После первого Start запоминаем номер
+    // пользователя и принимаем Start только от него; другого получателя назначают сменой ALLOW_USER в wrangler.toml и выкаткой
+    const own = await env.KV.get('owner'), me = String(m.from.id) + ':' + allow;
+    if (own && own !== me && own.split(':')[1] === allow) { await say('Это служебный бот заявок Verdant Estate.'); return new Response('ok'); }
+    await env.KV.put('owner', me);
     await env.KV.put('chat', String(m.chat.id));
     await say('Готово. Заявки с сайта Verdant Estate будут приходить сюда.\n\n' + HELP);
     return new Response('ok');
@@ -119,6 +134,9 @@ export default {
     if (url.pathname === '/tg' && req.method === 'POST') return env.BOT_TOKEN ? webhook(req, env) : new Response('no bot', { status: 503 });
     if (url.pathname === '/setup') {
       if (!env.BOT_TOKEN) return json({ ok: false, error: 'Сначала: npx wrangler secret put BOT_TOKEN' }, 503);
+      // 13.11.2026: /setup был открыт всем и каждый вызов заново ставил вебхук, имя и аватарку бота. Теперь: пока чат не привязан — открыт
+      // (первая настройка), после — только с ключом: npx wrangler secret put SETUP_KEY, затем /setup?key=…
+      if (await env.KV.get('chat')) { if (!env.SETUP_KEY || url.searchParams.get('key') !== env.SETUP_KEY) return json({ ok: false, error: 'Бот уже настроен. Повторная настройка: /setup?key=… (секрет SETUP_KEY)' }, 403); }
       const secret = (await hex('verdant:' + env.BOT_TOKEN)).slice(0, 32);
       const ok = async (p) => { try { const r = await p; return (await r.json()).ok === true; } catch { return false; } };
       const res = {
