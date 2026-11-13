@@ -79,9 +79,6 @@ html.ve-no-dust .ve-hero__dust{display:none}
 .ve-hero__hold{position:absolute;left:0;bottom:0;width:1px;height:var(--ve-hold);visibility:hidden;pointer-events:none}
 .ve-hero__end{position:absolute;left:0;right:0;top:0;height:200%;pointer-events:none;background:linear-gradient(to bottom,rgba(27,70,42,0) 0%,rgba(27,70,42,.08) 5%,rgba(27,70,42,.28) 11%,rgba(27,70,42,.56) 18%,rgba(27,70,42,.82) 25%,rgba(27,70,42,.96) 31%,#1B462A 35%,#1B462A 100%);transform:translate3d(0,calc(50% - var(--ve-veil,0)*85%),0)}
 .ve-hero__text{opacity:calc(1 - var(--ve-out,0))}
-/* «свет» в конце тарифов (html.ve-day ставит блок тарифов): если сцена ещё видна у верха экрана, она белеет вместе с ним */
-.ve-hero__stage::after{content:'';position:absolute;inset:0;background:var(--ve-paper);opacity:0;transition:opacity .5s var(--ve-ease);pointer-events:none;z-index:8}
-html.ve-day .ve-hero__stage::after{opacity:1}
 .ve-hero__shade{background:linear-gradient(to top,rgba(17,38,24,.62) 0%,rgba(17,38,24,.28) 34%,rgba(17,38,24,0) 62%);opacity:0;transition:opacity .8s var(--ve-ease)}
 .ve-hero:not([data-ch="0"]) .ve-hero__shade{opacity:1}
 .ve-hero__text{position:absolute;left:0;right:0;bottom:var(--ve-under,0px);padding:0 var(--ve-pad) calc(30px + env(safe-area-inset-bottom));max-width:1240px;margin:0 auto}
@@ -174,7 +171,7 @@ __SCENE_INLINE__
     var m=/(iPhone|iPod).*Version\/(\d+)/.exec(navigator.userAgent),dbg=/[?&]perf=1/.test(location.search);if((!m||+m[2]<26)&&!dbg)return;
     var pr=document.createElement('div');pr.style.cssText='position:fixed;top:0;left:0;width:0;height:100lvh;visibility:hidden;pointer-events:none';root.appendChild(pr);
     var box=null,set=function(){var l=pr.offsetHeight||innerHeight,u=Math.round((window.outerHeight||0)-l),ok=m&&+m[2]>=26&&u>0&&u<220;
-      root.style.setProperty('--ve-under',(ok?u:0)+'px');
+      html.style.setProperty('--ve-under',(ok?u:0)+'px');
       if(dbg){if(!box){box=document.createElement('div');box.style.cssText='position:fixed;left:8px;top:150px;z-index:99999;font:11px/1.3 ui-monospace,monospace;background:rgba(0,0,0,.6);color:#fff;padding:6px 8px;border-radius:8px;pointer-events:none;white-space:pre';document.body.appendChild(box)}
         var vv=window.visualViewport;box.textContent='inner '+innerHeight+' outer '+window.outerHeight+' lvh '+l+'\nvv '+(vv?Math.round(vv.height)+' top '+Math.round(vv.offsetTop):'-')+' screen '+screen.height+'\nunder '+(ok?u:0)+' ('+u+') v'+(m?m[2]:'-')}};
     set();window.addEventListener('resize',set);if(window.visualViewport)window.visualViewport.addEventListener('resize',set);window.addEventListener('orientationchange',function(){setTimeout(set,400)});
